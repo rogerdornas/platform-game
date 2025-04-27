@@ -57,22 +57,22 @@ void Sword::OnUpdate(float deltaTime) {
             isHorizontal = false;
         }
 
-        float offset;
+        float offset = 0;
         if (isHorizontal) {
             Vector2 v1(-mWidthHorizontal/2, -mHeightHorizontal/2);
             Vector2 v3(mWidthHorizontal/2, mHeightHorizontal/2);
             mAABBComponent->SetMin(v1);
             mAABBComponent->SetMax(v3);
-            offset = player->GetComponent<AABBComponent>()->GetMax().x - player->GetComponent<AABBComponent>()->GetMin().x;
-            offset *= 1.6;
+
+            offset = mWidthHorizontal / 2;
         }
         else {
             Vector2 v1(-mWidthVertical/2, -mHeightVertical/2);
             Vector2 v3(mWidthVertical/2, mHeightVertical/2);
             mAABBComponent->SetMin(v1);
             mAABBComponent->SetMax(v3);
-            offset = player->GetComponent<AABBComponent>()->GetMax().y - player->GetComponent<AABBComponent>()->GetMin().y;
-            offset *= 0.8;
+
+            offset = mHeightVertical / 2;
         }
         SetPosition(Vector2(player->GetPosition() + GetForward() * offset));
     }
