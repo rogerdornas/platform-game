@@ -157,13 +157,18 @@ void Game::InitializeActors()
     ground20->SetPosition(Vector2(-300, 240));
     mGrounds.emplace_back(ground20);
 
-    Ground* ground21 = new Ground(this, 500, 50);
-    ground21->SetPosition(Vector2(2500, 700));
+    Ground* ground21 = new Ground(this, 1500, 50);
+    ground21->SetPosition(Vector2(2800, 700));
     mGrounds.emplace_back(ground21);
 
     Ground* ground22 = new Ground(this, 100, 1000);
     ground22->SetPosition(Vector2(2800, 400));
     mGrounds.emplace_back(ground22);
+
+    Ground* ground23 = new Ground(this, 100, 1000);
+    ground23->SetPosition(Vector2(3000, 400));
+    mGrounds.emplace_back(ground23);
+
 
 }
 
@@ -325,6 +330,7 @@ void Game::Shutdown()
     {
         delete mActors.back();
     }
+    delete mCamera;
 
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);

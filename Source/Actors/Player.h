@@ -5,6 +5,12 @@
 #pragma once
 #include "Actor.h"
 
+enum class WallSlideSide {
+    notSliding,
+    left,
+    right
+};
+
 class Player : public Actor
 {
 public:
@@ -37,12 +43,16 @@ private:
 
     bool mCanWallSlide;                         // Habilidade de agarrar na parede
     bool mIsWallSliding;
+    WallSlideSide mWallSlideSide;
     float mWallSlideSpeed;
     int mTryingLeavingWallSlideLeft;            // Variaveis para quando tentar sair do wall sliding,
     int mTryingLeavingWallSlideRight;           //
     float mTimerToLeaveWallSlidingLeft;         //
     float mTimerToLeaveWallSlidingRight;        //
     float mMaxTimerToLiveWallSliding;           // ter um tempo para segurar a setinha para se desgrudar da parede
+
+    float mWallJumpTimer;
+    float mWallJumpMaxTime;
 
     class DrawComponent* mDrawComponent;
     class RigidBodyComponent* mRigidBodyComponent;

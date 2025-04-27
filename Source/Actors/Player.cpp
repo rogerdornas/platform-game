@@ -32,12 +32,15 @@ Player::Player(Game *game, float width, float height)
     ,mSwordDirection(0)
     ,mCanWallSlide(true)
     ,mIsWallSliding(false)
+    ,mWallSlideSide(WallSlideSide::notSliding)
     ,mWallSlideSpeed(300)
     ,mTryingLeavingWallSlideLeft(0)
     ,mTryingLeavingWallSlideRight(0)
     ,mTimerToLeaveWallSlidingLeft(0.2)
     ,mTimerToLeaveWallSlidingRight(0.2)
     ,mMaxTimerToLiveWallSliding(0.2)
+    ,mWallJumpTimer(0.15)
+    ,mWallJumpMaxTime(0.15)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -62,11 +65,11 @@ void Player::OnProcessInput(const uint8_t* state) {
     mTryingLeavingWallSlideLeft = 0;
     mTryingLeavingWallSlideRight = 0;
 
-    if (!(state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_RIGHT]) && !mDashComponent->GetIsDashing()) {
+    if (!(state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_RIGHT]) && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
         mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
     }
     else {
-        if (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing()) {
+        if (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
@@ -83,7 +86,7 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing()) {
+        if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
@@ -100,7 +103,7 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing()) {
+        if (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
@@ -117,7 +120,7 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing()) {
+        if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
@@ -150,13 +153,28 @@ void Player::OnProcessInput(const uint8_t* state) {
     //Início do pulo
     if (state[SDL_SCANCODE_Z]) {
         if (!mDashComponent->GetIsDashing()) {
-            if ((mIsOnGround || mIsWallSliding) && !mIsJumping && mCanJump) {
+            // Pulo do chao
+            if (mIsOnGround && !mIsJumping && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
                 mRigidBodyComponent->SetVelocity(Vector2(0, mJumpForce));
                 mIsJumping = true;
                 mCanJump = false;
                 mJumpTime = 0.0f;
             }
-            if (!(mIsOnGround || mIsWallSliding) && mJumpCountInAir < mMaxJumpsInAir && mCanJump) {
+            // Wall jumping
+            if (mIsWallSliding && !mIsJumping && mCanJump) {
+                if (mWallSlideSide == WallSlideSide::left) {
+                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mJumpForce));
+                }
+                else {
+                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mJumpForce));
+                }
+                mIsJumping = true;
+                mCanJump = false;
+                mJumpTime = 0.0f;
+                mWallJumpTimer = 0;
+            }
+            // Pulo no ar
+            if (!(mIsOnGround || mIsWallSliding) && mJumpCountInAir < mMaxJumpsInAir && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
                 mRigidBodyComponent->SetVelocity(Vector2(0, mJumpForce));
                 mIsJumping = true;
                 mCanJump = false;
@@ -200,8 +218,12 @@ void Player::OnUpdate(float deltaTime)
     mTimerToLeaveWallSlidingLeft += mTryingLeavingWallSlideLeft * deltaTime;
     mTimerToLeaveWallSlidingRight += mTryingLeavingWallSlideRight * deltaTime;
 
+    mWallJumpTimer += deltaTime;
+
+
     mIsOnGround = false;
     mIsWallSliding = false;
+    mWallSlideSide = WallSlideSide::notSliding;
 
     if (mIsJumping) {
         mJumpTime += deltaTime;
@@ -262,14 +284,24 @@ void Player::OnUpdate(float deltaTime)
 
             //colidiu pelas laterias
             if (mCanWallSlide) {
-                if ((collisionSide[2] || collisionSide[3]) && mRigidBodyComponent->GetVelocity().y >= 0) {
+                if ((collisionSide[2] || collisionSide[3])) {
                     mIsWallSliding = true;
-                    mIsJumping  = false;
-                    // Resetar dash no ar
-                    mDashComponent->SetHasDashedInAir(false);
-                    // RESET DO CONTADOR DE PULO
-                    mJumpCountInAir = 0;
-                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
+                    if (collisionSide[2]) {
+                        mWallSlideSide = WallSlideSide::left;
+                        SetRotation(Math::Pi);
+                    }
+                    else {
+                        mWallSlideSide = WallSlideSide::right;
+                        SetRotation(0);
+                    }
+                    if (mRigidBodyComponent->GetVelocity().y >= 0) {
+                        mIsJumping  = false;
+                        // Resetar dash no ar
+                        mDashComponent->SetHasDashedInAir(false);
+                        // RESET DO CONTADOR DE PULO
+                        mJumpCountInAir = 0;
+                        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
+                    }
                 }
             }
         }
