@@ -7,6 +7,7 @@ Atualmente, o jogo conta com as seguintes mecânicas implementadas:
 - Ataques
 - Dash (avanço rápido)
 - Controle de direção (olhar para cima/baixo)
+- Wall sliding
 
 ## Controles
 
