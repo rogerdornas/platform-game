@@ -9,6 +9,7 @@ class Ground : public Actor
 {
 public:
     Ground(Game* game, float width, float height);
+    ~Ground();
 
 private:
     float mHeight;

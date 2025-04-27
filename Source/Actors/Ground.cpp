@@ -27,4 +27,10 @@ Ground::Ground(Game *game, float width, float height)
     mDrawComponent = new DrawComponent(this, vertices);
     mRigidBodyComponent = new RigidBodyComponent(this);
     mAABBComponent = new AABBComponent(this, v1, v3, {0, 255, 0, 255});
+
+    game->AddGround(this);
+}
+
+Ground::~Ground() {
+    mGame->RemoveGround(this);
 }

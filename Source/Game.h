@@ -39,6 +39,8 @@ public:
     int GetWindowHeight() const { return mWindowHeight; }
 
     // Game-specific
+    void AddGround(class Ground* g);
+    void RemoveGround(class Ground* g);
     std::vector<class Ground*>& GetGrounds() { return mGrounds; }
     Player* GetPlayer() { return mPlayer; }
     class Camera* GetCamera() { return mCamera; }

@@ -83,92 +83,69 @@ void Game::InitializeActors()
 
     Ground* ground1 = new Ground(this, 200, 50);
     ground1->SetPosition(Vector2(mWindowWidth/6, mWindowHeight/10*3));
-    mGrounds.emplace_back(ground1);
 
     Ground* ground2 = new Ground(this, 200, 50);
     ground2->SetPosition(Vector2(300, mWindowHeight/10*7));
-    mGrounds.emplace_back(ground2);
 
     Ground* ground3 = new Ground(this, 200, 50);
     ground3->SetPosition(Vector2(mWindowWidth, mWindowHeight/10*5));
-    mGrounds.emplace_back(ground3);
 
     Ground* ground5 = new Ground(this, 2000, 50);
     ground5->SetPosition(Vector2(mWindowWidth/2, mWindowHeight/10*9));
-    mGrounds.emplace_back(ground5);
 
     Ground* ground6 = new Ground(this, 200, 50);
     ground6->SetPosition(Vector2(700, 100));
-    mGrounds.emplace_back(ground6);
 
     Ground* ground7 = new Ground(this, 200, 50);
     ground7->SetPosition(Vector2(850, 50));
-    mGrounds.emplace_back(ground7);
 
     Ground* ground8 = new Ground(this, 200, 50);
     ground8->SetPosition(Vector2(550, 50));
-    mGrounds.emplace_back(ground8);
 
     Ground* ground9 = new Ground(this, 200, 50);
     ground9->SetPosition(Vector2(1100, -100));
-    mGrounds.emplace_back(ground9);
 
     Ground* ground10 = new Ground(this, 200, 50);
     ground10->SetPosition(Vector2(20, 50));
-    mGrounds.emplace_back(ground10);
 
     Ground* ground11 = new Ground(this, 100, 300);
     ground11->SetPosition(Vector2(500, 620));
-    mGrounds.emplace_back(ground11);
 
     Ground* ground12 = new Ground(this, 3000, 50);
     ground12->SetPosition(Vector2(0, mWindowHeight/10*9));
-    mGrounds.emplace_back(ground12);
 
     Ground* ground13 = new Ground(this, 200, 50);
     ground13->SetPosition(Vector2(-200, -250));
-    mGrounds.emplace_back(ground13);
 
     Ground* ground14 = new Ground(this, 200, 50);
     ground14->SetPosition(Vector2(-200, -450));
-    mGrounds.emplace_back(ground14);
 
     Ground* ground15 = new Ground(this, 200, 50);
     ground15->SetPosition(Vector2(-200, -650));
-    mGrounds.emplace_back(ground15);
 
     Ground* ground16 = new Ground(this, 2, 400);
     ground16->SetPosition(Vector2(-20, 750));
-    mGrounds.emplace_back(ground16);
 
     Ground* ground17 = new Ground(this, 26, 400);
     ground17->SetPosition(Vector2(-500, 750));
-    mGrounds.emplace_back(ground17);
 
     Ground* ground18 = new Ground(this, 30, 400);
     ground18->SetPosition(Vector2(-1000, 750));
-    mGrounds.emplace_back(ground18);
 
     Ground* ground19 = new Ground(this, 200, 50);
     ground19->SetPosition(Vector2(0, 350));
-    mGrounds.emplace_back(ground19);
 
     Ground* ground20 = new Ground(this, 200, 50);
     ground20->SetPosition(Vector2(-300, 240));
-    mGrounds.emplace_back(ground20);
 
     Ground* ground21 = new Ground(this, 1500, 50);
     ground21->SetPosition(Vector2(2800, 700));
-    mGrounds.emplace_back(ground21);
 
     Ground* ground22 = new Ground(this, 100, 1000);
     ground22->SetPosition(Vector2(2800, 400));
-    mGrounds.emplace_back(ground22);
 
     Ground* ground23 = new Ground(this, 100, 1000);
     ground23->SetPosition(Vector2(3000, 400));
-    mGrounds.emplace_back(ground23);
-
 
 }
 
@@ -259,6 +236,18 @@ void Game::UpdateActors(float deltaTime)
 
 }
 
+void Game::AddGround(class Ground* g) {
+    mGrounds.emplace_back(g);
+}
+
+
+void Game::RemoveGround(class Ground *g) {
+    auto iter = std::find(mGrounds.begin(), mGrounds.end(), g);
+    if (iter != mGrounds.end()) {
+        mGrounds.erase(iter);
+    }
+}
+
 
 void Game::AddActor(Actor* actor)
 {
@@ -331,6 +320,7 @@ void Game::Shutdown()
         delete mActors.back();
     }
     delete mCamera;
+    delete mPlayer;
 
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);
