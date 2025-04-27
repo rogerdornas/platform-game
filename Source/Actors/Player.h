@@ -35,6 +35,15 @@ private:
     const float mSwordCooldownDuration;
     float mSwordDirection;
 
+    bool mCanWallSlide;                         // Habilidade de agarrar na parede
+    bool mIsWallSliding;
+    float mWallSlideSpeed;
+    int mTryingLeavingWallSlideLeft;            // Variaveis para quando tentar sair do wall sliding,
+    int mTryingLeavingWallSlideRight;           //
+    float mTimerToLeaveWallSlidingLeft;         //
+    float mTimerToLeaveWallSlidingRight;        //
+    float mMaxTimerToLiveWallSliding;           // ter um tempo para segurar a setinha para se desgrudar da parede
+
     class DrawComponent* mDrawComponent;
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;

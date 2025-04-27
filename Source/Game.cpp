@@ -161,8 +161,8 @@ void Game::InitializeActors()
     ground21->SetPosition(Vector2(2500, 700));
     mGrounds.emplace_back(ground21);
 
-    Ground* ground22 = new Ground(this, 100, 500);
-    ground22->SetPosition(Vector2(2800, 600));
+    Ground* ground22 = new Ground(this, 100, 1000);
+    ground22->SetPosition(Vector2(2800, 400));
     mGrounds.emplace_back(ground22);
 
 }
