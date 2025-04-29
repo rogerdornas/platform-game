@@ -348,15 +348,15 @@ void Player::OnUpdate(float deltaTime)
             if (mCanWallSlide) {
                 if ((collisionSide[2] || collisionSide[3])) {
                     mIsWallSliding = true;
-                    if (collisionSide[2]) {
+                    if (collisionSide[2] && !mDashComponent->GetIsDashing()) { // Testa se não está dashando para não bugar quando dar um dash na quina de baixo e inverter a direção do dash
                         mWallSlideSide = WallSlideSide::left;
                         SetRotation(Math::Pi);
                     }
-                    else {
+                    else if (collisionSide[3] && !mDashComponent->GetIsDashing()) {
                         mWallSlideSide = WallSlideSide::right;
                         SetRotation(0);
                     }
-                    if (mRigidBodyComponent->GetVelocity().y >= 0) {
+                    if (mRigidBodyComponent->GetVelocity().y > 0) {
                         mIsJumping  = false;
                         // Resetar dash no ar
                         mDashComponent->SetHasDashedInAir(false);
