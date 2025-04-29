@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Actors/Ground.h"
 #include "Actors/Player.h"
+#include "Actors/FireBall.h"
 
 class Game
 {
@@ -42,10 +43,15 @@ public:
     void AddGround(class Ground* g);
     void RemoveGround(class Ground* g);
     std::vector<class Ground*>& GetGrounds() { return mGrounds; }
+
     Player* GetPlayer() { return mPlayer; }
-    class Camera* GetCamera() { return mCamera; }
 
     void UpdateCamera(float deltatime);
+    class Camera* GetCamera() { return mCamera; }
+
+    void AddFireBall(class FireBall* f);
+    void RemoveFireball(class FireBall* f);
+    std::vector<class FireBall*>& GetFireBalls() { return mFireBalls; }
 
 private:
     void ProcessInput();
@@ -82,4 +88,5 @@ private:
     // Game-specific
     class Player* mPlayer;
     std::vector<class Ground*> mGrounds;
+    std::vector<class FireBall*> mFireBalls;
 };

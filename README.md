@@ -21,3 +21,4 @@ Atualmente, o jogo conta com as seguintes mecânicas implementadas:
 | Pular                    | **Z**                      |
 | Atacar                   | **X**                      |
 | Dash (avanço rápido)     | **C**                      |
+| Ataque à distância       | **A**                      |

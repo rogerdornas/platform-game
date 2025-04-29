@@ -16,8 +16,6 @@ Sword::Sword(class Game *game, float width, float height, float duration)
     ,mHeightVertical(width)
     ,mDuration(duration)
 {
-
-    SetState(ActorState::Active);
     mDurationTimer = mDuration;
 
     Vector2 v1(-mWidthHorizontal/2, -mHeightHorizontal/2);

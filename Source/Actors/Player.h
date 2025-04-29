@@ -41,6 +41,10 @@ private:
     const float mSwordCooldownDuration;
     float mSwordDirection;
 
+    bool mPrevFireBallPressed;
+    float mFireBallCooldownTimer;
+    const float mFireBallCooldownDuration;
+
     bool mCanWallSlide;                         // Habilidade de agarrar na parede
     bool mIsWallSliding;
     WallSlideSide mWallSlideSide;
@@ -58,5 +62,4 @@ private:
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
     class DashComponent* mDashComponent;
-    class DoubleJumpComponent* mDoubleJumpComponent;
 };

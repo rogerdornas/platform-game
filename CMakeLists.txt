@@ -36,6 +36,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/DashComponent.h
         Source/Actors/Sword.cpp
         Source/Actors/Sword.h
+        Source/Actors/FireBall.cpp
+        Source/Actors/FireBall.h
 )
 
 

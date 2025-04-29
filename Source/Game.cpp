@@ -81,6 +81,10 @@ void Game::InitializeActors()
     mPlayer = new Player(this, 20, 60);
     mPlayer->SetPosition(Vector2(mWindowWidth / 20, mWindowHeight/2));
 
+    for (int i = 0; i < 5; i++) {
+        FireBall* fireBall = new FireBall(this);
+    }
+
     Ground* ground1 = new Ground(this, 200, 50);
     ground1->SetPosition(Vector2(mWindowWidth/6, mWindowHeight/10*3));
 
@@ -251,6 +255,16 @@ void Game::RemoveGround(class Ground *g) {
     }
 }
 
+void Game::AddFireBall(class FireBall *f) {
+    mFireBalls.emplace_back(f);
+}
+
+void Game::RemoveFireball(class FireBall *f) {
+    auto iter = std::find(mFireBalls.begin(), mFireBalls.end(), f);
+    if (iter != mFireBalls.end()) {
+        mFireBalls.erase(iter);
+    }
+}
 
 void Game::AddActor(Actor* actor)
 {

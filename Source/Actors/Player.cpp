@@ -8,6 +8,7 @@
 
 #include "../Game.h"
 #include "../Actors/Sword.h"
+#include "../Actors/FireBall.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/DrawComponent.h"
 #include "../Components/AABBComponent.h"
@@ -27,9 +28,12 @@ Player::Player(Game *game, float width, float height)
     ,mJumpCountInAir(0)
     ,mMaxJumpsInAir(1)
     ,mPrevSwordPressed(false)
-    ,mSwordCooldownTimer(0.0f)
+    ,mSwordCooldownTimer(0.3f)
     ,mSwordCooldownDuration(0.3f)
     ,mSwordDirection(0)
+    ,mPrevFireBallPressed(false)
+    ,mFireBallCooldownTimer(1.0f)
+    ,mFireBallCooldownDuration(1.0f)
     ,mCanWallSlide(true)
     ,mIsWallSliding(false)
     ,mWallSlideSide(WallSlideSide::notSliding)
@@ -201,13 +205,28 @@ void Player::OnProcessInput(const uint8_t* state) {
         // Ativa a espada
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
-        mSword->SetPosition(GetPosition() + mSword->GetForward() * (mWidth / 2) * 3);
+        mSword->SetPosition(GetPosition());
 
         // Inicia cooldown
         mSwordCooldownTimer = 0;
     }
-
     mPrevSwordPressed = state[SDL_SCANCODE_X];
+
+    // FireBall
+    if (state[SDL_SCANCODE_A] && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration) {
+        std::vector<FireBall*> fireBalls = GetGame()->GetFireBalls();
+        for (FireBall* f : fireBalls) {
+            if (f->GetState() == ActorState::Paused) {
+                f->SetState(ActorState::Active);
+                f->SetRotation(GetRotation());
+                f->SetPosition(GetPosition());
+                break;
+            }
+        }
+        // Inicia cooldown
+        mFireBallCooldownTimer = 0;
+    }
+    mPrevFireBallPressed = state[SDL_SCANCODE_A];
 
 }
 
@@ -215,6 +234,10 @@ void Player::OnUpdate(float deltaTime)
 {
     if (mSwordCooldownTimer <= mSwordCooldownDuration) {
         mSwordCooldownTimer += deltaTime;
+    }
+
+    if (mFireBallCooldownTimer <= mFireBallCooldownDuration) {
+        mFireBallCooldownTimer += deltaTime;
     }
 
     mTimerToLeaveWallSlidingLeft += mTryingLeavingWallSlideLeft * deltaTime;
