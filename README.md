@@ -9,6 +9,7 @@ Atualmente, o jogo conta com as seguintes mecânicas implementadas:
 - Controle de direção (olhar para cima/baixo)
 - Wall sliding
 - Wall Jump
+- Ataque à distância
 
 ## Controles
 

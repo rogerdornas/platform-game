@@ -13,6 +13,8 @@ public:
 
     void OnUpdate(float deltaTime) override;
 
+    float GetWidth() { return mWidth; }
+
 private:
     float mWidth;
     float mHeight;

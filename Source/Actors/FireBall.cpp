@@ -12,7 +12,7 @@ FireBall::FireBall(class Game *game)
     :Actor(game)
     ,mWidth(50.0f)
     ,mHeight(50.0f)
-    ,mSpeed(1500.0f)
+    ,mSpeed(1600.0f)
     ,mDuration(3.0f)
     ,mDurationTimer(0.0f)
 {
@@ -45,11 +45,11 @@ void FireBall::OnUpdate(float deltaTime) {
     if (mDurationTimer >= mDuration) {
         SetState(ActorState::Paused);
         mAABBComponent->SetActive(false); // desativa colisão
+        mRigidBodyComponent->SetVelocity(Vector2::Zero);
         mDurationTimer = 0;
     }
     else {
         mAABBComponent->SetActive(true); // reativa colisão
-        float direction = GetForward().x;
-        mRigidBodyComponent->SetVelocity(Vector2(mSpeed * direction, 0));
+        mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
     }
 }

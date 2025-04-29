@@ -4,8 +4,6 @@
 
 #include "Player.h"
 
-#include <complex>
-
 #include "../Game.h"
 #include "../Actors/Sword.h"
 #include "../Actors/FireBall.h"
@@ -19,21 +17,29 @@ Player::Player(Game *game, float width, float height)
     ,mWidth(width)
     ,mHeight(height)
     ,mIsOnGround(false)
+
     ,mIsJumping(false)
-    ,mCanJump(true) // Evita segurar botao de pular para continuar pulando
+    ,mCanJump(true)
     ,mJumpTime(0.0f)
     ,mMaxJumpTime(0.25f)
     ,mJumpForce(-850.0f)
     ,mMoveSpeed(550)
     ,mJumpCountInAir(0)
     ,mMaxJumpsInAir(1)
+
     ,mPrevSwordPressed(false)
     ,mSwordCooldownTimer(0.3f)
     ,mSwordCooldownDuration(0.3f)
     ,mSwordDirection(0)
+
     ,mPrevFireBallPressed(false)
     ,mFireBallCooldownTimer(1.0f)
     ,mFireBallCooldownDuration(1.0f)
+    ,mIsFireAttacking(false)
+    ,mStopInAirFireBallTimer(0.0f)
+    ,mStopInAirFireBallMaxDuration(0.0f)
+    ,mFireballRecoil(0.0f)
+
     ,mCanWallSlide(true)
     ,mIsWallSliding(false)
     ,mWallSlideSide(WallSlideSide::notSliding)
@@ -43,6 +49,7 @@ Player::Player(Game *game, float width, float height)
     ,mTimerToLeaveWallSlidingLeft(0.15)
     ,mTimerToLeaveWallSlidingRight(0.15)
     ,mMaxTimerToLiveWallSliding(0.15)
+
     ,mWallJumpTimer(0.15)
     ,mWallJumpMaxTime(0.15)
 {
@@ -60,7 +67,7 @@ Player::Player(Game *game, float width, float height)
     mDrawComponent = new DrawComponent(this, vertices);
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1300);
     mAABBComponent = new AABBComponent(this, v1, v3, {255, 255, 0, 255});
-    mDashComponent = new DashComponent(this, 1500, 0.18f, 0.5f);
+    mDashComponent = new DashComponent(this, 1400, 0.18f, 0.5f);
 
     mSword = new Sword(game, 60, 20, 0.1f);
 }
@@ -69,11 +76,11 @@ void Player::OnProcessInput(const uint8_t* state) {
     mTryingLeavingWallSlideLeft = 0;
     mTryingLeavingWallSlideRight = 0;
 
-    if (!(state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_RIGHT]) && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
+    if (!(state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_RIGHT]) && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
         mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
     }
     else {
-        if (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
@@ -90,7 +97,7 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
@@ -107,7 +114,7 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
@@ -124,7 +131,7 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
@@ -157,7 +164,7 @@ void Player::OnProcessInput(const uint8_t* state) {
     }
 
     //Início do pulo
-    if (state[SDL_SCANCODE_Z]) {
+    if (state[SDL_SCANCODE_Z] && !mIsFireAttacking) {
         if (!mDashComponent->GetIsDashing()) {
             // Pulo do chao
             if (mIsOnGround && !mIsJumping && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
@@ -195,7 +202,7 @@ void Player::OnProcessInput(const uint8_t* state) {
     }
 
     // Dash
-    if (state[SDL_SCANCODE_C]) {
+    if (state[SDL_SCANCODE_C] && !mIsFireAttacking) {
         mDashComponent->UseDash(mIsOnGround);
     }
 
@@ -219,7 +226,9 @@ void Player::OnProcessInput(const uint8_t* state) {
             if (f->GetState() == ActorState::Paused) {
                 f->SetState(ActorState::Active);
                 f->SetRotation(GetRotation());
-                f->SetPosition(GetPosition());
+                f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
+                mIsFireAttacking = true;
+                mStopInAirFireBallTimer = 0;
                 break;
             }
         }
@@ -232,12 +241,19 @@ void Player::OnProcessInput(const uint8_t* state) {
 
 void Player::OnUpdate(float deltaTime)
 {
-    if (mSwordCooldownTimer <= mSwordCooldownDuration) {
+    if (mSwordCooldownTimer < mSwordCooldownDuration) {
         mSwordCooldownTimer += deltaTime;
     }
 
-    if (mFireBallCooldownTimer <= mFireBallCooldownDuration) {
+    if (mFireBallCooldownTimer < mFireBallCooldownDuration) {
         mFireBallCooldownTimer += deltaTime;
+    }
+
+    if (mStopInAirFireBallTimer < mStopInAirFireBallMaxDuration) {
+        mStopInAirFireBallTimer += deltaTime;
+    }
+    else {
+        mIsFireAttacking = false;
     }
 
     mTimerToLeaveWallSlidingLeft += mTryingLeavingWallSlideLeft * deltaTime;
@@ -245,31 +261,34 @@ void Player::OnUpdate(float deltaTime)
 
     mWallJumpTimer += deltaTime;
 
-
     mIsOnGround = false;
     mIsWallSliding = false;
     mWallSlideSide = WallSlideSide::notSliding;
+
+    if (mIsFireAttacking) {
+        mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0));
+    }
 
     if (mIsJumping) {
         mJumpTime += deltaTime;
         if (mJumpTime <= mMaxJumpTime) {
             // Gravidade menor
-            // So aplica gravidade se nao estiver dashando
-            if (!mDashComponent->GetIsDashing()) {
+            // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
+            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking) {
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 100 * deltaTime));
             }
         } else {
             mIsJumping = false;
             // Gravidade
-            // So aplica gravidade se nao estiver dashando
-            if (!mDashComponent->GetIsDashing()) {
+            // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
+            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking) {
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
             }
         }
     }
     else {
-        // So aplica gravidade se nao estiver dashando
-        if (!mDashComponent->GetIsDashing()) {
+        // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
+        if (!mDashComponent->GetIsDashing() && !mIsFireAttacking) {
             mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
         }
     }
