@@ -188,7 +188,6 @@ void Game::ProcessInput()
 
 void Game::UpdateGame()
 {
-
     while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
 
     float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
@@ -201,8 +200,7 @@ void Game::UpdateGame()
 
     // Update all actors and pending actors
     UpdateActors(deltaTime);
-
-    mCamera->Update();
+    UpdateCamera(deltaTime);
 }
 
 void Game::UpdateActors(float deltaTime)
@@ -235,6 +233,11 @@ void Game::UpdateActors(float deltaTime)
     }
 
 }
+
+void Game::UpdateCamera(float deltatime) {
+    mCamera->Update(deltatime);
+}
+
 
 void Game::AddGround(class Ground* g) {
     mGrounds.emplace_back(g);

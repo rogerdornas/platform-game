@@ -45,6 +45,8 @@ public:
     Player* GetPlayer() { return mPlayer; }
     class Camera* GetCamera() { return mCamera; }
 
+    void UpdateCamera(float deltatime);
+
 private:
     void ProcessInput();
     void UpdateGame();

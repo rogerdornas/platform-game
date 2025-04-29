@@ -36,9 +36,9 @@ Player::Player(Game *game, float width, float height)
     ,mWallSlideSpeed(300)
     ,mTryingLeavingWallSlideLeft(0)
     ,mTryingLeavingWallSlideRight(0)
-    ,mTimerToLeaveWallSlidingLeft(0.2)
-    ,mTimerToLeaveWallSlidingRight(0.2)
-    ,mMaxTimerToLiveWallSliding(0.2)
+    ,mTimerToLeaveWallSlidingLeft(0.15)
+    ,mTimerToLeaveWallSlidingRight(0.15)
+    ,mMaxTimerToLiveWallSliding(0.15)
     ,mWallJumpTimer(0.15)
     ,mWallJumpMaxTime(0.15)
 {
@@ -144,9 +144,11 @@ void Player::OnProcessInput(const uint8_t* state) {
     else {
         if (state[SDL_SCANCODE_DOWN]) {
             mSwordDirection = Math::Pi / 2;
+            GetGame()->GetCamera()->mLookDown = true;
         }
         if (state[SDL_SCANCODE_UP]) {
             mSwordDirection = 3 * Math::Pi / 2;
+            GetGame()->GetCamera()->mLookUp = true;
         }
     }
 
