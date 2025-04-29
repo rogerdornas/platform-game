@@ -72,15 +72,28 @@ Player::Player(Game *game, float width, float height)
     mSword = new Sword(game, 60, 20, 0.1f);
 }
 
-void Player::OnProcessInput(const uint8_t* state) {
+void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller) {
     mTryingLeavingWallSlideLeft = 0;
     mTryingLeavingWallSlideRight = 0;
 
-    if (!(state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_RIGHT]) && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
+    bool left = (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL]) || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -20000;
+    bool leftSlow = (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL]) || (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 && SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
+    bool right = (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL]) || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 20000;
+    bool rightSlow = (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL]) || (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000 && SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
+    bool lookUp = state[SDL_SCANCODE_UP] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_UP) || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) < -28000;
+    bool lodDown = state[SDL_SCANCODE_DOWN] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) > 28000;
+    bool up = state[SDL_SCANCODE_UP] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_UP) || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) < -28000;
+    bool down = state[SDL_SCANCODE_DOWN] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) > 28000;
+    bool jump = state[SDL_SCANCODE_Z] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_A);
+    bool dash = state[SDL_SCANCODE_C] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+    bool sword = state[SDL_SCANCODE_X] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_X);
+    bool fireBall = state[SDL_SCANCODE_A] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_B);
+
+    if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
         mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
     }
     else {
-        if (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (left && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
@@ -97,24 +110,24 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (leftSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideLeft = 1;
                 if (mTimerToLeaveWallSlidingLeft >= mMaxTimerToLiveWallSliding) {
-                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
                     mTryingLeavingWallSlideLeft = 0;
                     mTimerToLeaveWallSlidingLeft = 0;
                 }
             }
             else {
-                mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
                 mTimerToLeaveWallSlidingLeft = 0;
             }
         }
 
-        if (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (right && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
@@ -131,40 +144,45 @@ void Player::OnProcessInput(const uint8_t* state) {
             }
         }
 
-        if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL] && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
+        if (rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideRight = 1;
                 if (mTimerToLeaveWallSlidingRight >= mMaxTimerToLiveWallSliding) {
-                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
                     mTryingLeavingWallSlideRight = 0;
                     mTimerToLeaveWallSlidingRight = 0;
                 }
             }
             else {
-                mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
                 mTimerToLeaveWallSlidingRight = 0;
             }
         }
     }
 
-    if (!(state[SDL_SCANCODE_DOWN] || state[SDL_SCANCODE_UP])) {
+    if (lookUp) {
+        GetGame()->GetCamera()->mLookUp = true;
+    }
+    if (lodDown) {
+        GetGame()->GetCamera()->mLookDown = true;
+    }
+
+    if (!down && !up) {
         mSwordDirection = GetRotation();
     }
     else {
-        if (state[SDL_SCANCODE_DOWN]) {
+        if (down) {
             mSwordDirection = Math::Pi / 2;
-            GetGame()->GetCamera()->mLookDown = true;
         }
-        if (state[SDL_SCANCODE_UP]) {
+        if (up) {
             mSwordDirection = 3 * Math::Pi / 2;
-            GetGame()->GetCamera()->mLookUp = true;
         }
     }
 
     //Início do pulo
-    if (state[SDL_SCANCODE_Z] && !mIsFireAttacking) {
+    if (jump && !mIsFireAttacking) {
         if (!mDashComponent->GetIsDashing()) {
             // Pulo do chao
             if (mIsOnGround && !mIsJumping && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
@@ -202,13 +220,13 @@ void Player::OnProcessInput(const uint8_t* state) {
     }
 
     // Dash
-    if (state[SDL_SCANCODE_C] && !mIsFireAttacking) {
+    if (dash && !mIsFireAttacking) {
         mDashComponent->UseDash(mIsOnGround);
     }
 
     // Sword
     // Detecta borda de descida da tecla K e cooldown pronto
-    if (state[SDL_SCANCODE_X] && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration) {
+    if (sword && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration) {
         // Ativa a espada
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
@@ -220,7 +238,7 @@ void Player::OnProcessInput(const uint8_t* state) {
     mPrevSwordPressed = state[SDL_SCANCODE_X];
 
     // FireBall
-    if (state[SDL_SCANCODE_A] && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration) {
+    if (fireBall && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration) {
         std::vector<FireBall*> fireBalls = GetGame()->GetFireBalls();
         for (FireBall* f : fireBalls) {
             if (f->GetState() == ActorState::Paused) {

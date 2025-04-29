@@ -50,7 +50,7 @@ void Actor::OnUpdate(float deltaTime)
 
 }
 
-void Actor::ProcessInput(const Uint8* keyState)
+void Actor::ProcessInput(const Uint8* keyState, SDL_GameController& controller)
 {
     if (mState == ActorState::Active)
     {
@@ -59,11 +59,11 @@ void Actor::ProcessInput(const Uint8* keyState)
             comp->ProcessInput(keyState);
         }
 
-        OnProcessInput(keyState);
+        OnProcessInput(keyState, controller);
     }
 }
 
-void Actor::OnProcessInput(const Uint8* keyState)
+void Actor::OnProcessInput(const Uint8* keyState, SDL_GameController& controller)
 {
 
 }

@@ -24,6 +24,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
         ,mIsRunning(true)
         ,mPlayer(nullptr)
         ,mCamera(nullptr)
+        ,mController(nullptr)
         ,mUpdatingActors(false)
         ,mWindowWidth(windowWidth)
         ,mWindowHeight(windowHeight)
@@ -34,7 +35,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
 
 bool Game::Initialize()
 {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
     {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return false;
@@ -52,6 +53,16 @@ bool Game::Initialize()
     {
         SDL_Log("Failed to create renderer: %s", SDL_GetError());
         return false;
+    }
+
+    // Inicializa controle
+    for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+        if (SDL_IsGameController(i)) {
+            mController = SDL_GameControllerOpen(i);
+            if (mController) {
+                break;
+            }
+        }
     }
 
     // --------------
@@ -186,7 +197,7 @@ void Game::ProcessInput()
 
     for (auto actor : mActors)
     {
-        actor->ProcessInput(state);
+        actor->ProcessInput(state, *mController);
     }
 }
 
@@ -338,6 +349,11 @@ void Game::Shutdown()
     }
     delete mCamera;
     delete mPlayer;
+
+    if (mController) {
+        SDL_GameControllerClose(mController);
+    }
+    SDL_Quit();
 
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);

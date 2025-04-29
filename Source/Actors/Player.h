@@ -16,7 +16,7 @@ class Player : public Actor
 public:
     Player(Game* game, float width, float height);
 
-    void OnProcessInput(const Uint8* keyState) override;
+    void OnProcessInput(const Uint8* keyState, SDL_GameController& controller) override;
     void OnUpdate(float deltaTime) override;
 
     bool GetIsOnGround() { return mIsOnGround; }

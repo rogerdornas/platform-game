@@ -89,4 +89,5 @@ private:
     class Player* mPlayer;
     std::vector<class Ground*> mGrounds;
     std::vector<class FireBall*> mFireBalls;
+    SDL_GameController* mController;
 };
