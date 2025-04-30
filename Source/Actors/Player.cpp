@@ -46,12 +46,12 @@ Player::Player(Game *game, float width, float height)
     ,mWallSlideSpeed(300)
     ,mTryingLeavingWallSlideLeft(0)
     ,mTryingLeavingWallSlideRight(0)
-    ,mTimerToLeaveWallSlidingLeft(0.15)
-    ,mTimerToLeaveWallSlidingRight(0.15)
-    ,mMaxTimerToLiveWallSliding(0.15)
+    ,mTimerToLeaveWallSlidingLeft(0.15f)
+    ,mTimerToLeaveWallSlidingRight(0.15f)
+    ,mMaxTimerToLiveWallSliding(0.15f)
 
-    ,mWallJumpTimer(0.15)
-    ,mWallJumpMaxTime(0.15)
+    ,mWallJumpTimer(0.15f)
+    ,mWallJumpMaxTime(0.15f)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -69,7 +69,7 @@ Player::Player(Game *game, float width, float height)
     mAABBComponent = new AABBComponent(this, v1, v3, {255, 255, 0, 255});
     mDashComponent = new DashComponent(this, 1400, 0.18f, 0.5f);
 
-    mSword = new Sword(game, 60, 20, 0.1f);
+    mSword = new Sword(game, 120, 80, 0.1f);
 }
 
 void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller) {
@@ -311,61 +311,81 @@ void Player::OnUpdate(float deltaTime)
         }
     }
 
-    // Colisao com ground
+    // Colisao com ground e spines
     std::array<bool, 4> collisionSide;
     std::vector<Ground*> grounds;
     grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
-            if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                collisionSide = mAABBComponent->ResolveColision(*g->GetComponent<AABBComponent>());
-            }
-            else {
-                collisionSide[0] = false;
-                collisionSide[1] = false;
-                collisionSide[2] = false;
-                collisionSide[3] = false;
-            }
-            // colidiu top
-            if (collisionSide[0]) {
-                if (mRigidBodyComponent->GetVelocity().y >= 0) {
-                    mIsOnGround = true;
-                    mIsJumping  = false;
-                    // Resetar dash no ar
-                    mDashComponent->SetHasDashedInAir(false);
-                    // RESET DO CONTADOR DE PULO
-                    mJumpCountInAir = 0;
+            if (!g->GetIsSpine()) { // Colosão com ground
+                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                    collisionSide = mAABBComponent->ResolveColision(*g->GetComponent<AABBComponent>());
                 }
-            }
-
-            // colidiu bot
-            if (collisionSide[1]) {
-                mJumpTime = mMaxJumpTime;
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 1));
-            }
-
-            //colidiu pelas laterias
-            if (mCanWallSlide) {
-                if ((collisionSide[2] || collisionSide[3])) {
-                    mIsWallSliding = true;
-                    if (collisionSide[2] && !mDashComponent->GetIsDashing()) { // Testa se não está dashando para não bugar quando dar um dash na quina de baixo e inverter a direção do dash
-                        mWallSlideSide = WallSlideSide::left;
-                        SetRotation(Math::Pi);
-                    }
-                    else if (collisionSide[3] && !mDashComponent->GetIsDashing()) {
-                        mWallSlideSide = WallSlideSide::right;
-                        SetRotation(0);
-                    }
-                    if (mRigidBodyComponent->GetVelocity().y > 0) {
+                else {
+                    collisionSide[0] = false;
+                    collisionSide[1] = false;
+                    collisionSide[2] = false;
+                    collisionSide[3] = false;
+                }
+                // colidiu top
+                if (collisionSide[0]) {
+                    if (mRigidBodyComponent->GetVelocity().y >= 0) {
+                        mIsOnGround = true;
                         mIsJumping  = false;
                         // Resetar dash no ar
                         mDashComponent->SetHasDashedInAir(false);
                         // RESET DO CONTADOR DE PULO
                         mJumpCountInAir = 0;
-                        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
+                    }
+                }
+
+                // colidiu bot
+                if (collisionSide[1]) {
+                    mJumpTime = mMaxJumpTime;
+                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 1));
+                }
+
+                //colidiu pelas laterias
+                if (mCanWallSlide) {
+                    if ((collisionSide[2] || collisionSide[3])) {
+                        mIsWallSliding = true;
+                        if (collisionSide[2] && !mDashComponent->GetIsDashing()) { // Testa se não está dashando para não bugar quando dar um dash na quina de baixo e inverter a direção do dash
+                            mWallSlideSide = WallSlideSide::left;
+                            SetRotation(Math::Pi);
+                        }
+                        else if (collisionSide[3] && !mDashComponent->GetIsDashing()) {
+                            mWallSlideSide = WallSlideSide::right;
+                            SetRotation(0);
+                        }
+                        if (mRigidBodyComponent->GetVelocity().y > 0) {
+                            mIsJumping  = false;
+                            // Resetar dash no ar
+                            mDashComponent->SetHasDashedInAir(false);
+                            // RESET DO CONTADOR DE PULO
+                            mJumpCountInAir = 0;
+                            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
+                        }
+                    }
+                }
+            }
+            else if (g->GetIsSpine()) { // Colisão com spines
+                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                    SetPosition(Vector2::Zero);
+                }
+                else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) {
+                    if (mSwordDirection == Math::Pi / 2) {
+                        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                        // Resetar dash no ar
+                        mDashComponent->SetHasDashedInAir(false);
+                        // RESET DO CONTADOR DE PULO
+                        mJumpCountInAir = 0;
                     }
                 }
             }
         }
+    }
+    // Se cair, volta para a posição inicial
+    if (GetPosition().y > 3000) {
+        SetPosition(Vector2::Zero);
     }
 }

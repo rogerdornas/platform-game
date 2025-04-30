@@ -90,11 +90,22 @@ void Game::InitializeActors()
     // --------------
 
     mPlayer = new Player(this, 20, 60);
-    mPlayer->SetPosition(Vector2(mWindowWidth / 20, mWindowHeight/2));
+    mPlayer->SetPosition(Vector2::Zero);
 
     for (int i = 0; i < 5; i++) {
         FireBall* fireBall = new FireBall(this);
     }
+
+    Ground* spine1 = new Ground(this, 300, 50, true);
+    spine1->SetPosition(Vector2(600, -300));
+
+    Ground* spine2 = new Ground(this, 200, 50, true);
+    spine2->SetPosition(Vector2(3900, 800));
+
+    Ground* spine3 = new Ground(this, 200, 50, true);
+    spine3->SetPosition(Vector2(4500, 800));
+
+
 
     Ground* ground1 = new Ground(this, 200, 50);
     ground1->SetPosition(Vector2(mWindowWidth/6, mWindowHeight/10*3));
@@ -203,7 +214,13 @@ void Game::ProcessInput()
 
 void Game::UpdateGame()
 {
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
+    // while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
+
+    Uint32 frameDuration = 1000.0 / mFPS;
+    Uint32 now = SDL_GetTicks();
+    if (now < mTicksCount + frameDuration) {
+        SDL_Delay((mTicksCount + frameDuration) - now);
+    }
 
     float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
     if (deltaTime > 0.05f)
