@@ -32,7 +32,7 @@ Enemy::Enemy(Game *game, float width, float height, float movespeed, float heath
 
     mDrawComponent = new DrawComponent(this, vertices);
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1300);
-    mAABBComponent = new AABBComponent(this, v1, v3, {255, 0, 0, 255});
+    mAABBComponent = new AABBComponent(this, v1, v3, {245, 154, 25, 255});
 
     game->AddEnemy(this);
 

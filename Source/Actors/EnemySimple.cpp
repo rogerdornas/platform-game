@@ -13,23 +13,19 @@ EnemySimple::EnemySimple(Game *game, float width, float height, float movespeed,
     :Enemy(game, width, height, movespeed, healthpoints)
 {
     mKnockBack = 300.0f;
-    mKnockBackTimer = 0.1f;
+    mKnockBackTimer = 0.15f;
     mKnockBackDuration = 0.1f;
+    mPlayerSpotted = false;
+    mDistToSpotPlayer = 300;
+    mWalkingAroundTimer = 2.0f;
+    mWalkingAroundDuration = 2.0f;
+    mWalkingAroundMooveSpeed = 50.0f;
 }
 
 void EnemySimple::OnUpdate(float deltaTime) {
 
     mKnockBackTimer += deltaTime;
-
-    Player* player = GetGame()->GetPlayer();
-
-    if (GetPosition().x < player->GetPosition().x) {
-        SetRotation(0.0);
-    }
-    else {
-        SetRotation(Math::Pi);
-    }
-
+    mWalkingAroundTimer += deltaTime;
 
     // Colisao com ground e spines
     std::array<bool, 4> collisionSide;
@@ -61,9 +57,41 @@ void EnemySimple::OnUpdate(float deltaTime) {
         }
     }
 
-    if (mKnockBackTimer >= mKnockBackDuration) {
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+    Player* player = GetGame()->GetPlayer();
+
+    if (mPlayerSpotted) {
+        if (GetPosition().x < player->GetPosition().x) {
+            SetRotation(0.0);
+        }
+        else {
+            SetRotation(Math::Pi);
+        }
+
+        if (mKnockBackTimer >= mKnockBackDuration) {
+            mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+        }
     }
+    else {
+        if (mWalkingAroundTimer > mWalkingAroundDuration) {
+            SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+            mWalkingAroundTimer = 0;
+        }
+        if (mKnockBackTimer >= mKnockBackDuration) {
+            mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mWalkingAroundMooveSpeed, mRigidBodyComponent->GetVelocity().y));
+        }
+
+        // Testa se spottou player
+        if (Math::Abs(GetPosition().y - player->GetPosition().y) < 40) { // Se está no mesmo nível verticalmente
+            if (player->GetPosition().x < GetPosition().x && GetForward().x < 0 && Math::Abs(player->GetPosition().x - GetPosition().x) < mDistToSpotPlayer) {
+                mPlayerSpotted = true;
+            }
+            else if (player->GetPosition().x > GetPosition().x && GetForward().x > 0 && Math::Abs(player->GetPosition().x - GetPosition().x) < mDistToSpotPlayer) {
+                mPlayerSpotted = true;
+            }
+        }
+    }
+
+    // Gravidade
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
 
     // Se cair, volta para a posição inicial

@@ -87,7 +87,8 @@ void Game::InitializeActors()
     // --------------
 
     mPlayer = new Player(this, 20, 60);
-    mPlayer->SetPosition(Vector2::Zero);
+    // mPlayer->SetPosition(Vector2::Zero);
+    mPlayer->SetPosition(Vector2(3500, 0));
 
     for (int i = 0; i < 5; i++) {
         FireBall* fireBall = new FireBall(this);
@@ -115,7 +116,7 @@ void Game::InitializeActors()
 
 
     FlyingEnemySimple* flyingEnemySimple1 = new FlyingEnemySimple(this, 50, 50, 250, 100);
-    flyingEnemySimple1->SetPosition(Vector2(500, 0));
+    flyingEnemySimple1->SetPosition(Vector2(570, -50));
 
 
     Ground* ground1 = new Ground(this, 200, 50);
@@ -183,6 +184,17 @@ void Game::InitializeActors()
 
     Ground* ground23 = new Ground(this, 100, 1000);
     ground23->SetPosition(Vector2(3000, 400));
+
+    Ground* ground24 = new Ground(this, 3000, 100);
+    ground24->SetPosition(Vector2(6500, 700));
+
+    Ground* ground25 = new Ground(this, 100, 700);
+    ground25->SetPosition(Vector2(5040, 400));
+
+    Ground* ground26 = new Ground(this, 100, 1000);
+    ground26->SetPosition(Vector2(7960, 250));
+
+
 
 }
 

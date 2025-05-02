@@ -12,4 +12,10 @@ public:
     FlyingEnemySimple(Game* game, float width, float height, float movespeed, float healthpoints);
     void OnUpdate(float deltaTime) override;
 
+private:
+    bool mPlayerSpotted;
+    float mDistToSpotPlayer;
+    float mFlyingAroundTimer;
+    float mFlyingAroundDuration;
+    float mFlyingAroundMooveSpeed;
 };

@@ -13,25 +13,18 @@ FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, floa
     :Enemy(game, width, height, movespeed, healthpoints)
 {
     mKnockBack = 500.0f;
-    mKnockBackTimer = 0.1f;
-    mKnockBackDuration = 0.1f;
+    mKnockBackTimer = 0.2f;
+    mKnockBackDuration = 0.2f;
+    mPlayerSpotted = false;
+    mDistToSpotPlayer = 300;
+    mFlyingAroundTimer = 1.0f;
+    mFlyingAroundDuration = 1.0f;
+    mFlyingAroundMooveSpeed = 100.0f;
 }
 
 void FlyingEnemySimple::OnUpdate(float deltaTime) {
-
     mKnockBackTimer += deltaTime;
-
-    Player* player = GetGame()->GetPlayer();
-
-    float dx = player->GetPosition().x - GetPosition().x;
-    float dy = player->GetPosition().y - GetPosition().y;
-
-    float angle = Math::Atan2(dy, dx);
-    // Ajustar para intervalo [0, 2*pi)
-    if (angle < 0) {
-        angle += 2 * Math::Pi;
-    }
-    SetRotation(angle);
+    mFlyingAroundTimer += deltaTime;
 
     // Colisao com ground e spines
     std::array<bool, 4> collisionSide;
@@ -63,8 +56,39 @@ void FlyingEnemySimple::OnUpdate(float deltaTime) {
         }
     }
 
-    if (mKnockBackTimer >= mKnockBackDuration) {
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mMoveSpeed));
+    Player* player = GetGame()->GetPlayer();
+
+    if (mPlayerSpotted) {
+        Player* player = GetGame()->GetPlayer();
+
+        float dx = player->GetPosition().x - GetPosition().x;
+        float dy = player->GetPosition().y - GetPosition().y;
+
+        float angle = Math::Atan2(dy, dx);
+        // Ajustar para intervalo [0, 2*pi)
+        if (angle < 0) {
+            angle += 2 * Math::Pi;
+        }
+        SetRotation(angle);
+
+        if (mKnockBackTimer >= mKnockBackDuration) {
+            mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mMoveSpeed));
+        }
+    }
+    else {
+        if (mFlyingAroundTimer > mFlyingAroundDuration) {
+            SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+            mFlyingAroundTimer = 0;
+        }
+        if (mKnockBackTimer >= mKnockBackDuration) {
+            mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mFlyingAroundMooveSpeed));
+        }
+
+        // Testa se spottou player
+        Vector2 dist = GetPosition() - player->GetPosition();
+        if (dist.Length() < mDistToSpotPlayer) {
+            mPlayerSpotted = true;
+        }
     }
 
     // Se cair, volta para a posição inicial
