@@ -31,6 +31,7 @@ Player::Player(Game *game, float width, float height)
     ,mSwordCooldownTimer(0.3f)
     ,mSwordCooldownDuration(0.3f)
     ,mSwordDirection(0)
+    ,mSwordHitedEnemy(false)
 
     ,mPrevFireBallPressed(false)
     ,mFireBallCooldownTimer(1.0f)
@@ -69,7 +70,7 @@ Player::Player(Game *game, float width, float height)
     mAABBComponent = new AABBComponent(this, v1, v3, {255, 255, 0, 255});
     mDashComponent = new DashComponent(this, 1400, 0.18f, 0.5f);
 
-    mSword = new Sword(game, 120, 80, 0.1f);
+    mSword = new Sword(game, 120, 80, 0.1f, 10.0f);
 }
 
 void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller) {
@@ -231,11 +232,12 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
         mSword->SetPosition(GetPosition());
+        mSwordHitedEnemy = false;
 
         // Inicia cooldown
         mSwordCooldownTimer = 0;
     }
-    mPrevSwordPressed = state[SDL_SCANCODE_X];
+    mPrevSwordPressed = sword;
 
     // FireBall
     if (fireBall && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration) {
@@ -253,7 +255,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
         // Inicia cooldown
         mFireBallCooldownTimer = 0;
     }
-    mPrevFireBallPressed = state[SDL_SCANCODE_A];
+    mPrevFireBallPressed = fireBall;
 
 }
 
@@ -372,7 +374,7 @@ void Player::OnUpdate(float deltaTime)
                 if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
                     SetPosition(Vector2::Zero);
                 }
-                else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) {
+                else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) { // Colisão da sword com spines
                     if (mSwordDirection == Math::Pi / 2) {
                         mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
                         // Resetar dash no ar
@@ -384,6 +386,33 @@ void Player::OnUpdate(float deltaTime)
             }
         }
     }
+
+    // Colisão com enemys
+    std::vector<Enemy*> enemys;
+    enemys = GetGame()->GetEnemys();
+    if (!enemys.empty()) {
+        for (Enemy* e : enemys) {
+            if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
+                SetPosition(Vector2::Zero);
+            }
+            else if (mSword->GetComponent<AABBComponent>()->Intersect(*e->GetComponent<AABBComponent>())) { // Colisão da sword com enemys
+                if (!mSwordHitedEnemy) {
+                    e->ReceiveHit(mSword->GetDamage());
+                    mSwordHitedEnemy = true;
+                }
+                if (mSwordDirection == Math::Pi / 2) {
+                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                    // Resetar dash no ar
+                    mDashComponent->SetHasDashedInAir(false);
+                    // RESET DO CONTADOR DE PULO
+                    mJumpCountInAir = 0;
+                }
+            }
+        }
+    }
+
+
+
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 3000) {
         SetPosition(Vector2::Zero);

@@ -14,6 +14,8 @@
 #include "Actors/Ground.h"
 #include "Actors/Player.h"
 #include "Actors/FireBall.h"
+#include "Actors/Enemy.h"
+#include "Actors/EnemySimple.h"
 
 class Game
 {
@@ -53,6 +55,10 @@ public:
     void RemoveFireball(class FireBall* f);
     std::vector<class FireBall*>& GetFireBalls() { return mFireBalls; }
 
+    void AddEnemy(class Enemy* e);
+    void RemoveEnemy(class Enemy* e);
+    std::vector<class Enemy*>& GetEnemys() { return mEnemys; }
+
 private:
     void ProcessInput();
     void UpdateGame();
@@ -89,5 +95,6 @@ private:
     class Player* mPlayer;
     std::vector<class Ground*> mGrounds;
     std::vector<class FireBall*> mFireBalls;
+    std::vector<class Enemy*> mEnemys;
     SDL_GameController* mController;
 };

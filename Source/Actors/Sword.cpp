@@ -8,13 +8,14 @@
 #include "../Components/DrawComponent.h"
 #include "../Components/AABBComponent.h"
 
-Sword::Sword(class Game *game, float width, float height, float duration)
+Sword::Sword(class Game *game, float width, float height, float duration, float damage)
     :Actor(game)
     ,mWidthHorizontal(width)
     ,mHeightHorizontal(height)
     ,mWidthVertical(height)
     ,mHeightVertical(width)
     ,mDuration(duration)
+    ,mDamage(damage)
 {
     mDurationTimer = mDuration;
 

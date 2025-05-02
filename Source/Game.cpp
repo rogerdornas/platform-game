@@ -12,10 +12,7 @@
 #include "Components/DrawComponent.h"
 #include "Components/RigidBodyComponent.h"
 #include "Random.h"
-#include "Actors/Ground.h"
 #include "Actors/ParticleSystem.h"
-#include "Actors/Player.h"
-#include "Actors/Sword.h"
 
 Game::Game(int windowWidth, int windowHeight, int FPS)
         :mWindow(nullptr)
@@ -104,6 +101,17 @@ void Game::InitializeActors()
 
     Ground* spine3 = new Ground(this, 200, 50, true);
     spine3->SetPosition(Vector2(4500, 800));
+
+    Ground* spine4 = new Ground(this, 200, 50, true);
+    spine4->SetPosition(Vector2(1500, 760));
+
+
+
+    EnemySimple* enemySimple1 = new EnemySimple(this, 60, 50, 200, 50);
+    enemySimple1->SetPosition(Vector2(1000, 200));
+
+    EnemySimple* enemySimple2 = new EnemySimple(this, 60, 50, 200, 50);
+    enemySimple2->SetPosition(Vector2(500, 200));
 
 
 
@@ -291,6 +299,17 @@ void Game::RemoveFireball(class FireBall *f) {
     auto iter = std::find(mFireBalls.begin(), mFireBalls.end(), f);
     if (iter != mFireBalls.end()) {
         mFireBalls.erase(iter);
+    }
+}
+
+void Game::AddEnemy(class Enemy *e) {
+    mEnemys.emplace_back(e);
+}
+
+void Game::RemoveEnemy(class Enemy *e) {
+    auto iter = std::find(mEnemys.begin(), mEnemys.end(), e);
+    if (iter != mEnemys.end()) {
+        mEnemys.erase(iter);
     }
 }
 

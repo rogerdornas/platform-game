@@ -40,6 +40,7 @@ private:
     float mSwordCooldownTimer;                  // Timer de cooldown da espada
     const float mSwordCooldownDuration;         // Cooldown da espada
     float mSwordDirection;                      // Direcao da espada(esquerda, direita, cima, baixo)
+    bool mSwordHitedEnemy;
 
     bool mPrevFireBallPressed;                  // Se apertou botao de fireball no ultimo frame
     float mFireBallCooldownTimer;               // Timer de cooldown da fireball

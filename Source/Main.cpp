@@ -11,7 +11,7 @@
 //Screen dimension constants
 const int SCREEN_WIDTH = 1800;
 const int SCREEN_HEIGHT = 900;
-const int FPS = 60;
+const int FPS = 120;
 
 int main(int argc, char** argv)
 {

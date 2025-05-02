@@ -15,6 +15,7 @@ FireBall::FireBall(class Game *game)
     ,mSpeed(1600.0f)
     ,mDuration(3.0f)
     ,mDurationTimer(0.0f)
+    ,mDamage(20)
 {
     mDurationTimer = mDuration;
 
@@ -51,5 +52,20 @@ void FireBall::OnUpdate(float deltaTime) {
     else {
         mAABBComponent->SetActive(true); // reativa colisão
         mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
+
+        // Colisão com enemys
+        std::vector<Enemy*> enemys;
+        enemys = GetGame()->GetEnemys();
+        if (!enemys.empty()) {
+            for (Enemy* e : enemys) {
+                if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
+                    e->ReceiveHit(mDamage);
+                    SetState(ActorState::Paused);
+                    mAABBComponent->SetActive(false); // desativa colisão
+                    mRigidBodyComponent->SetVelocity(Vector2::Zero);
+                    mDurationTimer = 0;
+                }
+            }
+        }
     }
 }

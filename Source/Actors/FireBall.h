@@ -22,6 +22,8 @@ private:
     float mDuration;
     float mDurationTimer;
 
+    float mDamage;
+
     class DrawComponent* mDrawComponent;
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
