@@ -397,7 +397,7 @@ void Player::OnUpdate(float deltaTime)
             }
             else if (mSword->GetComponent<AABBComponent>()->Intersect(*e->GetComponent<AABBComponent>())) { // Colisão da sword com enemys
                 if (!mSwordHitedEnemy) {
-                    e->ReceiveHit(mSword->GetDamage());
+                    e->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
                     mSwordHitedEnemy = true;
                 }
                 if (mSwordDirection == Math::Pi / 2) {

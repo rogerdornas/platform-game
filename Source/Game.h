@@ -16,6 +16,7 @@
 #include "Actors/FireBall.h"
 #include "Actors/Enemy.h"
 #include "Actors/EnemySimple.h"
+#include "Actors/FlyingEnemySimple.h"
 
 class Game
 {

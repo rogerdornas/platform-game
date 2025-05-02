@@ -114,6 +114,9 @@ void Game::InitializeActors()
     enemySimple2->SetPosition(Vector2(500, 200));
 
 
+    FlyingEnemySimple* flyingEnemySimple1 = new FlyingEnemySimple(this, 50, 50, 250, 100);
+    flyingEnemySimple1->SetPosition(Vector2(500, 0));
+
 
     Ground* ground1 = new Ground(this, 200, 50);
     ground1->SetPosition(Vector2(mWindowWidth/6, mWindowHeight/10*3));

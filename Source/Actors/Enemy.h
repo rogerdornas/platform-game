@@ -13,7 +13,9 @@ public:
 
     void SetHealthPoints(float hp) { mHealthPoints = hp; }
     float GetHealthPoints() { return  mHealthPoints; }
-    void ReceiveHit(float damage);
+    void ReceiveHit(float damage, Vector2 knockBackDirection);
+
+    float GetKnockBack() { return mKnockBack; }
 
 protected:
     bool Died();
@@ -24,6 +26,10 @@ protected:
     float mMoveSpeed;
 
     float mHealthPoints;
+
+    float mKnockBack;
+    float mKnockBackTimer;
+    float mKnockBackDuration;
 
     class DrawComponent* mDrawComponent;
     class RigidBodyComponent* mRigidBodyComponent;

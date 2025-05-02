@@ -2,34 +2,36 @@
 // Created by roger on 02/05/2025.
 //
 
-#include "EnemySimple.h"
+#include "FlyingEnemySimple.h"
 #include "Actor.h"
 
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 
-EnemySimple::EnemySimple(Game *game, float width, float height, float movespeed, float healthpoints)
+FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, float movespeed, float healthpoints)
     :Enemy(game, width, height, movespeed, healthpoints)
 {
-    mKnockBack = 300.0f;
+    mKnockBack = 500.0f;
     mKnockBackTimer = 0.1f;
     mKnockBackDuration = 0.1f;
 }
 
-void EnemySimple::OnUpdate(float deltaTime) {
+void FlyingEnemySimple::OnUpdate(float deltaTime) {
 
     mKnockBackTimer += deltaTime;
 
     Player* player = GetGame()->GetPlayer();
 
-    if (GetPosition().x < player->GetPosition().x) {
-        SetRotation(0.0);
-    }
-    else {
-        SetRotation(Math::Pi);
-    }
+    float dx = player->GetPosition().x - GetPosition().x;
+    float dy = player->GetPosition().y - GetPosition().y;
 
+    float angle = Math::Atan2(dy, dx);
+    // Ajustar para intervalo [0, 2*pi)
+    if (angle < 0) {
+        angle += 2 * Math::Pi;
+    }
+    SetRotation(angle);
 
     // Colisao com ground e spines
     std::array<bool, 4> collisionSide;
@@ -62,9 +64,8 @@ void EnemySimple::OnUpdate(float deltaTime) {
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+        mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mMoveSpeed));
     }
-    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 3000) {

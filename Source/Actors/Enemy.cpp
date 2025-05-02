@@ -15,6 +15,9 @@ Enemy::Enemy(Game *game, float width, float height, float movespeed, float heath
     ,mHeight(height)
     ,mMoveSpeed(movespeed)
     ,mHealthPoints(heathPoints)
+    ,mKnockBack(0.0f)
+    ,mKnockBackTimer(0.0f)
+    ,mKnockBackDuration(0.0f)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -39,8 +42,10 @@ Enemy::~Enemy() {
     mGame->RemoveEnemy(this);
 }
 
-void Enemy::ReceiveHit(float damage) {
+void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mHealthPoints -= damage;
+    mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBack);
+    mKnockBackTimer = 0;
 }
 
 bool Enemy::Died() {

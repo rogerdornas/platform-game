@@ -42,6 +42,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/EnemySimple.h
         Source/Actors/Enemy.cpp
         Source/Actors/Enemy.h
+        Source/Actors/FlyingEnemySimple.cpp
+        Source/Actors/FlyingEnemySimple.h
 )
 
 

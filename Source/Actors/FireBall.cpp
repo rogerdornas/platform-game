@@ -59,7 +59,7 @@ void FireBall::OnUpdate(float deltaTime) {
         if (!enemys.empty()) {
             for (Enemy* e : enemys) {
                 if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
-                    e->ReceiveHit(mDamage);
+                    e->ReceiveHit(mDamage, GetForward());
                     SetState(ActorState::Paused);
                     mAABBComponent->SetActive(false); // desativa colisão
                     mRigidBodyComponent->SetVelocity(Vector2::Zero);
