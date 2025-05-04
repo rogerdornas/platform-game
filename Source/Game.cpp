@@ -82,18 +82,20 @@ bool Game::Initialize()
 
 void Game::InitializeActors()
 {
-    // --------------
-    // TODO - PARTE 3
-    // --------------
 
-    mPlayer = new Player(this, 20, 60);
-    // mPlayer->SetPosition(Vector2::Zero);
-    mPlayer->SetPosition(Vector2(3500, 0));
+    // Deixa para atualizar o player por último, então inicializa ele por último
 
+
+    // Fireballs
     for (int i = 0; i < 5; i++) {
         FireBall* fireBall = new FireBall(this);
     }
 
+    // Moving Spines
+    Ground* movingSpine1 = new Ground(this, 200, 50, true, true, 0.8, Vector2(400, 0));
+    movingSpine1->SetPosition(Vector2(-1300, 600));
+
+    // Spines
     Ground* spine1 = new Ground(this, 300, 50, true);
     spine1->SetPosition(Vector2(600, -300));
 
@@ -107,7 +109,7 @@ void Game::InitializeActors()
     spine4->SetPosition(Vector2(1500, 760));
 
 
-
+    // Enemys
     EnemySimple* enemySimple1 = new EnemySimple(this, 60, 50, 200, 50);
     enemySimple1->SetPosition(Vector2(1000, 200));
 
@@ -119,6 +121,7 @@ void Game::InitializeActors()
     flyingEnemySimple1->SetPosition(Vector2(570, -50));
 
 
+    // Grounds
     Ground* ground1 = new Ground(this, 200, 50);
     ground1->SetPosition(Vector2(mWindowWidth/6, mWindowHeight/10*3));
 
@@ -194,7 +197,46 @@ void Game::InitializeActors()
     Ground* ground26 = new Ground(this, 100, 1000);
     ground26->SetPosition(Vector2(7960, 250));
 
+    Ground* ground27 = new Ground(this, 200, 50);
+    ground27->SetPosition(Vector2(-1300, 250));
 
+    Ground* ground28 = new Ground(this, 200, 50);
+    ground28->SetPosition(Vector2(0, -750));
+
+    Ground* ground29 = new Ground(this, 200, 50);
+    ground29->SetPosition(Vector2(-1500, -750));
+
+
+
+    // Moving Grounds
+    Ground* movingGround1 = new Ground(this, 200, 5000, false, true, 10.0, Vector2(150, 0));
+    movingGround1->SetPosition(Vector2(-2000, 0));
+
+    Ground* movingGround2 = new Ground(this, 50, 400, false, true, 4.0, Vector2(0, 100));
+    movingGround2->SetPosition(Vector2(-1600, 200));
+
+    Ground* movingGround3 = new Ground(this, 200, 40, false, true, 4.0, Vector2(100, 100));
+    movingGround3->SetPosition(Vector2(-1900, 200));
+
+    Ground* movingGround4 = new Ground(this, 200, 40, false, true, 4.0, Vector2(0, 200));
+    movingGround4->SetPosition(Vector2(-400, -200));
+
+    Ground* movingGround5 = new Ground(this, 200, 40, false, true, 4.0, Vector2(200, 0));
+    movingGround5->SetPosition(Vector2(-800, -200));
+
+    Ground* movingGround6 = new Ground(this, 200, 400, false, true, 4.0, Vector2(0, 700));
+    movingGround6->SetPosition(Vector2(-700, -200));
+
+    Ground* movingGround7 = new Ground(this, 200, 400, false, true, 4.0, Vector2(0, 700));
+    movingGround7->SetPosition(Vector2(-980, -200));
+
+    Ground* movingGround8 = new Ground(this, 200, 40, false, true, 4.0, Vector2(300, 300));
+    movingGround8->SetPosition(Vector2(-1600, -200));
+
+    // Player
+    mPlayer = new Player(this, 20, 60);
+    // mPlayer->SetPosition(Vector2::Zero);
+    mPlayer->SetPosition(Vector2(3500, 0));
 
 }
 

@@ -8,11 +8,14 @@
 #include "../Components/DrawComponent.h"
 #include "../Components/AABBComponent.h"
 
-Ground::Ground(Game *game, float width, float height, bool isSpine)
+Ground::Ground(Game *game, float width, float height, bool isSpine, bool isMoving, float movingDuration, Vector2 velocity)
     :Actor(game)
     ,mWidth(width)
     ,mHeight(height)
     ,mIsSpine(isSpine)
+    ,mIsMoving(isMoving)
+    ,mMovingDuration(movingDuration)
+    ,mMovingTimer(movingDuration)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -37,9 +40,21 @@ Ground::Ground(Game *game, float width, float height, bool isSpine)
     mRigidBodyComponent = new RigidBodyComponent(this);
     mAABBComponent = new AABBComponent(this, v1, v3, color);
 
+    mRigidBodyComponent->SetVelocity(velocity);
+
     game->AddGround(this);
 }
 
 Ground::~Ground() {
     mGame->RemoveGround(this);
+}
+
+void Ground::OnUpdate(float deltaTime) {
+    if (mIsMoving) {
+        mMovingTimer += deltaTime;
+        if (mMovingTimer > mMovingDuration) {
+            mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() * -1);
+            mMovingTimer = 0;
+        }
+    }
 }

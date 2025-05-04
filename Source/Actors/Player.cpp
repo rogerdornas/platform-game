@@ -16,7 +16,10 @@ Player::Player(Game *game, float width, float height)
     :Actor(game)
     ,mWidth(width)
     ,mHeight(height)
+
     ,mIsOnGround(false)
+    ,mIsOnMovingGround(false)
+    ,mMovingGroundVelocity(Vector2::Zero)
 
     ,mIsJumping(false)
     ,mCanJump(true)
@@ -90,7 +93,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
     bool sword = state[SDL_SCANCODE_X] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_X);
     bool fireBall = state[SDL_SCANCODE_A] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_B);
 
-    if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)) {
+    if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime)) {
         mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
     }
     else {
@@ -100,13 +103,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideLeft = 1;
                 if (mTimerToLeaveWallSlidingLeft >= mMaxTimerToLiveWallSliding) {
-                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                     mTryingLeavingWallSlideLeft = 0;
                     mTimerToLeaveWallSlidingLeft = 0;
                 }
             }
             else {
-                mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                 mTimerToLeaveWallSlidingLeft = 0;
             }
         }
@@ -117,13 +120,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideLeft = 1;
                 if (mTimerToLeaveWallSlidingLeft >= mMaxTimerToLiveWallSliding) {
-                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
+                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed * 0.1 + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                     mTryingLeavingWallSlideLeft = 0;
                     mTimerToLeaveWallSlidingLeft = 0;
                 }
             }
             else {
-                mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
+                mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed * 0.1 + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                 mTimerToLeaveWallSlidingLeft = 0;
             }
         }
@@ -134,13 +137,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideRight = 1;
                 if (mTimerToLeaveWallSlidingRight >= mMaxTimerToLiveWallSliding) {
-                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                     mTryingLeavingWallSlideRight = 0;
                     mTimerToLeaveWallSlidingRight = 0;
                 }
             }
             else {
-                mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
+                mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                 mTimerToLeaveWallSlidingRight = 0;
             }
         }
@@ -151,13 +154,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideRight = 1;
                 if (mTimerToLeaveWallSlidingRight >= mMaxTimerToLiveWallSliding) {
-                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
+                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed * 0.1 + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                     mTryingLeavingWallSlideRight = 0;
                     mTimerToLeaveWallSlidingRight = 0;
                 }
             }
             else {
-                mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed * 0.1, mRigidBodyComponent->GetVelocity().y));
+                mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed * 0.1 + mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
                 mTimerToLeaveWallSlidingRight = 0;
             }
         }
@@ -187,7 +190,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
         if (!mDashComponent->GetIsDashing()) {
             // Pulo do chao
             if (mIsOnGround && !mIsJumping && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
-                mRigidBodyComponent->SetVelocity(Vector2(0, mJumpForce));
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce) + mMovingGroundVelocity);
                 mIsJumping = true;
                 mCanJump = false;
                 mJumpTime = 0.0f;
@@ -195,10 +198,10 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
             // Wall jumping
             if (mIsWallSliding && !mIsJumping && mCanJump) {
                 if (mWallSlideSide == WallSlideSide::left) {
-                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mJumpForce));
+                    mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
                 }
                 else {
-                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mJumpForce));
+                    mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
                 }
                 mIsJumping = true;
                 mCanJump = false;
@@ -207,7 +210,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
             }
             // Pulo no ar
             if (!(mIsOnGround || mIsWallSliding) && mJumpCountInAir < mMaxJumpsInAir && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
-                mRigidBodyComponent->SetVelocity(Vector2(0, mJumpForce));
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce) + mMovingGroundVelocity);
                 mIsJumping = true;
                 mCanJump = false;
                 mJumpTime = 0.0f;
@@ -282,11 +285,13 @@ void Player::OnUpdate(float deltaTime)
     mWallJumpTimer += deltaTime;
 
     mIsOnGround = false;
+    mIsOnMovingGround = false;
+    mMovingGroundVelocity = Vector2::Zero;
     mIsWallSliding = false;
     mWallSlideSide = WallSlideSide::notSliding;
 
     if (mIsFireAttacking) {
-        mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0));
+        mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0) + mMovingGroundVelocity);
     }
 
     if (mIsJumping) {
@@ -294,21 +299,21 @@ void Player::OnUpdate(float deltaTime)
         if (mJumpTime <= mMaxJumpTime) {
             // Gravidade menor
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking) {
+            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 100 * deltaTime));
             }
         } else {
             mIsJumping = false;
             // Gravidade
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking) {
+            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
             }
         }
     }
     else {
         // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-        if (!mDashComponent->GetIsDashing() && !mIsFireAttacking) {
+        if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
             mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
         }
     }
@@ -331,13 +336,22 @@ void Player::OnUpdate(float deltaTime)
                 }
                 // colidiu top
                 if (collisionSide[0]) {
-                    if (mRigidBodyComponent->GetVelocity().y >= 0) {
+                    // if (mRigidBodyComponent->GetVelocity().y >= 0) {
                         mIsOnGround = true;
                         mIsJumping  = false;
                         // Resetar dash no ar
                         mDashComponent->SetHasDashedInAir(false);
                         // RESET DO CONTADOR DE PULO
                         mJumpCountInAir = 0;
+                    // }
+                    // Move o player junto ao ground em movimento
+                    if (g->GetIsMoving()) {
+                        mIsOnMovingGround = true;
+                        mMovingGroundVelocity = g->GetComponent<RigidBodyComponent>()->GetVelocity();
+                        if (!mDashComponent->GetIsDashing()) {
+                            mRigidBodyComponent->SetVelocity(mMovingGroundVelocity);
+                            SetPosition(Vector2(GetPosition().x, g->GetPosition().y - g->GetHeight() / 2 - mHeight / 2 + 1)); // Gambiarra (Ao detectar colisão por cima em moving ground, desce o player 1 pixel para baixo para não ficar trepidando
+                        }
                     }
                 }
 
@@ -345,26 +359,64 @@ void Player::OnUpdate(float deltaTime)
                 if (collisionSide[1]) {
                     mJumpTime = mMaxJumpTime;
                     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 1));
+                    if (g->GetIsMoving()) {
+                        if (g->GetComponent<RigidBodyComponent>()->GetVelocity().y > 0) {
+                            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, g->GetComponent<RigidBodyComponent>()->GetVelocity().y * 1.5)); // Para não grudar quando pular por baixo de uma plataforma movel
+                        }
+                    }
                 }
 
                 //colidiu pelas laterias
                 if (mCanWallSlide) {
                     if ((collisionSide[2] || collisionSide[3])) {
+                        // Move o player junto ao ground em movimento
+                        if (g->GetIsMoving()) {
+                            mIsOnMovingGround = true;
+                            mMovingGroundVelocity = g->GetComponent<RigidBodyComponent>()->GetVelocity();
+                        }
+
                         mIsWallSliding = true;
                         if (collisionSide[2] && !mDashComponent->GetIsDashing()) { // Testa se não está dashando para não bugar quando dar um dash na quina de baixo e inverter a direção do dash
                             mWallSlideSide = WallSlideSide::left;
                             SetRotation(Math::Pi);
+                            // mRigidBodyComponent->SetVelocity(Vector2(mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
+                            // SetPosition(Vector2(g->GetPosition().x - g->GetWidth() / 2 - mWidth / 2, GetPosition().y));
+                            if (mMovingGroundVelocity.x > 0) {
+                                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x + mMovingGroundVelocity.x + 100, mRigidBodyComponent->GetVelocity().y));
+                            }
+                            else if (mMovingGroundVelocity.x < 0) {
+                                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x + 100, mRigidBodyComponent->GetVelocity().y));
+                            }
                         }
                         else if (collisionSide[3] && !mDashComponent->GetIsDashing()) {
                             mWallSlideSide = WallSlideSide::right;
                             SetRotation(0);
+                            if (mMovingGroundVelocity.x < 0) {
+                                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x + mMovingGroundVelocity.x - 100, mRigidBodyComponent->GetVelocity().y));
+                            }
+                            else if (mMovingGroundVelocity.x > 0) {
+                                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x - 100, mRigidBodyComponent->GetVelocity().y));
+                            }
                         }
-                        if (mRigidBodyComponent->GetVelocity().y > 0) {
+                        // Resetar dash no ar
+                        mDashComponent->SetHasDashedInAir(false);
+                        // RESET DO CONTADOR DE PULO
+                        mJumpCountInAir = 0;
+                        // && mMovingGroundVelocity.y >= 0
+                        if (mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y - mMovingGroundVelocity.y >= 0) {
                             mIsJumping  = false;
-                            // Resetar dash no ar
-                            mDashComponent->SetHasDashedInAir(false);
-                            // RESET DO CONTADOR DE PULO
-                            mJumpCountInAir = 0;
+                            // // Resetar dash no ar
+                            // mDashComponent->SetHasDashedInAir(false);
+                            // // RESET DO CONTADOR DE PULO
+                            // mJumpCountInAir = 0;
+                            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x + mMovingGroundVelocity.x, mWallSlideSpeed + mMovingGroundVelocity.y));
+                        }
+                        else if (!mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y >= 0) {
+                            mIsJumping  = false;
+                            // // Resetar dash no ar
+                            // mDashComponent->SetHasDashedInAir(false);
+                            // // RESET DO CONTADOR DE PULO
+                            // mJumpCountInAir = 0;
                             mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
                         }
                     }
@@ -411,7 +463,9 @@ void Player::OnUpdate(float deltaTime)
         }
     }
 
-
+    // if (mIsOnGround) {
+    //     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 0));
+    // }
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 3000) {

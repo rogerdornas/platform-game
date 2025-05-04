@@ -24,7 +24,10 @@ public:
 private:
     float mHeight;
     float mWidth;
+
     bool mIsOnGround;
+    bool mIsOnMovingGround;
+    Vector2 mMovingGroundVelocity;
 
     bool mIsJumping;                            // Está no meio de um pulo sustentado?
     float mJumpTime;                            // Quanto tempo já pulou
