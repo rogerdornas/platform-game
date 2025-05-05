@@ -26,6 +26,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
         ,mWindowWidth(windowWidth)
         ,mWindowHeight(windowHeight)
         ,mFPS(FPS)
+        ,mIsPaused(false)
 {
 
 }
@@ -253,8 +254,7 @@ void Game::RunLoop()
     }
 }
 
-void Game::ProcessInput()
-{
+void Game::ProcessInput() {
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
@@ -262,21 +262,33 @@ void Game::ProcessInput()
         {
             case SDL_QUIT:
                 Quit();
-                break;
+            break;
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;
                 }
-                break;
+            break;
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    mIsPaused = !mIsPaused;
+                }
+            break;
+            case SDL_CONTROLLERBUTTONDOWN:
+                if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
+                    mIsPaused = !mIsPaused;
+                }
+            break;
         }
     }
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    for (auto actor : mActors)
-    {
-        actor->ProcessInput(state, *mController);
+    if (!mIsPaused) {
+        for (auto actor : mActors)
+        {
+            actor->ProcessInput(state, *mController);
+        }
     }
 }
 
@@ -299,8 +311,10 @@ void Game::UpdateGame()
     mTicksCount = SDL_GetTicks();
 
     // Update all actors and pending actors
-    UpdateActors(deltaTime);
-    UpdateCamera(deltaTime);
+    if (!mIsPaused) {
+        UpdateActors(deltaTime);
+    }
+        UpdateCamera(deltaTime);
 }
 
 void Game::UpdateActors(float deltaTime)

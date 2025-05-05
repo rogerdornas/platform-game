@@ -89,6 +89,8 @@ private:
 
     int mFPS;
 
+    bool mIsPaused;
+
     // Camera
     class Camera* mCamera;
 
