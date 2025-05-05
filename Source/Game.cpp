@@ -233,6 +233,9 @@ void Game::InitializeActors()
     Ground* movingGround8 = new Ground(this, 200, 40, false, true, 4.0, Vector2(300, 300));
     movingGround8->SetPosition(Vector2(-1600, -200));
 
+    Ground* movingGround9 = new Ground(this, 10, 500, false, true, 2.0, Vector2(500, 0));
+    movingGround9->SetPosition(Vector2(2400, -1000));
+
     // Player
     mPlayer = new Player(this, 20, 60);
     // mPlayer->SetPosition(Vector2::Zero);

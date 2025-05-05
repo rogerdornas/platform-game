@@ -336,14 +336,12 @@ void Player::OnUpdate(float deltaTime)
                 }
                 // colidiu top
                 if (collisionSide[0]) {
-                    // if (mRigidBodyComponent->GetVelocity().y >= 0) {
                         mIsOnGround = true;
                         mIsJumping  = false;
                         // Resetar dash no ar
                         mDashComponent->SetHasDashedInAir(false);
                         // RESET DO CONTADOR DE PULO
                         mJumpCountInAir = 0;
-                    // }
                     // Move o player junto ao ground em movimento
                     if (g->GetIsMoving()) {
                         mIsOnMovingGround = true;
@@ -379,8 +377,6 @@ void Player::OnUpdate(float deltaTime)
                         if (collisionSide[2] && !mDashComponent->GetIsDashing()) { // Testa se não está dashando para não bugar quando dar um dash na quina de baixo e inverter a direção do dash
                             mWallSlideSide = WallSlideSide::left;
                             SetRotation(Math::Pi);
-                            // mRigidBodyComponent->SetVelocity(Vector2(mMovingGroundVelocity.x, mRigidBodyComponent->GetVelocity().y));
-                            // SetPosition(Vector2(g->GetPosition().x - g->GetWidth() / 2 - mWidth / 2, GetPosition().y));
                             if (mMovingGroundVelocity.x > 0) {
                                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x + mMovingGroundVelocity.x + 100, mRigidBodyComponent->GetVelocity().y));
                             }
@@ -403,20 +399,12 @@ void Player::OnUpdate(float deltaTime)
                         // RESET DO CONTADOR DE PULO
                         mJumpCountInAir = 0;
                         // && mMovingGroundVelocity.y >= 0
-                        if (mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y - mMovingGroundVelocity.y >= 0) {
+                        if (mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y - mMovingGroundVelocity.y > 0) {
                             mIsJumping  = false;
-                            // // Resetar dash no ar
-                            // mDashComponent->SetHasDashedInAir(false);
-                            // // RESET DO CONTADOR DE PULO
-                            // mJumpCountInAir = 0;
                             mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x + mMovingGroundVelocity.x, mWallSlideSpeed + mMovingGroundVelocity.y));
                         }
-                        else if (!mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y >= 0) {
+                        else if (!mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y > 0) {
                             mIsJumping  = false;
-                            // // Resetar dash no ar
-                            // mDashComponent->SetHasDashedInAir(false);
-                            // // RESET DO CONTADOR DE PULO
-                            // mJumpCountInAir = 0;
                             mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
                         }
                     }
@@ -462,10 +450,6 @@ void Player::OnUpdate(float deltaTime)
             }
         }
     }
-
-    // if (mIsOnGround) {
-    //     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 0));
-    // }
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 3000) {
