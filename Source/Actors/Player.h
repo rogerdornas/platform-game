@@ -38,6 +38,8 @@ private:
     int mJumpCountInAir;                        // Numero de pulos realizados no ar
     int mMaxJumpsInAir;                         // Maximo de pulos no ar
 
+    bool mCanDash;
+
     class Sword* mSword;
     bool mPrevSwordPressed;                     // Se apertou botao de espada no ultimo frame
     float mSwordCooldownTimer;                  // Timer de cooldown da espada
@@ -45,6 +47,7 @@ private:
     float mSwordDirection;                      // Direcao da espada(esquerda, direita, cima, baixo)
     bool mSwordHitedEnemy;
 
+    bool mCanFireBall;
     bool mPrevFireBallPressed;                  // Se apertou botao de fireball no ultimo frame
     float mFireBallCooldownTimer;               // Timer de cooldown da fireball
     const float mFireBallCooldownDuration;      // Cooldown da fireball

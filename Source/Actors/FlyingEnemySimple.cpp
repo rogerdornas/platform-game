@@ -20,6 +20,8 @@ FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, floa
     mFlyingAroundTimer = 1.0f;
     mFlyingAroundDuration = 1.0f;
     mFlyingAroundMooveSpeed = 100.0f;
+
+    mRigidBodyComponent->SetApplyGravity(false);
 }
 
 void FlyingEnemySimple::OnUpdate(float deltaTime) {

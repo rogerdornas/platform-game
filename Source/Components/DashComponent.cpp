@@ -25,7 +25,14 @@ void DashComponent::UseDash(bool isOnGround) {
         mDashTimer = 0.0f;
         mDashCooldownTimer = mDashCooldown;
         // mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, 0));
-        mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, mOwner->GetComponent<RigidBodyComponent>()->GetVelocity().y));
+        // Se estiver no ar, define a velocidade y para 0
+        if (!isOnGround) {
+            mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, 0));
+        }
+        else { // Se estiver no chão, realiza o dash levando em conta a velocidade y, útil para plataformas móveis
+            mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, mOwner->GetComponent<RigidBodyComponent>()->GetVelocity().y));
+        }
+        // mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, mOwner->GetComponent<RigidBodyComponent>()->GetVelocity().y));
 
         // Se estiver no ar, marca que já usou o dash
         if (!isOnGround) {
@@ -44,7 +51,7 @@ void DashComponent::Update(float deltaTime) {
     // Atualiza o dash em andamento
     if (mIsDashing) {
         mDashTimer += deltaTime;
-        mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, 0));
+        mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, mOwner->GetComponent<RigidBodyComponent>()->GetVelocity().y));
 
         if (mDashTimer >= mDashDuration) {
             mIsDashing = false;

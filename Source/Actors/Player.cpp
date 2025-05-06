@@ -30,12 +30,15 @@ Player::Player(Game *game, float width, float height)
     ,mJumpCountInAir(0)
     ,mMaxJumpsInAir(1)
 
+    ,mCanDash(true)
+
     ,mPrevSwordPressed(false)
     ,mSwordCooldownTimer(0.3f)
     ,mSwordCooldownDuration(0.3f)
     ,mSwordDirection(0)
     ,mSwordHitedEnemy(false)
 
+    ,mCanFireBall(true)
     ,mPrevFireBallPressed(false)
     ,mFireBallCooldownTimer(1.0f)
     ,mFireBallCooldownDuration(1.0f)
@@ -69,7 +72,7 @@ Player::Player(Game *game, float width, float height)
     vertices.emplace_back(v4);
 
     mDrawComponent = new DrawComponent(this, vertices);
-    mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1300);
+    mRigidBodyComponent = new RigidBodyComponent(this, 1, true, 40000, 1300);
     mAABBComponent = new AABBComponent(this, v1, v3, {255, 255, 0, 255});
     mDashComponent = new DashComponent(this, 1400, 0.18f, 0.5f);
 
@@ -224,8 +227,10 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
     }
 
     // Dash
-    if (dash && !mIsFireAttacking) {
-        mDashComponent->UseDash(mIsOnGround);
+    if (mCanDash) {
+        if (dash && !mIsFireAttacking) {
+            mDashComponent->UseDash(mIsOnGround);
+        }
     }
 
     // Sword
@@ -243,23 +248,24 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
     mPrevSwordPressed = sword;
 
     // FireBall
-    if (fireBall && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration) {
-        std::vector<FireBall*> fireBalls = GetGame()->GetFireBalls();
-        for (FireBall* f : fireBalls) {
-            if (f->GetState() == ActorState::Paused) {
-                f->SetState(ActorState::Active);
-                f->SetRotation(GetRotation());
-                f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
-                mIsFireAttacking = true;
-                mStopInAirFireBallTimer = 0;
-                break;
+    if (mCanFireBall) {
+        if (fireBall && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration) {
+            std::vector<FireBall*> fireBalls = GetGame()->GetFireBalls();
+            for (FireBall* f : fireBalls) {
+                if (f->GetState() == ActorState::Paused) {
+                    f->SetState(ActorState::Active);
+                    f->SetRotation(GetRotation());
+                    f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
+                    mIsFireAttacking = true;
+                    mStopInAirFireBallTimer = 0;
+                    break;
+                }
             }
+            // Inicia cooldown
+            mFireBallCooldownTimer = 0;
         }
-        // Inicia cooldown
-        mFireBallCooldownTimer = 0;
+        mPrevFireBallPressed = fireBall;
     }
-    mPrevFireBallPressed = fireBall;
-
 }
 
 void Player::OnUpdate(float deltaTime)
@@ -290,8 +296,14 @@ void Player::OnUpdate(float deltaTime)
     mIsWallSliding = false;
     mWallSlideSide = WallSlideSide::notSliding;
 
-    if (mIsFireAttacking) {
-        mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0) + mMovingGroundVelocity);
+    if (mIsFireAttacking || mDashComponent->GetIsDashing()) {
+        mRigidBodyComponent->SetApplyGravity(false);
+        if (mIsFireAttacking) {
+            mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0) + mMovingGroundVelocity);
+        }
+    }
+    else {
+        mRigidBodyComponent->SetApplyGravity(true);
     }
 
     if (mIsJumping) {
@@ -300,21 +312,24 @@ void Player::OnUpdate(float deltaTime)
             // Gravidade menor
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
             if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 100 * deltaTime));
+                // mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 100 * deltaTime));
+                mRigidBodyComponent->SetGravity(100); // Diminui gravidade enquanto segura botão de pular para pular mais alto
             }
         } else {
             mIsJumping = false;
             // Gravidade
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
             if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+                // mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+                mRigidBodyComponent->SetGravity(3000);
             }
         }
     }
     else {
         // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
         if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+            // mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+            mRigidBodyComponent->SetGravity(3000);
         }
     }
 

@@ -99,6 +99,7 @@ std::array<bool, 4> AABBComponent::ResolveColision(AABBComponent &b) {
             return colision;
         }
         if (vel.y >= 0) {
+            // GetOwner()->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(vel.x, vel.y));
             GetOwner()->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(vel.x, 0));
             GetOwner()->SetPosition(posA + min);
             return colision;

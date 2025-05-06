@@ -6,9 +6,11 @@
 #include "../Actors/Actor.h"
 #include "../Game.h"
 
-RigidBodyComponent::RigidBodyComponent(class Actor* owner, float mass, float maxSpeedX, float maxSpeedY, int updateOrder)
+RigidBodyComponent::RigidBodyComponent(class Actor* owner, float mass, bool applyGravity, float maxSpeedX, float maxSpeedY, int updateOrder)
     :Component(owner, updateOrder)
     ,mMass(mass)
+    ,mApplyGravity(applyGravity)
+    ,mGravity(3000.0f)
     ,mMaxSpeedX(maxSpeedX)
     ,mMaxSpeedY(maxSpeedY)
     ,mAngularSpeed(0.0f)
@@ -18,18 +20,17 @@ RigidBodyComponent::RigidBodyComponent(class Actor* owner, float mass, float max
 }
 
 void RigidBodyComponent::ApplyForce(const Vector2 &force) {
-    // --------------
-    // TODO - PARTE 2
-    // --------------
-
-    // TODO 1. (~1 linha): Adicione à aceleração do objeto (mAcceleration) a forca (force) passada como parâmetro,
-    //  multiplicando pelo inverso pela massa (mMass) do objeto.
     mAcceleration += force * (1.0f / mMass);
-
 }
 
 void RigidBodyComponent::Update(float deltaTime)
 {
+    // Apply gravity acceleration
+    if (mApplyGravity) {
+        // SetVelocity(Vector2(GetVelocity().x, GetVelocity().y + mGravity * deltaTime));
+        ApplyForce(Vector2::UnitY * mGravity);
+    }
+
     Vector2 position = mOwner->GetPosition();
 
     // --------------

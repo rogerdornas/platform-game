@@ -92,7 +92,7 @@ void EnemySimple::OnUpdate(float deltaTime) {
     }
 
     // Gravidade
-    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+    // mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 3000) {

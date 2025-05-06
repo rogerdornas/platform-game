@@ -37,7 +37,7 @@ Ground::Ground(Game *game, float width, float height, bool isSpine, bool isMovin
     }
 
     mDrawComponent = new DrawComponent(this, vertices);
-    mRigidBodyComponent = new RigidBodyComponent(this);
+    mRigidBodyComponent = new RigidBodyComponent(this, 1, false);
     mAABBComponent = new AABBComponent(this, v1, v3, color);
 
     mRigidBodyComponent->SetVelocity(velocity);

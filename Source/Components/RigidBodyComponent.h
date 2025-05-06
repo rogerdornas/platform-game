@@ -10,7 +10,7 @@ class RigidBodyComponent : public Component
 {
 public:
     // Lower update order to update first
-    RigidBodyComponent(class Actor* owner, float mass = 1.0f, float maxSpeedX = 10000, float maxSpeedY = 10000, int updateOrder = 10);
+    RigidBodyComponent(class Actor* owner, float mass = 1.0f, bool applyGravity = true, float maxSpeedX = 10000, float maxSpeedY = 10000, int updateOrder = 10);
 
     void Update(float deltaTime) override;
 
@@ -19,6 +19,9 @@ public:
 
     const Vector2& GetAcceleration() const { return mAcceleration; }
     void SetAcceleration(const Vector2& acceleration) { mAcceleration = acceleration; }
+
+    void SetApplyGravity(const bool applyGravity) { mApplyGravity = applyGravity; }
+    void SetGravity(float gravity) { mGravity = gravity; }
 
     void SetAngularSpeed(const float speed) { mAngularSpeed = speed; }
     float GetAngularSpeed() const { return mAngularSpeed; }
@@ -29,6 +32,9 @@ public:
     void ApplyForce(const Vector2 &force);
 
 private:
+    bool mApplyGravity;
+    float mGravity;
+
     void ScreenWrap(Vector2 &position);
 
     // Physical properties

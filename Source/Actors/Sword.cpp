@@ -31,7 +31,7 @@ Sword::Sword(class Game *game, float width, float height, float duration, float 
     vertices.emplace_back(v4);
 
     mDrawComponent = new DrawComponent(this, vertices);
-    mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
+    mRigidBodyComponent = new RigidBodyComponent(this, 1, false, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3, {37, 218, 255, 255});
 }
 
