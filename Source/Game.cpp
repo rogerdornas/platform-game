@@ -107,13 +107,16 @@ void Game::InitializeActors()
     }
 
     LoadMapMetadata("../Assets/Levels/Forest/Forest.json");
+    // LoadMapMetadata("../Assets/Levels/Pain/Pain.json");
 
     mLevelData = LoadLevel("../Assets/Levels/Forest/Forest.csv", mLevelWidth, mLevelHeight);
+    // mLevelData = LoadLevel("../Assets/Levels/Pain/Pain.csv", mLevelWidth, mLevelHeight);
     if (!mLevelData) {
         return;
     }
 
     LoadObjects("../Assets/Levels/Forest/Forest.json");
+    // LoadObjects("../Assets/Levels/Pain/Pain.json");
 
     mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mLevelHeight / 2));
 }

@@ -85,17 +85,32 @@ Player::Player(Game *game, float width, float height)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Esquilo/zenzen.png", 100, 100, 1000);
-    // mDrawAnimatedComponent = new DrawAnimatedComponent(this, 100, 100, "../Assets/Sprites/Raposa/Raposa.png", "../Assets/Sprites/Raposa/Raposa.json", 1000);
+    // Esquilo estático
+    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Esquilo/zenzen.png", 100, 100, 1000);
 
+    // Raposa animada
+    // mDrawAnimatedComponent = new DrawAnimatedComponent(this, 100, 100, "../Assets/Sprites/Raposa/Raposa.png", "../Assets/Sprites/Raposa/Raposa.json", 1000);
+    //
     // std::vector<int> idle = {0};
     // mDrawAnimatedComponent->AddAnimation("idle", idle);
-
+    //
     // std::vector<int> run = {1, 2, 3, 4, 5};
     // mDrawAnimatedComponent->AddAnimation("run", run);
-
+    //
     // mDrawAnimatedComponent->SetAnimation("idle");
     // mDrawAnimatedComponent->SetAnimFPS(16.0f);
+
+    // Esquilo animado
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, 120, 120, "../Assets/Sprites/Esquilo/Esquilo.png", "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
+
+    std::vector<int> idle = {6};
+    mDrawAnimatedComponent->AddAnimation("idle", idle);
+
+    std::vector<int> run = {0, 1, 2, 3, 4, 5};
+    mDrawAnimatedComponent->AddAnimation("run", run);
+
+    mDrawAnimatedComponent->SetAnimation("idle");
+    mDrawAnimatedComponent->SetAnimFPS(10.0f);
 
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {255, 255, 0, 255});
@@ -111,9 +126,6 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
     mTryingLeavingWallSlideLeft = 0;
     mTryingLeavingWallSlideRight = 0;
     mIsRunning = false;
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetAnimFPS(13.0f);
-    }
 
     bool left = (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL]) || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -20000;
     bool leftSlow = (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL]) || (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 && SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
@@ -479,31 +491,31 @@ void Player::ResolveGroundCollision() {
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
                 if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    // SetPosition(mStartingPosition);
+                    SetPosition(mStartingPosition);
 
-                    Vector2 vel = mRigidBodyComponent->GetVelocity();
-                    collisionSide = mAABBComponent->ResolveColision(*g->GetComponent<AABBComponent>());
-
-                    mDashComponent->StopDash();
-
-                    // Colidiu top
-                    if (collisionSide[0]) {
-                        mRigidBodyComponent->SetVelocity(Vector2(vel.x, -mKnockBackSpeed));
-                    }
-                    // Colidiu bot
-                    if (collisionSide[1]) {
-                        mRigidBodyComponent->SetVelocity(Vector2(vel.x, mKnockBackSpeed));
-                    }
-                    //Colidiu left
-                    if (collisionSide[2]) {
-                        mRigidBodyComponent->SetVelocity(Vector2(-mKnockBackSpeed, vel.y));
-                    }
-                    //Colidiu right
-                    if (collisionSide[3]) {
-                        mRigidBodyComponent->SetVelocity(Vector2(mKnockBackSpeed, vel.y));
-                    }
-
-                    mKnockBackTimer = 0;
+                    // Vector2 vel = mRigidBodyComponent->GetVelocity();
+                    // collisionSide = mAABBComponent->ResolveColision(*g->GetComponent<AABBComponent>());
+                    //
+                    // mDashComponent->StopDash();
+                    //
+                    // // Colidiu top
+                    // if (collisionSide[0]) {
+                    //     mRigidBodyComponent->SetVelocity(Vector2(vel.x, -mKnockBackSpeed));
+                    // }
+                    // // Colidiu bot
+                    // if (collisionSide[1]) {
+                    //     mRigidBodyComponent->SetVelocity(Vector2(vel.x, mKnockBackSpeed));
+                    // }
+                    // //Colidiu left
+                    // if (collisionSide[2]) {
+                    //     mRigidBodyComponent->SetVelocity(Vector2(-mKnockBackSpeed, vel.y));
+                    // }
+                    // //Colidiu right
+                    // if (collisionSide[3]) {
+                    //     mRigidBodyComponent->SetVelocity(Vector2(mKnockBackSpeed, vel.y));
+                    // }
+                    //
+                    // mKnockBackTimer = 0;
                 }
                 else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) { // Colisão da sword com spikes
                     if (mSword->GetRotation() == Math::Pi / 2) {

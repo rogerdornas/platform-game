@@ -1,0 +1,190 @@
+{
+  "frames": [
+    {
+      "filename": "Run0.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 43,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run1.png",
+      "frame": {
+        "x": 0,
+        "y": 44,
+        "w": 43,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 43,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run2.png",
+      "frame": {
+        "x": 43,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 43,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run3.png",
+      "frame": {
+        "x": 0,
+        "y": 88,
+        "w": 43,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 43,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run4.png",
+      "frame": {
+        "x": 43,
+        "y": 44,
+        "w": 43,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 43,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run5.png",
+      "frame": {
+        "x": 86,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 43,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "zenzen.png",
+      "frame": {
+        "x": 0,
+        "y": 132,
+        "w": 43,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 43,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Esquilo.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 129,
+      "h": 176
+    },
+    "scale": 1
+  }
+}
