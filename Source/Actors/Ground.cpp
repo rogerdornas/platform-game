@@ -5,14 +5,23 @@
 #include "Ground.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
-#include "../Components/DrawComponent.h"
 #include "../Components/AABBComponent.h"
+#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/DrawComponents/DrawSpriteComponent.h"
+#include <unordered_map>
+#include <iomanip>
+#include <sstream>
+#include "../Components/DrawComponents/DrawGroundSpritesComponent.h"
 
-Ground::Ground(Game *game, float width, float height, bool isSpine, bool isMoving, float movingDuration, Vector2 velocity)
+Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMoving, float movingDuration, Vector2 velocity)
     :Actor(game)
+    ,mDrawPolygonComponent(nullptr)
+    ,mDrawGroundSpritesComponent(nullptr)
+    ,mDrawSpriteComponent(nullptr)
+
     ,mWidth(width)
     ,mHeight(height)
-    ,mIsSpine(isSpine)
+    ,mIsSpike(isSpike)
     ,mIsMoving(isMoving)
     ,mMovingDuration(movingDuration)
     ,mMovingTimer(movingDuration)
@@ -29,16 +38,18 @@ Ground::Ground(Game *game, float width, float height, bool isSpine, bool isMovin
     vertices.emplace_back(v4);
 
     SDL_Color color;
-    if (mIsSpine) {
+    if (mIsSpike) {
         color = SDL_Color{255, 0, 0, 255};
     }
     else {
         color = SDL_Color{0, 255, 0, 255};
     }
 
-    mDrawComponent = new DrawComponent(this, vertices);
-    mRigidBodyComponent = new RigidBodyComponent(this, 1, false);
-    mAABBComponent = new AABBComponent(this, v1, v3, color);
+    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, color);
+    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Blocks/BlockA.png", mWidth, mHeight);
+
+    mRigidBodyComponent = new RigidBodyComponent(this, 1);
+    mAABBComponent = new AABBComponent(this, v1, v3);
 
     mRigidBodyComponent->SetVelocity(velocity);
 
@@ -57,4 +68,44 @@ void Ground::OnUpdate(float deltaTime) {
             mMovingTimer = 0;
         }
     }
+}
+
+void Ground::SetSprites() {
+
+    int rows = mHeight / GetGame()->GetTileSize();
+    int cols = mWidth / GetGame()->GetTileSize();
+
+    int topLeftX = GetPosition().x - mWidth / 2;
+    int topLeftY = GetPosition().y - mHeight / 2;
+
+    int minRow = topLeftY / GetGame()->GetTileSize();
+    int maxRow = minRow + rows;
+
+    int minCol = topLeftX / GetGame()->GetTileSize();
+    int maxCol = minCol + cols;
+
+    std::unordered_map<std::string, std::vector<Vector2>> sprite_offset_map;
+
+    int** levelData = GetGame()->GetLevelData();
+
+    for (int row = minRow; row <= maxRow; ++row) {
+        for (int col = minCol; col <= maxCol; ++col) {
+            int tile = levelData[row][col];
+
+            int tileX = col * GetGame()->GetTileSize();
+            int tileY = row * GetGame()->GetTileSize();
+
+            Vector2 offset = Vector2(tileX, tileY) - GetPosition();
+
+            if (tile >= 0) {
+                std::ostringstream tileName;
+                tileName << std::setw(2) << std::setfill('0') << tile;
+                std::string file = tileName.str();
+                sprite_offset_map["../Assets/Sprites/Forest/" + file + ".png"].push_back(offset);
+            }
+        }
+    }
+
+    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, sprite_offset_map, GetGame()->GetTileSize(), GetGame()->GetTileSize());
+
 }

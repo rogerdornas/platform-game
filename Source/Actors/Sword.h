@@ -15,17 +15,19 @@ public:
     float GetDamage() { return mDamage; }
 
 private:
-    float mWidthHorizontal;
-    float mHeightHorizontal;
-    float mWidthVertical;
-    float mHeightVertical;
-    float mTrueWidth;
-    float mTrueHeight;
+    void Deactivate();
+    void Activate();
+
+    float mWidth;
+    float mHeight;
     float mDuration;
     float mDurationTimer;
     float mDamage;
 
-    class DrawComponent* mDrawComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
+
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
 };

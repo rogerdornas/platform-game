@@ -8,27 +8,33 @@
 class Ground : public Actor
 {
 public:
-    Ground(Game* game, float width, float height, bool isSpine = false, bool isMoving = false, float movingDuration = 0.0f, Vector2 velocity = Vector2::Zero);
+    Ground(Game* game, float width, float height, bool isSpike = false, bool isMoving = false, float movingDuration = 0.0f, Vector2 velocity = Vector2::Zero);
     ~Ground();
 
     void OnUpdate(float deltaTime) override;
 
-    bool GetIsSpine() { return mIsSpine; }
+    bool GetIsSpike() { return mIsSpike; }
     bool GetIsMoving() { return mIsMoving; }
 
     float GetHeight() { return mHeight; }
 
     float GetWidth() { return mWidth; }
 
+    void SetSprites();
+
 private:
     float mHeight;
     float mWidth;
-    bool mIsSpine;
+    bool mIsSpike;
     bool mIsMoving;
     float mMovingTimer;
     float mMovingDuration;
 
-    class DrawComponent* mDrawComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+
+    class DrawGroundSpritesComponent* mDrawGroundSpritesComponent;
+
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
 };

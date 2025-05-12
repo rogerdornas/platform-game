@@ -9,10 +9,17 @@
 #include <algorithm>
 #include <vector>
 #include "Game.h"
-#include "Components/DrawComponent.h"
+// #include "Components/DrawComponent.h"
+#include "Components/DrawComponents/DrawComponent.h"
 #include "Components/RigidBodyComponent.h"
 #include "Random.h"
 #include "Actors/ParticleSystem.h"
+#include <iostream>
+#include <fstream>
+#include <map>
+#include "CSV.h"
+#include "Json.h"
+#include <SDL_image.h>
 
 Game::Game(int windowWidth, int windowHeight, int FPS)
         :mWindow(nullptr)
@@ -27,6 +34,11 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
         ,mWindowHeight(windowHeight)
         ,mFPS(FPS)
         ,mIsPaused(false)
+        ,mBackGroundTexture(nullptr)
+        ,mSky(nullptr)
+        ,mMountains(nullptr)
+        ,mTreesBack(nullptr)
+        ,mTreesFront(nullptr)
 {
 
 }
@@ -76,173 +88,213 @@ bool Game::Initialize()
     // Init all game actors
     InitializeActors();
 
-    mCamera = new Camera(this);
+    // mCamera = new Camera(this, Vector2::Zero);
+
+    mBackGroundTexture = LoadTexture("../Assets/Sprites/Background/fundoCortadoEspichado.png");
+    mSky = LoadTexture("../Assets/Sprites/Background/sky_cloud.png");
+    mMountains = LoadTexture("../Assets/Sprites/Background/mountain2.png");
+    mTreesBack = LoadTexture("../Assets/Sprites/Background/pine1.png");
+    mTreesFront = LoadTexture("../Assets/Sprites/Background/pine2.png");
 
     return true;
 }
 
 void Game::InitializeActors()
 {
-
-    // Deixa para atualizar o player por último, então inicializa ele por último
-
-
-    // Fireballs
+    // Pool de Fireballs
     for (int i = 0; i < 5; i++) {
         FireBall* fireBall = new FireBall(this);
     }
 
-    // Moving Spines
-    Ground* movingSpine1 = new Ground(this, 200, 50, true, true, 0.8, Vector2(400, 0));
-    movingSpine1->SetPosition(Vector2(-1300, 600));
+    LoadMapMetadata("../Assets/Levels/Forest/Forest.json");
 
-    // Spines
-    Ground* spine1 = new Ground(this, 300, 50, true);
-    spine1->SetPosition(Vector2(600, -300));
+    mLevelData = LoadLevel("../Assets/Levels/Forest/Forest.csv", mLevelWidth, mLevelHeight);
+    if (!mLevelData) {
+        return;
+    }
 
-    Ground* spine2 = new Ground(this, 200, 50, true);
-    spine2->SetPosition(Vector2(3900, 800));
+    LoadObjects("../Assets/Levels/Forest/Forest.json");
 
-    Ground* spine3 = new Ground(this, 200, 50, true);
-    spine3->SetPosition(Vector2(4500, 800));
+    mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mLevelHeight / 2));
+}
 
-    Ground* spine4 = new Ground(this, 200, 50, true);
-    spine4->SetPosition(Vector2(1500, 760));
+void Game::LoadMapMetadata(const std::string &fileName) {
+    std::ifstream file(fileName);
+    if (!file.is_open()) {
+        SDL_Log("Erro ao abrir o arquivo");
+        return;
+    }
 
+    nlohmann::json mapData;
+    file >> mapData;
+    int height = mapData["height"];
+    int width = mapData["width"];
+    int tileSize = mapData["tilewidth"];
+    mLevelHeight = height;
+    mLevelWidth = width;
+    mTileSize = tileSize;
+}
 
-    // Enemys
-    EnemySimple* enemySimple1 = new EnemySimple(this, 60, 50, 200, 50);
-    enemySimple1->SetPosition(Vector2(1000, 200));
+int **Game::LoadLevel(const std::string& fileName, int width, int height)
+{
+    // TODO 5: Implemente essa função para carregar o nível a partir do arquivo CSV. Ela deve retornar um
+    //  ponteiro para uma matriz 2D de inteiros. Cada linha do arquivo CSV representa uma linha
+    //  do nível. Cada número inteiro representa o tipo de bloco que deve ser criado. Utilize a função CSVHelper::Split
+    //  para dividir cada linha do arquivo CSV em números inteiros. A função deve retornar nullptr se o arquivo não
+    //  puder ser carregado ou se o número de colunas for diferente do esperado.
+    std::ifstream file(fileName);
+    if (!file.is_open()) {
+        return nullptr;
+    }
 
-    EnemySimple* enemySimple2 = new EnemySimple(this, 60, 50, 200, 50);
-    enemySimple2->SetPosition(Vector2(500, 200));
+    int** levelData = new int*[height];
+    std::string line;
+    int row = 0;
 
+    while (std::getline(file, line)) {
+        if (row >= height) {
+            // Mais linhas do que o esperado
+            for (int i = 0; i < row; ++i) {
+                delete[] levelData[i];
+            }
+            delete[] levelData;
+            return nullptr;
+        }
 
-    FlyingEnemySimple* flyingEnemySimple1 = new FlyingEnemySimple(this, 50, 50, 250, 100);
-    flyingEnemySimple1->SetPosition(Vector2(570, -50));
+        std::vector<int> values = CSVHelper::Split(line);
+        if (values.size() != static_cast<size_t>(width)) {
+            // Número de colunas incorreto
+            for (int i = 0; i < row; ++i) {
+                delete[] levelData[i];
+            }
+            delete[] levelData;
+            return nullptr;
+        }
 
+        levelData[row] = new int[width];
+        for (int col = 0; col < width; ++col) {
+            levelData[row][col] = values[col];
+        }
 
-    // Grounds
-    Ground* ground1 = new Ground(this, 200, 50);
-    ground1->SetPosition(Vector2(mWindowWidth/6, mWindowHeight/10*3));
+        ++row;
+    }
 
-    Ground* ground2 = new Ground(this, 200, 50);
-    ground2->SetPosition(Vector2(300, mWindowHeight/10*7));
+    if (row != height) {
+        // Menos linhas do que o esperado
+        for (int i = 0; i < row; ++i) {
+            delete[] levelData[i];
+        }
+        delete[] levelData;
+        return nullptr;
+    }
 
-    Ground* ground3 = new Ground(this, 200, 50);
-    ground3->SetPosition(Vector2(mWindowWidth, mWindowHeight/10*5));
-
-    Ground* ground5 = new Ground(this, 2000, 50);
-    ground5->SetPosition(Vector2(mWindowWidth/2, mWindowHeight/10*9));
-
-    Ground* ground6 = new Ground(this, 200, 50);
-    ground6->SetPosition(Vector2(700, 100));
-
-    Ground* ground7 = new Ground(this, 200, 50);
-    ground7->SetPosition(Vector2(850, 50));
-
-    Ground* ground8 = new Ground(this, 200, 50);
-    ground8->SetPosition(Vector2(550, 50));
-
-    Ground* ground9 = new Ground(this, 200, 50);
-    ground9->SetPosition(Vector2(1100, -100));
-
-    Ground* ground10 = new Ground(this, 200, 50);
-    ground10->SetPosition(Vector2(20, 50));
-
-    Ground* ground11 = new Ground(this, 100, 300);
-    ground11->SetPosition(Vector2(500, 620));
-
-    Ground* ground12 = new Ground(this, 3000, 50);
-    ground12->SetPosition(Vector2(0, mWindowHeight/10*9));
-
-    Ground* ground13 = new Ground(this, 200, 50);
-    ground13->SetPosition(Vector2(-200, -250));
-
-    Ground* ground14 = new Ground(this, 200, 50);
-    ground14->SetPosition(Vector2(-200, -450));
-
-    Ground* ground15 = new Ground(this, 200, 50);
-    ground15->SetPosition(Vector2(-200, -650));
-
-    Ground* ground16 = new Ground(this, 2, 400);
-    ground16->SetPosition(Vector2(-20, 750));
-
-    Ground* ground17 = new Ground(this, 26, 400);
-    ground17->SetPosition(Vector2(-500, 750));
-
-    Ground* ground18 = new Ground(this, 30, 400);
-    ground18->SetPosition(Vector2(-1000, 750));
-
-    Ground* ground19 = new Ground(this, 200, 50);
-    ground19->SetPosition(Vector2(0, 350));
-
-    Ground* ground20 = new Ground(this, 200, 50);
-    ground20->SetPosition(Vector2(-300, 240));
-
-    Ground* ground21 = new Ground(this, 1500, 50);
-    ground21->SetPosition(Vector2(2800, 700));
-
-    Ground* ground22 = new Ground(this, 100, 1000);
-    ground22->SetPosition(Vector2(2800, 400));
-
-    Ground* ground23 = new Ground(this, 100, 1000);
-    ground23->SetPosition(Vector2(3000, 400));
-
-    Ground* ground24 = new Ground(this, 3000, 100);
-    ground24->SetPosition(Vector2(6500, 700));
-
-    Ground* ground25 = new Ground(this, 100, 700);
-    ground25->SetPosition(Vector2(5040, 400));
-
-    Ground* ground26 = new Ground(this, 100, 1000);
-    ground26->SetPosition(Vector2(7960, 250));
-
-    Ground* ground27 = new Ground(this, 200, 50);
-    ground27->SetPosition(Vector2(-1300, 250));
-
-    Ground* ground28 = new Ground(this, 200, 50);
-    ground28->SetPosition(Vector2(0, -750));
-
-    Ground* ground29 = new Ground(this, 200, 50);
-    ground29->SetPosition(Vector2(-1500, -750));
-
-
-
-    // Moving Grounds
-    Ground* movingGround1 = new Ground(this, 200, 5000, false, true, 10.0, Vector2(150, 0));
-    movingGround1->SetPosition(Vector2(-2000, 0));
-
-    Ground* movingGround2 = new Ground(this, 50, 400, false, true, 4.0, Vector2(0, 100));
-    movingGround2->SetPosition(Vector2(-1600, 200));
-
-    Ground* movingGround3 = new Ground(this, 200, 40, false, true, 4.0, Vector2(100, 100));
-    movingGround3->SetPosition(Vector2(-1900, 200));
-
-    Ground* movingGround4 = new Ground(this, 200, 40, false, true, 4.0, Vector2(0, 200));
-    movingGround4->SetPosition(Vector2(-400, -200));
-
-    Ground* movingGround5 = new Ground(this, 200, 40, false, true, 4.0, Vector2(200, 0));
-    movingGround5->SetPosition(Vector2(-800, -200));
-
-    Ground* movingGround6 = new Ground(this, 200, 400, false, true, 4.0, Vector2(0, 700));
-    movingGround6->SetPosition(Vector2(-700, -200));
-
-    Ground* movingGround7 = new Ground(this, 200, 400, false, true, 4.0, Vector2(0, 700));
-    movingGround7->SetPosition(Vector2(-980, -200));
-
-    Ground* movingGround8 = new Ground(this, 200, 40, false, true, 4.0, Vector2(300, 300));
-    movingGround8->SetPosition(Vector2(-1600, -200));
-
-    Ground* movingGround9 = new Ground(this, 10, 500, false, true, 2.0, Vector2(500, 0));
-    movingGround9->SetPosition(Vector2(2400, -1000));
-
-    // Player
-    mPlayer = new Player(this, 20, 60);
-    // mPlayer->SetPosition(Vector2::Zero);
-    mPlayer->SetPosition(Vector2(3500, 0));
+    return levelData;
 
 }
+
+void Game::LoadObjects(const std::string &fileName) {
+    std::ifstream file(fileName);
+    if (!file.is_open()) {
+        SDL_Log("Erro ao abrir o arquivo");
+        return;
+    }
+
+    nlohmann::json mapData;
+    file >> mapData;
+    Ground* ground;
+    for (const auto& layer : mapData["layers"]) {
+        if (layer["name"] == "Grounds") {
+            for (const auto& obj : layer["objects"]) {
+                std::string name = obj["name"];
+                float x = obj["x"];
+                float y = obj["y"];
+                float width = obj["width"];
+                float height = obj["height"];
+                if (name == "Ground") {
+                    ground = new Ground(this, width, height);
+                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetSprites();
+                }
+                else if (name == "Spike") {
+                    ground = new Ground(this, width, height, true);
+                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetSprites();
+                }
+                else if (name == "Moving Ground") {
+                    float movingDuration = 0.0f;
+                    float speedX = 0.0f;
+                    float speedY = 0.0f;
+
+                    if (obj.contains("properties")) {
+                        for (const auto& prop : obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "MovingDuration") {
+                                movingDuration = prop["value"];
+                            }
+                            else if (propName == "SpeedX") {
+                                speedX = prop["value"];
+                            }
+                            else if (propName == "SpeedY") {
+                                speedY = prop["value"];
+                            }
+                        }
+                    }
+                    ground = new Ground(this, width, height, false, true, movingDuration, Vector2(speedX, speedY));
+                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetSprites();
+                }
+                else if (name == "Moving Spike") {
+                    float movingDuration = 0.0f;
+                    float speedX = 0.0f;
+                    float speedY = 0.0f;
+
+                    if (obj.contains("properties")) {
+                        for (const auto& prop : obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "MovingDuration") {
+                                movingDuration = prop["value"];
+                            }
+                            else if (propName == "SpeedX") {
+                                speedX = prop["value"];
+                            }
+                            else if (propName == "SpeedY") {
+                                speedY = prop["value"];
+                            }
+                        }
+                    }
+                    ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
+                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetSprites();
+                }
+            }
+        }
+        if (layer["name"] == "Enemys") {
+            for (const auto& obj : layer["objects"]) {
+                std::string name = obj["name"];
+                float x = obj["x"];
+                float y = obj["y"];
+                if (name == "Enemy Simple") {
+                    EnemySimple* enemySimple = new EnemySimple(this, 60, 50, 200, 50);
+                    enemySimple->SetPosition(Vector2(x, y));
+                }
+                else if (name == "Flying Enemy") {
+                    FlyingEnemySimple* flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 100);
+                    flyingEnemySimple->SetPosition(Vector2(x, y));
+                }
+            }
+        }
+        if (layer["name"] == "Player") {
+            for (const auto& obj : layer["objects"]) {
+                float x = obj["x"];
+                float y = obj["y"];
+                mPlayer = new Player(this, 50, 85);
+                mPlayer->SetPosition(Vector2(x, y));
+                mPlayer->SetStartingPosition(Vector2(x, y));
+            }
+        }
+    }
+}
+
 
 void Game::RunLoop()
 {
@@ -314,7 +366,7 @@ void Game::UpdateGame()
     if (!mIsPaused) {
         UpdateActors(deltaTime);
     }
-        UpdateCamera(deltaTime);
+    UpdateCamera(deltaTime);
 }
 
 void Game::UpdateActors(float deltaTime)
@@ -348,8 +400,8 @@ void Game::UpdateActors(float deltaTime)
 
 }
 
-void Game::UpdateCamera(float deltatime) {
-    mCamera->Update(deltatime);
+void Game::UpdateCamera(float deltaTime) {
+    mCamera->Update(deltaTime);
 }
 
 
@@ -357,13 +409,13 @@ void Game::AddGround(class Ground* g) {
     mGrounds.emplace_back(g);
 }
 
-
 void Game::RemoveGround(class Ground *g) {
     auto iter = std::find(mGrounds.begin(), mGrounds.end(), g);
     if (iter != mGrounds.end()) {
         mGrounds.erase(iter);
     }
 }
+
 
 void Game::AddFireBall(class FireBall *f) {
     mFireBalls.emplace_back(f);
@@ -376,6 +428,7 @@ void Game::RemoveFireball(class FireBall *f) {
     }
 }
 
+
 void Game::AddEnemy(class Enemy *e) {
     mEnemys.emplace_back(e);
 }
@@ -386,6 +439,7 @@ void Game::RemoveEnemy(class Enemy *e) {
         mEnemys.erase(iter);
     }
 }
+
 
 void Game::AddActor(Actor* actor)
 {
@@ -418,6 +472,7 @@ void Game::RemoveActor(Actor* actor)
     }
 }
 
+
 void Game::AddDrawable(class DrawComponent *drawable)
 {
     mDrawables.emplace_back(drawable);
@@ -436,11 +491,18 @@ void Game::RemoveDrawable(class DrawComponent *drawable)
 
 void Game::GenerateOutput()
 {
-    // Set draw color to black
-    SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
+    // Set draw color to green
+    // SDL_SetRenderDrawColor(mRenderer, 0, 88, 105, 255);
 
     // Clear back buffer
     SDL_RenderClear(mRenderer);
+
+    DrawParallaxBackground(); // desenha o fundo com repetição horizontal
+    // Ordem de desenho: mais distantes primeiro
+    // DrawParallaxLayer(mSky,        0.1f, 0, mWindowHeight / 2);  // camada mais distante
+    // DrawParallaxLayer(mMountains,  0.3f, mWindowHeight / 4, mWindowHeight / 3);  // montanhas ao fundo
+    // DrawParallaxLayer(mTreesBack,  0.5f, mWindowHeight / 3, mWindowHeight / 2);  // árvores distantes
+    // DrawParallaxLayer(mTreesFront, 0.7f, mWindowHeight / 2, mWindowHeight / 2);  // árvores próximas
 
     for (auto drawable : mDrawables)
     {
@@ -451,12 +513,49 @@ void Game::GenerateOutput()
     SDL_RenderPresent(mRenderer);
 }
 
+SDL_Texture* Game::LoadTexture(const std::string& texturePath) {
+    // TODO 4.1 (~4 linhas): Utilize a função `IMG_Load` para carregar a imagem passada como parâmetro
+    //  `texturePath`. Esse função retorna um ponteiro para `SDL_Surface*`. Retorne `nullptr` se a
+    //  imagem não foi carregada com sucesso.
+    SDL_Surface* surface = IMG_Load(texturePath.c_str());
+    if (!surface) {
+        SDL_Log("Falha ao carregar imagem %s: %s", texturePath.c_str(), IMG_GetError());
+        return nullptr;
+    }
+
+    // TODO 4.2 (~6 linhas): Utilize a função `SDL_CreateTextureFromSurface` para criar uma textura a partir
+    //  da imagem carregada anteriormente. Essa função retorna um ponteiro para `SDL_Texture*`. Logo após criar
+    //  a textura, utilize a função `SDL_FreeSurface` para liberar a imagem carregada. Se a textura foi carregada
+    //  com sucesso, retorne o ponteiro para a textura. Caso contrário, retorne `nullptr`.
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+    SDL_FreeSurface(surface); // Libera a superfície, já não é mais necessária
+
+    if (!texture) {
+        SDL_Log("Falha ao criar textura a partir de %s: %s", texturePath.c_str(), SDL_GetError());
+        return nullptr;
+    }
+
+    return texture;
+}
+
 void Game::Shutdown()
 {
+    // Delete actors
     while (!mActors.empty())
     {
         delete mActors.back();
     }
+
+    // Delete level data
+    if (mLevelData != nullptr)
+    {
+        for (int i = 0; i < mLevelHeight; ++i)
+        {
+            if (mLevelData[i] != nullptr)
+                delete[] mLevelData[i];
+        }
+    }
+    delete[] mLevelData;
     delete mCamera;
     delete mPlayer;
 
@@ -468,4 +567,52 @@ void Game::Shutdown()
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);
     SDL_Quit();
+}
+
+
+void Game::DrawParallaxBackground()
+{
+    float parallaxFactor = 0.55f; // fundo se move mais devagar que a câmera
+
+    int bgWidth, bgHeight;
+    SDL_QueryTexture(mBackGroundTexture, nullptr, nullptr, &bgWidth, &bgHeight);
+
+    // Calcula o offset horizontal com base na câmera
+    int offsetX = static_cast<int>(mCamera->GetPosCamera().x * parallaxFactor) % bgWidth;
+    if (offsetX < 0) offsetX += bgWidth;
+
+    // Desenha blocos horizontais suficientes para cobrir a largura da janela
+    for (int x = -offsetX; x < mWindowWidth; x += bgWidth)
+    {
+        SDL_Rect dest = {
+            x,
+            0,
+            bgWidth,
+            mWindowHeight
+        };
+
+        SDL_RenderCopy(mRenderer, mBackGroundTexture, nullptr, &dest);
+    }
+}
+
+
+void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h)
+{
+    int texW, texH;
+    SDL_QueryTexture(texture, nullptr, nullptr, &texW, &texH);
+
+    int offsetX = static_cast<int>(mCamera->GetPosCamera().x * parallaxFactor) % texW;
+    if (offsetX < 0) offsetX += texW;
+
+    for (int x = -offsetX; x < mWindowWidth; x += texW)
+    {
+        SDL_Rect dest = {
+            x,
+            y,
+            texW,
+            h
+        };
+
+        SDL_RenderCopy(mRenderer, texture, nullptr, &dest);
+    }
 }

@@ -17,10 +17,17 @@
 #include "Actors/Enemy.h"
 #include "Actors/EnemySimple.h"
 #include "Actors/FlyingEnemySimple.h"
+#include "Math.h"
+#include <string>
 
 class Game
 {
 public:
+    // int LEVEL_WIDTH = 0;
+    // int LEVEL_HEIGHT = 0;
+    // int TILE_SIZE = 0;
+    // int SPAWN_DISTANCE = 700;
+
     Game(int windowWidth, int windowHeight, int FPS);
 
     bool Initialize();
@@ -49,7 +56,7 @@ public:
 
     Player* GetPlayer() { return mPlayer; }
 
-    void UpdateCamera(float deltatime);
+    void UpdateCamera(float deltaTime);
     class Camera* GetCamera() { return mCamera; }
 
     void AddFireBall(class FireBall* f);
@@ -60,10 +67,23 @@ public:
     void RemoveEnemy(class Enemy* e);
     std::vector<class Enemy*>& GetEnemys() { return mEnemys; }
 
+    int **GetLevelData() const { return mLevelData; }
+    int GetTileSize() { return mTileSize; }
+
+
+    SDL_Texture* LoadTexture(const std::string& texturePath);
+
+    int GetFPS() { return mFPS; }
+
 private:
     void ProcessInput();
     void UpdateGame();
     void GenerateOutput();
+
+    // Load the level from a CSV file as a 2D array
+    void LoadMapMetadata(const std::string &fileName);
+    int **LoadLevel(const std::string& fileName, int width, int height);
+    void LoadObjects(const std::string& fileName);
 
     // All the actors in the game
     std::vector<class Actor*> mActors;
@@ -100,4 +120,20 @@ private:
     std::vector<class FireBall*> mFireBalls;
     std::vector<class Enemy*> mEnemys;
     SDL_GameController* mController;
+
+    // Level data
+    int **mLevelData;
+    int mLevelWidth;
+    int mLevelHeight;
+    int mTileSize;
+
+    void DrawParallaxBackground();
+    void DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h);
+
+    SDL_Texture* mBackGroundTexture;
+
+    SDL_Texture* mSky;
+    SDL_Texture* mMountains;
+    SDL_Texture* mTreesBack;
+    SDL_Texture* mTreesFront;
 };

@@ -16,6 +16,12 @@ public:
     float GetWidth() { return mWidth; }
 
 private:
+    void Deactivate();
+    void Activate();
+
+    void ResolveGroundCollision();
+    void ResolveEnemyCollision();
+
     float mWidth;
     float mHeight;
     float mSpeed;
@@ -24,7 +30,10 @@ private:
 
     float mDamage;
 
-    class DrawComponent* mDrawComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
+
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
 };

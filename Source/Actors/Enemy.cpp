@@ -6,11 +6,17 @@
 
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
-#include "../Components/DrawComponent.h"
 #include "../Components/AABBComponent.h"
+#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/DrawComponents/DrawSpriteComponent.h"
+#include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
 Enemy::Enemy(Game *game, float width, float height, float movespeed, float heathPoints)
     :Actor(game)
+    ,mDrawPolygonComponent(nullptr)
+    ,mDrawSpriteComponent(nullptr)
+    ,mDrawAnimatedComponent(nullptr)
+
     ,mWidth(width)
     ,mHeight(height)
     ,mMoveSpeed(movespeed)
@@ -30,12 +36,11 @@ Enemy::Enemy(Game *game, float width, float height, float movespeed, float heath
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawComponent = new DrawComponent(this, vertices);
-    mRigidBodyComponent = new RigidBodyComponent(this, 1, true, 40000, 1300);
-    mAABBComponent = new AABBComponent(this, v1, v3, {245, 154, 25, 255});
+    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {245, 154, 25, 255});
+    mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1300);
+    mAABBComponent = new AABBComponent(this, v1, v3);
 
     game->AddEnemy(this);
-
 }
 
 Enemy::~Enemy() {

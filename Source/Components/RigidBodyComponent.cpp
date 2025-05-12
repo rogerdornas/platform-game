@@ -5,12 +5,11 @@
 #include "RigidBodyComponent.h"
 #include "../Actors/Actor.h"
 #include "../Game.h"
+#include "../Components/AABBComponent.h"
 
-RigidBodyComponent::RigidBodyComponent(class Actor* owner, float mass, bool applyGravity, float maxSpeedX, float maxSpeedY, int updateOrder)
+RigidBodyComponent::RigidBodyComponent(class Actor* owner, float mass, float maxSpeedX, float maxSpeedY, int updateOrder)
     :Component(owner, updateOrder)
     ,mMass(mass)
-    ,mApplyGravity(applyGravity)
-    ,mGravity(3000.0f)
     ,mMaxSpeedX(maxSpeedX)
     ,mMaxSpeedY(maxSpeedY)
     ,mAngularSpeed(0.0f)
@@ -25,12 +24,6 @@ void RigidBodyComponent::ApplyForce(const Vector2 &force) {
 
 void RigidBodyComponent::Update(float deltaTime)
 {
-    // Apply gravity acceleration
-    if (mApplyGravity) {
-        // SetVelocity(Vector2(GetVelocity().x, GetVelocity().y + mGravity * deltaTime));
-        ApplyForce(Vector2::UnitY * mGravity);
-    }
-
     Vector2 position = mOwner->GetPosition();
 
     // --------------
@@ -75,33 +68,4 @@ void RigidBodyComponent::Update(float deltaTime)
 
 
     mOwner->SetRotation(rot);
-}
-
-void RigidBodyComponent::ScreenWrap(Vector2 &position)
-{
-    // --------------
-    // TODO - PARTE 1
-    // --------------
-
-    // TODO 3.1 (~6 linhas): Verifique se o objeto saiu pelo lado esquerdo da tela. Se tiver saído,
-    //  altere sua posição horizontal para ser igual à largura da tela. Caso contrário, verifique
-    //  se o objeto saiu pelo lado direito. Se tiver saído, altere sua posição horizontal para ser
-    //  igual a zero.
-    if (position.x < 0) {
-        position.x = mOwner->GetGame()->GetWindowWidth();
-    }
-    else if (position.x > mOwner->GetGame()->GetWindowWidth()) {
-        position.x = 0;
-    }
-
-    // TODO 3.2 (~6 linhas): Verifique se o objeto saiu por cima da tela. Se tiver saído,
-    //  altere sua posição vertical para ser igual à altura da tela. Caso contrário, verifique
-    //  se o objeto saiu por baixo. Se tiver saído, altere sua posição vertical para ser
-    //  igual a zero.
-    if (mOwner->GetPosition().y < 0) {
-        position.y = mOwner->GetGame()->GetWindowHeight();
-    }
-    else if (mOwner->GetPosition().y > mOwner->GetGame()->GetWindowHeight()) {
-        position.y = 0;
-    }
 }

@@ -13,6 +13,10 @@ public:
     void OnUpdate(float deltaTime) override;
 
 private:
+    void ResolveGroundCollision();
+    void MovementAfterPlayerSpotted();
+    void MovementBeforePlayerSpotted();
+
     bool mPlayerSpotted;
     float mDistToSpotPlayer;
     float mWalkingAroundTimer;

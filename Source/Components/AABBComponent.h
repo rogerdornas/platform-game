@@ -11,13 +11,12 @@
 class AABBComponent : public Component
 {
 public:
-    AABBComponent(class Actor* owner, Vector2 min, Vector2 max, SDL_Color color = {255, 255, 255, 255});
+    AABBComponent(class Actor* owner, Vector2 min, Vector2 max);
 
     void SetMin(Vector2 min) { mMin = min; }
     void SetMax(Vector2 max) { mMax = max; }
     Vector2 GetMin() { return mMin; }
     Vector2 GetMax() { return  mMax; }
-    SDL_Color GetColor() { return mColor; }
 
     void SetActive(bool active) { mIsActive = active; }
     bool IsActive() const { return mIsActive; }
@@ -29,5 +28,4 @@ private:
     Vector2 mMin;
     Vector2 mMax;
     bool mIsActive;
-    SDL_Color mColor;
 };

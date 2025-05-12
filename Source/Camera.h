@@ -8,10 +8,10 @@
 
 class Camera {
 public:
-    Camera(class Game* game);
+    Camera(class Game* game, Vector2 startPosition);
 
     Vector2 GetPosCamera() { return mPos; }
-    void Update(float deltatime);
+    void Update(float deltaTime);
 
     bool mLookUp;
     bool mLookDown;
@@ -19,7 +19,7 @@ public:
 private:
     Vector2 mPos;
     class Game* mGame;
-    const float mCameraLerpSpeed = 5.0f;
+    const float mCameraLerpSpeed = 6.0f;
     Vector2 mOffset;
     float mDistMove;
     float mTimerToStartLooking;

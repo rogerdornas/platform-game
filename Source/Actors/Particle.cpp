@@ -5,13 +5,12 @@
 #include "Particle.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
-#include "../Components/DrawComponent.h"
 #include "../Random.h"
 
 Particle::Particle(Game* game, float lifeTime)
     :Actor(game)
     ,mDeathTimer(lifeTime)
-    ,mDrawComponent(nullptr)
+    // ,mDrawComponent(nullptr)
     ,mRigidBodyComponent(nullptr)
 {
     // Componente visual
@@ -25,7 +24,7 @@ Particle::Particle(Game* game, float lifeTime)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawComponent = new DrawComponent(this, vertices);
+    // mDrawComponent = new DrawComponent(this, vertices);
     mRigidBodyComponent = new RigidBodyComponent(this, 0.1);
 
     // Define uma força aleatória para dar movimento à partícula

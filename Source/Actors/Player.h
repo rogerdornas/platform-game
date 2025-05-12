@@ -21,7 +21,16 @@ public:
 
     bool GetIsOnGround() { return mIsOnGround; }
 
+    void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
+
 private:
+    void ResolveGroundCollision();
+    void ResolveEnemyCollision();
+
+    void ManageAnimations();
+
+    Vector2 mStartingPosition;
+
     float mHeight;
     float mWidth;
 
@@ -30,7 +39,7 @@ private:
     Vector2 mMovingGroundVelocity;
 
     bool mIsJumping;                            // Está no meio de um pulo sustentado?
-    float mJumpTime;                            // Quanto tempo já pulou
+    float mJumpTimer;                            // Quanto tempo já pulou
     float mMaxJumpTime;                         // Tempo máximo de pulo sustentado
     float mJumpForce;                           // Força contínua durante o pulo
     bool mCanJump;                              // Usado para nao continuar pulando ao segurar botao de pular
@@ -69,7 +78,16 @@ private:
     float mWallJumpTimer;                       // Timer enquanto está pulando de uma parede
     float mWallJumpMaxTime;                     // Tempo maximo que fica pulando de uma parede
 
-    class DrawComponent* mDrawComponent;
+    float mKnockBackSpeed;
+    float mKnockBackTimer;
+    float mKnockBackDuration;
+
+    bool mIsRunning;                            // Atributos para animar sprites
+
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
+
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
     class DashComponent* mDashComponent;

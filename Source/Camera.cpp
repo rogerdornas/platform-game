@@ -4,10 +4,10 @@
 
 #include "Camera.h"
 
-Camera::Camera(class Game *game)
+Camera::Camera(class Game *game, Vector2 startPosition)
     :mGame(game)
+    ,mPos(startPosition)
 {
-    mPos = Vector2::Zero;
     mLookUp = false;
     mLookDown = false;
     mOffset = Vector2::Zero;
@@ -16,7 +16,7 @@ Camera::Camera(class Game *game)
     mLookDelay = 1.2f;
 }
 
-// void Camera::Update(float deltatime) {
+// void Camera::Update(float deltaTime) {
 //     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
 //     Vector2 basePos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - mGame->GetWindowHeight()/2);
 //
@@ -56,19 +56,20 @@ Camera::Camera(class Game *game)
 //     }
 // }
 
-void Camera::Update(float deltatime) {
+void Camera::Update(float deltaTime) {
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
-    Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - mGame->GetWindowHeight()/2);
+    // Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - 2 * mGame->GetWindowHeight() / 3); // Centro da camera a 2/3 do topo
+    Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - mGame->GetWindowHeight() / 2); // Centro da camera no centro da altura da tela
 
     // Aplica deslocamento vertical se estiver olhando para cima ou para baixo
     if (mLookUp) {
-        mTimerToStartLooking += deltatime;
+        mTimerToStartLooking += deltaTime;
         if (mTimerToStartLooking >= mLookDelay) {
             targetPos.y -= mDistMove;
         }
     }
     else if (mLookDown) {
-        mTimerToStartLooking += deltatime;
+        mTimerToStartLooking += deltaTime;
         if (mTimerToStartLooking >= mLookDelay) {
             targetPos.y += mDistMove;
         }
@@ -80,18 +81,22 @@ void Camera::Update(float deltatime) {
 
     // Sempre interpola a posição atual da câmera para a posição-alvo
     mPos = Vector2(
-        mPos.x + (targetPos.x - mPos.x) * mCameraLerpSpeed * deltatime,
-        mPos.y + (targetPos.y - mPos.y) * mCameraLerpSpeed * deltatime
+        int(mPos.x + (targetPos.x - mPos.x) * mCameraLerpSpeed * deltaTime),
+        int(mPos.y + (targetPos.y - mPos.y) * mCameraLerpSpeed * deltaTime)
     );
+
+    // mPos = Vector2::Lerp(mPos, targetPos, mCameraLerpSpeed * deltaTime);
+
+
 
     // Reset flags para o próximo frame
     mLookUp = false;
     mLookDown = false;
 
     // Trava a câmera abaixo de certo valor
-    if (mPos.y > mGame->GetWindowHeight()) {
-        mPos.y = mGame->GetWindowHeight();
-    }
+    // if (mPos.y > mGame->GetWindowHeight()) {
+    //     mPos.y = mGame->GetWindowHeight();
+    // }
 }
 
 

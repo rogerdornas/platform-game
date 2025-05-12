@@ -17,7 +17,7 @@ public:
 private:
     float mDeathTimer;
 
-    class DrawComponent* mDrawComponent;
+    // class DrawComponent* mDrawComponent;
     class RigidBodyComponent* mRigidBodyComponent;
 
 };

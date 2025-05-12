@@ -24,7 +24,6 @@ void DashComponent::UseDash(bool isOnGround) {
         mIsDashing = true;
         mDashTimer = 0.0f;
         mDashCooldownTimer = mDashCooldown;
-        // mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, 0));
         // Se estiver no ar, define a velocidade y para 0
         if (!isOnGround) {
             mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, 0));
@@ -32,7 +31,6 @@ void DashComponent::UseDash(bool isOnGround) {
         else { // Se estiver no chão, realiza o dash levando em conta a velocidade y, útil para plataformas móveis
             mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, mOwner->GetComponent<RigidBodyComponent>()->GetVelocity().y));
         }
-        // mOwner->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(mOwner->GetForward().x * mDashSpeed, mOwner->GetComponent<RigidBodyComponent>()->GetVelocity().y));
 
         // Se estiver no ar, marca que já usou o dash
         if (!isOnGround) {

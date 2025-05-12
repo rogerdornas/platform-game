@@ -1,0 +1,165 @@
+{
+  "frames": [
+    {
+      "filename": "Idle.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 38,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run1.png",
+      "frame": {
+        "x": 0,
+        "y": 42,
+        "w": 38,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 38,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run2.png",
+      "frame": {
+        "x": 38,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 38,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run3.png",
+      "frame": {
+        "x": 0,
+        "y": 84,
+        "w": 38,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 38,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run4.png",
+      "frame": {
+        "x": 38,
+        "y": 42,
+        "w": 38,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 38,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run5.png",
+      "frame": {
+        "x": 38,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 38,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 38,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Blocks.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 76,
+      "h": 126
+    },
+    "scale": 1
+  }
+}

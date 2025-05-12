@@ -10,11 +10,10 @@
 #include "RigidBodyComponent.h"
 
 
-AABBComponent::AABBComponent(class Actor *owner, Vector2 min, Vector2 max, SDL_Color color)
+AABBComponent::AABBComponent(class Actor *owner, Vector2 min, Vector2 max)
     :Component(owner)
     ,mMin(min)
     ,mMax(max)
-    ,mColor(color)
 {
     mIsActive = true;
 }
@@ -83,8 +82,11 @@ std::array<bool, 4> AABBComponent::ResolveColision(AABBComponent &b) {
         colision[3] = false;
     }
 
-    // parametro para colisoes em quinas
-    float dist = 15;
+    // float dist = 15;
+    float dist = 1440.0 / GetGame()->GetFPS(); // conta torta
+    if (dist > 25) {
+        dist = 25;
+    }
 
     // Se menor distancia de colisao for top
     if (colision[0]) {
@@ -126,6 +128,22 @@ std::array<bool, 4> AABBComponent::ResolveColision(AABBComponent &b) {
             colision[3] = true;
             return colision;
         }
+        if (Math::Abs(bottom - left) < dist && vel.y < 0) {
+            GetOwner()->SetPosition(posA + dLeft);
+            colision[0] = false;
+            colision[1] = false;
+            colision[2] = true;
+            colision[3] = false;
+            return colision;
+        }
+        if (Math::Abs(bottom - right) < dist && vel.y < 0) {
+            GetOwner()->SetPosition(posA + dRight);
+            colision[0] = false;
+            colision[1] = false;
+            colision[2] = false;
+            colision[3] = true;
+            return colision;
+        }
         GetOwner()->SetPosition(posA + min);
         return colision;
     }
@@ -140,7 +158,16 @@ std::array<bool, 4> AABBComponent::ResolveColision(AABBComponent &b) {
             GetOwner()->SetPosition(posA + min);
             return colision;
         }
-        if (Math::Abs(left - top) < dist && vel.y >= 0) {
+        if (Math::Abs(left - top) < dist && vel.y > 0 && vel.x == 0) {
+            GetOwner()->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(vel.x, 0));
+            GetOwner()->SetPosition(posA + dTop);
+            colision[0] = true;
+            colision[1] = false;
+            colision[2] = false;
+            colision[3] = false;
+            return colision;
+        }
+        if (Math::Abs(left - top) < dist && vel.y > 0) {
             GetOwner()->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(vel.x, 0));
             GetOwner()->SetPosition(posA + dTop);
             colision[0] = true;
@@ -164,7 +191,16 @@ std::array<bool, 4> AABBComponent::ResolveColision(AABBComponent &b) {
             GetOwner()->SetPosition(posA + min);
             return colision;
         }
-        if (Math::Abs(right - top) < dist && vel.y >= 0) {
+        if (Math::Abs(right - top) < dist && vel.y > 0 && vel.x == 0) {
+            GetOwner()->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(vel.x, 0));
+            GetOwner()->SetPosition(posA + dTop);
+            colision[0] = true;
+            colision[1] = false;
+            colision[2] = false;
+            colision[3] = false;
+            return colision;
+        }
+        if (Math::Abs(right - top) < dist && vel.y > 0) {
             GetOwner()->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2(vel.x, 0));
             GetOwner()->SetPosition(posA + dTop);
             colision[0] = true;

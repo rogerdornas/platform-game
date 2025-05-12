@@ -31,7 +31,10 @@ protected:
     float mKnockBackTimer;
     float mKnockBackDuration;
 
-    class DrawComponent* mDrawComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
+
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
 };

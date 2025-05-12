@@ -7,6 +7,8 @@ set(PROJECT_NAME "game-v0")
 project(${PROJECT_NAME})
 
 find_package(SDL2 2.32.2 EXACT REQUIRED)
+find_package(SDL2_image REQUIRED)
+
 add_executable(${PROJECT_NAME}
         Source/Main.cpp
         Source/Math.cpp
@@ -14,8 +16,6 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Actor.cpp
         Source/Components/Component.cpp
         Source/Game.cpp
-        Source/Components/DrawComponent.cpp
-        Source/Components/DrawComponent.h
         Source/Components/RigidBodyComponent.cpp
         Source/Components/RigidBodyComponent.h
         Source/Components/CircleColliderComponent.cpp
@@ -44,7 +44,21 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Enemy.h
         Source/Actors/FlyingEnemySimple.cpp
         Source/Actors/FlyingEnemySimple.h
+        Source/Json.h
+        Source/CSV.h
+        Source/Components/DrawComponents/DrawAnimatedComponent.cpp
+        Source/Components/DrawComponents/DrawAnimatedComponent.h
+        Source/Components/DrawComponents/DrawComponent.cpp
+        Source/Components/DrawComponents/DrawComponent.h
+        Source/Components/DrawComponents/DrawPolygonComponent.cpp
+        Source/Components/DrawComponents/DrawPolygonComponent.h
+        Source/Components/DrawComponents/DrawSpriteComponent.cpp
+        Source/Components/DrawComponents/DrawSpriteComponent.h
+        Source/Components/DrawComponents/DrawGroundSpritesComponent.cpp
+        Source/Components/DrawComponents/DrawGroundSpritesComponent.h
 )
 
 
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)
+
