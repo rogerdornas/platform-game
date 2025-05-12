@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="84">
  <editorsettings>
-  <export target="Forest.csv" format="csv"/>
+  <export target="Forest.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="Forest.tsx"/>
  <layer id="1" name="Camada de Blocos 1" width="1000" height="1000">
@@ -1045,7 +1045,7 @@
     <property name="SpeedY" type="float" value="0"/>
    </properties>
   </object>
-  <object id="61" name="Spine" x="16448" y="14976" width="288" height="64"/>
+  <object id="61" name="Spike" x="16448" y="14976" width="288" height="64"/>
   <object id="63" name="Ground" x="15552" y="14112" width="256" height="96"/>
   <object id="64" name="Moving Ground" x="15008" y="15072" width="256" height="96">
    <properties>
