@@ -88,8 +88,8 @@ void Ground::SetSprites() {
 
     int** levelData = GetGame()->GetLevelData();
 
-    for (int row = minRow; row <= maxRow; ++row) {
-        for (int col = minCol; col <= maxCol; ++col) {
+    for (int row = minRow; row < maxRow; ++row) {
+        for (int col = minCol; col < maxCol; ++col) {
             int tile = levelData[row][col];
 
             int tileX = col * GetGame()->GetTileSize();
