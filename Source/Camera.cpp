@@ -23,12 +23,12 @@ Camera::Camera(class Game *game, Vector2 startPosition)
 //     // Define o alvo do deslocamento (offset)
 //     Vector2 targetOffset(0.0f, 0.0f);
 //     if (mLookUp) {
-//         mTimerToStartLooking += deltatime;
+//         mTimerToStartLooking += deltaTime;
 //         if (mTimerToStartLooking >= mLookDelay) {
 //             targetOffset.y = -mDistMove;
 //         }
 //     } else if (mLookDown) {
-//         mTimerToStartLooking += deltatime;
+//         mTimerToStartLooking += deltaTime;
 //         if (mTimerToStartLooking >= mLookDelay) {
 //             targetOffset.y = mDistMove;
 //         }
@@ -39,8 +39,8 @@ Camera::Camera(class Game *game, Vector2 startPosition)
 //
 //     // Sempre interpola o deslocamento suavemente
 //     mOffset = Vector2(
-//         mOffset.x + (targetOffset.x - mOffset.x) * mCameraLerpSpeed * deltatime,
-//         mOffset.y + (targetOffset.y - mOffset.y) * mCameraLerpSpeed * deltatime
+//         mOffset.x + (targetOffset.x - mOffset.x) * mCameraLerpSpeed * deltaTime,
+//         mOffset.y + (targetOffset.y - mOffset.y) * mCameraLerpSpeed * deltaTime
 //     );
 //
 //     // Atualiza a posição final da câmera: posição do player + deslocamento suave
@@ -51,9 +51,9 @@ Camera::Camera(class Game *game, Vector2 startPosition)
 //     mLookDown = false;
 //
 //     // Trava a câmera para não descer demais
-//     if (mPos.y > mGame->GetWindowHeight()) {
-//         mPos.y = mGame->GetWindowHeight();
-//     }
+//     // if (mPos.y > mGame->GetWindowHeight()) {
+//     //     mPos.y = mGame->GetWindowHeight();
+//     // }
 // }
 
 void Camera::Update(float deltaTime) {
@@ -98,6 +98,26 @@ void Camera::Update(float deltaTime) {
     //     mPos.y = mGame->GetWindowHeight();
     // }
 }
+
+
+// void Camera::Update(float deltaTime) {
+//     Player* player = mGame->GetPlayer();
+//     float speed = 500;
+//
+//     mPos.x += speed * deltaTime;
+//     // float targetPosY = player->GetPosition().y - 2 * (mGame->GetWindowHeight() / 3);
+//     float targetPosY = player->GetPosition().y - mGame->GetWindowHeight() / 2;
+//     mPos.y = int(mPos.y + (targetPosY - mPos.y) * mCameraLerpSpeed * deltaTime);
+//
+//
+//     if (player->GetPosition().x < mPos.x - 50) {
+//         player->SetPosition(player->GetStartingPosition());
+//         // mPos = player->GetStartingPosition();
+//         mPos = Vector2(player->GetStartingPosition().x - mGame->GetWindowWidth()/2, player->GetStartingPosition().y - mGame->GetWindowHeight()/2);
+//
+//     }
+// }
+
 
 
 
