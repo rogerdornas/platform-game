@@ -56,6 +56,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/DrawComponents/DrawSpriteComponent.h
         Source/Components/DrawComponents/DrawGroundSpritesComponent.cpp
         Source/Components/DrawComponents/DrawGroundSpritesComponent.h
+        Source/Actors/Fox.cpp
+        Source/Actors/Fox.h
 )
 
 

@@ -14,6 +14,10 @@ public:
     void OnUpdate(float deltaTime) override;
 
     float GetWidth() { return mWidth; }
+    void SetWidth(float w) { mWidth = w; }
+    void SetHeight(float h) { mHeight = h; }
+    void SetSpeed(float s) { mSpeed = s; }
+    void SetIsFromEnemy() { mIsFromEnemy = true; }
 
 private:
     void Deactivate();
@@ -21,6 +25,7 @@ private:
 
     void ResolveGroundCollision();
     void ResolveEnemyCollision();
+    void ResolvePlayerCollision();
 
     float mWidth;
     float mHeight;
@@ -29,6 +34,8 @@ private:
     float mDurationTimer;
 
     float mDamage;
+
+    bool mIsFromEnemy;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;

@@ -21,6 +21,8 @@
 #include "Json.h"
 #include <SDL_image.h>
 
+#include "Actors/Fox.h"
+
 Game::Game(int windowWidth, int windowHeight, int FPS)
         :mWindow(nullptr)
         ,mRenderer(nullptr)
@@ -34,13 +36,22 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
         ,mWindowHeight(windowHeight)
         ,mFPS(FPS)
         ,mIsPaused(false)
+        // ,mScale(0.3125f)
+        // ,mScale(0.65625f)
+        // ,mScale(1)
+        ,mResetLevel(false)
         ,mBackGroundTexture(nullptr)
         ,mSky(nullptr)
         ,mMountains(nullptr)
         ,mTreesBack(nullptr)
         ,mTreesFront(nullptr)
 {
-
+    float ratio = mOriginalWindowHeight / mWindowHeight;
+    int numTiles = 32 / ratio;
+    mScale = numTiles / 32.0;
+    // SDL_Log("ratio = %f", ratio);
+    // SDL_Log("numTiles = %d", numTiles);
+    // SDL_Log("scale = %f", mScale);
 }
 
 bool Game::Initialize()
@@ -104,6 +115,7 @@ void Game::InitializeActors()
     // Pool de Fireballs
     for (int i = 0; i < 5; i++) {
         FireBall* fireBall = new FireBall(this);
+        fireBall->SetScale(mScale);
     }
 
     LoadMapMetadata("../Assets/Levels/Forest/Forest.json");
@@ -120,6 +132,8 @@ void Game::InitializeActors()
     LoadObjects("../Assets/Levels/Forest/Forest.json");
     // LoadObjects("../Assets/Levels/Pain/Pain.json");
     // LoadObjects("../Assets/Levels/Run/Run.json");
+    Fox* fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
+    fox->SetPosition(Vector2(23000 * mScale, 16000 * mScale));
 
     mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mLevelHeight / 2));
 }
@@ -133,9 +147,9 @@ void Game::LoadMapMetadata(const std::string &fileName) {
 
     nlohmann::json mapData;
     file >> mapData;
-    int height = mapData["height"];
-    int width = mapData["width"];
-    int tileSize = mapData["tilewidth"];
+    int height = int(mapData["height"]);
+    int width = int(mapData["width"]);
+    int tileSize = int(mapData["tilewidth"]) * mScale;
     mLevelHeight = height;
     mLevelWidth = width;
     mTileSize = tileSize;
@@ -212,17 +226,19 @@ void Game::LoadObjects(const std::string &fileName) {
         if (layer["name"] == "Grounds") {
             for (const auto& obj : layer["objects"]) {
                 std::string name = obj["name"];
-                float x = obj["x"];
-                float y = obj["y"];
-                float width = obj["width"];
-                float height = obj["height"];
+                float x = float(obj["x"]) * mScale;
+                float y = float(obj["y"]) * mScale;
+                float width = float(obj["width"]) * mScale;
+                float height = float(obj["height"]) * mScale;
                 if (name == "Ground") {
                     ground = new Ground(this, width, height);
+                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
                 else if (name == "Spike") {
                     ground = new Ground(this, width, height, true);
+                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
@@ -246,6 +262,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ground = new Ground(this, width, height, false, true, movingDuration, Vector2(speedX, speedY));
+                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
@@ -269,6 +286,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
+                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
@@ -277,23 +295,26 @@ void Game::LoadObjects(const std::string &fileName) {
         if (layer["name"] == "Enemys") {
             for (const auto& obj : layer["objects"]) {
                 std::string name = obj["name"];
-                float x = obj["x"];
-                float y = obj["y"];
+                float x = float(obj["x"]) * mScale;
+                float y = float(obj["y"]) * mScale;
                 if (name == "Enemy Simple") {
-                    EnemySimple* enemySimple = new EnemySimple(this, 60, 50, 200, 50);
+                    EnemySimple* enemySimple = new EnemySimple(this, 60 * mScale, 50 * mScale, 200 * mScale, 50);
+                    enemySimple->SetScale(mScale);
                     enemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Flying Enemy") {
-                    FlyingEnemySimple* flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 100);
+                    FlyingEnemySimple* flyingEnemySimple = new FlyingEnemySimple(this, 50 * mScale, 80 * mScale, 250 * mScale, 100);
+                    flyingEnemySimple->SetScale(mScale);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                 }
             }
         }
         if (layer["name"] == "Player") {
             for (const auto& obj : layer["objects"]) {
-                float x = obj["x"];
-                float y = obj["y"];
-                mPlayer = new Player(this, 50, 85);
+                float x = float(obj["x"]) * mScale;
+                float y = float(obj["y"]) * mScale;
+                mPlayer = new Player(this, 50 * mScale, 85 * mScale);
+                mPlayer->SetScale(mScale);
                 mPlayer->SetPosition(Vector2(x, y));
                 mPlayer->SetStartingPosition(Vector2(x, y));
             }
@@ -325,11 +346,18 @@ void Game::ProcessInput() {
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;
+                    float ratio = 1080.0 / mWindowHeight;
+                    int numTiles = 32 / ratio;
+                    mScale = numTiles / 32.0;
+                    ResetLevel();
                 }
             break;
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     mIsPaused = !mIsPaused;
+                }
+                if (event.key.keysym.sym == SDLK_8) {
+                    Quit();
                 }
             break;
             case SDL_CONTROLLERBUTTONDOWN:
@@ -352,13 +380,13 @@ void Game::ProcessInput() {
 
 void Game::UpdateGame()
 {
-    // while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
 
-    Uint32 frameDuration = 1000.0 / mFPS;
-    Uint32 now = SDL_GetTicks();
-    if (now < mTicksCount + frameDuration) {
-        SDL_Delay((mTicksCount + frameDuration) - now);
-    }
+    // Uint32 frameDuration = 1000.0 / mFPS;
+    // Uint32 now = SDL_GetTicks();
+    // if (now < mTicksCount + frameDuration) {
+    //     SDL_Delay((mTicksCount + frameDuration) - now);
+    // }
 
     float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
     if (deltaTime > 0.05f)
@@ -371,6 +399,10 @@ void Game::UpdateGame()
     // Update all actors and pending actors
     if (!mIsPaused) {
         UpdateActors(deltaTime);
+    }
+
+    if (mResetLevel) {
+        ResetLevel();
     }
     UpdateCamera(deltaTime);
 }
@@ -563,7 +595,6 @@ void Game::Shutdown()
     }
     delete[] mLevelData;
     delete mCamera;
-    delete mPlayer;
 
     if (mController) {
         SDL_GameControllerClose(mController);
@@ -621,4 +652,28 @@ void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, 
 
         SDL_RenderCopy(mRenderer, texture, nullptr, &dest);
     }
+}
+
+void Game::ResetLevel() {
+    // Delete actors
+    while (!mActors.empty())
+    {
+        delete mActors.back();
+    }
+
+    // Delete level data
+    if (mLevelData != nullptr)
+    {
+        for (int i = 0; i < mLevelHeight; ++i)
+        {
+            if (mLevelData[i] != nullptr)
+                delete[] mLevelData[i];
+        }
+    }
+    delete[] mLevelData;
+    delete mCamera;
+
+    InitializeActors();
+
+    mResetLevel = false;
 }

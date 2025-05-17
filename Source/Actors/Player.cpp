@@ -33,8 +33,8 @@ Player::Player(Game *game, float width, float height)
     ,mCanJump(true)
     ,mMaxJumpTime(0.25f)
     ,mJumpTimer(0.0f)
-    ,mJumpForce(-1000.0f)
-    ,mMoveSpeed(700)
+    ,mJumpForce(-1000.0f * mGame->GetScale())
+    ,mMoveSpeed(700 * mGame->GetScale())
     ,mJumpCountInAir(0)
     ,mMaxJumpsInAir(1)
 
@@ -53,12 +53,12 @@ Player::Player(Game *game, float width, float height)
     ,mIsFireAttacking(false)
     ,mStopInAirFireBallMaxDuration(0.0f)
     ,mStopInAirFireBallTimer(0.0f)
-    ,mFireballRecoil(0.0f)
+    ,mFireballRecoil(0.0f * mGame->GetScale())
 
     ,mCanWallSlide(true)
     ,mIsWallSliding(false)
     ,mWallSlideSide(WallSlideSide::notSliding)
-    ,mWallSlideSpeed(300)
+    ,mWallSlideSpeed(300 * mGame->GetScale())
     ,mTryingLeavingWallSlideLeft(0)
     ,mTryingLeavingWallSlideRight(0)
     ,mTimerToLeaveWallSlidingLeft(0.15f)
@@ -68,9 +68,14 @@ Player::Player(Game *game, float width, float height)
     ,mWallJumpTimer(0.15f)
     ,mWallJumpMaxTime(0.15f)
 
-    ,mKnockBackSpeed(800.0f)
+    ,mKnockBackSpeed(800.0f * mGame->GetScale())
     ,mKnockBackDuration(0.2f)
     ,mKnockBackTimer(0.0f)
+
+    ,mHealthPoints(100.0f)
+    ,mIsInvulnerable(false)
+    ,mInvulnerableDuration(1.0f)
+    ,mInvulnerableTimer(mInvulnerableDuration)
 
     ,mIsRunning(false)
 {
@@ -101,7 +106,8 @@ Player::Player(Game *game, float width, float height)
     // mDrawAnimatedComponent->SetAnimFPS(16.0f);
 
     // Esquilo animado
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, 120, 120, "../Assets/Sprites/Esquilo/Esquilo.png", "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
+    // mDrawAnimatedComponent = new DrawAnimatedComponent(this, 120, 120, "../Assets/Sprites/Esquilo/Esquilo.png", "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.5, mWidth * 2.5, "../Assets/Sprites/Esquilo/Esquilo.png", "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
     std::vector<int> idle = {6};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
@@ -114,11 +120,12 @@ Player::Player(Game *game, float width, float height)
 
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {255, 255, 0, 255});
-    mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1600);
+    mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 1600 * mGame->GetScale());
     mAABBComponent = new AABBComponent(this, v1, v3);
-    mDashComponent = new DashComponent(this, 1500, 0.2f, 0.5f);
+    mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), 0.2f, 0.5f);
 
-    mSword = new Sword(game, 180, 113, 0.2f, 10.0f);
+    // mSword = new Sword(game, this, 180, 113, 0.15f, 10.0f);
+    mSword = new Sword(mGame, this, mWidth * 3.6, mHeight * 1.3, 0.15f, 10.0f);
 
 }
 
@@ -222,10 +229,10 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
     }
 
     if (lookUp) {
-        GetGame()->GetCamera()->mLookUp = true;
+        mGame->GetCamera()->mLookUp = true;
     }
     if (lodDown) {
-        GetGame()->GetCamera()->mLookDown = true;
+        mGame->GetCamera()->mLookDown = true;
     }
 
     if (!down && !up) {
@@ -302,7 +309,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
     // FireBall
     if (mCanFireBall) {
         if (fireBall && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration) {
-            std::vector<FireBall*> fireBalls = GetGame()->GetFireBalls();
+            std::vector<FireBall*> fireBalls = mGame->GetFireBalls();
             for (FireBall* f : fireBalls) {
                 if (f->GetState() == ActorState::Paused) {
                     f->SetState(ActorState::Active);
@@ -341,6 +348,14 @@ void Player::OnUpdate(float deltaTime)
         mIsFireAttacking = false;
     }
 
+    if (mInvulnerableTimer < mInvulnerableDuration) {
+        mInvulnerableTimer += deltaTime;
+        mIsInvulnerable = true;
+    }
+    else {
+        mIsInvulnerable = false;
+    }
+
     mTimerToLeaveWallSlidingLeft += mTryingLeavingWallSlideLeft * deltaTime;
     mTimerToLeaveWallSlidingRight += mTryingLeavingWallSlideRight * deltaTime;
 
@@ -362,21 +377,21 @@ void Player::OnUpdate(float deltaTime)
             // Gravidade menor
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
             if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 100 * deltaTime));
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 100 * mGame->GetScale() * deltaTime));
             }
         } else {
             mIsJumping = false;
             // Gravidade
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
             if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
             }
         }
     }
     else {
         // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
         if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
         }
     }
 
@@ -385,19 +400,24 @@ void Player::OnUpdate(float deltaTime)
 
 
     // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000) {
+    if (GetPosition().y > 20000 * mGame->GetScale()) {
         SetPosition(mStartingPosition);
     }
+
+    if (Died()) {
+        mGame->mResetLevel = true;
+    }
+
     if (mDrawAnimatedComponent) {
         ManageAnimations();
     }
-
+    SDL_Log("Player Life: %f", mHealthPoints);
 }
 
 void Player::ResolveGroundCollision() {
     std::array<bool, 4> collisionSide;
     std::vector<Ground*> grounds;
-    grounds = GetGame()->GetGrounds();
+    grounds = mGame->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (!g->GetIsSpike()) { // Colosão com ground
@@ -491,7 +511,8 @@ void Player::ResolveGroundCollision() {
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
                 if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    SetPosition(mStartingPosition);
+                    // SetPosition(mStartingPosition);
+                    mGame->mResetLevel = true;
 
                     // Vector2 vel = mRigidBodyComponent->GetVelocity();
                     // collisionSide = mAABBComponent->ResolveColision(*g->GetComponent<AABBComponent>());
@@ -534,12 +555,11 @@ void Player::ResolveGroundCollision() {
 void Player::ResolveEnemyCollision() {
     std::array<bool, 4> collisionSide;
     std::vector<Enemy*> enemys;
-    enemys = GetGame()->GetEnemys();
+    enemys = mGame->GetEnemys();
     if (!enemys.empty()) {
         for (Enemy* e : enemys) {
             if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
                 // SetPosition(mStartingPosition);
-
                 Vector2 vel = mRigidBodyComponent->GetVelocity();
                 collisionSide = mAABBComponent->ResolveColision(*e->GetComponent<AABBComponent>());
 
@@ -547,23 +567,22 @@ void Player::ResolveEnemyCollision() {
 
                 // Colidiu top
                 if (collisionSide[0]) {
-                    mRigidBodyComponent->SetVelocity(Vector2(vel.x, -mKnockBackSpeed));
+                    ReceiveHit(e->GetContactDamage(), Vector2::NegUnitY);
                 }
                 // Colidiu bot
                 if (collisionSide[1]) {
-                    mRigidBodyComponent->SetVelocity(Vector2(vel.x, mKnockBackSpeed));
+                    ReceiveHit(e->GetContactDamage(), Vector2::UnitY);
                 }
                 //Colidiu left
                 if (collisionSide[2]) {
-                    mRigidBodyComponent->SetVelocity(Vector2(-mKnockBackSpeed, vel.y));
+                    ReceiveHit(e->GetContactDamage(), Vector2::NegUnitX);
                 }
                 //Colidiu right
                 if (collisionSide[3]) {
-                    mRigidBodyComponent->SetVelocity(Vector2(mKnockBackSpeed, vel.y));
+                    ReceiveHit(e->GetContactDamage(), Vector2::UnitX);
                 }
-
-                mKnockBackTimer = 0;
             }
+
             else if (mSword->GetComponent<AABBComponent>()->Intersect(*e->GetComponent<AABBComponent>())) { // Colisão da sword com enemys
                 if (!mSwordHitedEnemy) {
                     e->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
@@ -589,4 +608,21 @@ void Player::ManageAnimations() {
     else {
         mDrawAnimatedComponent->SetAnimation("idle");
     }
+}
+
+
+void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
+    if (!mIsInvulnerable) {
+        mHealthPoints -= damage;
+        mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() + knockBackDirection * mKnockBackSpeed);
+        mKnockBackTimer = 0;
+        mInvulnerableTimer = 0;
+    }
+    else {
+        mKnockBackTimer = mKnockBackDuration;
+    }
+}
+
+bool Player::Died() {
+    return mHealthPoints <= 0;
 }

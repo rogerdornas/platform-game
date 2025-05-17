@@ -49,6 +49,8 @@ public:
     int GetWindowWidth() const { return mWindowWidth; }
     int GetWindowHeight() const { return mWindowHeight; }
 
+    float GetScale() { return mScale; }
+
     // Game-specific
     void AddGround(class Ground* g);
     void RemoveGround(class Ground* g);
@@ -70,6 +72,7 @@ public:
     int **GetLevelData() const { return mLevelData; }
     int GetTileSize() { return mTileSize; }
 
+    bool mResetLevel;
 
     SDL_Texture* LoadTexture(const std::string& texturePath);
 
@@ -85,6 +88,8 @@ private:
     int **LoadLevel(const std::string& fileName, int width, int height);
     void LoadObjects(const std::string& fileName);
 
+    void ResetLevel();
+
     // All the actors in the game
     std::vector<class Actor*> mActors;
     std::vector<class Actor*> mPendingActors;
@@ -99,6 +104,8 @@ private:
     // Window properties
     int mWindowWidth;
     int mWindowHeight;
+    const float mOriginalWindowWidth = 1920;
+    const float mOriginalWindowHeight = 1080;
 
     // Track elapsed time since game start
     Uint32 mTicksCount;
@@ -126,6 +133,8 @@ private:
     int mLevelWidth;
     int mLevelHeight;
     int mTileSize;
+
+    float mScale;
 
     void DrawParallaxBackground();
     void DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h);

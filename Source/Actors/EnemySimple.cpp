@@ -12,18 +12,18 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
 EnemySimple::EnemySimple(Game *game, float width, float height, float movespeed, float healthpoints)
-    :Enemy(game, width, height, movespeed, healthpoints)
+    :Enemy(game, width, height, movespeed, healthpoints, 5.0f)
 {
-    mKnockBack = 300.0f;
-    mKnockBackDuration = 0.1f;
+    mKnockBackSpeed = 800.0f * mGame->GetScale();
+    mKnockBackDuration = 0.15f;
     mKnockBackTimer = mKnockBackDuration;
     mPlayerSpotted = false;
-    mDistToSpotPlayer = 400;
+    mDistToSpotPlayer = 400 * mGame->GetScale();
     mWalkingAroundDuration = 2.0f;
     mWalkingAroundTimer = mWalkingAroundDuration;
-    mWalkingAroundMooveSpeed = 50.0f;
+    mWalkingAroundMooveSpeed = 50.0f * mGame->GetScale();
 
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Goomba/Walk1.png", 64, 64);
+    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Goomba/Walk1.png", 64 * mGame->GetScale(), 64 * mGame->GetScale());
 }
 
 void EnemySimple::OnUpdate(float deltaTime) {
@@ -41,10 +41,10 @@ void EnemySimple::OnUpdate(float deltaTime) {
     }
 
     // Gravidade
-    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * deltaTime));
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
 
     // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000) {
+    if (GetPosition().y > 20000 * mGame->GetScale()) {
         SetPosition(Vector2::Zero);
     }
     // Se morreu
@@ -97,7 +97,7 @@ void EnemySimple::MovementBeforePlayerSpotted() {
     }
 
     // Testa se spottou player
-    if (Math::Abs(GetPosition().y - player->GetPosition().y) < 40) { // Se está no mesmo nível verticalmente
+    if (Math::Abs(GetPosition().y - player->GetPosition().y) < 40 * mGame->GetScale()) { // Se está no mesmo nível verticalmente
         if (player->GetPosition().x < GetPosition().x && GetForward().x < 0 && Math::Abs(player->GetPosition().x - GetPosition().x) < mDistToSpotPlayer) {
             mPlayerSpotted = true;
         }

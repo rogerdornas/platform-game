@@ -12,18 +12,18 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
 FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, float movespeed, float healthpoints)
-    :Enemy(game, width, height, movespeed, healthpoints)
+    :Enemy(game, width, height, movespeed, healthpoints, 5.0f)
 {
-    mKnockBack = 500.0f;
+    mKnockBackSpeed = 1000.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
     mKnockBackTimer = mKnockBackDuration;
     mPlayerSpotted = false;
-    mDistToSpotPlayer = 400;
+    mDistToSpotPlayer = 400 * mGame->GetScale();
     mFlyingAroundDuration = 1.0f;
     mFlyingAroundTimer = mFlyingAroundDuration;
-    mFlyingAroundMooveSpeed = 100.0f;
+    mFlyingAroundMooveSpeed = 100.0f * mGame->GetScale();
 
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/WalkRight0.png", 64, 96);
+    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/WalkRight0.png", 64 * mGame->GetScale(), 96 * mGame->GetScale());
 }
 
 void FlyingEnemySimple::OnUpdate(float deltaTime) {
@@ -40,7 +40,7 @@ void FlyingEnemySimple::OnUpdate(float deltaTime) {
     }
 
     // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000) {
+    if (GetPosition().y > 20000 * mGame->GetScale()) {
         SetPosition(Vector2::Zero);
     }
 

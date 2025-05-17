@@ -11,12 +11,13 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
 
-Sword::Sword(class Game *game, float width, float height, float duration, float damage)
+Sword::Sword(class Game *game, Actor* owner, float width, float height, float duration, float damage)
     :Actor(game)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
 
+    ,mOwner(owner)
     ,mWidth(width)
     ,mHeight(height)
     ,mDuration(duration)
@@ -38,7 +39,7 @@ Sword::Sword(class Game *game, float width, float height, float duration, float 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
     // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Sword Slash/4.png", mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight, "../Assets/Sprites/Sword Slash/SwordSlash.png", "../Assets/Sprites/Sword Slash/SwordSlash.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight, "../Assets/Sprites/Sword Slash/SwordSlash.png", "../Assets/Sprites/Sword Slash/SwordSlash.json", 1001);
 
     std::vector<int> slah = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9};
     mDrawAnimatedComponent->AddAnimation("slash", slah);
@@ -64,7 +65,7 @@ void Sword::OnUpdate(float deltaTime) {
     else {
         Activate();
         // Troca rotação da espada para horizontal ou vertical
-        class Player* player = GetGame()->GetPlayer();
+        // class Player* player = GetGame()->GetPlayer();
         bool isHorizontal = true;
         if (GetRotation() == 0 || GetRotation() == Math::Pi) {
             isHorizontal = true;
@@ -121,7 +122,7 @@ void Sword::OnUpdate(float deltaTime) {
             }
             offset = mWidth / 2;
         }
-        SetPosition(Vector2(player->GetPosition() + GetForward() * offset));
+        SetPosition(Vector2(mOwner->GetPosition() + GetForward() * offset));
     }
 }
 

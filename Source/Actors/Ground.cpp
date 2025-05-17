@@ -51,9 +51,9 @@ Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMovin
     mRigidBodyComponent = new RigidBodyComponent(this, 1);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
-    mRigidBodyComponent->SetVelocity(velocity);
+    mRigidBodyComponent->SetVelocity(velocity * mGame->GetScale());
 
-    game->AddGround(this);
+    mGame->AddGround(this);
 }
 
 Ground::~Ground() {
@@ -72,28 +72,28 @@ void Ground::OnUpdate(float deltaTime) {
 
 void Ground::SetSprites() {
 
-    int rows = mHeight / GetGame()->GetTileSize();
-    int cols = mWidth / GetGame()->GetTileSize();
+    int rows = mHeight / mGame->GetTileSize();
+    int cols = mWidth / mGame->GetTileSize();
 
     int topLeftX = GetPosition().x - mWidth / 2;
     int topLeftY = GetPosition().y - mHeight / 2;
 
-    int minRow = topLeftY / GetGame()->GetTileSize();
+    int minRow = topLeftY / mGame->GetTileSize();
     int maxRow = minRow + rows;
 
-    int minCol = topLeftX / GetGame()->GetTileSize();
+    int minCol = topLeftX / mGame->GetTileSize();
     int maxCol = minCol + cols;
 
     std::unordered_map<std::string, std::vector<Vector2>> sprite_offset_map;
 
-    int** levelData = GetGame()->GetLevelData();
+    int** levelData = mGame->GetLevelData();
 
     for (int row = minRow; row < maxRow; ++row) {
         for (int col = minCol; col < maxCol; ++col) {
             int tile = levelData[row][col];
 
-            int tileX = col * GetGame()->GetTileSize();
-            int tileY = row * GetGame()->GetTileSize();
+            int tileX = col * mGame->GetTileSize();
+            int tileY = row * mGame->GetTileSize();
 
             Vector2 offset = Vector2(tileX, tileY) - GetPosition();
 
@@ -106,6 +106,6 @@ void Ground::SetSprites() {
         }
     }
 
-    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, sprite_offset_map, GetGame()->GetTileSize(), GetGame()->GetTileSize());
+    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(), mGame->GetTileSize());
 
 }

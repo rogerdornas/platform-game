@@ -22,12 +22,17 @@ public:
     bool GetIsOnGround() { return mIsOnGround; }
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
+    Vector2 GetStartingPosition() { return mStartingPosition; }
+
+    void ReceiveHit(float damage, Vector2 knockBackDirection);
 
 private:
     void ResolveGroundCollision();
     void ResolveEnemyCollision();
 
     void ManageAnimations();
+
+    bool Died();
 
     Vector2 mStartingPosition;
 
@@ -81,6 +86,11 @@ private:
     float mKnockBackSpeed;
     float mKnockBackTimer;
     float mKnockBackDuration;
+
+    float mHealthPoints;
+    bool mIsInvulnerable;
+    float mInvulnerableDuration;
+    float mInvulnerableTimer;
 
     bool mIsRunning;                            // Atributos para animar sprites
 

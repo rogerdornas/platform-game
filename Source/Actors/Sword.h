@@ -8,7 +8,7 @@
 class Sword : public Actor
 {
 public:
-    Sword(class Game* game, float width = 60.0f, float height = 20.0f, float duration = 0.1f, float damage = 10);
+    Sword(class Game* game, Actor* owner, float width = 60.0f, float height = 20.0f, float duration = 0.1f, float damage = 10);
 
     void OnUpdate(float deltaTime) override;
 
@@ -23,6 +23,8 @@ private:
     float mDuration;
     float mDurationTimer;
     float mDamage;
+
+    Actor* mOwner;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;

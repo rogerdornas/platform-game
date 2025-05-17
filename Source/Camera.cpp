@@ -79,6 +79,11 @@ void Camera::Update(float deltaTime) {
         mTimerToStartLooking = 0.0f;
     }
 
+    // Trava a camera na arena do boss
+    if (playerPos.x > 22080 * mGame->GetScale()) {
+        targetPos = Vector2(22080 * mGame->GetScale(), 15420 * mGame->GetScale());
+    }
+
     // Sempre interpola a posição atual da câmera para a posição-alvo
     mPos = Vector2(
         int(mPos.x + (targetPos.x - mPos.x) * mCameraLerpSpeed * deltaTime),
@@ -86,8 +91,6 @@ void Camera::Update(float deltaTime) {
     );
 
     // mPos = Vector2::Lerp(mPos, targetPos, mCameraLerpSpeed * deltaTime);
-
-
 
     // Reset flags para o próximo frame
     mLookUp = false;
@@ -102,7 +105,7 @@ void Camera::Update(float deltaTime) {
 
 // void Camera::Update(float deltaTime) {
 //     Player* player = mGame->GetPlayer();
-//     float speed = 500;
+//     float speed = 500 * mGame->GetScale();
 //
 //     mPos.x += speed * deltaTime;
 //     // float targetPosY = player->GetPosition().y - 2 * (mGame->GetWindowHeight() / 3);
@@ -117,7 +120,7 @@ void Camera::Update(float deltaTime) {
 //
 //     }
 // }
-
-
-
-
+//
+//
+//
+//

@@ -87,6 +87,7 @@ std::array<bool, 4> AABBComponent::ResolveColision(AABBComponent &b) {
     if (dist > 25) {
         dist = 25;
     }
+    dist *= GetGame()->GetScale();
 
     // Se menor distancia de colisao for top
     if (colision[0]) {

@@ -17,12 +17,13 @@ FireBall::FireBall(class Game *game)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
 
-    ,mWidth(50.0f)
-    ,mHeight(50.0f)
-    ,mSpeed(1800.0f)
+    ,mWidth(50.0f * mGame->GetScale())
+    ,mHeight(50.0f * mGame->GetScale())
+    ,mSpeed(1800.0f * mGame->GetScale())
     ,mDuration(3.0f)
     ,mDurationTimer(mDuration)
     ,mDamage(20)
+    ,mIsFromEnemy(false)
 {
 
     Vector2 v1(-mWidth/2, -mHeight/2);
@@ -37,11 +38,11 @@ FireBall::FireBall(class Game *game)
     vertices.emplace_back(v4);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth + 30, mHeight + 30);
+    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale());
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
-    game->AddFireBall(this);
+    mGame->AddFireBall(this);
 }
 
 FireBall::~FireBall() {
@@ -57,15 +58,33 @@ void FireBall::OnUpdate(float deltaTime) {
         Activate();
         ResolveGroundCollision();
         ResolveEnemyCollision();
+        ResolvePlayerCollision();
     }
 }
 
 void FireBall::Activate() {
+    Vector2 v1(-mWidth/2, -mHeight/2);
+    Vector2 v2(mWidth/2, -mHeight/2);
+    Vector2 v3(mWidth/2, mHeight/2);
+    Vector2 v4(-mWidth/2, mHeight/2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
     mAABBComponent->SetActive(true); // reativa colisão
     if (mDrawPolygonComponent) {
+        mDrawPolygonComponent->SetVertices(vertices);
         mDrawPolygonComponent->SetIsVisible(true);
     }
     if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth + 30 * mGame->GetScale());
+        mDrawSpriteComponent->SetHeight(mHeight + 30 * mGame->GetScale());
         mDrawSpriteComponent->SetIsVisible(true);
     }
     if (mDrawAnimatedComponent) {
@@ -75,12 +94,33 @@ void FireBall::Activate() {
 }
 
 void FireBall::Deactivate() {
+    mWidth = 50 * mGame->GetScale();
+    mHeight = 50 * mGame->GetScale();
+    mSpeed = 1800 * mGame->GetScale();
+    mIsFromEnemy = false;
+    Vector2 v1(-mWidth/2, -mHeight/2);
+    Vector2 v2(mWidth/2, -mHeight/2);
+    Vector2 v3(mWidth/2, mHeight/2);
+    Vector2 v4(-mWidth/2, mHeight/2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
     SetState(ActorState::Paused);
     mAABBComponent->SetActive(false); // desativa colisão
     if (mDrawPolygonComponent) {
+        mDrawPolygonComponent->SetVertices(vertices);
         mDrawPolygonComponent->SetIsVisible(false);
     }
     if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth + 30 * mGame->GetScale());
+        mDrawSpriteComponent->SetHeight(mHeight + 30 * mGame->GetScale());
         mDrawSpriteComponent->SetIsVisible(false);
     }
     if (mDrawAnimatedComponent) {
@@ -92,7 +132,7 @@ void FireBall::Deactivate() {
 
 void FireBall::ResolveGroundCollision() {
     std::vector<Ground*> grounds;
-    grounds = GetGame()->GetGrounds();
+    grounds = mGame->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
@@ -103,14 +143,26 @@ void FireBall::ResolveGroundCollision() {
 }
 
 void FireBall::ResolveEnemyCollision() {
-    std::vector<Enemy*> enemys;
-    enemys = GetGame()->GetEnemys();
-    if (!enemys.empty()) {
-        for (Enemy* e : enemys) {
-            if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
-                e->ReceiveHit(mDamage, GetForward());
-                Deactivate();
+    if (!mIsFromEnemy) {
+        std::vector<Enemy*> enemys;
+        enemys = mGame->GetEnemys();
+        if (!enemys.empty()) {
+            for (Enemy* e : enemys) {
+                if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
+                    e->ReceiveHit(mDamage, GetForward());
+                    Deactivate();
+                }
             }
+        }
+    }
+}
+
+void FireBall::ResolvePlayerCollision() {
+    if (mIsFromEnemy) {
+        Player* player = mGame->GetPlayer();
+        if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
+            player->ReceiveHit(mDamage, GetForward());
+            Deactivate();
         }
     }
 }

@@ -11,7 +11,7 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-Enemy::Enemy(Game *game, float width, float height, float movespeed, float heathPoints)
+Enemy::Enemy(Game *game, float width, float height, float movespeed, float heathPoints, float contactDamage)
     :Actor(game)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
@@ -21,7 +21,8 @@ Enemy::Enemy(Game *game, float width, float height, float movespeed, float heath
     ,mHeight(height)
     ,mMoveSpeed(movespeed)
     ,mHealthPoints(heathPoints)
-    ,mKnockBack(0.0f)
+    ,mContactDamage(contactDamage)
+    ,mKnockBackSpeed(0.0f)
     ,mKnockBackTimer(0.0f)
     ,mKnockBackDuration(0.0f)
 {
@@ -49,7 +50,8 @@ Enemy::~Enemy() {
 
 void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mHealthPoints -= damage;
-    mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBack);
+    // mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBack);
+    mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() + knockBackDirection * mKnockBackSpeed);
     mKnockBackTimer = 0;
 }
 
