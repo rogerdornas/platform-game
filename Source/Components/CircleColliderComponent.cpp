@@ -5,22 +5,15 @@
 #include "CircleColliderComponent.h"
 #include "../Actors/Actor.h"
 
-CircleColliderComponent::CircleColliderComponent(class Actor* owner, const float radius, const int updateOrder)
-    :Component(owner, updateOrder)
-    ,mRadius(radius) {
-}
+CircleColliderComponent::CircleColliderComponent(class Actor *owner, const float radius, const int updateOrder)
+    : Component(owner, updateOrder),
+      mRadius(radius) {}
 
-const Vector2& CircleColliderComponent::GetCenter() const
-{
-    return mOwner->GetPosition();
-}
+const Vector2 &CircleColliderComponent::GetCenter() const { return mOwner->GetPosition(); }
 
-float CircleColliderComponent::GetRadius() const
-{
-    return mOwner->GetScale() * mRadius;
-}
+float CircleColliderComponent::GetRadius() const { return mOwner->GetScale() * mRadius; }
 
-bool CircleColliderComponent::Intersect(const CircleColliderComponent& c) const
+bool CircleColliderComponent::Intersect(const CircleColliderComponent &c) const
 {
     // --------------
     // TODO - PARTE 2
@@ -37,10 +30,5 @@ bool CircleColliderComponent::Intersect(const CircleColliderComponent& c) const
     float radiiSq = pow(this->GetRadius() + c.GetRadius(), 2);
 
     // TODO 1.3 (1 linha): retorne verdadeiro se distSq é menor ou igual a radiiSq ou falso caso contrário.
-    if (distSq <= radiiSq) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return distSq <= radiiSq;
 }

@@ -13,23 +13,23 @@
 #include <sstream>
 #include "../Components/DrawComponents/DrawGroundSpritesComponent.h"
 
-Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMoving, float movingDuration, Vector2 velocity)
-    :Actor(game)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawGroundSpritesComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
-
-    ,mWidth(width)
-    ,mHeight(height)
-    ,mIsSpike(isSpike)
-    ,mIsMoving(isMoving)
-    ,mMovingDuration(movingDuration)
-    ,mMovingTimer(movingDuration)
+Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMoving, float movingDuration,
+               Vector2 velocity)
+    : Actor(game),
+      mHeight(height),
+      mWidth(width),
+      mIsSpike(isSpike),
+      mIsMoving(isMoving),
+      mMovingTimer(movingDuration),
+      mMovingDuration(movingDuration),
+      mDrawPolygonComponent(nullptr),
+      mDrawSpriteComponent(nullptr),
+      mDrawGroundSpritesComponent(nullptr)
 {
-    Vector2 v1(-mWidth/2, -mHeight/2);
-    Vector2 v2(mWidth/2, -mHeight/2);
-    Vector2 v3(mWidth/2, mHeight/2);
-    Vector2 v4(-mWidth/2, mHeight/2);
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
 
     std::vector<Vector2> vertices;
     vertices.emplace_back(v1);
@@ -38,12 +38,11 @@ Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMovin
     vertices.emplace_back(v4);
 
     SDL_Color color;
-    if (mIsSpike) {
+    if (mIsSpike)
         color = SDL_Color{255, 0, 0, 255};
-    }
-    else {
+
+    else
         color = SDL_Color{0, 255, 0, 255};
-    }
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, color);
     // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Blocks/BlockA.png", mWidth, mHeight);
@@ -56,22 +55,23 @@ Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMovin
     mGame->AddGround(this);
 }
 
-Ground::~Ground() {
-    mGame->RemoveGround(this);
-}
+Ground::~Ground() { mGame->RemoveGround(this); }
 
-void Ground::OnUpdate(float deltaTime) {
-    if (mIsMoving) {
+void Ground::OnUpdate(float deltaTime)
+{
+    if (mIsMoving)
+    {
         mMovingTimer += deltaTime;
-        if (mMovingTimer > mMovingDuration) {
+        if (mMovingTimer > mMovingDuration)
+        {
             mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() * -1);
             mMovingTimer = 0;
         }
     }
 }
 
-void Ground::SetSprites() {
-
+void Ground::SetSprites()
+{
     int rows = mHeight / mGame->GetTileSize();
     int cols = mWidth / mGame->GetTileSize();
 
@@ -84,12 +84,14 @@ void Ground::SetSprites() {
     int minCol = topLeftX / mGame->GetTileSize();
     int maxCol = minCol + cols;
 
-    std::unordered_map<std::string, std::vector<Vector2>> sprite_offset_map;
+    std::unordered_map<std::string, std::vector<Vector2> > sprite_offset_map;
 
-    int** levelData = mGame->GetLevelData();
+    int **levelData = mGame->GetLevelData();
 
-    for (int row = minRow; row < maxRow; ++row) {
-        for (int col = minCol; col < maxCol; ++col) {
+    for (int row = minRow; row < maxRow; ++row)
+    {
+        for (int col = minCol; col < maxCol; ++col)
+        {
             int tile = levelData[row][col];
 
             int tileX = col * mGame->GetTileSize();
@@ -97,7 +99,8 @@ void Ground::SetSprites() {
 
             Vector2 offset = Vector2(tileX, tileY) - GetPosition();
 
-            if (tile >= 0) {
+            if (tile >= 0)
+            {
                 std::ostringstream tileName;
                 tileName << std::setw(2) << std::setfill('0') << tile;
                 std::string file = tileName.str();
@@ -106,6 +109,6 @@ void Ground::SetSprites() {
         }
     }
 
-    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(), mGame->GetTileSize());
-
+    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(),
+                                                                 mGame->GetTileSize());
 }

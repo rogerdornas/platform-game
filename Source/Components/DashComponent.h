@@ -8,13 +8,17 @@
 class DashComponent : public Component
 {
 public:
-    DashComponent(class Actor* owner, float dashSpeed, float dashDuration, float dashCooldown);
+    DashComponent(class Actor *owner, float dashSpeed, float dashDuration, float dashCooldown);
 
     void UseDash(bool isOnGround);
     bool GetIsDashing() { return mIsDashing; }
     void SetHasDashedInAir(bool hasDashedInAir) { mHasDashedInAir = hasDashedInAir; }
 
-    void StopDash() { mIsDashing = false; mDashTimer = mDashDuration; }
+    void StopDash()
+    {
+        mIsDashing = false;
+        mDashTimer = mDashDuration;
+    }
 
     void Update(float deltaTime) override;
 
@@ -27,5 +31,3 @@ private:
     float mDashCooldownTimer;
     bool mHasDashedInAir;
 };
-
-

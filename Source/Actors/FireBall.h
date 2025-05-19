@@ -8,7 +8,7 @@
 class FireBall : public Actor
 {
 public:
-    FireBall(class Game* game);
+    FireBall(class Game *game);
     ~FireBall();
 
     void OnUpdate(float deltaTime) override;
@@ -39,10 +39,10 @@ private:
 
     bool mIsFromEnemy;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawSpriteComponent* mDrawSpriteComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class DrawPolygonComponent *mDrawPolygonComponent;
+    class DrawSpriteComponent *mDrawSpriteComponent;
+    class DrawAnimatedComponent *mDrawAnimatedComponent;
 
-    class RigidBodyComponent* mRigidBodyComponent;
-    class AABBComponent* mAABBComponent;
+    class RigidBodyComponent *mRigidBodyComponent;
+    class AABBComponent *mAABBComponent;
 };

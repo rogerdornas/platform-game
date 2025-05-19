@@ -12,27 +12,22 @@
 #include "../Math.h"
 #include <SDL.h>
 
-enum class ActorState
-{
-    Active,
-    Paused,
-    Destroy
-};
+enum class ActorState { Active, Paused, Destroy };
 
 class Actor
 {
 public:
-    Actor(class Game* game);
+    Actor(class Game *game);
     virtual ~Actor();
 
-    // Update function called from Game (not overridable)
+    // Update a function called from Game (not overridable)
     void Update(float deltaTime);
     // ProcessInput function called from Game (not overridable)
-    void ProcessInput(const Uint8* keyState, SDL_GameController& controller);
+    void ProcessInput(const Uint8 *keyState, SDL_GameController &controller);
 
     // Position getter/setter
-    const Vector2& GetPosition() const { return mPosition; }
-    void SetPosition(const Vector2& pos) { mPosition = pos; }
+    const Vector2 &GetPosition() const { return mPosition; }
+    void SetPosition(const Vector2 &pos) { mPosition = pos; }
 
     Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
 
@@ -49,15 +44,15 @@ public:
     void SetState(ActorState state) { mState = state; }
 
     // Game getter
-    class Game* GetGame() { return mGame; }
+    class Game *GetGame() { return mGame; }
 
-    // Returns component of type T, or null if doesn't exist
-    template <typename T>
-    T* GetComponent() const
+    // Returns a component of type T, or null if doesn't exist
+    template<typename T>
+    T *GetComponent() const
     {
-        for (auto c : mComponents)
+        for (auto c: mComponents)
         {
-            T* t = dynamic_cast<T*>(c);
+            T *t = dynamic_cast<T *>(c);
             if (t != nullptr)
             {
                 return t;
@@ -68,12 +63,12 @@ public:
     }
 
 protected:
-    class Game* mGame;
+    class Game *mGame;
 
     // Any actor-specific update code (overridable)
     virtual void OnUpdate(float deltaTime);
     // Any actor-specific update code (overridable)
-    virtual void OnProcessInput(const Uint8* keyState, SDL_GameController& controller);
+    virtual void OnProcessInput(const Uint8 *keyState, SDL_GameController &controller);
 
     // Actor's state
     ActorState mState;
@@ -84,12 +79,12 @@ protected:
     float mRotation;
 
     // Components
-    std::vector<class Component*> mComponents;
+    std::vector<class Component *> mComponents;
 
 private:
     friend class Component;
 
     // Adds component to Actor (this is automatically called
     // in the component constructor)
-    void AddComponent(class Component* c);
+    void AddComponent(class Component *c);
 };

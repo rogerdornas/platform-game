@@ -11,8 +11,8 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-EnemySimple::EnemySimple(Game *game, float width, float height, float movespeed, float healthpoints)
-    :Enemy(game, width, height, movespeed, healthpoints, 5.0f)
+EnemySimple::EnemySimple(Game *game, float width, float height, float moveSpeed, float healthPoints)
+    :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
 {
     mKnockBackSpeed = 800.0f * mGame->GetScale();
     mKnockBackDuration = 0.15f;
@@ -21,7 +21,7 @@ EnemySimple::EnemySimple(Game *game, float width, float height, float movespeed,
     mDistToSpotPlayer = 400 * mGame->GetScale();
     mWalkingAroundDuration = 2.0f;
     mWalkingAroundTimer = mWalkingAroundDuration;
-    mWalkingAroundMooveSpeed = 50.0f * mGame->GetScale();
+    mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
 
     mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Goomba/Walk1.png", 64 * mGame->GetScale(), 64 * mGame->GetScale());
 }
@@ -60,7 +60,7 @@ void EnemySimple::ResolveGroundCollision() {
         for (Ground* g : grounds) {
             if (!g->GetIsSpike()) { // Colosão com ground
                 if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    mAABBComponent->ResolveColision(*g->GetComponent<AABBComponent>());
+                    mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
@@ -93,7 +93,7 @@ void EnemySimple::MovementBeforePlayerSpotted() {
         mWalkingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mWalkingAroundMooveSpeed, mRigidBodyComponent->GetVelocity().y));
+        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mWalkingAroundMoveSpeed, mRigidBodyComponent->GetVelocity().y));
     }
 
     // Testa se spottou player

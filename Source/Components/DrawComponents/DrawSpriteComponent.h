@@ -10,16 +10,17 @@ class DrawSpriteComponent : public DrawComponent
 {
 public:
     // (Lower draw order corresponds with further back)
-    DrawSpriteComponent(class Actor* owner, const std::string &texturePath, int width = 0, int height = 0, int drawOrder = 100);
+    DrawSpriteComponent(Actor *owner, const std::string &texturePath, int width = 0, int height = 0,
+                        int drawOrder = 100);
 
-    void Draw(SDL_Renderer* renderer) override;
+    void Draw(SDL_Renderer *renderer) override;
 
-    void SetWidth(float width) { mWidth = width; }
-    void SetHeight(float height) { mHeight = height; }
+    void SetWidth(float width) { mWidth = static_cast<int>(width); }
+    void SetHeight(float height) { mHeight = static_cast<int>(height); }
 
 protected:
     // Map of textures loaded
-    SDL_Texture* mSpriteSheetSurface;
+    SDL_Texture *mSpriteSheetSurface;
 
     int mWidth;
     int mHeight;

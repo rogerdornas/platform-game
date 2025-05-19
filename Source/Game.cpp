@@ -24,31 +24,31 @@
 #include "Actors/Fox.h"
 
 Game::Game(int windowWidth, int windowHeight, int FPS)
-        :mWindow(nullptr)
-        ,mRenderer(nullptr)
-        ,mTicksCount(0)
-        ,mIsRunning(true)
-        ,mPlayer(nullptr)
-        ,mCamera(nullptr)
-        ,mController(nullptr)
-        ,mUpdatingActors(false)
-        ,mWindowWidth(windowWidth)
-        ,mWindowHeight(windowHeight)
-        ,mFPS(FPS)
-        ,mIsPaused(false)
-        ,mHitstopActive(false)
-        ,mHitstopDuration(0.15f)
-        ,mHitstopTimer(0.0f)
-        ,mResetLevel(false)
-        ,mBackGroundTexture(nullptr)
-        ,mSky(nullptr)
-        ,mMountains(nullptr)
-        ,mTreesBack(nullptr)
-        ,mTreesFront(nullptr)
+    : mResetLevel(false),
+      mWindow(nullptr),
+      mRenderer(nullptr),
+      mWindowWidth(windowWidth),
+      mWindowHeight(windowHeight),
+      mTicksCount(0),
+      mIsRunning(true),
+      mUpdatingActors(false),
+      mFPS(FPS),
+      mIsPaused(false),
+      mCamera(nullptr),
+      mPlayer(nullptr),
+      mController(nullptr),
+      mHitstopActive(false),
+      mHitstopDuration(0.15f),
+      mHitstopTimer(0.0f),
+      mBackGroundTexture(nullptr),
+      mSky(nullptr),
+      mMountains(nullptr),
+      mTreesBack(nullptr),
+      mTreesFront(nullptr)
 {
-    float ratio = mOriginalWindowHeight / mWindowHeight;
-    int numTiles = 32 / ratio;
-    mScale = numTiles / 32.0;
+    float ratio = mOriginalWindowHeight / static_cast<float>(mWindowHeight);
+    int numTiles = static_cast<int>(32 / ratio);
+    mScale = static_cast<float>(numTiles) / 32.0f;
 }
 
 bool Game::Initialize()
@@ -59,7 +59,9 @@ bool Game::Initialize()
         return false;
     }
 
-    mWindow = SDL_CreateWindow("Game-v0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    mWindow = SDL_CreateWindow("Game-v0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                               mWindowWidth, mWindowHeight,
+                               SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (!mWindow)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -74,12 +76,13 @@ bool Game::Initialize()
     }
 
     // Inicializa controle
-    for (int i = 0; i < SDL_NumJoysticks(); ++i) {
-        if (SDL_IsGameController(i)) {
+    for (int i = 0; i < SDL_NumJoysticks(); ++i)
+    {
+        if (SDL_IsGameController(i))
+        {
             mController = SDL_GameControllerOpen(i);
-            if (mController) {
+            if (mController)
                 break;
-            }
         }
     }
 
@@ -96,11 +99,12 @@ bool Game::Initialize()
     // Init all game actors
     InitializeActors();
 
-    mBackGroundTexture = LoadTexture("../Assets/Sprites/Background/fundoCortadoEspichado.png");
-    mSky = LoadTexture("../Assets/Sprites/Background/sky_cloud.png");
-    mMountains = LoadTexture("../Assets/Sprites/Background/mountain2.png");
-    mTreesBack = LoadTexture("../Assets/Sprites/Background/pine1.png");
-    mTreesFront = LoadTexture("../Assets/Sprites/Background/pine2.png");
+    const std::string backgroundAssets = "../Assets/Sprites/Background/";
+    mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+    mSky = LoadTexture(backgroundAssets + "sky_cloud.png");
+    mMountains = LoadTexture(backgroundAssets + "mountain2.png");
+    mTreesBack = LoadTexture(backgroundAssets + "pine1.png");
+    mTreesFront = LoadTexture(backgroundAssets + "pine2.png");
 
     return true;
 }
@@ -108,31 +112,33 @@ bool Game::Initialize()
 void Game::InitializeActors()
 {
     // Pool de Fireballs
-    for (int i = 0; i < 5; i++) {
-        FireBall* fireBall = new FireBall(this);
-    }
+    for (int i = 0; i < 5; i++)
+        new FireBall(this);
 
-    LoadMapMetadata("../Assets/Levels/Forest/Forest.json");
-    // LoadMapMetadata("../Assets/Levels/Pain/Pain.json");
-    // LoadMapMetadata("../Assets/Levels/Run/Run.json");
+    const std::string levelsAssets = "../Assets/Levels/";
+    LoadMapMetadata(levelsAssets + "Forest/Forest.json");
+    // LoadMapMetadata(levelsAssets + "Pain/Pain.json");
+    // LoadMapMetadata(levelsAssets + "Run/Run.json");
 
-    mLevelData = LoadLevel("../Assets/Levels/Forest/Forest.csv", mLevelWidth, mLevelHeight);
-    // mLevelData = LoadLevel("../Assets/Levels/Pain/Pain.csv", mLevelWidth, mLevelHeight);
-    // mLevelData = LoadLevel("../Assets/Levels/Run/Run.csv", mLevelWidth, mLevelHeight);
-    if (!mLevelData) {
+    mLevelData = LoadLevel(levelsAssets + "Forest/Forest.csv", mLevelWidth, mLevelHeight);
+    // mLevelData = LoadLevel(levelsAssets + "Pain/Pain.csv", mLevelWidth, mLevelHeight);
+    // mLevelData = LoadLevel(levelsAssets + "Run/Run.csv", mLevelWidth, mLevelHeight);
+    if (!mLevelData)
         return;
-    }
 
-    LoadObjects("../Assets/Levels/Forest/Forest.json");
-    // LoadObjects("../Assets/Levels/Pain/Pain.json");
-    // LoadObjects("../Assets/Levels/Run/Run.json");
+    LoadObjects(levelsAssets + "Forest/Forest.json");
+    // LoadObjects(levelsAssets + "Pain/Pain.json");
+    // LoadObjects(levelsAssets + "Run/Run.json");
 
-    mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mLevelHeight / 2));
+    mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mWindowWidth / 2,
+                                       mPlayer->GetPosition().y - mLevelHeight / 2));
 }
 
-void Game::LoadMapMetadata(const std::string &fileName) {
+void Game::LoadMapMetadata(const std::string &fileName)
+{
     std::ifstream file(fileName);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         SDL_Log("Erro ao abrir o arquivo");
         return;
     }
@@ -147,7 +153,7 @@ void Game::LoadMapMetadata(const std::string &fileName) {
     mTileSize = tileSize;
 }
 
-int **Game::LoadLevel(const std::string& fileName, int width, int height)
+int **Game::LoadLevel(const std::string &fileName, int width, int height)
 {
     // TODO 5: Implemente essa função para carregar o nível a partir do arquivo CSV. Ela deve retornar um
     //  ponteiro para uma matriz 2D de inteiros. Cada linha do arquivo CSV representa uma linha
@@ -155,162 +161,169 @@ int **Game::LoadLevel(const std::string& fileName, int width, int height)
     //  para dividir cada linha do arquivo CSV em números inteiros. A função deve retornar nullptr se o arquivo não
     //  puder ser carregado ou se o número de colunas for diferente do esperado.
     std::ifstream file(fileName);
-    if (!file.is_open()) {
+    if (!file.is_open())
         return nullptr;
-    }
 
-    int** levelData = new int*[height];
+    int **levelData = new int *[height];
     std::string line;
     int row = 0;
 
-    while (std::getline(file, line)) {
-        if (row >= height) {
+    while (std::getline(file, line))
+    {
+        if (row >= height)
+        {
             // Mais linhas do que o esperado
-            for (int i = 0; i < row; ++i) {
+            for (int i = 0; i < row; ++i)
                 delete[] levelData[i];
-            }
+
             delete[] levelData;
             return nullptr;
         }
-
         std::vector<int> values = CSVHelper::Split(line);
-        if (values.size() != static_cast<size_t>(width)) {
+        if (values.size() != static_cast<size_t>(width))
+        {
             // Número de colunas incorreto
-            for (int i = 0; i < row; ++i) {
+            for (int i = 0; i < row; ++i)
                 delete[] levelData[i];
-            }
+
             delete[] levelData;
             return nullptr;
         }
-
         levelData[row] = new int[width];
-        for (int col = 0; col < width; ++col) {
+        for (int col = 0; col < width; ++col)
             levelData[row][col] = values[col];
-        }
 
         ++row;
     }
-
-    if (row != height) {
+    if (row != height)
+    {
         // Menos linhas do que o esperado
-        for (int i = 0; i < row; ++i) {
+        for (int i = 0; i < row; ++i)
             delete[] levelData[i];
-        }
+
         delete[] levelData;
         return nullptr;
     }
-
     return levelData;
-
 }
 
-void Game::LoadObjects(const std::string &fileName) {
+void Game::LoadObjects(const std::string &fileName)
+{
     std::ifstream file(fileName);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         SDL_Log("Erro ao abrir o arquivo");
         return;
     }
-
     nlohmann::json mapData;
     file >> mapData;
-    Ground* ground;
-    for (const auto& layer : mapData["layers"]) {
-        if (layer["name"] == "Grounds") {
-            for (const auto& obj : layer["objects"]) {
+    Ground *ground;
+    for (const auto &layer: mapData["layers"])
+    {
+        if (layer["name"] == "Grounds")
+        {
+            for (const auto &obj: layer["objects"])
+            {
                 std::string name = obj["name"];
-                float x = float(obj["x"]) * mScale;
-                float y = float(obj["y"]) * mScale;
-                float width = float(obj["width"]) * mScale;
-                float height = float(obj["height"]) * mScale;
-                if (name == "Ground") {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+                if (name == "Ground")
+                {
                     ground = new Ground(this, width, height);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
-                else if (name == "Spike") {
+                else if (name == "Spike")
+                {
                     ground = new Ground(this, width, height, true);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
-                else if (name == "Moving Ground") {
+                else if (name == "Moving Ground")
+                {
                     float movingDuration = 0.0f;
                     float speedX = 0.0f;
                     float speedY = 0.0f;
 
-                    if (obj.contains("properties")) {
-                        for (const auto& prop : obj["properties"]) {
+                    if (obj.contains("properties"))
+                        for (const auto &prop: obj["properties"])
+                        {
                             std::string propName = prop["name"];
-                            if (propName == "MovingDuration") {
+                            if (propName == "MovingDuration")
                                 movingDuration = prop["value"];
-                            }
-                            else if (propName == "SpeedX") {
+
+                            else if (propName == "SpeedX")
                                 speedX = prop["value"];
-                            }
-                            else if (propName == "SpeedY") {
+
+                            else if (propName == "SpeedY")
                                 speedY = prop["value"];
-                            }
                         }
-                    }
+
                     ground = new Ground(this, width, height, false, true, movingDuration, Vector2(speedX, speedY));
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
-                else if (name == "Moving Spike") {
+                else if (name == "Moving Spike")
+                {
                     float movingDuration = 0.0f;
                     float speedX = 0.0f;
                     float speedY = 0.0f;
 
-                    if (obj.contains("properties")) {
-                        for (const auto& prop : obj["properties"]) {
+                    if (obj.contains("properties"))
+                        for (const auto &prop: obj["properties"])
+                        {
                             std::string propName = prop["name"];
-                            if (propName == "MovingDuration") {
+                            if (propName == "MovingDuration")
                                 movingDuration = prop["value"];
-                            }
-                            else if (propName == "SpeedX") {
+
+                            else if (propName == "SpeedX")
                                 speedX = prop["value"];
-                            }
-                            else if (propName == "SpeedY") {
+
+                            else if (propName == "SpeedY")
                                 speedY = prop["value"];
-                            }
                         }
-                    }
+
                     ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
             }
         }
-        if (layer["name"] == "Enemys") {
-            for (const auto& obj : layer["objects"]) {
+        if (layer["name"] == "Enemys")
+            for (const auto &obj: layer["objects"])
+            {
                 std::string name = obj["name"];
-                float x = float(obj["x"]) * mScale;
-                float y = float(obj["y"]) * mScale;
-                if (name == "Enemy Simple") {
-                    EnemySimple* enemySimple = new EnemySimple(this, 60 * mScale, 50 * mScale, 200 * mScale, 50);
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                if (name == "Enemy Simple")
+                {
+                    auto *enemySimple = new EnemySimple(this, 60 * mScale, 50 * mScale, 200 * mScale, 50);
                     enemySimple->SetPosition(Vector2(x, y));
                 }
-                else if (name == "Flying Enemy") {
-                    FlyingEnemySimple* flyingEnemySimple = new FlyingEnemySimple(this, 50 * mScale, 80 * mScale, 250 * mScale, 100);
+                else if (name == "Flying Enemy")
+                {
+                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50 * mScale, 80 * mScale, 250 * mScale, 100);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                 }
-                else if (name == "Fox") {
-                    Fox* fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
+                else if (name == "Fox")
+                {
+                    auto fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
                     fox->SetPosition(Vector2(x, y));
                 }
             }
-        }
-        if (layer["name"] == "Player") {
-            for (const auto& obj : layer["objects"]) {
-                float x = float(obj["x"]) * mScale;
-                float y = float(obj["y"]) * mScale;
+        if (layer["name"] == "Player")
+            for (const auto &obj: layer["objects"])
+            {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
                 mPlayer = new Player(this, 50 * mScale, 85 * mScale);
                 mPlayer->SetPosition(Vector2(x, y));
                 mPlayer->SetStartingPosition(Vector2(x, y));
             }
-        }
     }
 }
-
 
 void Game::RunLoop()
 {
@@ -322,7 +335,8 @@ void Game::RunLoop()
     }
 }
 
-void Game::ProcessInput() {
+void Game::ProcessInput()
+{
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
@@ -330,45 +344,47 @@ void Game::ProcessInput() {
         {
             case SDL_QUIT:
                 Quit();
-            break;
+                break;
+
             case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+                {
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;
-                    float ratio = 1080.0 / mWindowHeight;
-                    int numTiles = 32 / ratio;
-                    mScale = numTiles / 32.0;
+                    const float ratio = 1080.0f / static_cast<float>(mWindowHeight);
+                    const int numTiles = static_cast<int>(32 / ratio);
+                    mScale = static_cast<float>(numTiles) / 32.0f;
                     ResetLevel();
                 }
-            break;
+                break;
+
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                if (event.key.keysym.sym == SDLK_ESCAPE)
                     mIsPaused = !mIsPaused;
-                }
-                if (event.key.keysym.sym == SDLK_8) {
+
+                if (event.key.keysym.sym == SDLK_8)
                     Quit();
-                }
-            break;
+
+                break;
+
             case SDL_CONTROLLERBUTTONDOWN:
-                if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
+                if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START)
                     mIsPaused = !mIsPaused;
-                }
-            break;
+
+                break;
+
+            default: ;
         }
     }
 
-    const Uint8* state = SDL_GetKeyboardState(nullptr);
+    const Uint8 *state = SDL_GetKeyboardState(nullptr);
 
-    if (!mIsPaused) {
-        if (mHitstopActive) {
-
-        }
-        else {
-            for (auto actor : mActors)
-            {
+    if (!mIsPaused)
+    {
+        if (mHitstopActive) {}
+        else
+            for (auto actor: mActors)
                 actor->ProcessInput(state, *mController);
-            }
-        }
     }
 }
 
@@ -376,127 +392,99 @@ void Game::UpdateGame()
 {
     // while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
 
-    Uint32 frameDuration = 1000.0 / mFPS;
+    const auto frameDuration = static_cast<Uint32>(1000.0f / mFPS);
     Uint32 now = SDL_GetTicks();
-    if (now < mTicksCount + frameDuration) {
+    if (now < mTicksCount + frameDuration)
         SDL_Delay((mTicksCount + frameDuration) - now);
-    }
 
-    float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
+    float deltaTime = static_cast<float>(SDL_GetTicks() - mTicksCount) / 1000.0f;
     if (deltaTime > 0.05f)
-    {
         deltaTime = 0.05f;
-    }
-
 
     mTicksCount = SDL_GetTicks();
 
     // Update all actors and pending actors
-    if (!mIsPaused) {
-        if (mHitstopActive) {
-            if (mHitstopTimer < mHitstopDuration) {
+    if (!mIsPaused)
+    {
+        if (mHitstopActive)
+        {
+            if (mHitstopTimer < mHitstopDuration)
                 mHitstopTimer += deltaTime;
-            }
-            else {
+
+            else
                 mHitstopActive = false;
-            }
         }
-        else {
+        else
             UpdateActors(deltaTime);
-        }
     }
 
-    if (mResetLevel) {
+    if (mResetLevel)
         ResetLevel();
-    }
+
     UpdateCamera(deltaTime);
 }
 
 void Game::UpdateActors(float deltaTime)
 {
     mUpdatingActors = true;
-    for (auto actor : mActors)
-    {
+    for (auto actor: mActors)
         actor->Update(deltaTime);
-    }
+
     mUpdatingActors = false;
 
-    for (auto pending : mPendingActors)
-    {
+    for (auto pending: mPendingActors)
         mActors.emplace_back(pending);
-    }
+
     mPendingActors.clear();
 
-    std::vector<Actor*> deadActors;
-    for (auto actor : mActors)
-    {
+    std::vector<Actor *> deadActors;
+    for (auto actor: mActors)
         if (actor->GetState() == ActorState::Destroy)
-        {
             deadActors.emplace_back(actor);
-        }
-    }
 
-    for (auto actor : deadActors)
-    {
+    for (auto actor: deadActors)
         delete actor;
-    }
-
 }
 
-void Game::UpdateCamera(float deltaTime) {
-    mCamera->Update(deltaTime);
-}
+void Game::UpdateCamera(float deltaTime) { mCamera->Update(deltaTime); }
 
+void Game::AddGround(class Ground *g) { mGrounds.emplace_back(g); }
 
-void Game::AddGround(class Ground* g) {
-    mGrounds.emplace_back(g);
-}
-
-void Game::RemoveGround(class Ground *g) {
+void Game::RemoveGround(class Ground *g)
+{
     auto iter = std::find(mGrounds.begin(), mGrounds.end(), g);
-    if (iter != mGrounds.end()) {
+    if (iter != mGrounds.end())
         mGrounds.erase(iter);
-    }
 }
 
+void Game::AddFireBall(class FireBall *f) { mFireBalls.emplace_back(f); }
 
-void Game::AddFireBall(class FireBall *f) {
-    mFireBalls.emplace_back(f);
-}
-
-void Game::RemoveFireball(class FireBall *f) {
+void Game::RemoveFireball(class FireBall *f)
+{
     auto iter = std::find(mFireBalls.begin(), mFireBalls.end(), f);
-    if (iter != mFireBalls.end()) {
+    if (iter != mFireBalls.end())
         mFireBalls.erase(iter);
-    }
 }
 
+void Game::AddEnemy(class Enemy *e) { mEnemys.emplace_back(e); }
 
-void Game::AddEnemy(class Enemy *e) {
-    mEnemys.emplace_back(e);
-}
-
-void Game::RemoveEnemy(class Enemy *e) {
+void Game::RemoveEnemy(class Enemy *e)
+{
     auto iter = std::find(mEnemys.begin(), mEnemys.end(), e);
-    if (iter != mEnemys.end()) {
+    if (iter != mEnemys.end())
         mEnemys.erase(iter);
-    }
 }
 
-
-void Game::AddActor(Actor* actor)
+void Game::AddActor(Actor *actor)
 {
     if (mUpdatingActors)
-    {
         mPendingActors.emplace_back(actor);
-    }
+
     else
-    {
         mActors.emplace_back(actor);
-    }
 }
 
-void Game::RemoveActor(Actor* actor)
+void Game::RemoveActor(Actor *actor)
 {
     auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
     if (iter != mPendingActors.end())
@@ -515,14 +503,14 @@ void Game::RemoveActor(Actor* actor)
     }
 }
 
-
 void Game::AddDrawable(class DrawComponent *drawable)
 {
     mDrawables.emplace_back(drawable);
 
-    std::sort(mDrawables.begin(), mDrawables.end(),[](DrawComponent* a, DrawComponent* b) {
-                  return a->GetDrawOrder() < b->GetDrawOrder();
-              });
+    std::sort(mDrawables.begin(), mDrawables.end(), [](const DrawComponent *a, const DrawComponent *b)
+    {
+        return a->GetDrawOrder() < b->GetDrawOrder();
+    });
 }
 
 void Game::RemoveDrawable(class DrawComponent *drawable)
@@ -530,7 +518,6 @@ void Game::RemoveDrawable(class DrawComponent *drawable)
     auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
     mDrawables.erase(iter);
 }
-
 
 void Game::GenerateOutput()
 {
@@ -547,21 +534,21 @@ void Game::GenerateOutput()
     // DrawParallaxLayer(mTreesBack,  0.5f, mWindowHeight / 3, mWindowHeight / 2);  // árvores distantes
     // DrawParallaxLayer(mTreesFront, 0.7f, mWindowHeight / 2, mWindowHeight / 2);  // árvores próximas
 
-    for (auto drawable : mDrawables)
-    {
+    for (auto drawable: mDrawables)
         drawable->Draw(mRenderer);
-    }
 
     // Swap front buffer and back buffer
     SDL_RenderPresent(mRenderer);
 }
 
-SDL_Texture* Game::LoadTexture(const std::string& texturePath) {
+SDL_Texture *Game::LoadTexture(const std::string &texturePath)
+{
     // TODO 4.1 (~4 linhas): Utilize a função `IMG_Load` para carregar a imagem passada como parâmetro
     //  `texturePath`. Esse função retorna um ponteiro para `SDL_Surface*`. Retorne `nullptr` se a
     //  imagem não foi carregada com sucesso.
-    SDL_Surface* surface = IMG_Load(texturePath.c_str());
-    if (!surface) {
+    SDL_Surface *surface = IMG_Load(texturePath.c_str());
+    if (!surface)
+    {
         SDL_Log("Falha ao carregar imagem %s: %s", texturePath.c_str(), IMG_GetError());
         return nullptr;
     }
@@ -570,14 +557,14 @@ SDL_Texture* Game::LoadTexture(const std::string& texturePath) {
     //  da imagem carregada anteriormente. Essa função retorna um ponteiro para `SDL_Texture*`. Logo após criar
     //  a textura, utilize a função `SDL_FreeSurface` para liberar a imagem carregada. Se a textura foi carregada
     //  com sucesso, retorne o ponteiro para a textura. Caso contrário, retorne `nullptr`.
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface); // Libera a superfície, já não é mais necessária
 
-    if (!texture) {
+    if (!texture)
+    {
         SDL_Log("Falha ao criar textura a partir de %s: %s", texturePath.c_str(), SDL_GetError());
         return nullptr;
     }
-
     return texture;
 }
 
@@ -585,9 +572,7 @@ void Game::Shutdown()
 {
     // Delete actors
     while (!mActors.empty())
-    {
         delete mActors.back();
-    }
 
     // Delete level data
     if (mLevelData != nullptr)
@@ -601,16 +586,15 @@ void Game::Shutdown()
     delete[] mLevelData;
     delete mCamera;
 
-    if (mController) {
+    if (mController)
         SDL_GameControllerClose(mController);
-    }
+
     SDL_Quit();
 
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);
     SDL_Quit();
 }
-
 
 void Game::DrawParallaxBackground()
 {
@@ -637,8 +621,7 @@ void Game::DrawParallaxBackground()
     }
 }
 
-
-void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h)
+void Game::DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h)
 {
     int texW, texH;
     SDL_QueryTexture(texture, nullptr, nullptr, &texW, &texH);
@@ -659,12 +642,11 @@ void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, 
     }
 }
 
-void Game::ResetLevel() {
+void Game::ResetLevel()
+{
     // Delete actors
     while (!mActors.empty())
-    {
         delete mActors.back();
-    }
 
     // Delete level data
     if (mLevelData != nullptr)

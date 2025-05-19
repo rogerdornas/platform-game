@@ -8,15 +8,14 @@
 class Enemy : public Actor
 {
 public:
-    Enemy(Game* game, float width, float height, float movespeed, float healthPoints, float contactDamage);
+    Enemy(Game *game, float width, float height, float moveSpeed, float healthPoints, float contactDamage);
     ~Enemy();
 
     void SetHealthPoints(float hp) { mHealthPoints = hp; }
-    float GetHealthPoints() { return  mHealthPoints; }
+    float GetHealthPoints() const { return mHealthPoints; }
     void ReceiveHit(float damage, Vector2 knockBackDirection);
-    float GetContactDamage() { return mContactDamage; }
-
-    float GetKnockBack() { return mKnockBackSpeed; }
+    float GetContactDamage() const { return mContactDamage; }
+    float GetKnockBack() const { return mKnockBackSpeed; }
 
 protected:
     bool Died();
@@ -37,10 +36,10 @@ protected:
     float mFlashDuration;
     float mFlashTimer;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawSpriteComponent* mDrawSpriteComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class DrawPolygonComponent *mDrawPolygonComponent;
+    class DrawSpriteComponent *mDrawSpriteComponent;
+    class DrawAnimatedComponent *mDrawAnimatedComponent;
 
-    class RigidBodyComponent* mRigidBodyComponent;
-    class AABBComponent* mAABBComponent;
+    class RigidBodyComponent *mRigidBodyComponent;
+    class AABBComponent *mAABBComponent;
 };

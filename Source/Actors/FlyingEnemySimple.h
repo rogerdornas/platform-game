@@ -21,5 +21,5 @@ private:
     float mDistToSpotPlayer;
     float mFlyingAroundTimer;
     float mFlyingAroundDuration;
-    float mFlyingAroundMooveSpeed;
+    float mFlyingAroundMoveSpeed;
 };

@@ -7,8 +7,8 @@
 #include "Random.h"
 
 Camera::Camera(class Game *game, Vector2 startPosition)
-    :mGame(game)
-    ,mPos(startPosition)
+    : mPos(startPosition),
+      mGame(game)
 {
     mLookUp = false;
     mLookDown = false;
@@ -22,7 +22,8 @@ Camera::Camera(class Game *game, Vector2 startPosition)
     mShakeStrength = 5;
 }
 
-void Camera::StartCameraShake(float duration, float strength) {
+void Camera::StartCameraShake(float duration, float strength)
+{
     mIsShaking = true;
     mShakeTimer = 0.0f;
     mShakeDuration = duration;
@@ -70,20 +71,22 @@ void Camera::StartCameraShake(float duration, float strength) {
 //     // }
 // }
 
-void Camera::Update(float deltaTime) {
-
+void Camera::Update(float deltaTime)
+{
     // Shake
-    if (mShakeTimer < mShakeDuration) {
+    if (mShakeTimer < mShakeDuration)
         mShakeTimer += deltaTime;
-    }
+
     float shakeOffsetX = 0;
     float shakeOffsetY = 0;
 
-    if (mIsShaking) {
+    if (mIsShaking)
+    {
         shakeOffsetX = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
         shakeOffsetY = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
 
-        if (mShakeTimer >= mShakeDuration) {
+        if (mShakeTimer >= mShakeDuration)
+        {
             mIsShaking = false;
             shakeOffsetX = 0;
             shakeOffsetY = 0;
@@ -93,30 +96,32 @@ void Camera::Update(float deltaTime) {
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
     // Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - 2 * mGame->GetWindowHeight() / 3); // Centro da camera a 2/3 do topo
     // Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - mGame->GetWindowHeight() / 2); // Centro da camera no centro da altura da tela
-    Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2 + shakeOffsetX, playerPos.y - mGame->GetWindowHeight() / 2 + shakeOffsetY); // Centro da camera no centro da altura da tela
+    Vector2 targetPos(playerPos.x - mGame->GetWindowWidth() / 2 + shakeOffsetX,
+                      playerPos.y - mGame->GetWindowHeight() / 2 + shakeOffsetY);
+    // Centro da camera no centro da altura da tela
 
     // Aplica deslocamento vertical se estiver olhando para cima ou para baixo
-    if (mLookUp) {
+    if (mLookUp)
+    {
         mTimerToStartLooking += deltaTime;
-        if (mTimerToStartLooking >= mLookDelay) {
+        if (mTimerToStartLooking >= mLookDelay)
             targetPos.y -= mDistMove;
-        }
+
     }
-    else if (mLookDown) {
+    else if (mLookDown)
+    {
         mTimerToStartLooking += deltaTime;
-        if (mTimerToStartLooking >= mLookDelay) {
+        if (mTimerToStartLooking >= mLookDelay)
             targetPos.y += mDistMove;
-        }
+
     }
 
-    if (!mLookUp && !mLookDown) {
+    if (!mLookUp && !mLookDown)
         mTimerToStartLooking = 0.0f;
-    }
 
     // Trava a camera na arena do boss
-    if (playerPos.x > 22080 * mGame->GetScale() && playerPos.x < 24000 * mGame->GetScale()) {
+    if (playerPos.x > 22080 * mGame->GetScale() && playerPos.x < 24000 * mGame->GetScale())
         targetPos = Vector2(22080 * mGame->GetScale() + shakeOffsetX, 15420 * mGame->GetScale() + shakeOffsetY);
-    }
 
     // Sempre interpola a posição atual da câmera para a posição-alvo
     mPos = Vector2(
