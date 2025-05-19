@@ -8,24 +8,25 @@
 #include "../../Json.h"
 #include <fstream>
 
-DrawAnimatedComponent::DrawAnimatedComponent(class Actor* owner, float width, float height, const std::string &spriteSheetPath, const std::string &spriteSheetData, int drawOrder)
-        :DrawSpriteComponent(owner, spriteSheetPath, width, height, drawOrder)
-        ,mIsBlinking(false)
-        ,mTranparency(127)
+DrawAnimatedComponent::DrawAnimatedComponent(Actor *owner, float width, float height,
+                                             const std::string &spriteSheetPath, const std::string &spriteSheetData,
+                                             int drawOrder)
+    : DrawSpriteComponent(owner, spriteSheetPath, width, height, drawOrder),
+      mIsBlinking(false),
+      mTransparency(127)
 {
     LoadSpriteSheet(spriteSheetPath, spriteSheetData);
 }
 
 DrawAnimatedComponent::~DrawAnimatedComponent()
 {
-    for (const auto& rect : mSpriteSheetData)
-    {
+    for (const auto &rect: mSpriteSheetData)
         delete rect;
-    }
+
     mSpriteSheetData.clear();
 }
 
-void DrawAnimatedComponent::LoadSpriteSheet(const std::string& texturePath, const std::string& dataPath)
+void DrawAnimatedComponent::LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath)
 {
     // Load sprite sheet texture
     mSpriteSheetSurface = mOwner->GetGame()->LoadTexture(texturePath);
@@ -34,9 +35,9 @@ void DrawAnimatedComponent::LoadSpriteSheet(const std::string& texturePath, cons
     std::ifstream spriteSheetFile(dataPath);
     nlohmann::json spriteSheetData = nlohmann::json::parse(spriteSheetFile);
 
-    SDL_Rect* rect = nullptr;
-    for(const auto& frame : spriteSheetData["frames"]) {
-
+    SDL_Rect *rect = nullptr;
+    for (const auto &frame: spriteSheetData["frames"])
+    {
         int x = frame["frame"]["x"].get<int>();
         int y = frame["frame"]["y"].get<int>();
         int w = frame["frame"]["w"].get<int>();
@@ -47,10 +48,11 @@ void DrawAnimatedComponent::LoadSpriteSheet(const std::string& texturePath, cons
     }
 }
 
-void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
-    if (!mIsVisible) {
+void DrawAnimatedComponent::Draw(SDL_Renderer *renderer)
+{
+    if (!mIsVisible)
         return;
-    }
+
     // --------------
     // TODO - PARTE 4
     // --------------
@@ -66,8 +68,7 @@ void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
     //  indexando o mapa ` mAnimations` com o timer da animação (`mAnimTimer`) convertido para inteiro.
     //  Note que `mAnimations[mAnimName]` armazena os índices dos quadros da animação atual. Armazene
     //  o resultado em uma variável `spriteIdx`.
-    int spriteIdx = mAnimations[mAnimName][int(mAnimTimer)];
-
+    int spriteIdx = mAnimations[mAnimName][static_cast<int>(mAnimTimer)];
 
     // TODO 2.2 (~7-10 linhas): Utilize a função SDL_RenderCopyEx para desenhar o sprite
     //  com índice `spriteIdx`. O SDLRect `srcRect` que define a região do sprite no sprite sheet está armazenado
@@ -75,7 +76,7 @@ void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
     //  da tela onde será desenhado o sprite, assim como no `DrawSpriteComponent`. Crie o `dstRect` considerando a
     //  altura e largura do sprite `srcRect`, não as propriedades `mWidth` and `mHeight`. Você também terá que
     //  criar uma flag do tipo SDL_RendererFlip assim como no DrawSpriteComponent.
-    SDL_Rect* srcRect = mSpriteSheetData[spriteIdx];
+    SDL_Rect *srcRect = mSpriteSheetData[spriteIdx];
 
     // Calcula a posição na tela
     SDL_Rect dstRect;
@@ -86,28 +87,25 @@ void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
 
     // Define o flip (espelhamento) baseado na escala
     SDL_RendererFlip flip = SDL_FLIP_NONE;
-    if (GetOwner()->GetRotation() == Math::Pi) {
+    if (GetOwner()->GetRotation() == Math::Pi)
         flip = SDL_FLIP_HORIZONTAL;
-    }
+
 
     float angle = 0;
-    if (GetOwner()->GetRotation() == 3 * Math::Pi / 2 || GetOwner()->GetRotation() == Math::Pi / 2) {
+    if (GetOwner()->GetRotation() == 3 * Math::Pi / 2 || GetOwner()->GetRotation() == Math::Pi / 2)
         angle = Math::ToDegrees(GetOwner()->GetRotation());
-    }
 
-    if (mIsBlinking) {
-        mTranparency += 128;
-        mTranparency = mTranparency % 256;
+    if (mIsBlinking)
+    {
+        mTransparency += 128;
+        mTransparency = mTransparency % 256;
     }
-    else {
-        mTranparency = 255;
-    }
+    else
+        mTransparency = 255;
 
     SDL_SetTextureBlendMode(mSpriteSheetSurface, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(mSpriteSheetSurface, mTranparency);
+    SDL_SetTextureAlphaMod(mSpriteSheetSurface, mTransparency);
     SDL_RenderCopyEx(renderer, mSpriteSheetSurface, srcRect, &dstRect, angle, nullptr, flip);
-
-
 }
 
 void DrawAnimatedComponent::Update(float deltaTime)
@@ -117,14 +115,12 @@ void DrawAnimatedComponent::Update(float deltaTime)
     // --------------
 
     // TODO 1.1 (~2 linhas): Verifique se animação está pausada (`mIsPaused`). Se estiver, saia da função (return).
-    if (mIsPaused) {
+    if (mIsPaused)
         return;
-    }
 
     // TODO 1.2 (~1 linha): Atualize o timer da animação `mAnimTimer` somando o tempo decorrido `deltaTime` multiplicado
     //  pela taxa de quadros por segundo `mAnimFPS`.
     mAnimTimer += deltaTime * mAnimFPS;
-
 
     // TODO 1.3 (~3-5 linhas): A função update deve converter o timer da animação `mAnimTimer` para um inteiro para obter
     //  o índice do quadro atual. No entanto, temos que garantir que esse índice não será maior do que número total de
@@ -132,12 +128,12 @@ void DrawAnimatedComponent::Update(float deltaTime)
     //  igual ao número de quadros da animação corrente. Se for, utilize um laço `while` para decrementar o timer por
     //  esse mesmo número até essa condição seja falsa.
     int numFrames = mAnimations[mAnimName].size();
-    while (mAnimTimer >= numFrames) {
+    while (mAnimTimer >= numFrames)
         mAnimTimer -= numFrames;
-    }
+
 }
 
-void DrawAnimatedComponent::SetAnimation(const std::string& name)
+void DrawAnimatedComponent::SetAnimation(const std::string &name)
 {
     // --------------
     // TODO - PARTE 4
@@ -150,7 +146,7 @@ void DrawAnimatedComponent::SetAnimation(const std::string& name)
     Update(0);
 }
 
-void DrawAnimatedComponent::AddAnimation(const std::string& name, const std::vector<int>& spriteNums)
+void DrawAnimatedComponent::AddAnimation(const std::string &name, const std::vector<int> &spriteNums)
 {
     mAnimations.emplace(name, spriteNums);
 }

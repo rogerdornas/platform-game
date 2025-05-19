@@ -6,21 +6,15 @@
 #include "../../Actors/Actor.h"
 #include "../../Game.h"
 
-DrawComponent::DrawComponent(class Actor* owner, int drawOrder)
-    :Component(owner)
-    ,mDrawOrder(drawOrder)
-    ,mIsVisible(true)
+DrawComponent::DrawComponent(class Actor *owner, int drawOrder)
+    : Component(owner),
+      mIsVisible(true),
+      mDrawOrder(drawOrder)
 {
     mOwner->GetGame()->AddDrawable(this);
 }
 
-DrawComponent::~DrawComponent()
-{
-    mOwner->GetGame()->RemoveDrawable(this);
-}
+DrawComponent::~DrawComponent() { mOwner->GetGame()->RemoveDrawable(this); }
 
 
-void DrawComponent::Draw(SDL_Renderer *renderer)
-{
-
-}
+void DrawComponent::Draw(SDL_Renderer *renderer) {}

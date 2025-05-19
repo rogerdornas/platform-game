@@ -9,7 +9,7 @@
 class EnemySimple : public Enemy
 {
 public:
-    EnemySimple(Game* game, float width, float height, float movespeed, float healthpoints);
+    EnemySimple(Game *game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
 
 private:
@@ -21,5 +21,5 @@ private:
     float mDistToSpotPlayer;
     float mWalkingAroundTimer;
     float mWalkingAroundDuration;
-    float mWalkingAroundMooveSpeed;
+    float mWalkingAroundMoveSpeed;
 };

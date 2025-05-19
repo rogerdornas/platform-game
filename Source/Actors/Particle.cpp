@@ -7,11 +7,12 @@
 #include "../Components/RigidBodyComponent.h"
 #include "../Random.h"
 
-Particle::Particle(Game* game, float lifeTime)
-    :Actor(game)
-    ,mDeathTimer(lifeTime)
-    // ,mDrawComponent(nullptr)
-    ,mRigidBodyComponent(nullptr)
+Particle::Particle(Game *game, float lifeTime)
+    : Actor(game),
+      mDeathTimer(lifeTime)
+      // ,mDrawComponent(nullptr)
+     ,
+      mRigidBodyComponent(nullptr)
 {
     // Componente visual
     Vector2 v1(0, 0);
@@ -38,7 +39,6 @@ void Particle::OnUpdate(float deltaTime)
 {
     mDeathTimer -= deltaTime;
     if (mDeathTimer <= 0.0f)
-    {
         SetState(ActorState::Destroy);
-    }
+
 }

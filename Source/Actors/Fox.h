@@ -5,7 +5,8 @@
 #include "Actor.h"
 #include "Enemy.h"
 
-enum State {
+enum State
+{
     Dash,
     RunAway,
     Stop,
@@ -18,7 +19,7 @@ enum State {
 class Fox : public Enemy
 {
 public:
-    Fox(Game* game, float width, float height, float movespeed, float healthpoints);
+    Fox(Game *game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
 
 private:
@@ -41,7 +42,7 @@ private:
     float mDistToSpotPlayer;
     float mWalkingAroundTimer;
     float mWalkingAroundDuration;
-    float mWalkingAroundMooveSpeed;
+    float mWalkingAroundMoveSpeed;
 
     bool mIsRunning;
 
@@ -65,11 +66,11 @@ private:
     int mJumpCount;
     float mJumpForce;
 
-    class Sword* mSword;
-    bool mSwordHittedPlayer;
+    class Sword *mSword;
+    bool mSwordHitPlayer;
 
 
     State mState;
 
-    class DashComponent* mDashComponent;
+    class DashComponent *mDashComponent;
 };

@@ -11,7 +11,7 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-Enemy::Enemy(Game *game, float width, float height, float movespeed, float heathPoints, float contactDamage)
+Enemy::Enemy(Game *game, float width, float height, float moveSpeed, float heathPoints, float contactDamage)
     :Actor(game)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
@@ -19,7 +19,7 @@ Enemy::Enemy(Game *game, float width, float height, float movespeed, float heath
 
     ,mWidth(width)
     ,mHeight(height)
-    ,mMoveSpeed(movespeed)
+    ,mMoveSpeed(moveSpeed)
     ,mHealthPoints(heathPoints)
     ,mContactDamage(contactDamage)
     ,mKnockBackSpeed(0.0f)

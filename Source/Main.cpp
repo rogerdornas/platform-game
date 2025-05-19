@@ -21,7 +21,7 @@ const int SCREEN_HEIGHT = 1080;
 // const int SCREEN_HEIGHT = 360;
 const int FPS = 120;
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     // float scale;
     // float ratio = 1080.0 / 720.0;

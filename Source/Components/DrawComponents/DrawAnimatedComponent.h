@@ -7,37 +7,39 @@
 #include "DrawSpriteComponent.h"
 #include <unordered_map>
 
-class DrawAnimatedComponent : public DrawSpriteComponent {
+class DrawAnimatedComponent : public DrawSpriteComponent
+{
 public:
     // (Lower draw order corresponds with further back)
-    DrawAnimatedComponent(class Actor* owner, float width, float height, const std::string &spriteSheetPath, const std::string &spriteSheetData, int drawOrder = 100);
+    DrawAnimatedComponent(Actor *owner, float width, float height, const std::string &spriteSheetPath,
+                          const std::string &spriteSheetData, int drawOrder = 100);
     ~DrawAnimatedComponent() override;
 
-    void Draw(SDL_Renderer* renderer) override;
+    void Draw(SDL_Renderer *renderer) override;
     void Update(float deltaTime) override;
 
     // Use to change the FPS of the animation
     void SetAnimFPS(float fps) { mAnimFPS = fps; }
 
     // Set the current active animation
-    void SetAnimation(const std::string& name);
+    void SetAnimation(const std::string &name);
 
     // Use to pause/unpause the animation
     void SetIsPaused(bool pause) { mIsPaused = pause; }
 
     // Add an animation of the corresponding name to the animation map
-    void AddAnimation(const std::string& name, const std::vector<int>& images);
+    void AddAnimation(const std::string &name, const std::vector<int> &images);
 
     void SetIsBlinking(bool b) { mIsBlinking = b; }
 
 private:
-    void LoadSpriteSheet(const std::string& texturePath, const std::string& dataPath);
+    void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath);
 
     // Vector of sprites
-    std::vector<SDL_Rect*> mSpriteSheetData;
+    std::vector<SDL_Rect *> mSpriteSheetData;
 
     // Map of animation name to vector of textures corresponding to the animation
-    std::unordered_map<std::string, std::vector<int>> mAnimations;
+    std::unordered_map<std::string, std::vector<int> > mAnimations;
 
     // Name of current animation
     std::string mAnimName;
@@ -48,9 +50,9 @@ private:
     // The frames per second the animation should run at
     float mAnimFPS = 13.0f;
 
-    // Whether or not the animation is paused (defaults to false)
+    // Whether the animation is paused (defaults to false)
     bool mIsPaused = false;
 
     bool mIsBlinking;
-    int mTranparency;
+    int mTransparency;
 };

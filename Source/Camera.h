@@ -6,9 +6,10 @@
 #include "Math.h"
 #include "Game.h"
 
-class Camera {
+class Camera
+{
 public:
-    Camera(class Game* game, Vector2 startPosition);
+    Camera(class Game *game, Vector2 startPosition);
 
     Vector2 GetPosCamera() { return mPos; }
     void Update(float deltaTime);
@@ -20,7 +21,7 @@ public:
 
 private:
     Vector2 mPos;
-    class Game* mGame;
+    class Game *mGame;
     const float mCameraLerpSpeed = 6.0f;
 
     Vector2 mOffset;
@@ -32,7 +33,4 @@ private:
     float mShakeDuration;
     float mShakeTimer;
     float mShakeStrength;
-
 };
-
-

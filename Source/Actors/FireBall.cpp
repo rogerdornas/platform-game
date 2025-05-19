@@ -160,7 +160,7 @@ void FireBall::ResolveGroundCollision() {
 void FireBall::ResolveEnemyCollision() {
     if (!mIsFromEnemy) {
         std::vector<Enemy*> enemys;
-        enemys = mGame->GetEnemys();
+        enemys = mGame->GetEnemies();
         if (!enemys.empty()) {
             for (Enemy* e : enemys) {
                 if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {

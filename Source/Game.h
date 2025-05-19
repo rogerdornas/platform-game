@@ -38,12 +38,12 @@ public:
     // Actor functions
     void InitializeActors();
     void UpdateActors(float deltaTime);
-    void AddActor(class Actor* actor);
-    void RemoveActor(class Actor* actor);
+    void AddActor(class Actor *actor);
+    void RemoveActor(class Actor *actor);
 
     // Draw functions
-    void AddDrawable(class DrawComponent* drawable);
-    void RemoveDrawable(class DrawComponent* drawable);
+    void AddDrawable(class DrawComponent *drawable);
+    void RemoveDrawable(class DrawComponent *drawable);
 
     // Window functions
     int GetWindowWidth() const { return mWindowWidth; }
@@ -52,33 +52,37 @@ public:
     float GetScale() { return mScale; }
 
     // Game-specific
-    void AddGround(class Ground* g);
-    void RemoveGround(class Ground* g);
-    std::vector<class Ground*>& GetGrounds() { return mGrounds; }
+    void AddGround(class Ground *g);
+    void RemoveGround(class Ground *g);
+    std::vector<class Ground *> &GetGrounds() { return mGrounds; }
 
-    Player* GetPlayer() { return mPlayer; }
+    Player *GetPlayer() { return mPlayer; }
 
     void UpdateCamera(float deltaTime);
-    class Camera* GetCamera() { return mCamera; }
+    class Camera *GetCamera() { return mCamera; }
 
-    void AddFireBall(class FireBall* f);
-    void RemoveFireball(class FireBall* f);
-    std::vector<class FireBall*>& GetFireBalls() { return mFireBalls; }
+    void AddFireBall(class FireBall *f);
+    void RemoveFireball(class FireBall *f);
+    std::vector<class FireBall *> &GetFireBalls() { return mFireBalls; }
 
-    void AddEnemy(class Enemy* e);
-    void RemoveEnemy(class Enemy* e);
-    std::vector<class Enemy*>& GetEnemys() { return mEnemys; }
+    void AddEnemy(class Enemy *e);
+    void RemoveEnemy(class Enemy *e);
+    std::vector<class Enemy *> &GetEnemies() { return mEnemys; }
 
     int **GetLevelData() const { return mLevelData; }
     int GetTileSize() { return mTileSize; }
 
     bool mResetLevel;
 
-    SDL_Texture* LoadTexture(const std::string& texturePath);
+    SDL_Texture *LoadTexture(const std::string &texturePath);
 
     int GetFPS() { return mFPS; }
 
-    void ActiveHitstop() { mHitstopActive = true; mHitstopTimer = 0; }
+    void ActiveHitstop()
+    {
+        mHitstopActive = true;
+        mHitstopTimer = 0;
+    }
 
 private:
     void ProcessInput();
@@ -87,21 +91,21 @@ private:
 
     // Load the level from a CSV file as a 2D array
     void LoadMapMetadata(const std::string &fileName);
-    int **LoadLevel(const std::string& fileName, int width, int height);
-    void LoadObjects(const std::string& fileName);
+    int **LoadLevel(const std::string &fileName, int width, int height);
+    void LoadObjects(const std::string &fileName);
 
     void ResetLevel();
 
     // All the actors in the game
-    std::vector<class Actor*> mActors;
-    std::vector<class Actor*> mPendingActors;
+    std::vector<class Actor *> mActors;
+    std::vector<class Actor *> mPendingActors;
 
     // All the draw components
-    std::vector<class DrawComponent*> mDrawables;
+    std::vector<class DrawComponent *> mDrawables;
 
     // SDL stuff
-    SDL_Window* mWindow;
-    SDL_Renderer* mRenderer;
+    SDL_Window *mWindow;
+    SDL_Renderer *mRenderer;
 
     // Window properties
     int mWindowWidth;
@@ -121,14 +125,14 @@ private:
     bool mIsPaused;
 
     // Camera
-    class Camera* mCamera;
+    class Camera *mCamera;
 
     // Game-specific
-    class Player* mPlayer;
-    std::vector<class Ground*> mGrounds;
-    std::vector<class FireBall*> mFireBalls;
-    std::vector<class Enemy*> mEnemys;
-    SDL_GameController* mController;
+    class Player *mPlayer;
+    std::vector<class Ground *> mGrounds;
+    std::vector<class FireBall *> mFireBalls;
+    std::vector<class Enemy *> mEnemys;
+    SDL_GameController *mController;
 
     // Level data
     int **mLevelData;
@@ -143,12 +147,12 @@ private:
     float mHitstopTimer;
 
     void DrawParallaxBackground();
-    void DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h);
+    void DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h);
 
-    SDL_Texture* mBackGroundTexture;
+    SDL_Texture *mBackGroundTexture;
 
-    SDL_Texture* mSky;
-    SDL_Texture* mMountains;
-    SDL_Texture* mTreesBack;
-    SDL_Texture* mTreesFront;
+    SDL_Texture *mSky;
+    SDL_Texture *mMountains;
+    SDL_Texture *mTreesBack;
+    SDL_Texture *mTreesFront;
 };
