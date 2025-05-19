@@ -922,7 +922,7 @@
         {
          "draworder":"topdown",
          "id":4,
-         "name":"Enemys",
+         "name":"Enemies",
          "objects":[],
          "opacity":1,
          "type":"objectgroup",

@@ -1118,7 +1118,7 @@
  <objectgroup id="3" name="Player">
   <object id="55" x="15616" y="15936" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="4" name="Enemys">
+ <objectgroup id="4" name="Enemies">
   <object id="70" name="Flying Enemy" x="16448" y="15296" width="32" height="32"/>
   <object id="71" name="Enemy Simple" x="16192" y="16352" width="32" height="32"/>
   <object id="72" name="Enemy Simple" x="16992" y="16672" width="32" height="32"/>

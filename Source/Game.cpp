@@ -291,7 +291,7 @@ void Game::LoadObjects(const std::string &fileName)
                 }
             }
         }
-        if (layer["name"] == "Enemys")
+        if (layer["name"] == "Enemies")
             for (const auto &obj: layer["objects"])
             {
                 std::string name = obj["name"];
@@ -309,7 +309,7 @@ void Game::LoadObjects(const std::string &fileName)
                 }
                 else if (name == "Fox")
                 {
-                    auto fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
+                    auto *fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
                     fox->SetPosition(Vector2(x, y));
                 }
             }
@@ -466,13 +466,13 @@ void Game::RemoveFireball(class FireBall *f)
         mFireBalls.erase(iter);
 }
 
-void Game::AddEnemy(class Enemy *e) { mEnemys.emplace_back(e); }
+void Game::AddEnemy(class Enemy *e) { mEnemies.emplace_back(e); }
 
 void Game::RemoveEnemy(class Enemy *e)
 {
-    auto iter = std::find(mEnemys.begin(), mEnemys.end(), e);
-    if (iter != mEnemys.end())
-        mEnemys.erase(iter);
+    auto iter = std::find(mEnemies.begin(), mEnemies.end(), e);
+    if (iter != mEnemies.end())
+        mEnemies.erase(iter);
 }
 
 void Game::AddActor(Actor *actor)

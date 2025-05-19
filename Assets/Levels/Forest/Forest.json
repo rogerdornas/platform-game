@@ -1704,7 +1704,7 @@
         {
          "draworder":"topdown",
          "id":4,
-         "name":"Enemys",
+         "name":"Enemies",
          "objects":[
                 {
                  "height":32,

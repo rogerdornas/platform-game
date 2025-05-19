@@ -67,7 +67,7 @@ public:
 
     void AddEnemy(class Enemy *e);
     void RemoveEnemy(class Enemy *e);
-    std::vector<class Enemy *> &GetEnemies() { return mEnemys; }
+    std::vector<class Enemy *> &GetEnemies() { return mEnemies; }
 
     int **GetLevelData() const { return mLevelData; }
     int GetTileSize() { return mTileSize; }
@@ -131,7 +131,7 @@ private:
     class Player *mPlayer;
     std::vector<class Ground *> mGrounds;
     std::vector<class FireBall *> mFireBalls;
-    std::vector<class Enemy *> mEnemys;
+    std::vector<class Enemy *> mEnemies;
     SDL_GameController *mController;
 
     // Level data
