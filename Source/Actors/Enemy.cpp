@@ -25,6 +25,9 @@ Enemy::Enemy(Game *game, float width, float height, float movespeed, float heath
     ,mKnockBackSpeed(0.0f)
     ,mKnockBackTimer(0.0f)
     ,mKnockBackDuration(0.0f)
+    ,mIsFlashing(false)
+    ,mFlashDuration(0.05f)
+    ,mFlashTimer(mFlashDuration)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -38,7 +41,7 @@ Enemy::Enemy(Game *game, float width, float height, float movespeed, float heath
     vertices.emplace_back(v4);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {245, 154, 25, 255});
-    mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1300);
+    mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 40000 * mGame->GetScale());
     mAABBComponent = new AABBComponent(this, v1, v3);
 
     game->AddEnemy(this);
@@ -53,6 +56,8 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     // mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBack);
     mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() + knockBackDirection * mKnockBackSpeed);
     mKnockBackTimer = 0;
+    mIsFlashing = true;
+    mFlashTimer = 0;
 }
 
 bool Enemy::Died() {

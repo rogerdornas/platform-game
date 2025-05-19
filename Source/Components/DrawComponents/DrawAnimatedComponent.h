@@ -28,6 +28,8 @@ public:
     // Add an animation of the corresponding name to the animation map
     void AddAnimation(const std::string& name, const std::vector<int>& images);
 
+    void SetIsBlinking(bool b) { mIsBlinking = b; }
+
 private:
     void LoadSpriteSheet(const std::string& texturePath, const std::string& dataPath);
 
@@ -48,4 +50,7 @@ private:
 
     // Whether or not the animation is paused (defaults to false)
     bool mIsPaused = false;
+
+    bool mIsBlinking;
+    int mTranparency;
 };

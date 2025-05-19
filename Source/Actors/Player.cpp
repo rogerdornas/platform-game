@@ -33,7 +33,7 @@ Player::Player(Game *game, float width, float height)
     ,mCanJump(true)
     ,mMaxJumpTime(0.25f)
     ,mJumpTimer(0.0f)
-    ,mJumpForce(-1000.0f * mGame->GetScale())
+    ,mJumpForce(-900.0f * mGame->GetScale())
     ,mMoveSpeed(700 * mGame->GetScale())
     ,mJumpCountInAir(0)
     ,mMaxJumpsInAir(1)
@@ -44,7 +44,7 @@ Player::Player(Game *game, float width, float height)
     ,mSwordCooldownDuration(0.4f)
     ,mSwordCooldownTimer(0.0f)
     ,mSwordDirection(0)
-    ,mSwordHitedEnemy(false)
+    ,mSwordHittedEnemy(false)
 
     ,mCanFireBall(true)
     ,mPrevFireBallPressed(false)
@@ -68,13 +68,13 @@ Player::Player(Game *game, float width, float height)
     ,mWallJumpTimer(0.15f)
     ,mWallJumpMaxTime(0.15f)
 
-    ,mKnockBackSpeed(800.0f * mGame->GetScale())
+    ,mKnockBackSpeed(1200.0f * mGame->GetScale())
     ,mKnockBackDuration(0.2f)
     ,mKnockBackTimer(0.0f)
 
     ,mHealthPoints(100.0f)
     ,mIsInvulnerable(false)
-    ,mInvulnerableDuration(1.0f)
+    ,mInvulnerableDuration(0.7f)
     ,mInvulnerableTimer(mInvulnerableDuration)
 
     ,mIsRunning(false)
@@ -94,13 +94,20 @@ Player::Player(Game *game, float width, float height)
     // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Esquilo/zenzen.png", 100, 100, 1000);
 
     // Raposa animada
-    // mDrawAnimatedComponent = new DrawAnimatedComponent(this, 100, 100, "../Assets/Sprites/Raposa/Raposa.png", "../Assets/Sprites/Raposa/Raposa.json", 1000);
+    // mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.3, 0.91 * mWidth * 2.3, "../Assets/Sprites/Raposa 2/Raposa.png", "../Assets/Sprites/Raposa 2/Raposa.json", 1000);
     //
-    // std::vector<int> idle = {0};
+    // std::vector<int> idle = {2};
     // mDrawAnimatedComponent->AddAnimation("idle", idle);
     //
-    // std::vector<int> run = {1, 2, 3, 4, 5};
+    // std::vector<int> run = {3, 4, 5, 6, 7};
     // mDrawAnimatedComponent->AddAnimation("run", run);
+    //
+    // std::vector<int> hitted = {1};
+    // mDrawAnimatedComponent->AddAnimation("hitted", hitted);
+    //
+    // std::vector<int> dash = {0};
+    // mDrawAnimatedComponent->AddAnimation("dash", dash);
+    //
     //
     // mDrawAnimatedComponent->SetAnimation("idle");
     // mDrawAnimatedComponent->SetAnimFPS(16.0f);
@@ -124,7 +131,6 @@ Player::Player(Game *game, float width, float height)
     mAABBComponent = new AABBComponent(this, v1, v3);
     mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), 0.2f, 0.5f);
 
-    // mSword = new Sword(game, this, 180, 113, 0.15f, 10.0f);
     mSword = new Sword(mGame, this, mWidth * 3.6, mHeight * 1.3, 0.15f, 10.0f);
 
 }
@@ -299,7 +305,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController& controller
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
         mSword->SetPosition(GetPosition());
-        mSwordHitedEnemy = false;
+        mSwordHittedEnemy = false;
 
         // Inicia cooldown
         mSwordCooldownTimer = 0;
@@ -354,6 +360,7 @@ void Player::OnUpdate(float deltaTime)
     }
     else {
         mIsInvulnerable = false;
+        mDrawAnimatedComponent->SetIsBlinking(false);
     }
 
     mTimerToLeaveWallSlidingLeft += mTryingLeavingWallSlideLeft * deltaTime;
@@ -376,28 +383,27 @@ void Player::OnUpdate(float deltaTime)
         if (mJumpTimer <= mMaxJumpTime) {
             // Gravidade menor
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 100 * mGame->GetScale() * deltaTime));
+            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && !mIsOnGround) {
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 50 * mGame->GetScale() * deltaTime));
             }
         } else {
             mIsJumping = false;
-            // Gravidade
-            // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
-            }
         }
     }
     else {
         // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-        if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround) {
-            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
+        if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && !mIsOnGround) {
+            if (mRigidBodyComponent->GetVelocity().y < 0) {
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
+            }
+            else {
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 4500 * mGame->GetScale() * deltaTime));
+            }
         }
     }
 
-    ResolveGroundCollision();
     ResolveEnemyCollision();
-
+    ResolveGroundCollision();
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 20000 * mGame->GetScale()) {
@@ -411,7 +417,6 @@ void Player::OnUpdate(float deltaTime)
     if (mDrawAnimatedComponent) {
         ManageAnimations();
     }
-    SDL_Log("Player Life: %f", mHealthPoints);
 }
 
 void Player::ResolveGroundCollision() {
@@ -584,9 +589,9 @@ void Player::ResolveEnemyCollision() {
             }
 
             else if (mSword->GetComponent<AABBComponent>()->Intersect(*e->GetComponent<AABBComponent>())) { // Colisão da sword com enemys
-                if (!mSwordHitedEnemy) {
+                if (!mSwordHittedEnemy) {
                     e->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
-                    mSwordHitedEnemy = true;
+                    mSwordHittedEnemy = true;
                 }
                 if (mSword->GetRotation() == Math::Pi / 2) {
                     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
@@ -608,18 +613,27 @@ void Player::ManageAnimations() {
     else {
         mDrawAnimatedComponent->SetAnimation("idle");
     }
+    // if (mDashComponent->GetIsDashing()) {
+    //     mDrawAnimatedComponent->SetAnimation("dash");
+    // }
 }
 
 
 void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
     if (!mIsInvulnerable) {
         mHealthPoints -= damage;
-        mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() + knockBackDirection * mKnockBackSpeed);
+        // mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() + knockBackDirection * mKnockBackSpeed);
+
+        Vector2 vel = mRigidBodyComponent->GetVelocity();
+        if (vel.Length() > 0) {
+            vel.Normalize();
+        }
+        mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBackSpeed + vel * (mKnockBackSpeed / 3));
         mKnockBackTimer = 0;
         mInvulnerableTimer = 0;
-    }
-    else {
-        mKnockBackTimer = mKnockBackDuration;
+        mGame->ActiveHitstop();
+        mDrawAnimatedComponent->SetIsBlinking(true);
+        mGame->GetCamera()->StartCameraShake(0.5, 60 * mGame->GetScale());
     }
 }
 

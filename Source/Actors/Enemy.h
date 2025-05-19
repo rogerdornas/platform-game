@@ -33,6 +33,10 @@ protected:
     float mKnockBackTimer;
     float mKnockBackDuration;
 
+    bool mIsFlashing;
+    float mFlashDuration;
+    float mFlashTimer;
+
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;
     class DrawAnimatedComponent* mDrawAnimatedComponent;

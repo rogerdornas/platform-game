@@ -78,6 +78,8 @@ public:
 
     int GetFPS() { return mFPS; }
 
+    void ActiveHitstop() { mHitstopActive = true; mHitstopTimer = 0; }
+
 private:
     void ProcessInput();
     void UpdateGame();
@@ -135,6 +137,10 @@ private:
     int mTileSize;
 
     float mScale;
+
+    bool mHitstopActive;
+    float mHitstopDuration;
+    float mHitstopTimer;
 
     void DrawParallaxBackground();
     void DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h);

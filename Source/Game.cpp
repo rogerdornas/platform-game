@@ -36,9 +36,9 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
         ,mWindowHeight(windowHeight)
         ,mFPS(FPS)
         ,mIsPaused(false)
-        // ,mScale(0.3125f)
-        // ,mScale(0.65625f)
-        // ,mScale(1)
+        ,mHitstopActive(false)
+        ,mHitstopDuration(0.15f)
+        ,mHitstopTimer(0.0f)
         ,mResetLevel(false)
         ,mBackGroundTexture(nullptr)
         ,mSky(nullptr)
@@ -49,9 +49,6 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     float ratio = mOriginalWindowHeight / mWindowHeight;
     int numTiles = 32 / ratio;
     mScale = numTiles / 32.0;
-    // SDL_Log("ratio = %f", ratio);
-    // SDL_Log("numTiles = %d", numTiles);
-    // SDL_Log("scale = %f", mScale);
 }
 
 bool Game::Initialize()
@@ -99,8 +96,6 @@ bool Game::Initialize()
     // Init all game actors
     InitializeActors();
 
-    // mCamera = new Camera(this, Vector2::Zero);
-
     mBackGroundTexture = LoadTexture("../Assets/Sprites/Background/fundoCortadoEspichado.png");
     mSky = LoadTexture("../Assets/Sprites/Background/sky_cloud.png");
     mMountains = LoadTexture("../Assets/Sprites/Background/mountain2.png");
@@ -115,7 +110,6 @@ void Game::InitializeActors()
     // Pool de Fireballs
     for (int i = 0; i < 5; i++) {
         FireBall* fireBall = new FireBall(this);
-        fireBall->SetScale(mScale);
     }
 
     LoadMapMetadata("../Assets/Levels/Forest/Forest.json");
@@ -132,8 +126,6 @@ void Game::InitializeActors()
     LoadObjects("../Assets/Levels/Forest/Forest.json");
     // LoadObjects("../Assets/Levels/Pain/Pain.json");
     // LoadObjects("../Assets/Levels/Run/Run.json");
-    Fox* fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
-    fox->SetPosition(Vector2(23000 * mScale, 16000 * mScale));
 
     mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mLevelHeight / 2));
 }
@@ -232,13 +224,11 @@ void Game::LoadObjects(const std::string &fileName) {
                 float height = float(obj["height"]) * mScale;
                 if (name == "Ground") {
                     ground = new Ground(this, width, height);
-                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
                 else if (name == "Spike") {
                     ground = new Ground(this, width, height, true);
-                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
@@ -262,7 +252,6 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ground = new Ground(this, width, height, false, true, movingDuration, Vector2(speedX, speedY));
-                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
@@ -286,7 +275,6 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
-                    ground->SetScale(mScale);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
@@ -299,13 +287,15 @@ void Game::LoadObjects(const std::string &fileName) {
                 float y = float(obj["y"]) * mScale;
                 if (name == "Enemy Simple") {
                     EnemySimple* enemySimple = new EnemySimple(this, 60 * mScale, 50 * mScale, 200 * mScale, 50);
-                    enemySimple->SetScale(mScale);
                     enemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Flying Enemy") {
                     FlyingEnemySimple* flyingEnemySimple = new FlyingEnemySimple(this, 50 * mScale, 80 * mScale, 250 * mScale, 100);
-                    flyingEnemySimple->SetScale(mScale);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
+                }
+                else if (name == "Fox") {
+                    Fox* fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
+                    fox->SetPosition(Vector2(x, y));
                 }
             }
         }
@@ -314,7 +304,6 @@ void Game::LoadObjects(const std::string &fileName) {
                 float x = float(obj["x"]) * mScale;
                 float y = float(obj["y"]) * mScale;
                 mPlayer = new Player(this, 50 * mScale, 85 * mScale);
-                mPlayer->SetScale(mScale);
                 mPlayer->SetPosition(Vector2(x, y));
                 mPlayer->SetStartingPosition(Vector2(x, y));
             }
@@ -371,22 +360,27 @@ void Game::ProcessInput() {
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
     if (!mIsPaused) {
-        for (auto actor : mActors)
-        {
-            actor->ProcessInput(state, *mController);
+        if (mHitstopActive) {
+
+        }
+        else {
+            for (auto actor : mActors)
+            {
+                actor->ProcessInput(state, *mController);
+            }
         }
     }
 }
 
 void Game::UpdateGame()
 {
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
+    // while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 1000.0 / mFPS));
 
-    // Uint32 frameDuration = 1000.0 / mFPS;
-    // Uint32 now = SDL_GetTicks();
-    // if (now < mTicksCount + frameDuration) {
-    //     SDL_Delay((mTicksCount + frameDuration) - now);
-    // }
+    Uint32 frameDuration = 1000.0 / mFPS;
+    Uint32 now = SDL_GetTicks();
+    if (now < mTicksCount + frameDuration) {
+        SDL_Delay((mTicksCount + frameDuration) - now);
+    }
 
     float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
     if (deltaTime > 0.05f)
@@ -394,11 +388,22 @@ void Game::UpdateGame()
         deltaTime = 0.05f;
     }
 
+
     mTicksCount = SDL_GetTicks();
 
     // Update all actors and pending actors
     if (!mIsPaused) {
-        UpdateActors(deltaTime);
+        if (mHitstopActive) {
+            if (mHitstopTimer < mHitstopDuration) {
+                mHitstopTimer += deltaTime;
+            }
+            else {
+                mHitstopActive = false;
+            }
+        }
+        else {
+            UpdateActors(deltaTime);
+        }
     }
 
     if (mResetLevel) {

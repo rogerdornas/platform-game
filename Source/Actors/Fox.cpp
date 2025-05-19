@@ -52,27 +52,31 @@ Fox::Fox(Game *game, float width, float height, float movespeed, float healthpoi
     mIsOnGround = true;
     mMaxJumps = 3;
     mJumpCount = 0;
-    mJumpForce = -2000.0 * mGame->GetScale();
-    // mJumpForce = -2000.0;
-    // mJumpForce = -2000.0 * Math::Sqrt(mGame->GetScale());
+    mJumpForce = -1300.0 * mGame->GetScale();
 
-    mSwordHitedPlayer = false;
+    mSwordHittedPlayer = false;
 
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Raposa/Idle.png", 100, 100);
-    // mDrawAnimatedComponent = new DrawAnimatedComponent(this, 200, 200, "../Assets/Sprites/Raposa/Raposa.png", "../Assets/Sprites/Raposa/Raposa.json", 1000);
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2, mWidth * 2, "../Assets/Sprites/Raposa/Raposa.png", "../Assets/Sprites/Raposa/Raposa.json", 1000);
+    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Raposa 2/Idle.png", 100, 100);
 
-    std::vector<int> idle = {0};
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.3, 0.91 * mWidth * 2.3, "../Assets/Sprites/Raposa 2/Raposa.png", "../Assets/Sprites/Raposa 2/Raposa.json", 1000);
+
+    std::vector<int> idle = {2};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector<int> run = {1, 2, 3, 4, 5};
+    std::vector<int> run = {3, 4, 5, 6, 7};
     mDrawAnimatedComponent->AddAnimation("run", run);
+
+    std::vector<int> hitted = {1};
+    mDrawAnimatedComponent->AddAnimation("hitted", hitted);
+
+    std::vector<int> dash = {0};
+    mDrawAnimatedComponent->AddAnimation("dash", dash);
+
 
     mDrawAnimatedComponent->SetAnimation("idle");
     mDrawAnimatedComponent->SetAnimFPS(16.0f);
 
     mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), mDashDuration, 0.5f);
-    // mSword = new Sword(game, this,  360, 226, 0.2f, 10.0f);
     mSword = new Sword(game, this,  mWidth * 3.6, mHeight * 1.3, 0.2f, 10.0f);
 
 }
@@ -83,19 +87,26 @@ void Fox::OnUpdate(float deltaTime) {
     mKnockBackTimer += deltaTime;
     mWalkingAroundTimer += deltaTime;
 
-    ResolveGroundCollision();
+    if (mFlashTimer < mFlashDuration) {
+        mFlashTimer += deltaTime;
+    }
+    else {
+        mIsFlashing = false;
+    }
+
+    // Gravidade
+    if (!mIsOnGround) {
+        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
+    }
+
     ResolvePlayerCollision();
+    ResolveGroundCollision();
 
     if (mPlayerSpotted) {
         MovementAfterPlayerSpotted(deltaTime);
     }
     else {
         MovementBeforePlayerSpotted();
-    }
-
-    // Gravidade
-    if (!mIsOnGround) {
-        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
     }
 
     // Se cair, volta para a posição inicial
@@ -115,7 +126,6 @@ void Fox::OnUpdate(float deltaTime) {
         mFireballDuration = 1.0;
         mMaxJumps = 2;
     }
-
 }
 
 void Fox::ResolveGroundCollision() {
@@ -165,9 +175,9 @@ void Fox::ResolvePlayerCollision() {
         }
     }
     else if (mSword->GetComponent<AABBComponent>()->Intersect(*player->GetComponent<AABBComponent>())) { // Colisão da sword da fox com o player
-        if (!mSwordHitedPlayer) {
+        if (!mSwordHittedPlayer) {
             player->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
-            mSwordHitedPlayer = true;
+            mSwordHittedPlayer = true;
         }
     }
 }
@@ -220,6 +230,12 @@ void Fox::ManageAnimations() {
     }
     else {
         mDrawAnimatedComponent->SetAnimation("idle");
+    }
+    if (mDashComponent->GetIsDashing()) {
+        mDrawAnimatedComponent->SetAnimation("dash");
+    }
+    if (mIsFlashing) {
+        mDrawAnimatedComponent->SetAnimation("hitted");
     }
 }
 
@@ -323,11 +339,11 @@ void Fox::RunAndSword(float deltaTime) {
     }
 
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3, mRigidBodyComponent->GetVelocity().y));
-    if (Math::Abs(dist) < 100 * mGame->GetScale()) {
+    if (Math::Abs(dist) < 200 * mGame->GetScale()) {
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(GetRotation());
         mSword->SetPosition(GetPosition());
-        mSwordHitedPlayer = false;
+        mSwordHittedPlayer = false;
         mState = State::RunAway;
     }
 }
@@ -348,8 +364,8 @@ void Fox::Fireball(float deltaTime) {
             if (f->GetState() == ActorState::Paused) {
                 f->SetState(ActorState::Active);
                 f->SetRotation(GetRotation());
-                f->SetWidth(100 * mGame->GetScale());
-                f->SetHeight(100 * mGame->GetScale());
+                f->SetWidth(160 * mGame->GetScale());
+                f->SetHeight(80 * mGame->GetScale());
                 f->SetSpeed(1400 * mGame->GetScale());
                 f->SetIsFromEnemy();
                 f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
@@ -399,8 +415,7 @@ void Fox::Jump(float deltaTime) {
             SetRotation(Math::Pi);
         }
         mJumpCount++;
-        SDL_Log("jump");
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2, mJumpForce * mGame->GetScale()));
+        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2, mJumpForce));
     }
 }
 

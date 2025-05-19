@@ -17,8 +17,8 @@ FireBall::FireBall(class Game *game)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
 
-    ,mWidth(50.0f * mGame->GetScale())
-    ,mHeight(50.0f * mGame->GetScale())
+    ,mWidth(80.0f * mGame->GetScale())
+    ,mHeight(40.0f * mGame->GetScale())
     ,mSpeed(1800.0f * mGame->GetScale())
     ,mDuration(3.0f)
     ,mDurationTimer(mDuration)
@@ -38,7 +38,17 @@ FireBall::FireBall(class Game *game)
     vertices.emplace_back(v4);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale());
+    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale());
+
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale(), "../Assets/Sprites/Fireball/Fireball.png", "../Assets/Sprites/Fireball/Fireball.json", 999);
+
+    std::vector<int> firing = {0, 1, 2, 3, 4};
+    mDrawAnimatedComponent->AddAnimation("firing", firing);
+
+    mDrawAnimatedComponent->SetAnimation("firing");
+    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+
+
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
@@ -60,6 +70,7 @@ void FireBall::OnUpdate(float deltaTime) {
         ResolveEnemyCollision();
         ResolvePlayerCollision();
     }
+    ManageAnimations();
 }
 
 void FireBall::Activate() {
@@ -88,14 +99,16 @@ void FireBall::Activate() {
         mDrawSpriteComponent->SetIsVisible(true);
     }
     if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth + 30 * mGame->GetScale());
+        mDrawAnimatedComponent->SetHeight(mHeight + 30 * mGame->GetScale());
         mDrawAnimatedComponent->SetIsVisible(true);
     }
     mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
 }
 
 void FireBall::Deactivate() {
-    mWidth = 50 * mGame->GetScale();
-    mHeight = 50 * mGame->GetScale();
+    mWidth = 80 * mGame->GetScale();
+    mHeight = 40 * mGame->GetScale();
     mSpeed = 1800 * mGame->GetScale();
     mIsFromEnemy = false;
     Vector2 v1(-mWidth/2, -mHeight/2);
@@ -124,6 +137,8 @@ void FireBall::Deactivate() {
         mDrawSpriteComponent->SetIsVisible(false);
     }
     if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth + 30 * mGame->GetScale());
+        mDrawAnimatedComponent->SetHeight(mHeight + 30 * mGame->GetScale());
         mDrawAnimatedComponent->SetIsVisible(false);
     }
     mRigidBodyComponent->SetVelocity(Vector2::Zero);
@@ -165,4 +180,8 @@ void FireBall::ResolvePlayerCollision() {
             Deactivate();
         }
     }
+}
+
+void FireBall::ManageAnimations() {
+
 }

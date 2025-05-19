@@ -10,6 +10,8 @@
 
 DrawAnimatedComponent::DrawAnimatedComponent(class Actor* owner, float width, float height, const std::string &spriteSheetPath, const std::string &spriteSheetData, int drawOrder)
         :DrawSpriteComponent(owner, spriteSheetPath, width, height, drawOrder)
+        ,mIsBlinking(false)
+        ,mTranparency(127)
 {
     LoadSpriteSheet(spriteSheetPath, spriteSheetData);
 }
@@ -93,6 +95,16 @@ void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
         angle = Math::ToDegrees(GetOwner()->GetRotation());
     }
 
+    if (mIsBlinking) {
+        mTranparency += 128;
+        mTranparency = mTranparency % 256;
+    }
+    else {
+        mTranparency = 255;
+    }
+
+    SDL_SetTextureBlendMode(mSpriteSheetSurface, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(mSpriteSheetSurface, mTranparency);
     SDL_RenderCopyEx(renderer, mSpriteSheetSurface, srcRect, &dstRect, angle, nullptr, flip);
 
 

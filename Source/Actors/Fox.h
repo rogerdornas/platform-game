@@ -66,7 +66,7 @@ private:
     float mJumpForce;
 
     class Sword* mSword;
-    bool mSwordHitedPlayer;
+    bool mSwordHittedPlayer;
 
 
     State mState;

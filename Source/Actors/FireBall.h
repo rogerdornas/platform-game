@@ -27,6 +27,8 @@ private:
     void ResolveEnemyCollision();
     void ResolvePlayerCollision();
 
+    void ManageAnimations();
+
     float mWidth;
     float mHeight;
     float mSpeed;
