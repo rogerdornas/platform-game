@@ -14,11 +14,9 @@ public:
     bool GetIsDashing() { return mIsDashing; }
     void SetHasDashedInAir(bool hasDashedInAir) { mHasDashedInAir = hasDashedInAir; }
 
-    void StopDash()
-    {
-        mIsDashing = false;
-        mDashTimer = mDashDuration;
-    }
+    void StopDash();
+    void SetDashSpeed(float dashSpeed) { mDashSpeed = dashSpeed; }
+    float GetDashSpeed() { return mDashSpeed; }
 
     void Update(float deltaTime) override;
 

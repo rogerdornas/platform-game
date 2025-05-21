@@ -16,6 +16,7 @@
 Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMoving, float movingDuration,
                Vector2 velocity)
     : Actor(game),
+      mStartingPosition(Vector2::Zero),
       mHeight(height),
       mWidth(width),
       mIsSpike(isSpike),
@@ -70,13 +71,17 @@ void Ground::OnUpdate(float deltaTime)
     }
 }
 
-void Ground::SetSprites()
-{
+void Ground::SetSprites() {
+    if (mDrawGroundSpritesComponent) {
+        RemoveComponent(mDrawGroundSpritesComponent);
+        delete mDrawGroundSpritesComponent;
+    }
+
     int rows = mHeight / mGame->GetTileSize();
     int cols = mWidth / mGame->GetTileSize();
 
-    int topLeftX = GetPosition().x - mWidth / 2;
-    int topLeftY = GetPosition().y - mHeight / 2;
+    int topLeftX = mStartingPosition.x - mWidth / 2;
+    int topLeftY = mStartingPosition.y - mHeight / 2;
 
     int minRow = topLeftY / mGame->GetTileSize();
     int maxRow = minRow + rows;
@@ -97,7 +102,7 @@ void Ground::SetSprites()
             int tileX = col * mGame->GetTileSize();
             int tileY = row * mGame->GetTileSize();
 
-            Vector2 offset = Vector2(tileX, tileY) - GetPosition();
+            Vector2 offset = Vector2(tileX, tileY) - mStartingPosition;
 
             if (tile >= 0)
             {
@@ -111,4 +116,33 @@ void Ground::SetSprites()
 
     mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(),
                                                                  mGame->GetTileSize());
+}
+
+void Ground::ChangeResolution(float oldScale, float newScale) {
+    mWidth = mWidth / oldScale * newScale;
+    mHeight = mHeight / oldScale * newScale;
+    SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
+    mStartingPosition.x = mStartingPosition.x / oldScale * newScale;
+    mStartingPosition.y = mStartingPosition.y / oldScale * newScale;
+
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
+    if (mDrawPolygonComponent)
+        mDrawPolygonComponent->SetVertices(vertices);
+
+    SetSprites();
 }

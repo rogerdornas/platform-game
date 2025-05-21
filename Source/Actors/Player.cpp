@@ -386,6 +386,9 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
                 {
                     f->SetState(ActorState::Active);
                     f->SetRotation(GetRotation());
+                    f->SetWidth(80 * mGame->GetScale());
+                    f->SetHeight(40 * mGame->GetScale());
+                    f->SetSpeed(1800 * mGame->GetScale());
                     f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                     mIsFireAttacking = true;
                     mStopInAirFireBallTimer = 0;
@@ -751,3 +754,39 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection)
 }
 
 bool Player::Died() { return mHealthPoints <= 0; }
+
+void Player::ChangeResolution(float oldScale, float newScale) {
+    mWidth = mWidth / oldScale * newScale;
+    mHeight = mHeight / oldScale * newScale;
+    SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
+    SetStartingPosition(Vector2(mStartingPosition.x / oldScale * newScale, mStartingPosition.y / oldScale * newScale));
+    mJumpForce = mJumpForce / oldScale * newScale;
+    mMoveSpeed = mMoveSpeed / oldScale * newScale;
+    mFireballRecoil = mFireballRecoil / oldScale * newScale;
+    mWallSlideSpeed = mWallSlideSpeed / oldScale * newScale;
+    mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
+    mRigidBodyComponent->SetMaxSpeedX(4000 / oldScale * newScale);
+    mRigidBodyComponent->SetMaxSpeedY(1600 / oldScale * newScale);
+    mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);
+
+    mDrawAnimatedComponent->SetWidth(mWidth * 2.5f);
+    mDrawAnimatedComponent->SetHeight(mWidth * 2.5f);
+
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
+    if (mDrawPolygonComponent)
+        mDrawPolygonComponent->SetVertices(vertices);
+
+}

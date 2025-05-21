@@ -35,6 +35,8 @@ public:
     float GetScale() const { return mScale; }
     void SetScale(float scale) { mScale = scale; }
 
+    virtual void ChangeResolution(float oldScale, float newScale);
+
     // Rotation getter/setter
     float GetRotation() const { return mRotation; }
     void SetRotation(float rotation) { mRotation = rotation; }
@@ -61,6 +63,8 @@ public:
 
         return nullptr;
     }
+
+    void RemoveComponent(class Component *c);
 
 protected:
     class Game *mGame;

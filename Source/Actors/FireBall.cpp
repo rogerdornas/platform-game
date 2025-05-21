@@ -185,3 +185,7 @@ void FireBall::ResolvePlayerCollision() {
 void FireBall::ManageAnimations() {
 
 }
+
+void FireBall::ChangeResolution(float oldScale, float newScale) {
+
+}

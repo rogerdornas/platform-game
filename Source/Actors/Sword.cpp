@@ -163,3 +163,28 @@ void Sword::Deactivate()
     }
     mDurationTimer = 0;
 }
+
+void Sword::ChangeResolution(float oldScale, float newScale) {
+    mWidth = mWidth / oldScale * newScale;
+    mHeight = mHeight / oldScale * newScale;
+
+    mDrawAnimatedComponent->SetWidth(mWidth);
+    mDrawAnimatedComponent->SetHeight(mHeight);
+
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
+    if (mDrawPolygonComponent)
+        mDrawPolygonComponent->SetVertices(vertices);
+}

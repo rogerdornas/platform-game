@@ -22,6 +22,8 @@ public:
     Fox(Game *game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
 
+    void ChangeResolution(float oldScale, float newScale) override;
+
 private:
     void ResolveGroundCollision();
     void ResolvePlayerCollision();

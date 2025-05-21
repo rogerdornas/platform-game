@@ -19,6 +19,8 @@ public:
     void SetSpeed(float s) { mSpeed = s; }
     void SetIsFromEnemy() { mIsFromEnemy = true; }
 
+    void ChangeResolution(float oldScale, float newScale) override;
+
 private:
     void Deactivate();
     void Activate();

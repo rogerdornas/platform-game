@@ -15,6 +15,8 @@ public:
 
     float GetDamage() { return mDamage; }
 
+    void ChangeResolution(float oldScale, float newScale) override;
+
 private:
     void Deactivate();
     void Activate();

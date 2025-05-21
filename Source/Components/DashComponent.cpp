@@ -61,3 +61,8 @@ void DashComponent::Update(float deltaTime)
         }
     }
 }
+
+void DashComponent::StopDash() {
+    mIsDashing = false;
+    mDashTimer = mDashDuration;
+}

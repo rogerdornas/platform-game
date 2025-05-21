@@ -22,6 +22,10 @@ public:
 
     void SetSprites();
 
+    void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
+
+    void ChangeResolution(float oldScale, float newScale) override;
+
 private:
     float mHeight;
     float mWidth;
@@ -29,6 +33,7 @@ private:
     bool mIsMoving;
     float mMovingTimer;
     float mMovingDuration;
+    Vector2 mStartingPosition;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;

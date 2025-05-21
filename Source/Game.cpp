@@ -47,8 +47,8 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
       mTreesFront(nullptr)
 {
     float ratio = mOriginalWindowHeight / static_cast<float>(mWindowHeight);
-    int numTiles = static_cast<int>(32 / ratio);
-    mScale = static_cast<float>(numTiles) / 32.0f;
+    int tileSize = static_cast<int>(mOriginalTileSize / ratio);
+    mScale = static_cast<float>(tileSize) / mOriginalTileSize;
 }
 
 bool Game::Initialize()
@@ -233,12 +233,14 @@ void Game::LoadObjects(const std::string &fileName)
                 {
                     ground = new Ground(this, width, height);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
                 else if (name == "Spike")
                 {
                     ground = new Ground(this, width, height, true);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
                 else if (name == "Moving Ground")
@@ -263,6 +265,7 @@ void Game::LoadObjects(const std::string &fileName)
 
                     ground = new Ground(this, width, height, false, true, movingDuration, Vector2(speedX, speedY));
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
                 else if (name == "Moving Spike")
@@ -287,6 +290,7 @@ void Game::LoadObjects(const std::string &fileName)
 
                     ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
             }
@@ -299,7 +303,7 @@ void Game::LoadObjects(const std::string &fileName)
                 float y = static_cast<float>(obj["y"]) * mScale;
                 if (name == "Enemy Simple")
                 {
-                    auto *enemySimple = new EnemySimple(this, 60 * mScale, 50 * mScale, 200 * mScale, 50);
+                    auto *enemySimple = new EnemySimple(this, 60 * mScale, 60 * mScale, 200 * mScale, 50);
                     enemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Flying Enemy")
@@ -347,14 +351,15 @@ void Game::ProcessInput()
                 break;
 
             case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                 {
+                    float oldScale = mScale;
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;
-                    const float ratio = 1080.0f / static_cast<float>(mWindowHeight);
-                    const int numTiles = static_cast<int>(32 / ratio);
-                    mScale = static_cast<float>(numTiles) / 32.0f;
-                    ResetLevel();
+                    const float ratio = mOriginalWindowHeight / static_cast<float>(mWindowHeight);
+                    const int tileSize = static_cast<int>(32 / ratio);
+                    mScale = static_cast<float>(tileSize) / 32.0f;
+                    ChangeResolution(oldScale);
                 }
                 break;
 
@@ -663,4 +668,13 @@ void Game::ResetLevel()
     InitializeActors();
 
     mResetLevel = false;
+}
+
+void Game::ChangeResolution(float oldScale)
+{
+    mTileSize = mOriginalTileSize * mScale;
+    for (auto actor : mActors) {
+        actor->ChangeResolution(oldScale, mScale);
+    }
+    mCamera->SetPosition(Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mWindowHeight / 2));
 }

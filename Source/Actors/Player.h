@@ -22,6 +22,8 @@ public:
 
     void ReceiveHit(float damage, Vector2 knockBackDirection);
 
+    void ChangeResolution(float oldScale, float newScale) override;
+
 private:
     void ResolveGroundCollision();
     void ResolveEnemyCollision();
@@ -64,7 +66,7 @@ private:
     bool mIsFireAttacking; // As seguintes variáveis são para a feature de ficar parado ao atirar e dar um recoil
     float mStopInAirFireBallTimer; // Timer que fica parado no ar
     const float mStopInAirFireBallMaxDuration; // Cooldown do tempo no ar
-    const float mFireballRecoil; // Recoil do tiro
+    float mFireballRecoil; // Recoil do tiro
 
     bool mCanWallSlide;                  // Habilidade de agarrar na parede
     bool mIsWallSliding;                 // Se esta deslizando

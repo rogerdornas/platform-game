@@ -95,6 +95,7 @@ private:
     void LoadObjects(const std::string &fileName);
 
     void ResetLevel();
+    void ChangeResolution(float oldScale);
 
     // All the actors in the game
     std::vector<class Actor *> mActors;
@@ -139,6 +140,7 @@ private:
     int mLevelWidth;
     int mLevelHeight;
     int mTileSize;
+    const int mOriginalTileSize = 32;
 
     float mScale;
 

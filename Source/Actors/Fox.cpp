@@ -14,6 +14,7 @@
 #include "../Actors/Sword.h"
 #include "../Actors/FireBall.h"
 #include "../Random.h"
+#include "../Components/DrawComponents/DrawPolygonComponent.h"
 
 
 Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoints)
@@ -438,4 +439,37 @@ void Fox::Jump(float deltaTime)
         mJumpCount++;
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2, mJumpForce));
     }
+}
+
+void Fox::ChangeResolution(float oldScale, float newScale) {
+    mWidth = mWidth / oldScale * newScale;
+    mHeight = mHeight / oldScale * newScale;
+    mMoveSpeed = mMoveSpeed / oldScale * newScale;
+    SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
+    mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
+    mDistToSpotPlayer = mDistToSpotPlayer / oldScale * newScale;
+    mWalkingAroundMoveSpeed = mWalkingAroundMoveSpeed / oldScale * newScale;
+    mJumpForce = mJumpForce / oldScale * newScale;
+    mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);
+
+    mDrawAnimatedComponent->SetWidth(mWidth * 2.3f);
+    mDrawAnimatedComponent->SetHeight(0.91f * mWidth * 2.3f);
+
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
+    if (mDrawPolygonComponent)
+        mDrawPolygonComponent->SetVertices(vertices);
+
 }

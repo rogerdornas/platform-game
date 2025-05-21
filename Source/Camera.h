@@ -11,6 +11,7 @@ class Camera
 public:
     Camera(class Game *game, Vector2 startPosition);
 
+    void SetPosition(Vector2 pos) { mPos = pos; }
     Vector2 GetPosCamera() { return mPos; }
     void Update(float deltaTime);
 

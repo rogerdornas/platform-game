@@ -12,6 +12,8 @@ public:
     FlyingEnemySimple(Game* game, float width, float height, float movespeed, float healthpoints);
     void OnUpdate(float deltaTime) override;
 
+    void ChangeResolution(float oldScale, float newScale) override;
+
 private:
     void ResolveGroundCollision();
     void MovementAfterPlayerSpotted();

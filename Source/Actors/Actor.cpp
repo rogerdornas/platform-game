@@ -70,3 +70,11 @@ void Actor::AddComponent(Component *c)
         return a->GetUpdateOrder() < b->GetUpdateOrder();
     });
 }
+
+void Actor::RemoveComponent(class Component *c) {
+    auto iter = std::find(mComponents.begin(), mComponents.end(), c);
+    mComponents.erase(iter);
+}
+
+
+void Actor::ChangeResolution(float oldScale, float newScale) {}
