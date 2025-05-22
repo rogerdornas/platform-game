@@ -32,9 +32,9 @@ Player::Player(Game *game, float width, float height)
       mCanJump(true),
       mJumpCountInAir(0),
       mMaxJumpsInAir(1),
-      mLowGravity(50.0f),
-      mMediumGravity(3000.0f),
-      mHighGravity(4500.0f),
+      mLowGravity(50.0f * mGame->GetScale()),
+      mMediumGravity(3000.0f * mGame->GetScale()),
+      mHighGravity(4500.0f * mGame->GetScale()),
 
       mCanDash(true),
 
