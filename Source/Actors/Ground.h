@@ -20,6 +20,9 @@ public:
     float GetHeight() const { return mHeight; }
     float GetWidth() const { return mWidth; }
 
+    void SetRespawPosition(Vector2 pos) { mRespawnPosition = pos; }
+    Vector2 GetRespawPosition() { return mRespawnPosition; }
+
     void SetSprites();
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
@@ -34,6 +37,7 @@ private:
     float mMovingTimer;
     float mMovingDuration;
     Vector2 mStartingPosition;
+    Vector2 mRespawnPosition;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;

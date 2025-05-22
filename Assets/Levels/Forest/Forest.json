@@ -1176,6 +1176,17 @@
                  "height":32,
                  "id":44,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":17184
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":16672
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1242,6 +1253,17 @@
                  "height":64,
                  "id":50,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":20096
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":16352
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1253,6 +1275,17 @@
                  "height":64,
                  "id":51,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":20096
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":16352
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1368,6 +1401,17 @@
                  "height":64,
                  "id":61,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":16512
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":15424
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1509,6 +1553,16 @@
                          "name":"MovingDuration",
                          "type":"float",
                          "value":2
+                        }, 
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":14432
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":16320
                         }, 
                         {
                          "name":"SpeedX",
@@ -1752,12 +1806,12 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":86,
+ "nextobjectid":90,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

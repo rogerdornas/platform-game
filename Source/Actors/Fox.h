@@ -62,15 +62,19 @@ private:
     float mFireballDuration;
     float mFireballTimer;
     bool mAlreadyFireballed;
+    float mFireballWidth;
+    float mFireBallHeight;
+    float mFireballSpeed;
 
     bool mIsOnGround;
     int mMaxJumps;
     int mJumpCount;
     float mJumpForce;
+    float mGravity;
 
     class Sword *mSword;
     bool mSwordHitPlayer;
-
+    float mDistToSword;
 
     State mState;
 

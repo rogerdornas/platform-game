@@ -40,15 +40,18 @@ private:
     bool mIsOnGround;
     bool mIsOnMovingGround;
     Vector2 mMovingGroundVelocity;
+    float mMoveSpeed;    // Velocidade de movimento
 
     bool mIsJumping;     // Está no meio de um pulo sustentado?
     float mJumpTimer;    // Quanto tempo já pulou
     float mMaxJumpTime;  // Tempo máximo de pulo sustentado
     float mJumpForce;    // Força contínua durante o pulo
     bool mCanJump;       // Usado para não continuar pulando ao segurar botão de pular
-    float mMoveSpeed;    // Velocidade de movimento
     int mJumpCountInAir; // Numero de pulos realizados no ar
     int mMaxJumpsInAir;  // Maximo de pulos no ar
+    float mLowGravity;
+    float mMediumGravity;
+    float mHighGravity;
 
     bool mCanDash;
 
@@ -67,6 +70,9 @@ private:
     float mStopInAirFireBallTimer; // Timer que fica parado no ar
     const float mStopInAirFireBallMaxDuration; // Cooldown do tempo no ar
     float mFireballRecoil; // Recoil do tiro
+    float mFireballWidth;
+    float mFireBallHeight;
+    float mFireballSpeed;
 
     bool mCanWallSlide;                  // Habilidade de agarrar na parede
     bool mIsWallSliding;                 // Se esta deslizando
@@ -84,6 +90,7 @@ private:
     float mKnockBackSpeed;
     float mKnockBackTimer;
     float mKnockBackDuration;
+    float mCameraShakeStrength;
 
     float mHealthPoints;
     bool mIsInvulnerable;

@@ -17,9 +17,9 @@ Enemy::Enemy(Game *game, float width, float height, float moveSpeed, float heath
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
 
-    ,mWidth(width)
-    ,mHeight(height)
-    ,mMoveSpeed(moveSpeed)
+    ,mWidth(width * mGame->GetScale())
+    ,mHeight(height * mGame->GetScale())
+    ,mMoveSpeed(moveSpeed * mGame->GetScale())
     ,mHealthPoints(heathPoints)
     ,mContactDamage(contactDamage)
     ,mKnockBackSpeed(0.0f)

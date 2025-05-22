@@ -24,6 +24,7 @@ EnemySimple::EnemySimple(Game *game, float width, float height, float moveSpeed,
     mWalkingAroundDuration = 2.0f;
     mWalkingAroundTimer = mWalkingAroundDuration;
     mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
+    mGravity = 3000 * mGame->GetScale();
 
     mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Goomba/Walk1.png",
                                                     static_cast<int>(mWidth * 1.2),
@@ -44,7 +45,9 @@ void EnemySimple::OnUpdate(float deltaTime) {
     }
 
     // Gravidade
-    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mRigidBodyComponent->GetVelocity().y + 3000 * mGame->GetScale() * deltaTime));
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
+                                             mRigidBodyComponent->GetVelocity().y
+                                             + mGravity * deltaTime));
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 20000 * mGame->GetScale()) {
@@ -118,6 +121,7 @@ void EnemySimple::ChangeResolution(float oldScale, float newScale) {
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
     mDistToSpotPlayer = mDistToSpotPlayer / oldScale * newScale;
     mWalkingAroundMoveSpeed = mWalkingAroundMoveSpeed / oldScale * newScale;
+    mGravity = mGravity / oldScale * newScale;
 
     mDrawSpriteComponent->SetWidth(mWidth * 1.2f);
     mDrawSpriteComponent->SetHeight(mHeight * 1.2f);

@@ -40,7 +40,7 @@ FireBall::FireBall(class Game *game)
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
     // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale());
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale(), "../Assets/Sprites/Fireball/Fireball.png", "../Assets/Sprites/Fireball/Fireball.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.4, mHeight * 1.4, "../Assets/Sprites/Fireball/Fireball.png", "../Assets/Sprites/Fireball/Fireball.json", 999);
 
     std::vector<int> firing = {0, 1, 2, 3, 4};
     mDrawAnimatedComponent->AddAnimation("firing", firing);
@@ -94,55 +94,34 @@ void FireBall::Activate() {
         mDrawPolygonComponent->SetIsVisible(true);
     }
     if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth + 30 * mGame->GetScale());
-        mDrawSpriteComponent->SetHeight(mHeight + 30 * mGame->GetScale());
+        mDrawSpriteComponent->SetWidth(mWidth * 1.4);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.4);
         mDrawSpriteComponent->SetIsVisible(true);
     }
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth + 30 * mGame->GetScale());
-        mDrawAnimatedComponent->SetHeight(mHeight + 30 * mGame->GetScale());
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.4);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.4);
         mDrawAnimatedComponent->SetIsVisible(true);
     }
     mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
 }
 
 void FireBall::Deactivate() {
-    mWidth = 80 * mGame->GetScale();
-    mHeight = 40 * mGame->GetScale();
-    mSpeed = 1800 * mGame->GetScale();
     mIsFromEnemy = false;
-    Vector2 v1(-mWidth/2, -mHeight/2);
-    Vector2 v2(mWidth/2, -mHeight/2);
-    Vector2 v3(mWidth/2, mHeight/2);
-    Vector2 v4(-mWidth/2, mHeight/2);
-
-    std::vector<Vector2> vertices;
-    vertices.emplace_back(v1);
-    vertices.emplace_back(v2);
-    vertices.emplace_back(v3);
-    vertices.emplace_back(v4);
-
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
-
     SetState(ActorState::Paused);
+    mRigidBodyComponent->SetVelocity(Vector2::Zero);
+    mDurationTimer = 0;
     mAABBComponent->SetActive(false); // desativa colisão
+
     if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
         mDrawPolygonComponent->SetIsVisible(false);
     }
     if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth + 30 * mGame->GetScale());
-        mDrawSpriteComponent->SetHeight(mHeight + 30 * mGame->GetScale());
         mDrawSpriteComponent->SetIsVisible(false);
     }
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth + 30 * mGame->GetScale());
-        mDrawAnimatedComponent->SetHeight(mHeight + 30 * mGame->GetScale());
         mDrawAnimatedComponent->SetIsVisible(false);
     }
-    mRigidBodyComponent->SetVelocity(Vector2::Zero);
-    mDurationTimer = 0;
 }
 
 void FireBall::ResolveGroundCollision() {

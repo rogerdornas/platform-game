@@ -49,13 +49,18 @@ Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoi
     mFireballDuration = 1.5f;
     mFireballTimer = 0.0f;
     mAlreadyFireballed = false;
+    mFireballWidth = 160 * mGame->GetScale();
+    mFireBallHeight = 80 * mGame->GetScale();
+    mFireballSpeed = 1400 * mGame->GetScale();
 
     mIsOnGround = true;
     mMaxJumps = 3;
     mJumpCount = 0;
     mJumpForce = -1300.0f * mGame->GetScale();
+    mGravity = 3000 * mGame->GetScale();
 
     mSwordHitPlayer = false;
+    mDistToSword = 200 * mGame->GetScale();
 
     std::string foxAssets = "../Assets/Sprites/Raposa 2/";
     // mDrawSpriteComponent = new DrawSpriteComponent(this, foxAssets + "Idle.png", 100, 100);
@@ -102,7 +107,7 @@ void Fox::OnUpdate(float deltaTime)
     if (!mIsOnGround)
         mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                                  mRigidBodyComponent->GetVelocity().y
-                                                 + 3000 * mGame->GetScale() * deltaTime));
+                                                 + mGravity * deltaTime));
 
     ResolvePlayerCollision();
     ResolveGroundCollision();
@@ -354,7 +359,7 @@ void Fox::RunAndSword(float deltaTime)
         SetRotation(Math::Pi);
 
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3, mRigidBodyComponent->GetVelocity().y));
-    if (Math::Abs(dist) < 200 * mGame->GetScale())
+    if (Math::Abs(dist) < mDistToSword)
     {
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(GetRotation());
@@ -383,9 +388,9 @@ void Fox::Fireball(float deltaTime)
             {
                 f->SetState(ActorState::Active);
                 f->SetRotation(GetRotation());
-                f->SetWidth(160 * mGame->GetScale());
-                f->SetHeight(80 * mGame->GetScale());
-                f->SetSpeed(1400 * mGame->GetScale());
+                f->SetWidth(mFireballWidth);
+                f->SetHeight(mFireBallHeight);
+                f->SetSpeed(mFireballSpeed);
                 f->SetIsFromEnemy();
                 f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                 break;
@@ -449,7 +454,12 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
     mDistToSpotPlayer = mDistToSpotPlayer / oldScale * newScale;
     mWalkingAroundMoveSpeed = mWalkingAroundMoveSpeed / oldScale * newScale;
+    mFireballWidth = mFireballWidth / oldScale * newScale;
+    mFireBallHeight = mFireBallHeight / oldScale * newScale;
+    mFireballSpeed = mFireballSpeed / oldScale * newScale;
     mJumpForce = mJumpForce / oldScale * newScale;
+    mGravity = mGravity / oldScale * newScale;
+    mDistToSword = mDistToSword / oldScale * newScale;
     mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);
 
     mDrawAnimatedComponent->SetWidth(mWidth * 2.3f);

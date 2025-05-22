@@ -238,9 +238,23 @@ void Game::LoadObjects(const std::string &fileName)
                 }
                 else if (name == "Spike")
                 {
+                    float respawnPositionX = 0.0f;
+                    float respawnPositionY = 0.0f;
+                    if (obj.contains("properties"))
+                        for (const auto &prop: obj["properties"])
+                        {
+                            std::string propName = prop["name"];
+                            if (propName == "RespawnPositionX")
+                                respawnPositionX = static_cast<float>(prop["value"]) * mScale;
+
+                            else if (propName == "RespawnPositionY")
+                                respawnPositionY = static_cast<float>(prop["value"]) * mScale;
+                        }
+
                     ground = new Ground(this, width, height, true);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
                     ground->SetSprites();
                 }
                 else if (name == "Moving Ground")
@@ -273,6 +287,8 @@ void Game::LoadObjects(const std::string &fileName)
                     float movingDuration = 0.0f;
                     float speedX = 0.0f;
                     float speedY = 0.0f;
+                    float respawnPositionX = 0.0f;
+                    float respawnPositionY = 0.0f;
 
                     if (obj.contains("properties"))
                         for (const auto &prop: obj["properties"])
@@ -286,10 +302,17 @@ void Game::LoadObjects(const std::string &fileName)
 
                             else if (propName == "SpeedY")
                                 speedY = prop["value"];
+
+                            else if (propName == "RespawnPositionX")
+                                respawnPositionX = static_cast<float>(prop["value"]) * mScale;
+
+                            else if (propName == "RespawnPositionY")
+                                respawnPositionY = static_cast<float>(prop["value"]) * mScale;
                         }
 
                     ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
@@ -303,17 +326,17 @@ void Game::LoadObjects(const std::string &fileName)
                 float y = static_cast<float>(obj["y"]) * mScale;
                 if (name == "Enemy Simple")
                 {
-                    auto *enemySimple = new EnemySimple(this, 60 * mScale, 60 * mScale, 200 * mScale, 50);
+                    auto *enemySimple = new EnemySimple(this, 60, 60, 200, 50);
                     enemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Flying Enemy")
                 {
-                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50 * mScale, 80 * mScale, 250 * mScale, 100);
+                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 100);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Fox")
                 {
-                    auto *fox = new Fox(this, 100 * mScale, 170 * mScale, 300 * mScale, 200);
+                    auto *fox = new Fox(this, 100, 170, 300, 200);
                     fox->SetPosition(Vector2(x, y));
                 }
             }
@@ -322,7 +345,7 @@ void Game::LoadObjects(const std::string &fileName)
             {
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
-                mPlayer = new Player(this, 50 * mScale, 85 * mScale);
+                mPlayer = new Player(this, 50, 85);
                 mPlayer->SetPosition(Vector2(x, y));
                 mPlayer->SetStartingPosition(Vector2(x, y));
             }

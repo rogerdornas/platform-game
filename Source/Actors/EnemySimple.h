@@ -24,4 +24,5 @@ private:
     float mWalkingAroundTimer;
     float mWalkingAroundDuration;
     float mWalkingAroundMoveSpeed;
+    float mGravity;
 };

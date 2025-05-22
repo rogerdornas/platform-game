@@ -17,25 +17,33 @@
 Player::Player(Game *game, float width, float height)
     : Actor(game),
       mStartingPosition(Vector2::Zero),
-      mHeight(height),
-      mWidth(width),
+      mHeight(height * mGame->GetScale()),
+      mWidth(width * mGame->GetScale()),
+
       mIsOnGround(false),
       mIsOnMovingGround(false),
       mMovingGroundVelocity(Vector2::Zero),
+      mMoveSpeed(700 * mGame->GetScale()),
+
       mIsJumping(false),
       mJumpTimer(0.0f),
       mMaxJumpTime(0.25f),
       mJumpForce(-900.0f * mGame->GetScale()),
       mCanJump(true),
-      mMoveSpeed(700 * mGame->GetScale()),
       mJumpCountInAir(0),
       mMaxJumpsInAir(1),
+      mLowGravity(50.0f),
+      mMediumGravity(3000.0f),
+      mHighGravity(4500.0f),
+
       mCanDash(true),
+
       mPrevSwordPressed(false),
       mSwordCooldownTimer(0.0f),
       mSwordCooldownDuration(0.4f),
       mSwordDirection(0),
       mSwordHitEnemy(false),
+
       mCanFireBall(true),
       mPrevFireBallPressed(false),
       mFireBallCooldownTimer(0.0f),
@@ -44,6 +52,10 @@ Player::Player(Game *game, float width, float height)
       mStopInAirFireBallTimer(0.0f),
       mStopInAirFireBallMaxDuration(0.0f),
       mFireballRecoil(0.0f * mGame->GetScale()),
+      mFireballWidth(80 * mGame->GetScale()),
+      mFireBallHeight(40 * mGame->GetScale()),
+      mFireballSpeed(1800 * mGame->GetScale()),
+
       mCanWallSlide(true),
       mIsWallSliding(false),
       mWallSlideSide(WallSlideSide::notSliding),
@@ -53,16 +65,22 @@ Player::Player(Game *game, float width, float height)
       mTimerToLeaveWallSlidingLeft(0.15f),
       mTimerToLeaveWallSlidingRight(0.15f),
       mMaxTimerToLiveWallSliding(0.15f),
+
       mWallJumpTimer(0.15f),
       mWallJumpMaxTime(0.15f),
+
       mKnockBackSpeed(1200.0f * mGame->GetScale()),
       mKnockBackTimer(0.0f),
       mKnockBackDuration(0.2f),
+      mCameraShakeStrength(60.0f * mGame->GetScale()),
+
       mHealthPoints(100.0f),
       mIsInvulnerable(false),
       mInvulnerableDuration(0.7f),
       mInvulnerableTimer(mInvulnerableDuration),
+
       mIsRunning(false),
+
       mDrawPolygonComponent(nullptr),
       mDrawSpriteComponent(nullptr),
       mDrawAnimatedComponent(nullptr)
@@ -386,9 +404,9 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
                 {
                     f->SetState(ActorState::Active);
                     f->SetRotation(GetRotation());
-                    f->SetWidth(80 * mGame->GetScale());
-                    f->SetHeight(40 * mGame->GetScale());
-                    f->SetSpeed(1800 * mGame->GetScale());
+                    f->SetWidth(mFireballWidth);
+                    f->SetHeight(mFireBallHeight);
+                    f->SetSpeed(mFireballSpeed);
                     f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                     mIsFireAttacking = true;
                     mStopInAirFireBallTimer = 0;
@@ -454,7 +472,7 @@ void Player::OnUpdate(float deltaTime)
             if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && !mIsOnGround)
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                                          mRigidBodyComponent->GetVelocity().y
-                                                         + 50 * mGame->GetScale() * deltaTime));
+                                                         + mLowGravity * deltaTime));
         }
         else
             mIsJumping = false;
@@ -467,12 +485,12 @@ void Player::OnUpdate(float deltaTime)
             if (mRigidBodyComponent->GetVelocity().y < 0)
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                                          mRigidBodyComponent->GetVelocity().y
-                                                         + 3000 * mGame->GetScale() * deltaTime));
+                                                         + mMediumGravity * deltaTime));
 
             else
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                                          mRigidBodyComponent->GetVelocity().y
-                                                         + 4500 * mGame->GetScale() * deltaTime));
+                                                         + mHighGravity * deltaTime));
         }
     }
 
@@ -623,37 +641,46 @@ void Player::ResolveGroundCollision()
                 if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>()))
                 {
                     // SetPosition(mStartingPosition);
-                    mGame->mResetLevel = true;
 
-                    // Vector2 vel = mRigidBodyComponent->GetVelocity();
-                    // collisionSide = mAABBComponent->ResolveColision(*g->GetComponent<AABBComponent>());
-                    //
-                    // mDashComponent->StopDash();
-                    //
-                    // // Colidiu top
-                    // if (collisionSide[0]) {
-                    //     mRigidBodyComponent->SetVelocity(Vector2(vel.x, -mKnockBackSpeed));
-                    // }
-                    // // Colidiu bot
-                    // if (collisionSide[1]) {
-                    //     mRigidBodyComponent->SetVelocity(Vector2(vel.x, mKnockBackSpeed));
-                    // }
-                    // //Colidiu left
-                    // if (collisionSide[2]) {
-                    //     mRigidBodyComponent->SetVelocity(Vector2(-mKnockBackSpeed, vel.y));
-                    // }
-                    // //Colidiu right
-                    // if (collisionSide[3]) {
-                    //     mRigidBodyComponent->SetVelocity(Vector2(mKnockBackSpeed, vel.y));
-                    // }
-                    //
-                    // mKnockBackTimer = 0;
+                    // mGame->mResetLevel = true;
+
+                    // mRigidBodyComponent->SetVelocity(Vector2::Zero);
+                    // SetPosition(g->GetRespawPosition());
+                    // ReceiveHit(10, Vector2::Zero);
+
+                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+
+                    mDashComponent->StopDash();
+
+                    // Colidiu top
+                    if (collisionSide[0]) {
+                        ReceiveHit(10, Vector2::NegUnitY);
+                        // mRigidBodyComponent->SetVelocity(Vector2(vel.x, -mKnockBackSpeed));
+                    }
+                    // Colidiu bot
+                    if (collisionSide[1]) {
+                        ReceiveHit(10, Vector2::UnitY);
+                        // mRigidBodyComponent->SetVelocity(Vector2(vel.x, mKnockBackSpeed));
+                    }
+                    //Colidiu left
+                    if (collisionSide[2]) {
+                        ReceiveHit(10, Vector2::NegUnitX);
+                        // mRigidBodyComponent->SetVelocity(Vector2(-mKnockBackSpeed, vel.y));
+                    }
+                    //Colidiu right
+                    if (collisionSide[3]) {
+                        ReceiveHit(10, Vector2::UnitX);
+                        // mRigidBodyComponent->SetVelocity(Vector2(mKnockBackSpeed, vel.y));
+                    }
+
+                    mKnockBackTimer = 0;
                 }
                 else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>()))
                 { // Colisão da sword com spikes
                     if (mSword->GetRotation() == Math::Pi / 2)
                     {
-                        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                        if (!mDashComponent->GetIsDashing())
+                            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
                         // Resetar dash no ar
                         mDashComponent->SetHasDashedInAir(false);
                         // RESET DO CONTADOR DE PULO
@@ -707,7 +734,8 @@ void Player::ResolveEnemyCollision()
                 }
                 if (mSword->GetRotation() == Math::Pi / 2)
                 {
-                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                    if (!mDashComponent->GetIsDashing())
+                        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
                     // Resetar dash no ar
                     mDashComponent->SetHasDashedInAir(false);
                     // RESET DO CONTADOR DE PULO
@@ -749,7 +777,7 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection)
         mInvulnerableTimer = 0;
         mGame->ActiveHitstop();
         mDrawAnimatedComponent->SetIsBlinking(true);
-        mGame->GetCamera()->StartCameraShake(0.5, 60 * mGame->GetScale());
+        mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
     }
 }
 
@@ -760,11 +788,18 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
     SetStartingPosition(Vector2(mStartingPosition.x / oldScale * newScale, mStartingPosition.y / oldScale * newScale));
-    mJumpForce = mJumpForce / oldScale * newScale;
     mMoveSpeed = mMoveSpeed / oldScale * newScale;
+    mJumpForce = mJumpForce / oldScale * newScale;
+    mLowGravity = mLowGravity / oldScale * newScale;
+    mMediumGravity = mMediumGravity / oldScale * newScale;
+    mHighGravity = mHighGravity / oldScale * newScale;
     mFireballRecoil = mFireballRecoil / oldScale * newScale;
+    mFireballWidth = mFireballWidth / oldScale * newScale;
+    mFireBallHeight = mFireBallHeight / oldScale * newScale;
+    mFireballSpeed = mFireballSpeed / oldScale * newScale;
     mWallSlideSpeed = mWallSlideSpeed / oldScale * newScale;
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
+    mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
     mRigidBodyComponent->SetMaxSpeedX(4000 / oldScale * newScale);
     mRigidBodyComponent->SetMaxSpeedY(1600 / oldScale * newScale);
     mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);
