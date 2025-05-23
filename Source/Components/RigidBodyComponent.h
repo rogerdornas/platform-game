@@ -26,6 +26,8 @@ public:
 
     void SetMaxSpeedX(float v) { mMaxSpeedX = v; }
     void SetMaxSpeedY(float v) { mMaxSpeedY = v; }
+    float GetMaxSpeedX() { return mMaxSpeedX; }
+    float GetMaxSpeedY() { return mMaxSpeedY; }
 
     void ApplyForce(const Vector2 &force);
 

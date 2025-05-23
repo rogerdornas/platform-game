@@ -899,6 +899,34 @@
         }, 
         {
          "draworder":"topdown",
+         "id":5,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":416,
+                 "id":44,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Function",
+                         "type":"string",
+                         "value":"Stop Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":640,
+                 "x":19584,
+                 "y":6400
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
          "name":"Player",
          "objects":[
@@ -930,8 +958,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":44,
+ "nextlayerid":6,
+ "nextobjectid":45,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

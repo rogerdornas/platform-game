@@ -153,9 +153,10 @@ void Camera::Update(float deltaTime)
 //
 //
 //     if (player->GetPosition().x < mPos.x - 50) {
-//         player->SetPosition(player->GetStartingPosition());
+//         mGame->mResetLevel = true;
+//         // player->SetPosition(player->GetStartingPosition());
 //         // mPos = player->GetStartingPosition();
-//         mPos = Vector2(player->GetStartingPosition().x - mGame->GetWindowWidth()/2, player->GetStartingPosition().y - mGame->GetWindowHeight()/2);
+//         // mPos = Vector2(player->GetStartingPosition().x - mGame->GetWindowWidth()/2, player->GetStartingPosition().y - mGame->GetWindowHeight()/2);
 //
 //     }
 // }

@@ -62,6 +62,7 @@ bool Game::Initialize()
     mWindow = SDL_CreateWindow("Game-v0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                mWindowWidth, mWindowHeight,
                                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                               // SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (!mWindow)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -74,6 +75,9 @@ bool Game::Initialize()
         SDL_Log("Failed to create renderer: %s", SDL_GetError());
         return false;
     }
+
+    // Esconde o cursor
+    SDL_ShowCursor(SDL_DISABLE);
 
     // Inicializa controle
     for (int i = 0; i < SDL_NumJoysticks(); ++i)

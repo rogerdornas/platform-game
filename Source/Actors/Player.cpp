@@ -174,11 +174,11 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
 
     bool up = state[SDL_SCANCODE_UP]
               || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_UP)
-              || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) < -28000;
+              || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) < -22000;
 
     bool down = state[SDL_SCANCODE_DOWN]
                 || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)
-                || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) > 28000;
+                || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) > 22000;
 
     bool jump = state[SDL_SCANCODE_Z]
                 || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_A);
@@ -800,8 +800,8 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mWallSlideSpeed = mWallSlideSpeed / oldScale * newScale;
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
     mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
-    mRigidBodyComponent->SetMaxSpeedX(4000 / oldScale * newScale);
-    mRigidBodyComponent->SetMaxSpeedY(1600 / oldScale * newScale);
+    mRigidBodyComponent->SetMaxSpeedX(mRigidBodyComponent->GetMaxSpeedX() / oldScale * newScale);
+    mRigidBodyComponent->SetMaxSpeedY(mRigidBodyComponent->GetMaxSpeedY() / oldScale * newScale);
     mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);
 
     mDrawAnimatedComponent->SetWidth(mWidth * 2.5f);
