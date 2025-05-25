@@ -22,6 +22,7 @@
 #include <SDL_image.h>
 
 #include "Actors/Fox.h"
+#include "Actors/Trigger.h"
 
 Game::Game(int windowWidth, int windowHeight, int FPS)
     : mResetLevel(false),
@@ -77,7 +78,7 @@ bool Game::Initialize()
     }
 
     // Esconde o cursor
-    SDL_ShowCursor(SDL_DISABLE);
+    // SDL_ShowCursor(SDL_DISABLE);
 
     // Inicializa controle
     for (int i = 0; i < SDL_NumJoysticks(); ++i)
@@ -104,7 +105,9 @@ bool Game::Initialize()
     InitializeActors();
 
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
-    mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+    // mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+    mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+    // mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
     mSky = LoadTexture(backgroundAssets + "sky_cloud.png");
     mMountains = LoadTexture(backgroundAssets + "mountain2.png");
     mTreesBack = LoadTexture(backgroundAssets + "pine1.png");
@@ -320,6 +323,31 @@ void Game::LoadObjects(const std::string &fileName)
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
+            }
+        }
+        if (layer["name"] == "Triggers") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+                std::string target;
+                std::string event;
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "Target") {
+                            target = prop["value"];
+                        }
+                        if (propName == "Event") {
+                            event = prop["value"];
+                        }
+                    }
+                }
+                auto* trigger = new Trigger(this, width, height);
+                trigger->SetPosition(Vector2(x + width / 2, y + height / 2));
+                trigger->SetTarget(target);
+                trigger->SetEvent(event);
             }
         }
         if (layer["name"] == "Enemies")
@@ -703,5 +731,6 @@ void Game::ChangeResolution(float oldScale)
     for (auto actor : mActors) {
         actor->ChangeResolution(oldScale, mScale);
     }
+    mCamera->ChangeResolution(oldScale, mScale);
     mCamera->SetPosition(Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mWindowHeight / 2));
 }

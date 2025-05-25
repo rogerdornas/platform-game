@@ -12,14 +12,16 @@ Camera::Camera(class Game *game, Vector2 startPosition)
 {
     mLookUp = false;
     mLookDown = false;
+    mCameraMode = CameraMode::FollowPlayer;
     mOffset = Vector2::Zero;
-    mDistMove = 200;
+    mDistMove = 200 * mGame->GetScale();
     mTimerToStartLooking = 0.0f;
     mLookDelay = 1.2f;
     mIsShaking = false;
     mShakeDuration = 1.0f;
     mShakeTimer = 0.0f;
-    mShakeStrength = 5;
+    mShakeStrength = 5 * mGame->GetScale();
+    mCameraSpeed = 500.0f;
 }
 
 void Camera::StartCameraShake(float duration, float strength)
@@ -29,6 +31,127 @@ void Camera::StartCameraShake(float duration, float strength)
     mShakeDuration = duration;
     mShakeStrength = strength;
 }
+
+
+void Camera::Update(float deltaTime) {
+    Vector2 targetPosition = Vector2::Zero;
+
+    switch (mCameraMode) {
+        case CameraMode::Fixed:
+            targetPosition = Fixed(Vector2(22080 * mGame->GetScale(), 15420 * mGame->GetScale()));
+            break;
+        case CameraMode::FollowPlayer:
+            targetPosition = FollowPlayer();
+            break;
+        case CameraMode::ScrollRight:
+            targetPosition = ScrollRight(deltaTime, mCameraSpeed);
+            break;
+        case CameraMode::ScrollUp:
+            targetPosition = ScrollUp(deltaTime, -mCameraSpeed / 2);
+            break;
+    }
+
+    // Aplica deslocamento vertical se estiver olhando para cima ou para baixo
+    if (mLookUp) {
+        mTimerToStartLooking += deltaTime;
+        if (mTimerToStartLooking >= mLookDelay) {
+            targetPosition.y -= mDistMove;
+        }
+    }
+    else if (mLookDown) {
+        mTimerToStartLooking += deltaTime;
+        if (mTimerToStartLooking >= mLookDelay) {
+            targetPosition.y += mDistMove;
+        }
+    }
+
+    if (!mLookUp && !mLookDown) {
+        mTimerToStartLooking = 0.0f;
+    }
+
+    // Interpola camera se estiver seguindo o player
+    if (mCameraMode == CameraMode::FollowPlayer) {
+        mPos = Vector2(int(mPos.x + (targetPosition.x - mPos.x) * mCameraLerpSpeed * deltaTime),
+                       int(mPos.y + (targetPosition.y - mPos.y) * mCameraLerpSpeed * deltaTime));
+    }
+    else if (mCameraMode == CameraMode::ScrollRight) {
+        mPos = Vector2(targetPosition.x,
+                    int(mPos.y + (targetPosition.y - mPos.y) * mCameraLerpSpeed * deltaTime));
+    }
+    else if (mCameraMode == CameraMode::ScrollUp) {
+        mPos = Vector2(int(mPos.x + (targetPosition.x - mPos.x) * mCameraLerpSpeed * deltaTime),
+                        targetPosition.y);
+    }
+    else if (mCameraMode == CameraMode::Fixed) {
+        // mPos = targetPosition;
+        mPos = Vector2(int(mPos.x + (targetPosition.x - mPos.x) * mCameraLerpSpeed * deltaTime),
+               int(mPos.y + (targetPosition.y - mPos.y) * mCameraLerpSpeed * deltaTime));
+    }
+
+    // Camera Shake
+    if (mShakeTimer < mShakeDuration) {
+        mShakeTimer += deltaTime;
+    }
+
+    float shakeOffsetX = 0;
+    float shakeOffsetY = 0;
+
+    if (mIsShaking) {
+        shakeOffsetX = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
+        shakeOffsetY = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
+
+        if (mShakeTimer >= mShakeDuration) {
+            mIsShaking = false;
+            shakeOffsetX = 0;
+            shakeOffsetY = 0;
+        }
+    }
+    mPos.x += shakeOffsetX * mCameraLerpSpeed * deltaTime;
+    mPos.y += shakeOffsetY * mCameraLerpSpeed * deltaTime;
+
+    // Reset flags para o próximo frame
+    mLookUp = false;
+    mLookDown = false;
+}
+
+Vector2 Camera::Fixed(Vector2 pos) {
+    return pos;
+}
+
+Vector2 Camera::FollowPlayer() {
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    Vector2 targetPos(playerPos.x - mGame->GetWindowWidth() / 2,
+                      playerPos.y - mGame->GetWindowHeight() / 2);
+    return targetPos;
+}
+
+Vector2 Camera::ScrollRight(float deltaTime, float speed) {
+    Vector2 targetPos;
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    targetPos.x = mPos.x + speed * deltaTime;
+    targetPos.y = playerPos.y - mGame->GetWindowHeight() / 2;
+
+    if (playerPos.x < targetPos.x - 50) {
+        mGame->mResetLevel = true;
+    }
+
+    return targetPos;
+}
+
+Vector2 Camera::ScrollUp(float deltaTime, float speed) {
+    Vector2 targetPos;
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    targetPos.x = playerPos.x - mGame->GetWindowWidth() / 2;
+    targetPos.y = mPos.y + speed * deltaTime;
+
+    if (playerPos.y > targetPos.y + mGame->GetWindowHeight() + 50) {
+        mGame->mResetLevel = true;
+    }
+
+    return targetPos;
+}
+
+
 
 
 // void Camera::Update(float deltaTime) {
@@ -71,75 +194,75 @@ void Camera::StartCameraShake(float duration, float strength)
 //     // }
 // }
 
-void Camera::Update(float deltaTime)
-{
-    // Shake
-    if (mShakeTimer < mShakeDuration)
-        mShakeTimer += deltaTime;
-
-    float shakeOffsetX = 0;
-    float shakeOffsetY = 0;
-
-    if (mIsShaking)
-    {
-        shakeOffsetX = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
-        shakeOffsetY = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
-
-        if (mShakeTimer >= mShakeDuration)
-        {
-            mIsShaking = false;
-            shakeOffsetX = 0;
-            shakeOffsetY = 0;
-        }
-    }
-
-    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
-    // Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - 2 * mGame->GetWindowHeight() / 3); // Centro da camera a 2/3 do topo
-    // Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - mGame->GetWindowHeight() / 2); // Centro da camera no centro da altura da tela
-    Vector2 targetPos(playerPos.x - mGame->GetWindowWidth() / 2 + shakeOffsetX,
-                      playerPos.y - mGame->GetWindowHeight() / 2 + shakeOffsetY);
-    // Centro da camera no centro da altura da tela
-
-    // Aplica deslocamento vertical se estiver olhando para cima ou para baixo
-    if (mLookUp)
-    {
-        mTimerToStartLooking += deltaTime;
-        if (mTimerToStartLooking >= mLookDelay)
-            targetPos.y -= mDistMove;
-
-    }
-    else if (mLookDown)
-    {
-        mTimerToStartLooking += deltaTime;
-        if (mTimerToStartLooking >= mLookDelay)
-            targetPos.y += mDistMove;
-
-    }
-
-    if (!mLookUp && !mLookDown)
-        mTimerToStartLooking = 0.0f;
-
-    // Trava a camera na arena do boss
-    if (playerPos.x > 22080 * mGame->GetScale() && playerPos.x < 24000 * mGame->GetScale())
-        targetPos = Vector2(22080 * mGame->GetScale() + shakeOffsetX, 15420 * mGame->GetScale() + shakeOffsetY);
-
-    // Sempre interpola a posição atual da câmera para a posição-alvo
-    mPos = Vector2(
-        int(mPos.x + (targetPos.x - mPos.x) * mCameraLerpSpeed * deltaTime),
-        (mPos.y + (targetPos.y - mPos.y) * mCameraLerpSpeed * deltaTime)
-    );
-
-    // mPos = Vector2::Lerp(mPos, targetPos, mCameraLerpSpeed * deltaTime);
-
-    // Reset flags para o próximo frame
-    mLookUp = false;
-    mLookDown = false;
-
-    // Trava a câmera abaixo de certo valor
-    // if (mPos.y > mGame->GetWindowHeight()) {
-    //     mPos.y = mGame->GetWindowHeight();
-    // }
-}
+// void Camera::Update(float deltaTime)
+// {
+//     // Shake
+//     if (mShakeTimer < mShakeDuration)
+//         mShakeTimer += deltaTime;
+//
+//     float shakeOffsetX = 0;
+//     float shakeOffsetY = 0;
+//
+//     if (mIsShaking)
+//     {
+//         shakeOffsetX = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
+//         shakeOffsetY = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
+//
+//         if (mShakeTimer >= mShakeDuration)
+//         {
+//             mIsShaking = false;
+//             shakeOffsetX = 0;
+//             shakeOffsetY = 0;
+//         }
+//     }
+//
+//     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+//     // Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - 2 * mGame->GetWindowHeight() / 3); // Centro da camera a 2/3 do topo
+//     // Vector2 targetPos(playerPos.x - mGame->GetWindowWidth()/2, playerPos.y - mGame->GetWindowHeight() / 2); // Centro da camera no centro da altura da tela
+//     Vector2 targetPos(playerPos.x - mGame->GetWindowWidth() / 2 + shakeOffsetX,
+//                       playerPos.y - mGame->GetWindowHeight() / 2 + shakeOffsetY);
+//     // Centro da camera no centro da altura da tela
+//
+//     // Aplica deslocamento vertical se estiver olhando para cima ou para baixo
+//     if (mLookUp)
+//     {
+//         mTimerToStartLooking += deltaTime;
+//         if (mTimerToStartLooking >= mLookDelay)
+//             targetPos.y -= mDistMove;
+//
+//     }
+//     else if (mLookDown)
+//     {
+//         mTimerToStartLooking += deltaTime;
+//         if (mTimerToStartLooking >= mLookDelay)
+//             targetPos.y += mDistMove;
+//
+//     }
+//
+//     if (!mLookUp && !mLookDown)
+//         mTimerToStartLooking = 0.0f;
+//
+//     // Trava a camera na arena do boss
+//     if (playerPos.x > 22080 * mGame->GetScale() && playerPos.x < 24000 * mGame->GetScale())
+//         targetPos = Vector2(22080 * mGame->GetScale() + shakeOffsetX, 15420 * mGame->GetScale() + shakeOffsetY);
+//
+//     // Sempre interpola a posição atual da câmera para a posição-alvo
+//     mPos = Vector2(
+//         int(mPos.x + (targetPos.x - mPos.x) * mCameraLerpSpeed * deltaTime),
+//         (mPos.y + (targetPos.y - mPos.y) * mCameraLerpSpeed * deltaTime)
+//     );
+//
+//     // mPos = Vector2::Lerp(mPos, targetPos, mCameraLerpSpeed * deltaTime);
+//
+//     // Reset flags para o próximo frame
+//     mLookUp = false;
+//     mLookDown = false;
+//
+//     // Trava a câmera abaixo de certo valor
+//     // if (mPos.y > mGame->GetWindowHeight()) {
+//     //     mPos.y = mGame->GetWindowHeight();
+//     // }
+// }
 
 
 // void Camera::Update(float deltaTime) {
@@ -160,3 +283,9 @@ void Camera::Update(float deltaTime)
 //
 //     }
 // }
+
+void Camera::ChangeResolution(float oldScale, float newScale) {
+    mDistMove = mDistMove / oldScale * newScale;
+    mShakeStrength = mShakeStrength / oldScale * newScale;
+    mCameraSpeed = mCameraSpeed / oldScale * newScale;
+}

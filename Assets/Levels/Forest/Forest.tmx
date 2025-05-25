@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="90">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="96">
  <editorsettings>
-  <export target="Forest.csv" format="csv"/>
+  <export target="Forest.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="Forest.tsx"/>
  <layer id="1" name="Camada de Blocos 1" width="1000" height="1000">
@@ -1139,6 +1139,26 @@
  </objectgroup>
  <objectgroup id="3" name="Player">
   <object id="55" x="15616" y="15936" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup id="5" name="Triggers">
+  <object id="91" x="22176" y="15488" width="1728" height="864">
+   <properties>
+    <property name="Event" value="Fixed"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="92" x="21952" y="15232" width="224" height="192">
+   <properties>
+    <property name="Event" value="FollowPlayer"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="93" x="23904" y="15232" width="224" height="192">
+   <properties>
+    <property name="Event" value="FollowPlayer"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="4" name="Enemies">
   <object id="70" name="Flying Enemy" x="16448" y="15296" width="32" height="32"/>

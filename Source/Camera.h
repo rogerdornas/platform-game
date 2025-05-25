@@ -6,6 +6,13 @@
 #include "Math.h"
 #include "Game.h"
 
+enum CameraMode {
+    Fixed,
+    FollowPlayer,
+    ScrollRight,
+    ScrollUp
+};
+
 class Camera
 {
 public:
@@ -16,14 +23,22 @@ public:
     void Update(float deltaTime);
 
     void StartCameraShake(float duration = 1.0f, float strength = 5.0f);
+    void ChangeCameraMode(CameraMode cameraMode) { mCameraMode = cameraMode; }
+    void ChangeResolution(float oldScale, float newScale);
 
     bool mLookUp;
     bool mLookDown;
 
 private:
+    Vector2 Fixed(Vector2 pos);
+    Vector2 FollowPlayer();
+    Vector2 ScrollRight(float deltaTime, float speed);
+    Vector2 ScrollUp(float deltaTime, float speed);
+
     Vector2 mPos;
     class Game *mGame;
-    const float mCameraLerpSpeed = 6.0f;
+    float mCameraLerpSpeed = 6.0f;
+    CameraMode mCameraMode;
 
     Vector2 mOffset;
     float mDistMove;
@@ -34,4 +49,6 @@ private:
     float mShakeDuration;
     float mShakeTimer;
     float mShakeStrength;
+
+    float mCameraSpeed;
 };

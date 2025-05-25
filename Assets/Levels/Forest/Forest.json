@@ -1757,6 +1757,83 @@
         }, 
         {
          "draworder":"topdown",
+         "id":5,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":864,
+                 "id":91,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"Fixed"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1728,
+                 "x":22176,
+                 "y":15488
+                }, 
+                {
+                 "height":192,
+                 "id":92,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":224,
+                 "x":21952,
+                 "y":15232
+                }, 
+                {
+                 "height":192,
+                 "id":93,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":224,
+                 "x":23904,
+                 "y":15232
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":4,
          "name":"Enemies",
          "objects":[
@@ -1810,8 +1887,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":90,
+ "nextlayerid":6,
+ "nextobjectid":96,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
