@@ -1726,6 +1726,43 @@
                  "width":384,
                  "x":12032,
                  "y":13472
+                }, 
+                {
+                 "height":96,
+                 "id":96,
+                 "name":"DynamicGround",
+                 "properties":[
+                        {
+                         "name":"GrowSpeedX",
+                         "type":"float",
+                         "value":800
+                        }, 
+                        {
+                         "name":"GrowSpeedY",
+                         "type":"float",
+                         "value":100000
+                        }, 
+                        {
+                         "name":"GrowthDirection",
+                         "type":"int",
+                         "value":3
+                        }, 
+                        {
+                         "name":"MinHeight",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"MinWidth",
+                         "type":"float",
+                         "value":0
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1728,
+                 "x":22176,
+                 "y":15424
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1746,7 +1783,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":15616,
+                 "x":15648,
                  "y":15936
                 }],
          "opacity":1,
@@ -1761,7 +1798,7 @@
          "name":"Triggers",
          "objects":[
                 {
-                 "height":864,
+                 "height":192,
                  "id":91,
                  "name":"",
                  "properties":[
@@ -1780,32 +1817,10 @@
                  "visible":true,
                  "width":1728,
                  "x":22176,
-                 "y":15488
+                 "y":16160
                 }, 
                 {
-                 "height":192,
-                 "id":92,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"FollowPlayer"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"Camera"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":224,
-                 "x":21952,
-                 "y":15232
-                }, 
-                {
-                 "height":192,
+                 "height":1344,
                  "id":93,
                  "name":"",
                  "properties":[
@@ -1822,9 +1837,36 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":23904,
-                 "y":15232
+                 "width":2176,
+                 "x":21952,
+                 "y":14080
+                }, 
+                {
+                 "height":224,
+                 "id":100,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsGrowing"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"96"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1728,
+                 "x":22176,
+                 "y":16128
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1888,7 +1930,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":96,
+ "nextobjectid":101,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

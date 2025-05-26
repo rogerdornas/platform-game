@@ -27,9 +27,13 @@ public:
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
 
+    void SetId(int id) { mId = id; }
+    int GetId() { return mId; }
+
     void ChangeResolution(float oldScale, float newScale) override;
 
-private:
+protected:
+    int mId;
     float mHeight;
     float mWidth;
     bool mIsSpike;

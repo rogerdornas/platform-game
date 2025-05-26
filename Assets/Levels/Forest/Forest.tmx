@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="96">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="101">
  <editorsettings>
-  <export target="Forest.json" format="json"/>
+  <export target="Forest.csv" format="csv"/>
  </editorsettings>
  <tileset firstgid="1" source="Forest.tsx"/>
  <layer id="1" name="Camada de Blocos 1" width="1000" height="1000">
@@ -1136,27 +1136,37 @@
     <property name="SpeedY" type="float" value="0"/>
    </properties>
   </object>
+  <object id="96" name="DynamicGround" x="22176" y="15424" width="1728" height="96">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="800"/>
+    <property name="GrowSpeedY" type="float" value="1e+05"/>
+    <property name="GrowthDirection" type="int" value="3"/>
+    <property name="MinHeight" type="float" value="0"/>
+    <property name="MinWidth" type="float" value="0"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="55" x="15616" y="15936" width="32" height="32"/>
+  <object id="55" x="15648" y="15936" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="5" name="Triggers">
-  <object id="91" x="22176" y="15488" width="1728" height="864">
+  <object id="91" x="22176" y="16160" width="1728" height="192">
    <properties>
     <property name="Event" value="Fixed"/>
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="92" x="21952" y="15232" width="224" height="192">
+  <object id="93" x="21952" y="14080" width="2176" height="1344">
    <properties>
     <property name="Event" value="FollowPlayer"/>
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="93" x="23904" y="15232" width="224" height="192">
+  <object id="100" x="22176" y="16128" width="1728" height="224">
    <properties>
-    <property name="Event" value="FollowPlayer"/>
-    <property name="Target" value="Camera"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="96"/>
+    <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
  </objectgroup>

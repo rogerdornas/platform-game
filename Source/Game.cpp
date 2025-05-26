@@ -21,8 +21,23 @@
 #include "Json.h"
 #include <SDL_image.h>
 
+#include "Actors/DynamicGround.h"
 #include "Actors/Fox.h"
 #include "Actors/Trigger.h"
+
+std::vector<int> ParseIntList(const std::string& str) {
+    std::vector<int> result;
+    std::stringstream ss(str);
+    std::string item;
+
+    while (std::getline(ss, item, ',')) {
+        if (!item.empty()) {
+            result.push_back(std::stoi(item));
+        }
+    }
+
+    return result;
+}
 
 Game::Game(int windowWidth, int windowHeight, int FPS)
     : mResetLevel(false),
@@ -236,9 +251,11 @@ void Game::LoadObjects(const std::string &fileName)
                 float y = static_cast<float>(obj["y"]) * mScale;
                 float width = static_cast<float>(obj["width"]) * mScale;
                 float height = static_cast<float>(obj["height"]) * mScale;
+                int id = obj["id"];
                 if (name == "Ground")
                 {
                     ground = new Ground(this, width, height);
+                    ground->SetId(id);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
@@ -259,6 +276,7 @@ void Game::LoadObjects(const std::string &fileName)
                         }
 
                     ground = new Ground(this, width, height, true);
+                    ground->SetId(id);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
@@ -285,6 +303,7 @@ void Game::LoadObjects(const std::string &fileName)
                         }
 
                     ground = new Ground(this, width, height, false, true, movingDuration, Vector2(speedX, speedY));
+                    ground->SetId(id);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
@@ -318,10 +337,64 @@ void Game::LoadObjects(const std::string &fileName)
                         }
 
                     ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
+                    ground->SetId(id);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
+                }
+                else if (name == "DynamicGround")
+                {
+                    float growSpeedX = 0.0f;
+                    float growSpeedY = 0.0f;
+                    int growthDirection = 0;
+                    float minHeight = 0.0f;
+                    float minWidth = 0.0f;
+
+                    if (obj.contains("properties"))
+                        for (const auto &prop: obj["properties"])
+                        {
+                            std::string propName = prop["name"];
+                            if (propName == "GrowSpeedX")
+                                growSpeedX = static_cast<float>(prop["value"]);
+
+                            else if (propName == "GrowSpeedY")
+                                growSpeedY = static_cast<float>(prop["value"]);
+
+                            else if (propName == "GrowthDirection")
+                                growthDirection = static_cast<int>(prop["value"]);
+
+                            else if (propName == "MinHeight")
+                                minHeight = static_cast<float>(prop["value"]) * mScale;
+
+                            else if (propName == "MinWidth")
+                                minWidth = static_cast<float>(prop["value"]) * mScale;
+
+                        }
+                    auto* dynamicGround = new DynamicGround(this, minWidth, minHeight, false, false, 0);
+                    dynamicGround->SetId(id);
+                    dynamicGround->SetMaxWidth(width);
+                    dynamicGround->SetMaxHeight(height);
+                    dynamicGround->SetGrowSpeed(Vector2(growSpeedX, growSpeedY));
+                    switch (growthDirection) {
+                        case 0:
+                            dynamicGround->SetGrowDirection(GrowthDirection::Up);
+                            dynamicGround->SetPosition(Vector2(x + width / 2, y + height - minHeight / 2));
+                            break;
+                        case 1:
+                            dynamicGround->SetGrowDirection(GrowthDirection::Down);
+                            dynamicGround->SetPosition(Vector2(x + width / 2, y + minHeight / 2));
+                            break;
+                        case 2:
+                            dynamicGround->SetGrowDirection(GrowthDirection::Left);
+                            dynamicGround->SetPosition(Vector2(x + width - minWidth / 2, y + height / 2));
+                            break;
+                        case 3:
+                            dynamicGround->SetGrowDirection(GrowthDirection::Right);
+                            dynamicGround->SetPosition(Vector2(x + minWidth / 2, y + height / 2));
+                            break;
+                    }
+                    dynamicGround->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                 }
             }
         }
@@ -333,21 +406,30 @@ void Game::LoadObjects(const std::string &fileName)
                 float height = static_cast<float>(obj["height"]) * mScale;
                 std::string target;
                 std::string event;
+                std::string grounds;
+                std::vector<int> ids;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
                         if (propName == "Target") {
                             target = prop["value"];
                         }
-                        if (propName == "Event") {
+                        else if (propName == "Event") {
                             event = prop["value"];
                         }
+                        else if (propName == "Grounds") {
+                            grounds = prop["value"];
+                        }
                     }
+                }
+                if (target == "DynamicGround" && !grounds.empty()) {
+                    ids = ParseIntList(grounds);
                 }
                 auto* trigger = new Trigger(this, width, height);
                 trigger->SetPosition(Vector2(x + width / 2, y + height / 2));
                 trigger->SetTarget(target);
                 trigger->SetEvent(event);
+                trigger->SetGroundsIds(ids);
             }
         }
         if (layer["name"] == "Enemies")
@@ -363,7 +445,7 @@ void Game::LoadObjects(const std::string &fileName)
                 }
                 else if (name == "Flying Enemy")
                 {
-                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 100);
+                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 50);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Fox")
@@ -515,6 +597,15 @@ void Game::RemoveGround(class Ground *g)
     auto iter = std::find(mGrounds.begin(), mGrounds.end(), g);
     if (iter != mGrounds.end())
         mGrounds.erase(iter);
+}
+
+Ground *Game::GetGroundById(int id) {
+    for (Ground* g : mGrounds) {
+        if (g->GetId() == id) {
+            return g;
+        }
+    }
+    return nullptr;
 }
 
 void Game::AddFireBall(class FireBall *f) { mFireBalls.emplace_back(f); }

@@ -518,11 +518,12 @@ void Player::ResolveGroundCollision()
         {
             if (!g->GetIsSpike())
             { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>()))
+                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
                     collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
-
-                else
+                }
+                else {
                     collisionSide = {false, false, false, false};
+                }
 
                 // colidiu top
                 if (collisionSide[0])

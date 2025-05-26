@@ -123,8 +123,9 @@ void Fox::OnUpdate(float deltaTime)
         SetPosition(Vector2::Zero);
 
     // Se morreu
-    if (Died())
-        SetState(ActorState::Destroy);
+    if (Died()) {
+        TriggerBossDefeat();
+    }
 
     ManageAnimations();
 
@@ -136,6 +137,14 @@ void Fox::OnUpdate(float deltaTime)
         mMaxJumps = 2;
     }
 }
+
+void Fox::TriggerBossDefeat() {
+    SetState(ActorState::Destroy);
+    // Destroi chão que estava travando
+    Ground* g1 = mGame->GetGroundById(96);
+    g1->SetState(ActorState::Destroy);
+}
+
 
 void Fox::ResolveGroundCollision()
 {

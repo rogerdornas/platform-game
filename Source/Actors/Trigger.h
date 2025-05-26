@@ -7,14 +7,17 @@
 #include "Actor.h"
 
 enum Target {
-    camera
+    camera,
+    dynamicGround
 };
 
 enum Event {
     fixed,
     followPlayer,
     scrollRight,
-    scrollUp
+    scrollUp,
+
+    setIsGrowing
 };
 
 class Trigger : public Actor
@@ -24,17 +27,20 @@ public:
 
     void SetTarget(std::string target);
     void SetEvent(std::string event);
+    void SetGroundsIds(const std::vector<int>& ids) { mGroundsIds = ids; }
 
     void OnUpdate(float deltaTime) override;
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
     void CameraTrigger();
+    void DynamicGroundTrigger();
 
     float mWidth;
     float mHeight;
     Target mTarget;
     Event mEvent;
+    std::vector<int> mGroundsIds;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class AABBComponent *mAABBComponent;

@@ -60,6 +60,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Fox.h
         Source/Actors/Trigger.cpp
         Source/Actors/Trigger.h
+        Source/Actors/DynamicGround.cpp
+        Source/Actors/DynamicGround.h
 )
 
 

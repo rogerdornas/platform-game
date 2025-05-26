@@ -6,6 +6,8 @@
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Actors/Ground.h"
+#include "../Actors/DynamicGround.h"
 
 Trigger::Trigger(class Game *game, float width, float height)
     :Actor(game)
@@ -25,13 +27,17 @@ Trigger::Trigger(class Game *game, float width, float height)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
+    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
     mAABBComponent = new AABBComponent(this, v1, v3);
 }
 
 void Trigger::SetTarget(std::string target) {
     if (target == "Camera") {
         mTarget = Target::camera;
+        return;
+    }
+    if (target == "DynamicGround") {
+        mTarget = Target::dynamicGround;
         return;
     }
 }
@@ -53,6 +59,11 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::scrollUp;
         return;
     }
+
+    if (event == "SetIsGrowing") {
+        mEvent = Event::setIsGrowing;
+        return;
+    }
 }
 
 
@@ -63,6 +74,9 @@ void Trigger::OnUpdate(float deltaTime) {
             case Target::camera:
                 CameraTrigger();
                 break;
+            case Target::dynamicGround:
+                DynamicGroundTrigger();
+                break;
         }
     }
 }
@@ -72,6 +86,7 @@ void Trigger::CameraTrigger() {
     switch (mEvent) {
         case Event::fixed:
             camera->ChangeCameraMode(CameraMode::Fixed);
+            SetState(ActorState::Destroy);
             break;
         case Event::followPlayer:
             camera->ChangeCameraMode(CameraMode::FollowPlayer);
@@ -84,6 +99,23 @@ void Trigger::CameraTrigger() {
             break;
     }
 }
+
+void Trigger::DynamicGroundTrigger() {
+    std::vector<Ground *> grounds = mGame->GetGrounds();
+    switch (mEvent) {
+        case Event::setIsGrowing:
+            for (int id : mGroundsIds) {
+                Ground *g = mGame->GetGroundById(id);
+                DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
+                if (dynamicGround) {
+                    dynamicGround->SetIsGrowing(true);
+                }
+            }
+            SetState(ActorState::Destroy);
+            break;
+    }
+}
+
 
 void Trigger::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;

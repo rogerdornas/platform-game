@@ -55,6 +55,7 @@ public:
     void AddGround(class Ground *g);
     void RemoveGround(class Ground *g);
     std::vector<class Ground *> &GetGrounds() { return mGrounds; }
+    Ground* GetGroundById(int id);
 
     Player *GetPlayer() { return mPlayer; }
 

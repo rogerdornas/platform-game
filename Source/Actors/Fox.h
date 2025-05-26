@@ -30,6 +30,8 @@ private:
     void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
 
+    void TriggerBossDefeat();
+
     void ManageAnimations();
 
     void Dash(float deltaTime);
