@@ -16,6 +16,7 @@ DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike
     ,mMaxHeight(height)
     ,mGrowSpeed(Vector2::Zero)
     ,mIsGrowing(false)
+    ,mIsDecreasing(false)
     ,mGrowthDirection(GrowthDirection::Centered)
 {
     mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/iron beam2.png",
@@ -27,7 +28,7 @@ DynamicGround::~DynamicGround() { mGame->RemoveGround(this); }
 
 void DynamicGround::OnUpdate(float deltaTime)
 {
-    if (mWidth == 0 && mHeight == 0 && !mIsGrowing) {
+    if ((mWidth == 0 || mHeight == 0) && !mIsGrowing && !mIsDecreasing) {
         if (mDrawPolygonComponent) {
             mDrawPolygonComponent->SetIsVisible(false);
         }
@@ -50,14 +51,28 @@ void DynamicGround::OnUpdate(float deltaTime)
             mMovingTimer = 0;
         }
     }
-    if (mIsGrowing) {
-        float growX = mGrowSpeed.x * deltaTime;
-        float growY = mGrowSpeed.y * deltaTime;
-        if (mWidth + growX >= mMaxWidth) {
-            growX = mMaxWidth - mWidth;
+    if (mIsGrowing || mIsDecreasing) {
+        float growX = 0;
+        float growY = 0;
+        if (mIsGrowing) {
+            growX = mGrowSpeed.x * deltaTime;
+            growY = mGrowSpeed.y * deltaTime;
+            if (mWidth + growX >= mMaxWidth) {
+                growX = mMaxWidth - mWidth;
+            }
+            if (mHeight + growY > mMaxHeight) {
+                growY = mMaxHeight - mHeight;
+            }
         }
-        if (mHeight + growY > mMaxHeight) {
-            growY = mMaxHeight - mHeight;
+        if (mIsDecreasing) {
+            growX = -mGrowSpeed.x * deltaTime;
+            growY = -mGrowSpeed.y * deltaTime;
+            if (mWidth + growX <= 0) {
+                growX = -mWidth;
+            }
+            if (mHeight + growY <= 0) {
+                growY = -mHeight;
+            }
         }
 
         mWidth += growX;
@@ -67,6 +82,9 @@ void DynamicGround::OnUpdate(float deltaTime)
 
         if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
             mIsGrowing = false;
+        }
+        if (mWidth <= 0 && mHeight <= 0) {
+            mIsDecreasing = false;
         }
 
         Vector2 v1(-mWidth / 2, -mHeight / 2);

@@ -15,6 +15,7 @@
 #include "../Actors/FireBall.h"
 #include "../Random.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Actors/DynamicGround.h"
 
 
 Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoints)
@@ -142,7 +143,13 @@ void Fox::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
     // Destroi chão que estava travando
     Ground* g1 = mGame->GetGroundById(96);
-    g1->SetState(ActorState::Destroy);
+    Ground* g2 = mGame->GetGroundById(101);
+    // g1->SetState(ActorState::Destroy);
+    // g2->SetState(ActorState::Destroy);
+    DynamicGround* dynamicGround1 = dynamic_cast<DynamicGround*>(g1);
+    dynamicGround1->SetIsDecreasing(true);
+    DynamicGround* dynamicGround2 = dynamic_cast<DynamicGround*>(g2);
+    dynamicGround2->SetIsDecreasing(true);
 }
 
 

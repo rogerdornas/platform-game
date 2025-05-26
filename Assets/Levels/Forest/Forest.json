@@ -1740,7 +1740,7 @@
                         {
                          "name":"GrowSpeedY",
                          "type":"float",
-                         "value":100000
+                         "value":0
                         }, 
                         {
                          "name":"GrowthDirection",
@@ -1750,7 +1750,7 @@
                         {
                          "name":"MinHeight",
                          "type":"float",
-                         "value":0
+                         "value":96
                         }, 
                         {
                          "name":"MinWidth",
@@ -1760,8 +1760,45 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1728,
+                 "width":896,
                  "x":22176,
+                 "y":15424
+                }, 
+                {
+                 "height":96,
+                 "id":101,
+                 "name":"DynamicGround",
+                 "properties":[
+                        {
+                         "name":"GrowSpeedX",
+                         "type":"float",
+                         "value":800
+                        }, 
+                        {
+                         "name":"GrowSpeedY",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"GrowthDirection",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"MinHeight",
+                         "type":"float",
+                         "value":96
+                        }, 
+                        {
+                         "name":"MinWidth",
+                         "type":"float",
+                         "value":0
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":896,
+                 "x":23008,
                  "y":15424
                 }],
          "opacity":1,
@@ -1783,8 +1820,8 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":15648,
-                 "y":15936
+                 "x":21984,
+                 "y":15200
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1854,7 +1891,7 @@
                         {
                          "name":"Grounds",
                          "type":"string",
-                         "value":"96"
+                         "value":"96,101"
                         }, 
                         {
                          "name":"Target",
@@ -1930,7 +1967,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":101,
+ "nextobjectid":102,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

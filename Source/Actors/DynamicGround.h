@@ -27,6 +27,7 @@ public:
     void OnUpdate(float deltaTime) override;
 
     void SetIsGrowing(bool isGrowing) { mIsGrowing = isGrowing; }
+    void SetIsDecreasing(bool isDecreasing) { mIsDecreasing = isDecreasing; }
     void SetMaxWidth(float width) { mMaxWidth = width * mGame->GetScale(); }
     void SetMaxHeight(float height) { mMaxHeight = height * mGame->GetScale(); }
     void SetGrowSpeed(Vector2 speed) { mGrowSpeed = speed * mGame->GetScale(); }
@@ -39,6 +40,7 @@ private:
     float mMaxHeight;
     Vector2 mGrowSpeed;
     bool mIsGrowing;
+    bool mIsDecreasing;
     GrowthDirection mGrowthDirection;
 
     class DrawSpriteComponent *mDrawSpriteComponent;
