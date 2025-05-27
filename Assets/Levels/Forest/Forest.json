@@ -1755,14 +1755,14 @@
                         {
                          "name":"MinWidth",
                          "type":"float",
-                         "value":0
+                         "value":64
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":896,
                  "x":22176,
-                 "y":15424
+                 "y":15456
                 }, 
                 {
                  "height":96,
@@ -1792,14 +1792,14 @@
                         {
                          "name":"MinWidth",
                          "type":"float",
-                         "value":0
+                         "value":64
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":896,
                  "x":23008,
-                 "y":15424
+                 "y":15456
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1820,8 +1820,8 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":21984,
-                 "y":15200
+                 "x":15680,
+                 "y":15936
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1832,6 +1832,7 @@
         {
          "draworder":"topdown",
          "id":5,
+         "locked":true,
          "name":"Triggers",
          "objects":[
                 {

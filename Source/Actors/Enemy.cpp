@@ -28,6 +28,7 @@ Enemy::Enemy(Game *game, float width, float height, float moveSpeed, float heath
     ,mIsFlashing(false)
     ,mFlashDuration(0.05f)
     ,mFlashTimer(mFlashDuration)
+    ,mPlayerSpotted(false)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -58,6 +59,7 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mKnockBackTimer = 0;
     mIsFlashing = true;
     mFlashTimer = 0;
+    mPlayerSpotted = true;
 }
 
 bool Enemy::Died() {

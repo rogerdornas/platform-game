@@ -19,7 +19,6 @@ private:
     void MovementAfterPlayerSpotted();
     void MovementBeforePlayerSpotted();
 
-    bool mPlayerSpotted;
     float mDistToSpotPlayer;
     float mWalkingAroundTimer;
     float mWalkingAroundDuration;

@@ -19,7 +19,6 @@ EnemySimple::EnemySimple(Game *game, float width, float height, float moveSpeed,
     mKnockBackSpeed = 800.0f * mGame->GetScale();
     mKnockBackDuration = 0.15f;
     mKnockBackTimer = mKnockBackDuration;
-    mPlayerSpotted = false;
     mDistToSpotPlayer = 400 * mGame->GetScale();
     mWalkingAroundDuration = 2.0f;
     mWalkingAroundTimer = mWalkingAroundDuration;

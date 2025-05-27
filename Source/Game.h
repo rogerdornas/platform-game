@@ -48,6 +48,8 @@ public:
     // Window functions
     int GetWindowWidth() const { return mWindowWidth; }
     int GetWindowHeight() const { return mWindowHeight; }
+    float GetLogicalWindowWidth() { return mLogicalWindowWidth; }
+    float GetLogicalWindowHeight() { return mLogicalWindowHeight; }
 
     float GetScale() { return mScale; }
 
@@ -114,6 +116,8 @@ private:
     int mWindowHeight;
     const float mOriginalWindowWidth = 1920;
     const float mOriginalWindowHeight = 1080;
+    float mLogicalWindowWidth;
+    float mLogicalWindowHeight;
 
     // Track elapsed time since game start
     Uint32 mTicksCount;

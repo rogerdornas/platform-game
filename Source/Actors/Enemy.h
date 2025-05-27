@@ -36,6 +36,8 @@ protected:
     float mFlashDuration;
     float mFlashTimer;
 
+    bool mPlayerSpotted;
+
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;
     class DrawAnimatedComponent *mDrawAnimatedComponent;

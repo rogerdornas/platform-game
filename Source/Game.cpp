@@ -45,6 +45,8 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
       mRenderer(nullptr),
       mWindowWidth(windowWidth),
       mWindowHeight(windowHeight),
+      mLogicalWindowWidth(windowWidth),
+      mLogicalWindowHeight(windowHeight),
       mTicksCount(0),
       mIsRunning(true),
       mUpdatingActors(false),
@@ -62,7 +64,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
       mTreesBack(nullptr),
       mTreesFront(nullptr)
 {
-    float ratio = mOriginalWindowHeight / static_cast<float>(mWindowHeight);
+    float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
     int tileSize = static_cast<int>(mOriginalTileSize / ratio);
     mScale = static_cast<float>(tileSize) / mOriginalTileSize;
 }
@@ -91,6 +93,18 @@ bool Game::Initialize()
         SDL_Log("Failed to create renderer: %s", SDL_GetError());
         return false;
     }
+
+    if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
+        mLogicalWindowWidth = static_cast<float>(mWindowWidth);
+        mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
+        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+    }
+    else {
+        mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
+        mLogicalWindowHeight = static_cast<float>(mWindowHeight);
+        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+    }
+
 
     // Esconde o cursor
     // SDL_ShowCursor(SDL_DISABLE);
@@ -138,6 +152,7 @@ void Game::InitializeActors()
         new FireBall(this);
 
     const std::string levelsAssets = "../Assets/Levels/";
+
     LoadMapMetadata(levelsAssets + "Forest/Forest.json");
     // LoadMapMetadata(levelsAssets + "Pain/Pain.json");
     // LoadMapMetadata(levelsAssets + "Run/Run.json");
@@ -152,8 +167,8 @@ void Game::InitializeActors()
     // LoadObjects(levelsAssets + "Pain/Pain.json");
     // LoadObjects(levelsAssets + "Run/Run.json");
 
-    mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mWindowWidth / 2,
-                                       mPlayer->GetPosition().y - mLevelHeight / 2));
+    mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                       mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
 }
 
 void Game::LoadMapMetadata(const std::string &fileName)
@@ -493,7 +508,17 @@ void Game::ProcessInput()
                     float oldScale = mScale;
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;
-                    const float ratio = mOriginalWindowHeight / static_cast<float>(mWindowHeight);
+                    if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
+                        mLogicalWindowWidth = static_cast<float>(mWindowWidth);
+                        mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
+                        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+                    }
+                    else {
+                        mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
+                        mLogicalWindowHeight = static_cast<float>(mWindowHeight);
+                        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+                    }
+                    const float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
                     const int tileSize = static_cast<int>(32 / ratio);
                     mScale = static_cast<float>(tileSize) / 32.0f;
                     ChangeResolution(oldScale);
@@ -759,13 +784,13 @@ void Game::DrawParallaxBackground()
     if (offsetX < 0) offsetX += bgWidth;
 
     // Desenha blocos horizontais suficientes para cobrir a largura da janela
-    for (int x = -offsetX; x < mWindowWidth; x += bgWidth)
+    for (int x = -offsetX; x < mLogicalWindowWidth; x += bgWidth)
     {
         SDL_Rect dest = {
             x,
             0,
             bgWidth,
-            mWindowHeight
+            static_cast<int>(mLogicalWindowHeight)
         };
 
         SDL_RenderCopy(mRenderer, mBackGroundTexture, nullptr, &dest);
@@ -780,7 +805,7 @@ void Game::DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, 
     int offsetX = static_cast<int>(mCamera->GetPosCamera().x * parallaxFactor) % texW;
     if (offsetX < 0) offsetX += texW;
 
-    for (int x = -offsetX; x < mWindowWidth; x += texW)
+    for (int x = -offsetX; x < mLogicalWindowWidth; x += texW)
     {
         SDL_Rect dest = {
             x,
@@ -823,5 +848,16 @@ void Game::ChangeResolution(float oldScale)
         actor->ChangeResolution(oldScale, mScale);
     }
     mCamera->ChangeResolution(oldScale, mScale);
-    mCamera->SetPosition(Vector2(mPlayer->GetPosition().x - mWindowWidth / 2, mPlayer->GetPosition().y - mWindowHeight / 2));
+    mCamera->SetPosition(Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2, mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+    if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
+        mLogicalWindowWidth = static_cast<float>(mWindowWidth);
+        mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
+        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+    }
+    else {
+        mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
+        mLogicalWindowHeight = static_cast<float>(mWindowHeight);
+        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+    }
 }

@@ -18,7 +18,6 @@ FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, floa
     mKnockBackSpeed = 1000.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
     mKnockBackTimer = mKnockBackDuration;
-    mPlayerSpotted = false;
     mDistToSpotPlayer = 400 * mGame->GetScale();
     mFlyingAroundDuration = 1.0f;
     mFlyingAroundTimer = mFlyingAroundDuration;

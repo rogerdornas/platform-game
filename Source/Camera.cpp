@@ -120,8 +120,8 @@ Vector2 Camera::Fixed(Vector2 pos) {
 
 Vector2 Camera::FollowPlayer() {
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
-    Vector2 targetPos(playerPos.x - mGame->GetWindowWidth() / 2,
-                      playerPos.y - mGame->GetWindowHeight() / 2);
+    Vector2 targetPos(playerPos.x - mGame->GetLogicalWindowWidth() / 2,
+                      playerPos.y - mGame->GetLogicalWindowHeight() / 2);
     return targetPos;
 }
 
@@ -129,7 +129,7 @@ Vector2 Camera::ScrollRight(float deltaTime, float speed) {
     Vector2 targetPos;
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
     targetPos.x = mPos.x + speed * deltaTime;
-    targetPos.y = playerPos.y - mGame->GetWindowHeight() / 2;
+    targetPos.y = playerPos.y - mGame->GetLogicalWindowHeight() / 2;
 
     if (playerPos.x < targetPos.x - 50) {
         mGame->mResetLevel = true;
@@ -141,10 +141,10 @@ Vector2 Camera::ScrollRight(float deltaTime, float speed) {
 Vector2 Camera::ScrollUp(float deltaTime, float speed) {
     Vector2 targetPos;
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
-    targetPos.x = playerPos.x - mGame->GetWindowWidth() / 2;
+    targetPos.x = playerPos.x - mGame->GetLogicalWindowWidth() / 2;
     targetPos.y = mPos.y + speed * deltaTime;
 
-    if (playerPos.y > targetPos.y + mGame->GetWindowHeight() + 50) {
+    if (playerPos.y > targetPos.y + mGame->GetLogicalWindowHeight() + 50) {
         mGame->mResetLevel = true;
     }
 

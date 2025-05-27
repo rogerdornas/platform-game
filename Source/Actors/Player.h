@@ -21,6 +21,7 @@ public:
     Vector2 GetStartingPosition() const { return mStartingPosition; }
 
     void ReceiveHit(float damage, Vector2 knockBackDirection);
+    void SetCanFireBall(bool canFireBall) { mCanFireBall = canFireBall; }
 
     void ChangeResolution(float oldScale, float newScale) override;
 

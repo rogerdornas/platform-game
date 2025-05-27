@@ -25,7 +25,6 @@ Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoi
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mPlayerSpotted = false;
     mDistToSpotPlayer = 400 * mGame->GetScale();
 
     mWalkingAroundDuration = 2.0f;
@@ -150,6 +149,7 @@ void Fox::TriggerBossDefeat() {
     dynamicGround1->SetIsDecreasing(true);
     DynamicGround* dynamicGround2 = dynamic_cast<DynamicGround*>(g2);
     dynamicGround2->SetIsDecreasing(true);
+    mGame->GetPlayer()->SetCanFireBall(true);
 }
 
 

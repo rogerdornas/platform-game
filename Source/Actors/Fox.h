@@ -42,7 +42,6 @@ private:
     void Jump(float deltaTime);
 
 
-    bool mPlayerSpotted;
     float mDistToSpotPlayer;
     float mWalkingAroundTimer;
     float mWalkingAroundDuration;

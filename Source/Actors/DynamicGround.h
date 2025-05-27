@@ -28,8 +28,8 @@ public:
 
     void SetIsGrowing(bool isGrowing) { mIsGrowing = isGrowing; }
     void SetIsDecreasing(bool isDecreasing) { mIsDecreasing = isDecreasing; }
-    void SetMaxWidth(float width) { mMaxWidth = width * mGame->GetScale(); }
-    void SetMaxHeight(float height) { mMaxHeight = height * mGame->GetScale(); }
+    void SetMaxWidth(float width) { mMaxWidth = width; }
+    void SetMaxHeight(float height) { mMaxHeight = height; }
     void SetGrowSpeed(Vector2 speed) { mGrowSpeed = speed * mGame->GetScale(); }
     void SetGrowDirection(GrowthDirection growDirection) { mGrowthDirection = growDirection; }
 
