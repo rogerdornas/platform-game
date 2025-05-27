@@ -267,127 +267,70 @@ void Game::LoadObjects(const std::string &fileName)
                 float width = static_cast<float>(obj["width"]) * mScale;
                 float height = static_cast<float>(obj["height"]) * mScale;
                 int id = obj["id"];
-                if (name == "Ground")
-                {
-                    ground = new Ground(this, width, height);
-                    ground->SetId(id);
-                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetSprites();
-                }
-                else if (name == "Spike")
-                {
-                    float respawnPositionX = 0.0f;
-                    float respawnPositionY = 0.0f;
-                    if (obj.contains("properties"))
-                        for (const auto &prop: obj["properties"])
-                        {
-                            std::string propName = prop["name"];
-                            if (propName == "RespawnPositionX")
-                                respawnPositionX = static_cast<float>(prop["value"]) * mScale;
+                bool isSpike = false;
+                bool isMoving = false;
+                float respawnPositionX = 0.0f;
+                float respawnPositionY = 0.0f;
+                float movingDuration = 0.0f;
+                float speedX = 0.0f;
+                float speedY = 0.0f;
+                float growSpeedX = 0.0f;
+                float growSpeedY = 0.0f;
+                int growthDirection = 0;
+                float minHeight = 0.0f;
+                float minWidth = 0.0f;
+                bool isOscillating = false;
 
-                            else if (propName == "RespawnPositionY")
-                                respawnPositionY = static_cast<float>(prop["value"]) * mScale;
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "Spike") {
+                            isSpike = prop["value"];
                         }
-
-                    ground = new Ground(this, width, height, true);
-                    ground->SetId(id);
-                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
-                    ground->SetSprites();
-                }
-                else if (name == "Moving Ground")
-                {
-                    float movingDuration = 0.0f;
-                    float speedX = 0.0f;
-                    float speedY = 0.0f;
-
-                    if (obj.contains("properties"))
-                        for (const auto &prop: obj["properties"])
-                        {
-                            std::string propName = prop["name"];
-                            if (propName == "MovingDuration")
-                                movingDuration = prop["value"];
-
-                            else if (propName == "SpeedX")
-                                speedX = prop["value"];
-
-                            else if (propName == "SpeedY")
-                                speedY = prop["value"];
+                        else if (propName == "Moving") {
+                            isMoving = prop["value"];
                         }
-
-                    ground = new Ground(this, width, height, false, true, movingDuration, Vector2(speedX, speedY));
-                    ground->SetId(id);
-                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetSprites();
-                }
-                else if (name == "Moving Spike")
-                {
-                    float movingDuration = 0.0f;
-                    float speedX = 0.0f;
-                    float speedY = 0.0f;
-                    float respawnPositionX = 0.0f;
-                    float respawnPositionY = 0.0f;
-
-                    if (obj.contains("properties"))
-                        for (const auto &prop: obj["properties"])
-                        {
-                            std::string propName = prop["name"];
-                            if (propName == "MovingDuration")
-                                movingDuration = prop["value"];
-
-                            else if (propName == "SpeedX")
-                                speedX = prop["value"];
-
-                            else if (propName == "SpeedY")
-                                speedY = prop["value"];
-
-                            else if (propName == "RespawnPositionX")
-                                respawnPositionX = static_cast<float>(prop["value"]) * mScale;
-
-                            else if (propName == "RespawnPositionY")
-                                respawnPositionY = static_cast<float>(prop["value"]) * mScale;
+                        else if (propName == "RespawnPositionX") {
+                            respawnPositionX = static_cast<float>(prop["value"]) * mScale;
                         }
-
-                    ground = new Ground(this, width, height, true, true, movingDuration, Vector2(speedX, speedY));
-                    ground->SetId(id);
-                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
-                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetSprites();
-                }
-                else if (name == "DynamicGround")
-                {
-                    float growSpeedX = 0.0f;
-                    float growSpeedY = 0.0f;
-                    int growthDirection = 0;
-                    float minHeight = 0.0f;
-                    float minWidth = 0.0f;
-
-                    if (obj.contains("properties"))
-                        for (const auto &prop: obj["properties"])
-                        {
-                            std::string propName = prop["name"];
-                            if (propName == "GrowSpeedX")
-                                growSpeedX = static_cast<float>(prop["value"]);
-
-                            else if (propName == "GrowSpeedY")
-                                growSpeedY = static_cast<float>(prop["value"]);
-
-                            else if (propName == "GrowthDirection")
-                                growthDirection = static_cast<int>(prop["value"]);
-
-                            else if (propName == "MinHeight")
-                                minHeight = static_cast<float>(prop["value"]) * mScale;
-
-                            else if (propName == "MinWidth")
-                                minWidth = static_cast<float>(prop["value"]) * mScale;
-
+                        else if (propName == "RespawnPositionY") {
+                            respawnPositionY = static_cast<float>(prop["value"]) * mScale;
                         }
-                    auto* dynamicGround = new DynamicGround(this, minWidth, minHeight, false, false, 0);
+                        else if (propName == "MovingDuration") {
+                            movingDuration = prop["value"];
+                        }
+                        else if (propName == "SpeedX") {
+                            speedX = prop["value"];
+                        }
+                        else if (propName == "SpeedY") {
+                            speedY = prop["value"];
+                        }
+                        else if (propName == "GrowSpeedX") {
+                            growSpeedX = static_cast<float>(prop["value"]);
+                        }
+                        else if (propName == "GrowSpeedY") {
+                            growSpeedY = static_cast<float>(prop["value"]);
+                        }
+                        else if (propName == "GrowthDirection") {
+                            growthDirection = static_cast<int>(prop["value"]);
+                        }
+                        else if (propName == "MinHeight") {
+                            minHeight = static_cast<float>(prop["value"]) * mScale;
+                        }
+                        else if (propName == "MinWidth") {
+                            minWidth = static_cast<float>(prop["value"]) * mScale;
+                        }
+                        else if (propName == "Oscillate") {
+                            isOscillating = static_cast<float>(prop["value"]);
+                        }
+                    }
+                }
+
+                if (name == "DynamicGround") {
+                    auto* dynamicGround = new DynamicGround(this, minWidth, minHeight, isSpike, isMoving, movingDuration, Vector2(speedX, speedY));
                     dynamicGround->SetId(id);
+                    dynamicGround->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
+                    dynamicGround->SetIsOscillating(isOscillating);
                     dynamicGround->SetMaxWidth(width);
                     dynamicGround->SetMaxHeight(height);
                     dynamicGround->SetGrowSpeed(Vector2(growSpeedX, growSpeedY));
@@ -395,21 +338,29 @@ void Game::LoadObjects(const std::string &fileName)
                         case 0:
                             dynamicGround->SetGrowDirection(GrowthDirection::Up);
                             dynamicGround->SetPosition(Vector2(x + width / 2, y + height - minHeight / 2));
-                            break;
+                        break;
                         case 1:
                             dynamicGround->SetGrowDirection(GrowthDirection::Down);
                             dynamicGround->SetPosition(Vector2(x + width / 2, y + minHeight / 2));
-                            break;
+                        break;
                         case 2:
                             dynamicGround->SetGrowDirection(GrowthDirection::Left);
                             dynamicGround->SetPosition(Vector2(x + width - minWidth / 2, y + height / 2));
-                            break;
+                        break;
                         case 3:
                             dynamicGround->SetGrowDirection(GrowthDirection::Right);
                             dynamicGround->SetPosition(Vector2(x + minWidth / 2, y + height / 2));
-                            break;
+                        break;
                     }
                     dynamicGround->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
+                }
+                else {
+                    ground = new Ground(this, width, height, isSpike, isMoving, movingDuration, Vector2(speedX, speedY));
+                    ground->SetId(id);
+                    ground->SetPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
+                    ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
+                    ground->SetSprites();
                 }
             }
         }
@@ -778,7 +729,8 @@ void Game::DrawParallaxBackground()
 
     int bgWidth, bgHeight;
     SDL_QueryTexture(mBackGroundTexture, nullptr, nullptr, &bgWidth, &bgHeight);
-
+    bgWidth *= mScale;
+    bgHeight *= mScale;
     // Calcula o offset horizontal com base na câmera
     int offsetX = static_cast<int>(mCamera->GetPosCamera().x * parallaxFactor) % bgWidth;
     if (offsetX < 0) offsetX += bgWidth;

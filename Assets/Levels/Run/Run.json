@@ -643,6 +643,12 @@
                  "height":64,
                  "id":19,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -676,6 +682,12 @@
                  "height":64,
                  "id":22,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -687,6 +699,12 @@
                  "height":64,
                  "id":23,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -698,6 +716,12 @@
                  "height":64,
                  "id":24,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -709,6 +733,12 @@
                  "height":64,
                  "id":25,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -786,6 +816,12 @@
                  "height":256,
                  "id":33,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -797,6 +833,12 @@
                  "height":192,
                  "id":34,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -808,6 +850,12 @@
                  "height":192,
                  "id":35,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -831,6 +879,11 @@
                  "id":38,
                  "name":"Moving Ground",
                  "properties":[
+                        {
+                         "name":"Moving",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"MovingDuration",
                          "type":"float",
@@ -858,6 +911,11 @@
                  "id":39,
                  "name":"Moving Ground",
                  "properties":[
+                        {
+                         "name":"Moving",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"MovingDuration",
                          "type":"float",
@@ -1000,6 +1058,33 @@
                  "width":192,
                  "x":19264,
                  "y":5216
+                }, 
+                {
+                 "height":416,
+                 "id":51,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsGrowing"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"50"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1088,
+                 "x":3520,
+                 "y":7552
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1041,7 +1126,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":50,
+ "nextobjectid":52,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

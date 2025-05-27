@@ -1016,53 +1016,173 @@
   <object id="51" name="Ground" x="15648" y="12352" width="320" height="2976"/>
   <object id="52" name="Ground" x="15328" y="12352" width="320" height="2208"/>
   <object id="53" name="Ground" x="13728" y="12352" width="1600" height="768"/>
-  <object id="55" name="Spike" x="13184" y="12896" width="96" height="64"/>
-  <object id="57" name="Spike" x="14080" y="13536" width="96" height="64"/>
-  <object id="58" name="Spike" x="14656" y="13664" width="96" height="64"/>
+  <object id="55" name="Spike" x="13184" y="12896" width="96" height="64">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="57" name="Spike" x="14080" y="13536" width="96" height="64">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="58" name="Spike" x="14656" y="13664" width="96" height="64">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="59" name="Ground" x="14944" y="14080" width="64" height="256"/>
-  <object id="60" name="Spike" x="14848" y="14048" width="96" height="320"/>
-  <object id="61" name="Spike" x="14944" y="14336" width="64" height="32"/>
-  <object id="62" name="Spike" x="14944" y="14048" width="64" height="32"/>
+  <object id="60" name="Spike" x="14848" y="14048" width="96" height="320">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="61" name="Spike" x="14944" y="14336" width="64" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="62" name="Spike" x="14944" y="14048" width="64" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="63" name="Moving Spike" x="15232" y="14432" width="96" height="64">
    <properties>
+    <property name="Moving" type="bool" value="true"/>
     <property name="MovingDuration" type="float" value="1.7"/>
     <property name="SpeedX" type="float" value="0"/>
     <property name="SpeedY" type="float" value="800"/>
+    <property name="Spike" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="64" name="Spike" x="15552" y="14912" width="96" height="32"/>
+  <object id="64" name="Spike" x="15552" y="14912" width="96" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="66" name="Ground" x="15840" y="16256" width="640" height="96"/>
-  <object id="69" name="Spike" x="11168" y="12448" width="2560" height="32"/>
-  <object id="70" name="Spike" x="12224" y="12480" width="32" height="288"/>
-  <object id="71" name="Spike" x="12544" y="12736" width="32" height="416"/>
-  <object id="72" name="Spike" x="12576" y="12736" width="352" height="32"/>
-  <object id="73" name="Spike" x="11712" y="12768" width="64" height="384"/>
-  <object id="74" name="Spike" x="11776" y="13120" width="768" height="32"/>
-  <object id="75" name="Spike" x="12384" y="12992" width="64" height="32"/>
-  <object id="76" name="Spike" x="11936" y="12992" width="96" height="32"/>
-  <object id="77" name="Spike" x="11808" y="12736" width="96" height="32"/>
-  <object id="78" name="Spike" x="11072" y="12448" width="96" height="768"/>
-  <object id="80" name="Spike" x="11712" y="13152" width="32" height="224"/>
+  <object id="69" name="Spike" x="11168" y="12448" width="2560" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="70" name="Spike" x="12224" y="12480" width="32" height="288">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="71" name="Spike" x="12544" y="12736" width="32" height="416">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="72" name="Spike" x="12576" y="12736" width="352" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="73" name="Spike" x="11712" y="12768" width="64" height="384">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="74" name="Spike" x="11776" y="13120" width="768" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="75" name="Spike" x="12384" y="12992" width="64" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="76" name="Spike" x="11936" y="12992" width="96" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="77" name="Spike" x="11808" y="12736" width="96" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="78" name="Spike" x="11072" y="12448" width="96" height="768">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="80" name="Spike" x="11712" y="13152" width="32" height="224">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="81" name="Ground" x="11488" y="13376" width="256" height="1088"/>
   <object id="83" name="Moving Spike" x="11168" y="13216" width="96" height="64">
    <properties>
+    <property name="Moving" type="bool" value="true"/>
     <property name="MovingDuration" type="float" value="1"/>
     <property name="SpeedX" type="float" value="0"/>
     <property name="SpeedY" type="float" value="-700"/>
+    <property name="Spike" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="84" name="Spike" x="11392" y="13728" width="96" height="128"/>
-  <object id="85" name="Spike" x="11392" y="14368" width="96" height="64"/>
-  <object id="86" name="Spike" x="11168" y="14624" width="96" height="32"/>
-  <object id="87" name="Spike" x="10912" y="14848" width="96" height="32"/>
-  <object id="89" name="Spike" x="11488" y="13344" width="224" height="32"/>
-  <object id="91" name="Spike" x="11040" y="14048" width="320" height="32"/>
-  <object id="92" name="Spike" x="11008" y="14048" width="32" height="256"/>
-  <object id="93" name="Spike" x="10624" y="14272" width="32" height="320"/>
+  <object id="84" name="Spike" x="11392" y="13728" width="96" height="128">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="85" name="Spike" x="11392" y="14368" width="96" height="64">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="86" name="Spike" x="11168" y="14624" width="96" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="87" name="Spike" x="10912" y="14848" width="96" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="89" name="Spike" x="11488" y="13344" width="224" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="91" name="Spike" x="11040" y="14048" width="320" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="92" name="Spike" x="11008" y="14048" width="32" height="256">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="93" name="Spike" x="10624" y="14272" width="32" height="320">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="96" name="Ground" x="10208" y="14784" width="288" height="32"/>
-  <object id="97" name="Spike" x="10528" y="14784" width="320" height="32"/>
-  <object id="98" name="Spike" x="10528" y="14592" width="320" height="32"/>
-  <object id="101" name="Spike" x="10656" y="14272" width="352" height="32"/>
+  <object id="97" name="Spike" x="10528" y="14784" width="320" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="98" name="Spike" x="10528" y="14592" width="320" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="101" name="Spike" x="10656" y="14272" width="352" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="102" name="Ground" x="10752" y="12000" width="320" height="2048"/>
   <object id="103" name="Ground" x="11072" y="12000" width="3296" height="352"/>
   <object id="104" name="Ground" x="11072" y="12352" width="2656" height="96"/>

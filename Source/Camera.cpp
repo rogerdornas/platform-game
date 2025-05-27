@@ -21,7 +21,7 @@ Camera::Camera(class Game *game, Vector2 startPosition)
     mShakeDuration = 1.0f;
     mShakeTimer = 0.0f;
     mShakeStrength = 5 * mGame->GetScale();
-    mCameraSpeed = 500.0f;
+    mCameraSpeed = 500.0f * mGame->GetScale();
 }
 
 void Camera::StartCameraShake(float duration, float strength)

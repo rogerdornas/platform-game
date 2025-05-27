@@ -17,6 +17,7 @@ DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike
     ,mGrowSpeed(Vector2::Zero)
     ,mIsGrowing(false)
     ,mIsDecreasing(false)
+    ,mIsOscillating(false)
     ,mGrowthDirection(GrowthDirection::Centered)
 {
     mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/iron beam2.png",
@@ -51,6 +52,16 @@ void DynamicGround::OnUpdate(float deltaTime)
             mMovingTimer = 0;
         }
     }
+    if (mIsOscillating) {
+        if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
+            mIsGrowing = false;
+            mIsDecreasing = true;
+        }
+        if (mWidth <= 0 || mHeight <= 0) {
+            mIsDecreasing = false;
+            mIsGrowing = true;
+        }
+    }
     if (mIsGrowing || mIsDecreasing) {
         float growX = 0;
         float growY = 0;
@@ -83,7 +94,7 @@ void DynamicGround::OnUpdate(float deltaTime)
         if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
             mIsGrowing = false;
         }
-        if (mWidth <= 0 && mHeight <= 0) {
+        if (mWidth <= 0 || mHeight <= 0) {
             mIsDecreasing = false;
         }
 

@@ -28,6 +28,7 @@ public:
 
     void SetIsGrowing(bool isGrowing) { mIsGrowing = isGrowing; }
     void SetIsDecreasing(bool isDecreasing) { mIsDecreasing = isDecreasing; }
+    void SetIsOscillating(bool isOscillating) { mIsOscillating = isOscillating; }
     void SetMaxWidth(float width) { mMaxWidth = width; }
     void SetMaxHeight(float height) { mMaxHeight = height; }
     void SetGrowSpeed(Vector2 speed) { mGrowSpeed = speed * mGame->GetScale(); }
@@ -41,6 +42,7 @@ private:
     Vector2 mGrowSpeed;
     bool mIsGrowing;
     bool mIsDecreasing;
+    bool mIsOscillating;
     GrowthDirection mGrowthDirection;
 
     class DrawSpriteComponent *mDrawSpriteComponent;

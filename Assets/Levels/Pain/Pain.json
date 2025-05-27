@@ -1088,6 +1088,12 @@
                  "height":64,
                  "id":55,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1099,6 +1105,12 @@
                  "height":64,
                  "id":57,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1110,6 +1122,12 @@
                  "height":64,
                  "id":58,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1132,6 +1150,12 @@
                  "height":320,
                  "id":60,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1143,6 +1167,12 @@
                  "height":32,
                  "id":61,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1154,6 +1184,12 @@
                  "height":32,
                  "id":62,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1166,6 +1202,11 @@
                  "id":63,
                  "name":"Moving Spike",
                  "properties":[
+                        {
+                         "name":"Moving",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"MovingDuration",
                          "type":"float",
@@ -1180,6 +1221,11 @@
                          "name":"SpeedY",
                          "type":"float",
                          "value":800
+                        }, 
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"",
@@ -1192,6 +1238,12 @@
                  "height":32,
                  "id":64,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1214,6 +1266,12 @@
                  "height":32,
                  "id":69,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1225,6 +1283,12 @@
                  "height":288,
                  "id":70,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1236,6 +1300,12 @@
                  "height":416,
                  "id":71,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1247,6 +1317,12 @@
                  "height":32,
                  "id":72,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1258,6 +1334,12 @@
                  "height":384,
                  "id":73,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1269,6 +1351,12 @@
                  "height":32,
                  "id":74,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1280,6 +1368,12 @@
                  "height":32,
                  "id":75,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1291,6 +1385,12 @@
                  "height":32,
                  "id":76,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1302,6 +1402,12 @@
                  "height":32,
                  "id":77,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1313,6 +1419,12 @@
                  "height":768,
                  "id":78,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1324,6 +1436,12 @@
                  "height":224,
                  "id":80,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1348,6 +1466,11 @@
                  "name":"Moving Spike",
                  "properties":[
                         {
+                         "name":"Moving",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"MovingDuration",
                          "type":"float",
                          "value":1
@@ -1361,6 +1484,11 @@
                          "name":"SpeedY",
                          "type":"float",
                          "value":-700
+                        }, 
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"",
@@ -1373,6 +1501,12 @@
                  "height":128,
                  "id":84,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1384,6 +1518,12 @@
                  "height":64,
                  "id":85,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1395,6 +1535,12 @@
                  "height":32,
                  "id":86,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1406,6 +1552,12 @@
                  "height":32,
                  "id":87,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1417,6 +1569,12 @@
                  "height":32,
                  "id":89,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1428,6 +1586,12 @@
                  "height":32,
                  "id":91,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1439,6 +1603,12 @@
                  "height":256,
                  "id":92,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1450,6 +1620,12 @@
                  "height":320,
                  "id":93,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1472,6 +1648,12 @@
                  "height":32,
                  "id":97,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1483,6 +1665,12 @@
                  "height":32,
                  "id":98,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1494,6 +1682,12 @@
                  "height":32,
                  "id":101,
                  "name":"Spike",
+                 "properties":[
+                        {
+                         "name":"Spike",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
