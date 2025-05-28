@@ -7,8 +7,8 @@
 #include "../../Game.h"
 
 DrawGroundSpritesComponent::DrawGroundSpritesComponent(Actor *owner,
-                                                       std::unordered_map<std::string, std::vector<Vector2> >
-                                                       sprite_offset_map, int width, int height, const int drawOrder)
+                                                       std::unordered_map<std::string, std::vector<Vector2>> sprite_offset_map,
+                                                       int width, int height, const int drawOrder)
     : DrawComponent(owner, drawOrder),
       mWidth(width),
       mHeight(height),

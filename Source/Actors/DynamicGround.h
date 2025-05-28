@@ -34,6 +34,8 @@ public:
     void SetGrowSpeed(Vector2 speed) { mGrowSpeed = speed * mGame->GetScale(); }
     void SetGrowDirection(GrowthDirection growDirection) { mGrowthDirection = growDirection; }
 
+    void SetSprites();
+
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
@@ -46,4 +48,5 @@ private:
     GrowthDirection mGrowthDirection;
 
     class DrawSpriteComponent *mDrawSpriteComponent;
+    class DrawDynamicGroundSpritesComponent* mDrawDynamicGroundSpritesComponent;
 };

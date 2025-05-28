@@ -3,11 +3,16 @@
 //
 
 #include "DynamicGround.h"
+
+#include <unordered_map>
+#include <iomanip>
+#include <sstream>
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
+#include "../Components/DrawComponents/DrawDynamicGroundSpritesComponent.h"
 
 DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike, bool isMoving, float movingDuration,
                Vector2 velocity)
@@ -19,10 +24,12 @@ DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike
     ,mIsDecreasing(false)
     ,mIsOscillating(false)
     ,mGrowthDirection(GrowthDirection::Centered)
+    ,mDrawDynamicGroundSpritesComponent(nullptr)
+    ,mDrawSpriteComponent(nullptr)
 {
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/iron beam2.png",
-                                                static_cast<int>(mWidth),
-                                                static_cast<int>(mHeight));
+    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/iron beam2.png",
+    //                                             static_cast<int>(mWidth),
+    //                                             static_cast<int>(mHeight));
 }
 
 DynamicGround::~DynamicGround() { mGame->RemoveGround(this); }
@@ -88,8 +95,10 @@ void DynamicGround::OnUpdate(float deltaTime)
 
         mWidth += growX;
         mHeight += growY;
-        mDrawSpriteComponent->SetWidth(mWidth);
-        mDrawSpriteComponent->SetHeight(mHeight);
+        if (mDrawSpriteComponent) {
+            mDrawSpriteComponent->SetWidth(mWidth);
+            mDrawSpriteComponent->SetHeight(mHeight);
+        }
 
         if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
             mIsGrowing = false;
@@ -134,6 +143,53 @@ void DynamicGround::OnUpdate(float deltaTime)
     }
 }
 
+void DynamicGround::SetSprites() {
+    if (mDrawDynamicGroundSpritesComponent) {
+        RemoveComponent(mDrawDynamicGroundSpritesComponent);
+        delete mDrawDynamicGroundSpritesComponent;
+    }
+
+    int rows = mMaxHeight / mGame->GetTileSize();
+    int cols = mMaxWidth / mGame->GetTileSize();
+
+    int topLeftX = mStartingPosition.x - mMaxWidth / 2;
+    int topLeftY = mStartingPosition.y - mMaxHeight / 2;
+
+    int minRow = topLeftY / mGame->GetTileSize();
+    int maxRow = minRow + rows;
+
+    int minCol = topLeftX / mGame->GetTileSize();
+    int maxCol = minCol + cols;
+
+    std::unordered_map<std::string, std::vector<Vector2> > sprite_offset_map;
+
+    int **levelData = mGame->GetLevelData();
+
+    for (int row = minRow; row < maxRow; ++row)
+    {
+        for (int col = minCol; col < maxCol; ++col)
+        {
+            int tile = levelData[row][col];
+
+            int tileX = col * mGame->GetTileSize();
+            int tileY = row * mGame->GetTileSize();
+
+            Vector2 offset = Vector2(tileX, tileY) - mStartingPosition;
+
+            if (tile >= 0)
+            {
+                std::ostringstream tileName;
+                tileName << std::setw(2) << std::setfill('0') << tile;
+                std::string file = tileName.str();
+                sprite_offset_map["../Assets/Sprites/Forest/" + file + ".png"].push_back(offset);
+            }
+        }
+    }
+
+    mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(),
+                                                                 mGame->GetTileSize());
+}
+
 
 void DynamicGround::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
@@ -148,8 +204,10 @@ void DynamicGround::ChangeResolution(float oldScale, float newScale) {
     mGrowSpeed.x = mGrowSpeed.x / oldScale * newScale;
     mGrowSpeed.y = mGrowSpeed.y / oldScale * newScale;
 
-    mDrawSpriteComponent->SetWidth(mWidth);
-    mDrawSpriteComponent->SetHeight(mHeight);
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth);
+        mDrawSpriteComponent->SetHeight(mHeight);
+    }
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
@@ -170,4 +228,5 @@ void DynamicGround::ChangeResolution(float oldScale, float newScale) {
     if (mDrawPolygonComponent)
         mDrawPolygonComponent->SetVertices(vertices);
 
+    SetSprites();
 }

@@ -353,6 +353,7 @@ void Game::LoadObjects(const std::string &fileName)
                         break;
                     }
                     dynamicGround->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
+                    dynamicGround->SetSprites();
                 }
                 else {
                     ground = new Ground(this, width, height, isSpike, isMoving, movingDuration, Vector2(speedX, speedY));
