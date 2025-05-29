@@ -73,6 +73,7 @@ public:
     std::vector<class Enemy *> &GetEnemies() { return mEnemies; }
 
     int **GetLevelData() const { return mLevelData; }
+    int **GetLevelDataDynamicGrounds() const { return mLevelDataDynamicGrounds; }
     int GetTileSize() { return mTileSize; }
 
     bool mResetLevel;
@@ -92,10 +93,9 @@ private:
     void UpdateGame();
     void GenerateOutput();
 
-    // Load the level from a CSV file as a 2D array
-    void LoadMapMetadata(const std::string &fileName);
-    int **LoadLevel(const std::string &fileName, int width, int height);
+    // Load Level
     void LoadObjects(const std::string &fileName);
+    void LoadLevel(const std::string &fileName);
 
     void ResetLevel();
     void ChangeResolution(float oldScale);
@@ -142,6 +142,7 @@ private:
 
     // Level data
     int **mLevelData;
+    int **mLevelDataDynamicGrounds;
     int mLevelWidth;
     int mLevelHeight;
     int mTileSize;

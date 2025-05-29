@@ -19,12 +19,12 @@ public:
     void SetSpeed(float s) { mSpeed = s; }
     void SetIsFromEnemy() { mIsFromEnemy = true; }
 
+    void Activate();
+    void Deactivate();
+
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void Deactivate();
-    void Activate();
-
     void ResolveGroundCollision();
     void ResolveEnemyCollision();
     void ResolvePlayerCollision();

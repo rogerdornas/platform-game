@@ -23,6 +23,8 @@ public:
     void ReceiveHit(float damage, Vector2 knockBackDirection);
     void SetCanFireBall(bool canFireBall) { mCanFireBall = canFireBall; }
 
+    class Sword* GetSword() { return mSword; }
+
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:

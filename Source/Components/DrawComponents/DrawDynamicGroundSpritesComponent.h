@@ -19,5 +19,5 @@ public:
     void Draw(SDL_Renderer *renderer) override;
 
 protected:
-
+    class DynamicGround* mOwnerDynamicGround;
 };

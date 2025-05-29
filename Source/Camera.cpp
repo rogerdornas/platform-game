@@ -13,6 +13,7 @@ Camera::Camera(class Game *game, Vector2 startPosition)
     mLookUp = false;
     mLookDown = false;
     mCameraMode = CameraMode::FollowPlayer;
+    mFixedCameraPosition = Vector2::Zero;
     mOffset = Vector2::Zero;
     mDistMove = 200 * mGame->GetScale();
     mTimerToStartLooking = 0.0f;
@@ -38,7 +39,7 @@ void Camera::Update(float deltaTime) {
 
     switch (mCameraMode) {
         case CameraMode::Fixed:
-            targetPosition = Fixed(Vector2(22080 * mGame->GetScale(), 15420 * mGame->GetScale()));
+            targetPosition = Fixed(Vector2(mFixedCameraPosition));
             break;
         case CameraMode::FollowPlayer:
             targetPosition = FollowPlayer();

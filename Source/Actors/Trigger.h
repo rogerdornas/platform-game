@@ -5,10 +5,12 @@
 #pragma once
 #include <string>
 #include "Actor.h"
+#include "../Game.h"
 
 enum Target {
     camera,
-    dynamicGround
+    dynamicGround,
+    ground
 };
 
 enum Event {
@@ -17,7 +19,10 @@ enum Event {
     scrollRight,
     scrollUp,
 
-    setIsGrowing
+    setIsGrowing,
+    setIsDecreasing,
+
+    setIsMoving
 };
 
 class Trigger : public Actor
@@ -28,19 +33,22 @@ public:
     void SetTarget(std::string target);
     void SetEvent(std::string event);
     void SetGroundsIds(const std::vector<int>& ids) { mGroundsIds = ids; }
+    void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
 
     void OnUpdate(float deltaTime) override;
     void ChangeResolution(float oldScale, float newScale) override;
 
-private:
+protected:
     void CameraTrigger();
     void DynamicGroundTrigger();
+    void GroundTrigger();
 
     float mWidth;
     float mHeight;
     Target mTarget;
     Event mEvent;
     std::vector<int> mGroundsIds;
+    Vector2 mFixedCameraPosition;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class AABBComponent *mAABBComponent;

@@ -20,9 +20,9 @@
 #include "CSV.h"
 #include "Json.h"
 #include <SDL_image.h>
-
 #include "Actors/DynamicGround.h"
 #include "Actors/Fox.h"
+#include "Actors/Lever.h"
 #include "Actors/Trigger.h"
 
 std::vector<int> ParseIntList(const std::string& str) {
@@ -153,96 +153,14 @@ void Game::InitializeActors()
 
     const std::string levelsAssets = "../Assets/Levels/";
 
-    LoadMapMetadata(levelsAssets + "Forest/Forest.json");
-    // LoadMapMetadata(levelsAssets + "Pain/Pain.json");
-    // LoadMapMetadata(levelsAssets + "Run/Run.json");
-
-    mLevelData = LoadLevel(levelsAssets + "Forest/Forest.csv", mLevelWidth, mLevelHeight);
-    // mLevelData = LoadLevel(levelsAssets + "Pain/Pain.csv", mLevelWidth, mLevelHeight);
-    // mLevelData = LoadLevel(levelsAssets + "Run/Run.csv", mLevelWidth, mLevelHeight);
-    if (!mLevelData)
-        return;
-
-    LoadObjects(levelsAssets + "Forest/Forest.json");
-    // LoadObjects(levelsAssets + "Pain/Pain.json");
-    // LoadObjects(levelsAssets + "Run/Run.json");
+    LoadLevel(levelsAssets + "Forest/Forest.json");
+    // LoadLevel(levelsAssets + "Pain/Pain.json");
+    // LoadLevel(levelsAssets + "Run/Run.json");
 
     mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                        mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
 }
 
-void Game::LoadMapMetadata(const std::string &fileName)
-{
-    std::ifstream file(fileName);
-    if (!file.is_open())
-    {
-        SDL_Log("Erro ao abrir o arquivo");
-        return;
-    }
-
-    nlohmann::json mapData;
-    file >> mapData;
-    int height = int(mapData["height"]);
-    int width = int(mapData["width"]);
-    int tileSize = int(mapData["tilewidth"]) * mScale;
-    mLevelHeight = height;
-    mLevelWidth = width;
-    mTileSize = tileSize;
-}
-
-int **Game::LoadLevel(const std::string &fileName, int width, int height)
-{
-    // TODO 5: Implemente essa função para carregar o nível a partir do arquivo CSV. Ela deve retornar um
-    //  ponteiro para uma matriz 2D de inteiros. Cada linha do arquivo CSV representa uma linha
-    //  do nível. Cada número inteiro representa o tipo de bloco que deve ser criado. Utilize a função CSVHelper::Split
-    //  para dividir cada linha do arquivo CSV em números inteiros. A função deve retornar nullptr se o arquivo não
-    //  puder ser carregado ou se o número de colunas for diferente do esperado.
-    std::ifstream file(fileName);
-    if (!file.is_open())
-        return nullptr;
-
-    int **levelData = new int *[height];
-    std::string line;
-    int row = 0;
-
-    while (std::getline(file, line))
-    {
-        if (row >= height)
-        {
-            // Mais linhas do que o esperado
-            for (int i = 0; i < row; ++i)
-                delete[] levelData[i];
-
-            delete[] levelData;
-            return nullptr;
-        }
-        std::vector<int> values = CSVHelper::Split(line);
-        if (values.size() != static_cast<size_t>(width))
-        {
-            // Número de colunas incorreto
-            for (int i = 0; i < row; ++i)
-                delete[] levelData[i];
-
-            delete[] levelData;
-            return nullptr;
-        }
-        levelData[row] = new int[width];
-        for (int col = 0; col < width; ++col)
-            levelData[row][col] = values[col];
-
-        ++row;
-    }
-    if (row != height)
-    {
-        // Menos linhas do que o esperado
-        for (int i = 0; i < row; ++i)
-            delete[] levelData[i];
-
-        delete[] levelData;
-        return nullptr;
-    }
-    return levelData;
-}
 
 void Game::LoadObjects(const std::string &fileName)
 {
@@ -333,6 +251,8 @@ void Game::LoadObjects(const std::string &fileName)
                     dynamicGround->SetIsOscillating(isOscillating);
                     dynamicGround->SetMaxWidth(width);
                     dynamicGround->SetMaxHeight(height);
+                    dynamicGround->SetMinWidth(minWidth);
+                    dynamicGround->SetMinHeight(minHeight);
                     dynamicGround->SetGrowSpeed(Vector2(growSpeedX, growSpeedY));
                     switch (growthDirection) {
                         case 0:
@@ -375,6 +295,8 @@ void Game::LoadObjects(const std::string &fileName)
                 std::string event;
                 std::string grounds;
                 std::vector<int> ids;
+                float fixedCameraPositionX = 0;
+                float fixedCameraPositionY = 0;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
@@ -387,9 +309,15 @@ void Game::LoadObjects(const std::string &fileName)
                         else if (propName == "Grounds") {
                             grounds = prop["value"];
                         }
+                        else if (propName == "FixedCameraPositionX") {
+                            fixedCameraPositionX = prop["value"];
+                        }
+                        else if (propName == "FixedCameraPositionY") {
+                            fixedCameraPositionY = prop["value"];
+                        }
                     }
                 }
-                if (target == "DynamicGround" && !grounds.empty()) {
+                if ((target == "DynamicGround" || target == "Ground") && !grounds.empty()) {
                     ids = ParseIntList(grounds);
                 }
                 auto* trigger = new Trigger(this, width, height);
@@ -397,6 +325,51 @@ void Game::LoadObjects(const std::string &fileName)
                 trigger->SetTarget(target);
                 trigger->SetEvent(event);
                 trigger->SetGroundsIds(ids);
+                trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
+            }
+        }
+        if (layer["name"] == "Levers") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+                std::string target;
+                std::string event;
+                std::string grounds;
+                std::vector<int> ids;
+                float fixedCameraPositionX = 0;
+                float fixedCameraPositionY = 0;
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "Target") {
+                            target = prop["value"];
+                        }
+                        else if (propName == "Event") {
+                            event = prop["value"];
+                        }
+                        else if (propName == "Grounds") {
+                            grounds = prop["value"];
+                        }
+                        else if (propName == "FixedCameraPositionX") {
+                            fixedCameraPositionX = prop["value"];
+                        }
+                        else if (propName == "FixedCameraPositionY") {
+                            fixedCameraPositionY = prop["value"];
+                        }
+                    }
+                }
+                if ((target == "DynamicGround" || target == "Ground") && !grounds.empty()) {
+                    ids = ParseIntList(grounds);
+                }
+                auto* lever = new Lever(this);
+                lever->SetPosition(Vector2(x + width / 2, y + height / 2));
+                lever->SetTarget(target);
+                lever->SetEvent(event);
+                lever->SetGroundsIds(ids);
+                lever->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
+
             }
         }
         if (layer["name"] == "Enemies")
@@ -432,6 +405,55 @@ void Game::LoadObjects(const std::string &fileName)
             }
     }
 }
+
+void Game::LoadLevel(const std::string &fileName) {
+    // Abre arquivo json
+    std::ifstream file(fileName);
+    if (!file.is_open())
+    {
+        SDL_Log("Erro ao abrir o arquivo");
+        return;
+    }
+    nlohmann::json mapData;
+    file >> mapData;
+
+    // Lê altura, largura e tileSize
+    int height = int(mapData["height"]);
+    int width = int(mapData["width"]);
+    int tileSize = int(mapData["tilewidth"]) * mScale;
+    mLevelHeight = height;
+    mLevelWidth = width;
+    mTileSize = tileSize;
+
+    // Lê matrizes de tiles
+    for (const auto& layer : mapData["layers"]) {
+        if (layer["name"] == "Camada de Blocos 1") {
+            std::vector<int> data = layer["data"];
+            int** matrix = new int*[height];
+            for (int i = 0; i < height; ++i) {
+                matrix[i] = new int[width];
+                for (int j = 0; j < width; ++j) {
+                    matrix[i][j] = data[i * width + j];
+                }
+            }
+            mLevelData = matrix;
+        } else if (layer["name"] == "DynamicGrounds") {
+            std::vector<int> data = layer["data"];
+            int** matrix = new int*[height];
+            for (int i = 0; i < height; ++i) {
+                matrix[i] = new int[width];
+                for (int j = 0; j < width; ++j) {
+                    matrix[i][j] = data[i * width + j];
+                }
+            }
+            mLevelDataDynamicGrounds = matrix;
+        }
+    }
+
+    // Cria objetos
+    LoadObjects(fileName);
+}
+
 
 void Game::RunLoop()
 {

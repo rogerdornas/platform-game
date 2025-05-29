@@ -20,6 +20,8 @@ public:
 
     void SetPosition(Vector2 pos) { mPos = pos; }
     Vector2 GetPosCamera() { return mPos; }
+    void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos; }
+
     void Update(float deltaTime);
 
     void StartCameraShake(float duration = 1.0f, float strength = 5.0f);
@@ -39,6 +41,7 @@ private:
     class Game *mGame;
     float mCameraLerpSpeed = 6.0f;
     CameraMode mCameraMode;
+    Vector2 mFixedCameraPosition;
 
     Vector2 mOffset;
     float mDistMove;

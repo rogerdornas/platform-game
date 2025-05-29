@@ -16,6 +16,7 @@ public:
 
     bool GetIsSpike() const { return mIsSpike; }
     bool GetIsMoving() const { return mIsMoving; }
+    void SetIsMoving(bool isMoving);
 
     float GetHeight() const { return mHeight; }
     float GetWidth() const { return mWidth; }
@@ -26,6 +27,7 @@ public:
     void SetSprites();
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
+    Vector2 GetStartingPosition() { return mStartingPosition; }
 
     void SetId(int id) { mId = id; }
     int GetId() { return mId; }
@@ -42,6 +44,7 @@ protected:
     float mMovingDuration;
     Vector2 mStartingPosition;
     Vector2 mRespawnPosition;
+    Vector2 mVelocity;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;

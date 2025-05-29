@@ -27,9 +27,6 @@ DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike
     ,mDrawDynamicGroundSpritesComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
 {
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/iron beam2.png",
-    //                                             static_cast<int>(mWidth),
-    //                                             static_cast<int>(mHeight));
 }
 
 DynamicGround::~DynamicGround() { mGame->RemoveGround(this); }
@@ -64,7 +61,7 @@ void DynamicGround::OnUpdate(float deltaTime)
             mIsGrowing = false;
             mIsDecreasing = true;
         }
-        if (mWidth <= 0 || mHeight <= 0) {
+        if (mWidth <= mMinWidth && mHeight <= mMinHeight) {
             mIsDecreasing = false;
             mIsGrowing = true;
         }
@@ -85,11 +82,11 @@ void DynamicGround::OnUpdate(float deltaTime)
         if (mIsDecreasing) {
             growX = -mGrowSpeed.x * deltaTime;
             growY = -mGrowSpeed.y * deltaTime;
-            if (mWidth + growX <= 0) {
-                growX = -mWidth;
+            if (mWidth + growX <= mMinWidth) {
+                growX = mMinWidth - mWidth;
             }
-            if (mHeight + growY <= 0) {
-                growY = -mHeight;
+            if (mHeight + growY <= mMinHeight) {
+                growY = mMinHeight - mHeight;
             }
         }
 
@@ -103,7 +100,7 @@ void DynamicGround::OnUpdate(float deltaTime)
         if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
             mIsGrowing = false;
         }
-        if (mWidth <= 0 || mHeight <= 0) {
+        if (mWidth <= mMinWidth && mHeight <= mMinHeight) {
             mIsDecreasing = false;
         }
 
@@ -163,7 +160,7 @@ void DynamicGround::SetSprites() {
 
     std::unordered_map<std::string, std::vector<Vector2> > sprite_offset_map;
 
-    int **levelData = mGame->GetLevelData();
+    int **levelData = mGame->GetLevelDataDynamicGrounds();
 
     for (int row = minRow; row < maxRow; ++row)
     {
@@ -187,7 +184,7 @@ void DynamicGround::SetSprites() {
     }
 
     mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(),
-                                                                 mGame->GetTileSize());
+                                                                 mGame->GetTileSize(), 200);
 }
 
 
@@ -198,18 +195,19 @@ void DynamicGround::ChangeResolution(float oldScale, float newScale) {
     SetRespawPosition(Vector2(mRespawnPosition.x / oldScale * newScale, mRespawnPosition.y / oldScale * newScale));
     mStartingPosition.x = mStartingPosition.x / oldScale * newScale;
     mStartingPosition.y = mStartingPosition.y / oldScale * newScale;
+    mVelocity.x = mVelocity.x / oldScale * newScale;
+    mVelocity.y = mVelocity.y / oldScale * newScale;
+
+    if (mIsMoving) {
+        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+    }
 
     mMaxWidth = mMaxWidth / oldScale * newScale;
     mMaxHeight = mMaxHeight / oldScale * newScale;
+    mMinWidth = mMinWidth / oldScale * newScale;
+    mMinHeight = mMinHeight / oldScale * newScale;
     mGrowSpeed.x = mGrowSpeed.x / oldScale * newScale;
     mGrowSpeed.y = mGrowSpeed.y / oldScale * newScale;
-
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth);
-        mDrawSpriteComponent->SetHeight(mHeight);
-    }
-
-    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

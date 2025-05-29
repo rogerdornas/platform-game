@@ -3,16 +3,17 @@
 //
 
 #include "DrawDynamicGroundSpritesComponent.h"
-
 #include "../AABBComponent.h"
 #include "../../Actors/Actor.h"
 #include "../../Game.h"
+#include "../../Actors/DynamicGround.h"
 
 DrawDynamicGroundSpritesComponent::DrawDynamicGroundSpritesComponent(Actor *owner,
                                                        std::unordered_map<std::string, std::vector<Vector2>> sprite_offset_map,
                                                        int width, int height, const int drawOrder)
     : DrawGroundSpritesComponent(owner, sprite_offset_map, width, height, drawOrder)
 {
+    mOwnerDynamicGround = dynamic_cast<DynamicGround*>(mOwner);
 }
 
 void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
@@ -45,7 +46,7 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
             if (ownerWidth != 0 && ownerHeight != 0) {
                 SDL_Rect region;
                 // offset pos
-                Vector2 offsetPos = offset + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
+                Vector2 offsetPos = offset + mOwnerDynamicGround->GetStartingPosition() - GetGame()->GetCamera()->GetPosCamera();
 
                 Vector2 ownerMinOffsetPos = mOwner->GetComponent<AABBComponent>()->GetMin() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
                 Vector2 ownerMaxOffsetPos = mOwner->GetComponent<AABBComponent>()->GetMax() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();

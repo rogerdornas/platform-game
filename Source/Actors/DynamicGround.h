@@ -26,11 +26,13 @@ public:
 
     void OnUpdate(float deltaTime) override;
 
-    void SetIsGrowing(bool isGrowing) { mIsGrowing = isGrowing; }
-    void SetIsDecreasing(bool isDecreasing) { mIsDecreasing = isDecreasing; }
+    void SetIsGrowing(bool isGrowing) { mIsGrowing = isGrowing; mIsDecreasing = !isGrowing; }
+    void SetIsDecreasing(bool isDecreasing) { mIsDecreasing = isDecreasing; mIsGrowing = !isDecreasing; }
     void SetIsOscillating(bool isOscillating) { mIsOscillating = isOscillating; }
-    void SetMaxWidth(float width) { mMaxWidth = width; }
-    void SetMaxHeight(float height) { mMaxHeight = height; }
+    void SetMaxWidth(float maXwidth) { mMaxWidth = maXwidth; }
+    void SetMaxHeight(float maxHeight) { mMaxHeight = maxHeight; }
+    void SetMinWidth(float minWidth) { mMinWidth = minWidth; }
+    void SetMinHeight(float minHeight) { mMinHeight = minHeight; }
     void SetGrowSpeed(Vector2 speed) { mGrowSpeed = speed * mGame->GetScale(); }
     void SetGrowDirection(GrowthDirection growDirection) { mGrowthDirection = growDirection; }
 
@@ -41,6 +43,8 @@ public:
 private:
     float mMaxWidth;
     float mMaxHeight;
+    float mMinWidth;
+    float mMinHeight;
     Vector2 mGrowSpeed;
     bool mIsGrowing;
     bool mIsDecreasing;

@@ -44,7 +44,7 @@ Player::Player(Game *game, float width, float height)
       mSwordDirection(0),
       mSwordHitEnemy(false),
 
-      mCanFireBall(false),
+      mCanFireBall(true),
       mPrevFireBallPressed(false),
       mFireBallCooldownTimer(0.0f),
       mFireBallCooldownDuration(1.0f),

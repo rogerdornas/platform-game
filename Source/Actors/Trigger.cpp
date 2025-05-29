@@ -40,6 +40,10 @@ void Trigger::SetTarget(std::string target) {
         mTarget = Target::dynamicGround;
         return;
     }
+    if (target == "Ground") {
+        mTarget = Target::ground;
+        return;
+    }
 }
 
 void Trigger::SetEvent(std::string event) {
@@ -64,6 +68,15 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::setIsGrowing;
         return;
     }
+    if (event == "SetIsDecreasing") {
+        mEvent = Event::setIsDecreasing;
+        return;
+    }
+
+    if (event == "SetIsMoving") {
+        mEvent = Event::setIsMoving;
+        return;
+    }
 }
 
 
@@ -73,10 +86,13 @@ void Trigger::OnUpdate(float deltaTime) {
         switch (mTarget) {
             case Target::camera:
                 CameraTrigger();
-                break;
+            break;
             case Target::dynamicGround:
                 DynamicGroundTrigger();
-                break;
+            break;
+            case Target::ground:
+                GroundTrigger();
+            break;
         }
     }
 }
@@ -85,6 +101,7 @@ void Trigger::CameraTrigger() {
     Camera* camera = mGame->GetCamera();
     switch (mEvent) {
         case Event::fixed:
+            camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::Fixed);
             SetState(ActorState::Destroy);
             break;
@@ -113,14 +130,39 @@ void Trigger::DynamicGroundTrigger() {
             }
             SetState(ActorState::Destroy);
             break;
+        case Event::setIsDecreasing:
+            for (int id : mGroundsIds) {
+                Ground *g = mGame->GetGroundById(id);
+                DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
+                if (dynamicGround) {
+                    dynamicGround->SetIsDecreasing(true);
+                }
+            }
+            SetState(ActorState::Destroy);
+            break;
     }
 }
+
+void Trigger::GroundTrigger() {
+    std::vector<Ground *> grounds = mGame->GetGrounds();
+    switch (mEvent) {
+        case Event::setIsMoving:
+            for (int id : mGroundsIds) {
+                Ground *g = mGame->GetGroundById(id);
+                g->SetIsMoving(true);
+            }
+        break;
+    }
+}
+
 
 
 void Trigger::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
+    mFixedCameraPosition.x = mFixedCameraPosition.x / oldScale * newScale;
+    mFixedCameraPosition.y = mFixedCameraPosition.y / oldScale * newScale;
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

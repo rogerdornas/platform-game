@@ -24,6 +24,7 @@ Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMovin
       mIsMoving(isMoving),
       mMovingTimer(movingDuration),
       mMovingDuration(movingDuration),
+      mVelocity(velocity * mGame->GetScale()),
       mDrawPolygonComponent(nullptr),
       mDrawSpriteComponent(nullptr),
       mDrawGroundSpritesComponent(nullptr)
@@ -47,12 +48,13 @@ Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMovin
         color = SDL_Color{0, 255, 0, 255};
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, color);
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Blocks/BlockA.png", mWidth, mHeight);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
-    mRigidBodyComponent->SetVelocity(velocity * mGame->GetScale());
+    if (mIsMoving) {
+        mRigidBodyComponent->SetVelocity(mVelocity);
+    }
 
     mGame->AddGround(this);
 }
@@ -71,6 +73,17 @@ void Ground::OnUpdate(float deltaTime)
         }
     }
 }
+
+void Ground::SetIsMoving(bool isMoving) {
+    mIsMoving = isMoving;
+    if (mIsMoving == true) {
+        mRigidBodyComponent->SetVelocity(mVelocity);
+    }
+    else {
+        mRigidBodyComponent->SetVelocity(Vector2::Zero);
+    }
+}
+
 
 void Ground::SetSprites() {
     if (mDrawGroundSpritesComponent) {
@@ -126,8 +139,12 @@ void Ground::ChangeResolution(float oldScale, float newScale) {
     SetRespawPosition(Vector2(mRespawnPosition.x / oldScale * newScale, mRespawnPosition.y / oldScale * newScale));
     mStartingPosition.x = mStartingPosition.x / oldScale * newScale;
     mStartingPosition.y = mStartingPosition.y / oldScale * newScale;
+    mVelocity.x = mVelocity.x / oldScale * newScale;
+    mVelocity.y = mVelocity.y / oldScale * newScale;
 
-    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+    if (mIsMoving) {
+        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

@@ -64,6 +64,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/DynamicGround.h
         Source/Components/DrawComponents/DrawDynamicGroundSpritesComponent.cpp
         Source/Components/DrawComponents/DrawDynamicGroundSpritesComponent.h
+        Source/Actors/Lever.cpp
+        Source/Actors/Lever.h
 )
 
 
