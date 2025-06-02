@@ -4,25 +4,22 @@
 
 #pragma once
 #include "DrawComponent.h"
-#include <string>
 #include <unordered_map>
 
 class DrawGroundSpritesComponent : public DrawComponent
 {
 public:
     // (Lower draw order corresponds with further back)
-    DrawGroundSpritesComponent(Actor *owner,
-                               std::unordered_map<std::string, std::vector<Vector2> > sprite_offset_map, int width = 0,
-                               int height = 0, int drawOrder = 100);
+    DrawGroundSpritesComponent(Actor *owner, int width = 32, int height = 32, int drawOrder = 100);
 
     void Draw(SDL_Renderer *renderer) override;
+    void SetSpriteOffsetMap(std::unordered_map<int, std::vector<Vector2> > spriteOffsetMap) {mSpriteOffsetMap = spriteOffsetMap; }
+    void SetWidth(float width) { mWidth = width; }
+    void SetHeight(float height) { mHeight = height; }
 
 protected:
-    // Map of textures loaded
-    SDL_Texture *mSpriteSheetSurface = nullptr;
-    std::unordered_map<SDL_Texture *, std::vector<Vector2> > mTextureOffsetMap;
+    std::unordered_map<int, std::vector<Vector2> > mSpriteOffsetMap;
 
     int mWidth;
     int mHeight;
-    std::unordered_map<std::string, std::vector<Vector2> > mSprite_offset_map;
 };

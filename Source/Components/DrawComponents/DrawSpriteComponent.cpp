@@ -22,6 +22,13 @@ DrawSpriteComponent::DrawSpriteComponent(class Actor *owner, const std::string &
     mSpriteSheetSurface = GetGame()->LoadTexture(texturePath);
 }
 
+DrawSpriteComponent::~DrawSpriteComponent() {
+    if (mSpriteSheetSurface) {
+        SDL_DestroyTexture(mSpriteSheetSurface);
+        mSpriteSheetSurface = nullptr;
+    }
+}
+
 void DrawSpriteComponent::Draw(SDL_Renderer *renderer)
 {
     if (!mIsVisible)

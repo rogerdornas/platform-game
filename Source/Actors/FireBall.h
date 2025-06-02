@@ -9,11 +9,11 @@ class FireBall : public Actor
 {
 public:
     FireBall(class Game *game);
-    ~FireBall();
+    ~FireBall() override;
 
     void OnUpdate(float deltaTime) override;
 
-    float GetWidth() { return mWidth; }
+    float GetWidth() override { return mWidth; }
     void SetWidth(float w) { mWidth = w; }
     void SetHeight(float h) { mHeight = h; }
     void SetSpeed(float s) { mSpeed = s; }

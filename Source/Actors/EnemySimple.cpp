@@ -4,7 +4,8 @@
 
 #include "EnemySimple.h"
 #include "Actor.h"
-
+#include "Effect.h"
+#include "ParticleSystem.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
@@ -27,7 +28,8 @@ EnemySimple::EnemySimple(Game *game, float width, float height, float moveSpeed,
 
     mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Goomba/Walk1.png",
                                                     static_cast<int>(mWidth * 1.2),
-                                                    static_cast<int>(mHeight * 1.2));}
+                                                    static_cast<int>(mHeight * 1.2));
+}
 
 void EnemySimple::OnUpdate(float deltaTime) {
 
@@ -55,6 +57,23 @@ void EnemySimple::OnUpdate(float deltaTime) {
     // Se morreu
     if (Died()) {
         SetState(ActorState::Destroy);
+
+        mGame->GetCamera()->StartCameraShake(0.3, mCameraShakeStrength);
+
+        auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
+        blood->SetPosition(GetPosition());
+        blood->SetEmitDirection(Vector2::UnitY);
+        blood->SetParticleSpeedScale(1.4);
+        blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
+        blood->SetParticleGravity(true);
+
+        auto* circleBlur = new Effect(mGame);
+        circleBlur->SetDuration(1.0);
+        circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
+        circleBlur->SetEnemy(*this);
+        circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
+        circleBlur->SetEffect(TargetEffect::circle);
+        circleBlur->EnemyDestroyed();
     }
 }
 
@@ -118,6 +137,7 @@ void EnemySimple::ChangeResolution(float oldScale, float newScale) {
     mMoveSpeed = mMoveSpeed / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
+    mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
     mDistToSpotPlayer = mDistToSpotPlayer / oldScale * newScale;
     mWalkingAroundMoveSpeed = mWalkingAroundMoveSpeed / oldScale * newScale;
     mGravity = mGravity / oldScale * newScale;

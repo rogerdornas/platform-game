@@ -4,14 +4,13 @@
 
 #include "Lever.h"
 
+#include "Effect.h"
 #include "../Actors/Sword.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
-
-
 #include "../Actors/Ground.h"
 #include "../Actors/DynamicGround.h"
 
@@ -51,6 +50,13 @@ void Lever::OnUpdate(float deltaTime) {
         Sword* playerSword = player->GetSword();
         if (mAABBComponent->Intersect(*playerSword->GetComponent<AABBComponent>())) {
             mActivate = true;
+            // Spark effect
+            for (int i = 0; i < 3; i++) {
+                auto* sparkEffect = new Effect(mGame);
+                sparkEffect->SetDuration(0.1f);
+                sparkEffect->SetPosition(GetPosition());
+                sparkEffect->SetEffect(TargetEffect::swordHit);
+            }
             switch (mTarget) {
                 case Target::camera:
                     CameraTrigger();
@@ -60,6 +66,8 @@ void Lever::OnUpdate(float deltaTime) {
                 break;
                 case Target::ground:
                     GroundTrigger();
+                break;
+                default:
                 break;
             }
         }
@@ -76,6 +84,8 @@ void Lever::OnUpdate(float deltaTime) {
                     break;
                     case Target::ground:
                         GroundTrigger();
+                    break;
+                    default:
                     break;
                 }
                 f->Deactivate();
@@ -115,7 +125,8 @@ void Lever::DynamicGroundTrigger() {
                     dynamicGround->SetIsDecreasing(true);
                 }
             }
-        break;
+        default:
+            break;
     }
 }
 
@@ -144,6 +155,7 @@ void Lever::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

@@ -6,28 +6,11 @@
 #include "../../Actors/Actor.h"
 #include "../../Game.h"
 
-DrawGroundSpritesComponent::DrawGroundSpritesComponent(Actor *owner,
-                                                       std::unordered_map<std::string, std::vector<Vector2>> sprite_offset_map,
-                                                       int width, int height, const int drawOrder)
+DrawGroundSpritesComponent::DrawGroundSpritesComponent(Actor *owner, int width, int height, const int drawOrder)
     : DrawComponent(owner, drawOrder),
       mWidth(width),
-      mHeight(height),
-      mSprite_offset_map(sprite_offset_map)
+      mHeight(height)
 {
-    for (const auto &pair: sprite_offset_map)
-    {
-        const std::string &filename = pair.first;
-        const std::vector<Vector2> &offsets = pair.second;
-
-        SDL_Texture *texture = GetGame()->LoadTexture(filename);
-
-        if (texture)
-            mTextureOffsetMap[texture] = offsets;
-
-        else
-            SDL_Log("Erro ao carregar textura '%s'", filename.c_str());
-
-    }
 }
 
 void DrawGroundSpritesComponent::Draw(SDL_Renderer *renderer)
@@ -45,10 +28,14 @@ void DrawGroundSpritesComponent::Draw(SDL_Renderer *renderer)
     //  Se a rotação for zero, o sprite deve ser desenhado virado à direita. Se for igual a MAth::Pi, deve
     //  ser desenhado à esquerda.
 
-    for (const auto &pair: mTextureOffsetMap)
-    {
-        SDL_Texture *texture = pair.first;
+    SDL_Texture* texture = mOwner->GetGame()->GetTileSheet();
+    std::unordered_map<int, SDL_Rect> tileSheetData = mOwner->GetGame()->GetTileSheetData();
+
+    for (const auto &pair: mSpriteOffsetMap) {
+        int tileIndex = pair.first;
         const std::vector<Vector2> &offsets = pair.second;
+
+        SDL_Rect srcRect = tileSheetData[tileIndex];
 
         for (const Vector2 &offset: offsets)
         {
@@ -62,7 +49,7 @@ void DrawGroundSpritesComponent::Draw(SDL_Renderer *renderer)
             if (GetOwner()->GetRotation() == Math::Pi)
                 flip = SDL_FLIP_HORIZONTAL;
 
-            SDL_RenderCopyEx(renderer, texture, nullptr, &region, 0.0f, nullptr, flip);
+            SDL_RenderCopyEx(renderer, texture, &srcRect, &region, 0.0f, nullptr, flip);
         }
     }
 }

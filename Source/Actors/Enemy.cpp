@@ -4,6 +4,8 @@
 
 #include "Enemy.h"
 
+#include "Effect.h"
+#include "ParticleSystem.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
@@ -13,10 +15,6 @@
 
 Enemy::Enemy(Game *game, float width, float height, float moveSpeed, float heathPoints, float contactDamage)
     :Actor(game)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
-
     ,mWidth(width * mGame->GetScale())
     ,mHeight(height * mGame->GetScale())
     ,mMoveSpeed(moveSpeed * mGame->GetScale())
@@ -25,10 +23,14 @@ Enemy::Enemy(Game *game, float width, float height, float moveSpeed, float heath
     ,mKnockBackSpeed(0.0f)
     ,mKnockBackTimer(0.0f)
     ,mKnockBackDuration(0.0f)
+    ,mCameraShakeStrength(60.0f * mGame->GetScale())
     ,mIsFlashing(false)
-    ,mFlashDuration(0.05f)
+    ,mFlashDuration(0.07f)
     ,mFlashTimer(mFlashDuration)
     ,mPlayerSpotted(false)
+    ,mDrawPolygonComponent(nullptr)
+    ,mDrawSpriteComponent(nullptr)
+    ,mDrawAnimatedComponent(nullptr)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -60,6 +62,20 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mIsFlashing = true;
     mFlashTimer = 0;
     mPlayerSpotted = true;
+
+    auto* blood = new ParticleSystem(mGame, 10, 170.0, 3.0, 0.07f);
+    blood->SetPosition(GetPosition());
+    blood->SetEmitDirection(knockBackDirection);
+    blood->SetParticleSpeedScale(1);
+    blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
+    blood->SetParticleGravity(true);
+
+    auto* circleBlur = new Effect(mGame);
+    circleBlur->SetDuration(0.3);
+    circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 3.5f);
+    circleBlur->SetEnemy(*this);
+    circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
+    circleBlur->SetEffect(TargetEffect::circle);
 }
 
 bool Enemy::Died() {

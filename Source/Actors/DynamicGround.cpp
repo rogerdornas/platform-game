@@ -27,6 +27,7 @@ DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike
     ,mDrawDynamicGroundSpritesComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
 {
+    mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize());
 }
 
 DynamicGround::~DynamicGround() { mGame->RemoveGround(this); }
@@ -141,11 +142,6 @@ void DynamicGround::OnUpdate(float deltaTime)
 }
 
 void DynamicGround::SetSprites() {
-    if (mDrawDynamicGroundSpritesComponent) {
-        RemoveComponent(mDrawDynamicGroundSpritesComponent);
-        delete mDrawDynamicGroundSpritesComponent;
-    }
-
     int rows = mMaxHeight / mGame->GetTileSize();
     int cols = mMaxWidth / mGame->GetTileSize();
 
@@ -158,14 +154,12 @@ void DynamicGround::SetSprites() {
     int minCol = topLeftX / mGame->GetTileSize();
     int maxCol = minCol + cols;
 
-    std::unordered_map<std::string, std::vector<Vector2> > sprite_offset_map;
+    std::unordered_map<int, std::vector<Vector2> > spriteOffsetMap;
 
     int **levelData = mGame->GetLevelDataDynamicGrounds();
 
-    for (int row = minRow; row < maxRow; ++row)
-    {
-        for (int col = minCol; col < maxCol; ++col)
-        {
+    for (int row = minRow; row < maxRow; ++row) {
+        for (int col = minCol; col < maxCol; ++col) {
             int tile = levelData[row][col];
 
             int tileX = col * mGame->GetTileSize();
@@ -173,18 +167,14 @@ void DynamicGround::SetSprites() {
 
             Vector2 offset = Vector2(tileX, tileY) - mStartingPosition;
 
-            if (tile >= 0)
-            {
-                std::ostringstream tileName;
-                tileName << std::setw(2) << std::setfill('0') << tile;
-                std::string file = tileName.str();
-                sprite_offset_map["../Assets/Sprites/Forest/" + file + ".png"].push_back(offset);
+            if (tile >= 0) {
+                spriteOffsetMap[tile].emplace_back(offset);
             }
         }
     }
-
-    mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(),
-                                                                 mGame->GetTileSize(), 200);
+    mDrawDynamicGroundSpritesComponent->SetSpriteOffsetMap(spriteOffsetMap);
+    mDrawDynamicGroundSpritesComponent->SetWidth(mGame->GetTileSize());
+    mDrawDynamicGroundSpritesComponent->SetHeight(mGame->GetTileSize());
 }
 
 
@@ -223,8 +213,8 @@ void DynamicGround::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
-
+    }
     SetSprites();
 }

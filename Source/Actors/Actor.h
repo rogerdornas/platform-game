@@ -45,6 +45,9 @@ public:
     ActorState GetState() const { return mState; }
     void SetState(ActorState state) { mState = state; }
 
+    virtual float GetWidth() { return -1; }
+    virtual float GetHeight(){ return -1; }
+
     // Game getter
     class Game *GetGame() { return mGame; }
 

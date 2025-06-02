@@ -30,6 +30,46 @@ bool AABBComponent::Intersect(AABBComponent &b)
     return !notColliding;
 }
 
+std::array<bool, 4> AABBComponent::CollisionSide(AABBComponent &b) {
+    Vector2 posA = GetOwner()->GetPosition();
+    Vector2 posB = b.GetOwner()->GetPosition();
+
+    // Detecta se colidiu {top, bottom, left, right}
+    std::array<bool, 4> collision = {false, false, false, false};
+
+    Vector2 aMin = mMin + posA;
+    Vector2 aMax = mMax + posA;
+    Vector2 bMin = b.mMin + posB;
+    Vector2 bMax = b.mMax + posB;
+
+    float top = bMin.y - aMax.y;
+    float bottom = bMax.y - aMin.y;
+    float left = bMin.x - aMax.x;
+    float right = bMax.x - aMin.x;
+
+    Vector2 dTop(0, top);
+    Vector2 dBot(0, bottom);
+    Vector2 dLeft(left, 0);
+    Vector2 dRight(right, 0);
+
+    Vector2 min = dRight;
+    collision[3] = true;
+    if (dLeft.Length() < min.Length()) {
+        min = dLeft;
+        collision = {false, false, true, false};
+    }
+    if (dBot.Length() < min.Length()) {
+        min = dBot;
+        collision = {false, true, false, false};
+    }
+    if (dTop.Length() < min.Length()) {
+        min = dTop;
+        collision = {true, false, false, false};
+    }
+
+    return collision;
+}
+
 
 std::array<bool, 4> AABBComponent::ResolveCollision(AABBComponent &b)
 {

@@ -79,8 +79,8 @@ bool Game::Initialize()
 
     mWindow = SDL_CreateWindow("Game-v0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                mWindowWidth, mWindowHeight,
-                               SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-                               // SDL_WINDOW_FULLSCREEN_DESKTOP);
+                               // SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                               SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (!mWindow)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -107,7 +107,7 @@ bool Game::Initialize()
 
 
     // Esconde o cursor
-    // SDL_ShowCursor(SDL_DISABLE);
+    SDL_ShowCursor(SDL_DISABLE);
 
     // Inicializa controle
     for (int i = 0; i < SDL_NumJoysticks(); ++i)
@@ -134,22 +134,27 @@ bool Game::Initialize()
     InitializeActors();
 
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
-    // mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
-    mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+    mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+    // mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
     // mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
-    mSky = LoadTexture(backgroundAssets + "sky_cloud.png");
-    mMountains = LoadTexture(backgroundAssets + "mountain2.png");
-    mTreesBack = LoadTexture(backgroundAssets + "pine1.png");
-    mTreesFront = LoadTexture(backgroundAssets + "pine2.png");
+    // mSky = LoadTexture(backgroundAssets + "sky_cloud.png");
+    // mMountains = LoadTexture(backgroundAssets + "mountain2.png");
+    // mTreesBack = LoadTexture(backgroundAssets + "pine1.png");
+    // mTreesFront = LoadTexture(backgroundAssets + "pine2.png");
 
     return true;
 }
 
-void Game::InitializeActors()
-{
+void Game::InitializeActors() {
     // Pool de Fireballs
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++) {
         new FireBall(this);
+    }
+
+    // Pool de Partículas
+    for (int i = 0; i < 200; i++) {
+        new Particle(this);
+    }
 
     const std::string levelsAssets = "../Assets/Levels/";
 
@@ -380,12 +385,12 @@ void Game::LoadObjects(const std::string &fileName)
                 float y = static_cast<float>(obj["y"]) * mScale;
                 if (name == "Enemy Simple")
                 {
-                    auto *enemySimple = new EnemySimple(this, 60, 60, 200, 50);
+                    auto *enemySimple = new EnemySimple(this, 60, 60, 200, 100);
                     enemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Flying Enemy")
                 {
-                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 50);
+                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 200);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                 }
                 else if (name == "Fox")
@@ -450,6 +455,27 @@ void Game::LoadLevel(const std::string &fileName) {
         }
     }
 
+    // Load tilesheet texture
+    mTileSheet = LoadTexture("../Assets/Levels/Forest/Forest.png");
+
+    // Load tilesheet data
+    std::ifstream tileSheetFile("../Assets/Levels/Forest/ForestTileSet.json");
+    nlohmann::json tileSheetData = nlohmann::json::parse(tileSheetFile);
+
+    for (const auto &tile: tileSheetData["sprites"]) {
+        std::string tileFileName = tile["fileName"];
+        int x = tile["x"].get<int>();
+        int y = tile["y"].get<int>();
+        int w = tile["width"].get<int>();
+        int h = tile["height"].get<int>();
+
+        size_t dotPos = tileFileName.find('.');
+        std::string numberStr = tileFileName.substr(0, dotPos);
+        int index = std::stoi(numberStr); // converte para inteiro
+
+        mSTileSheetData[index] = SDL_Rect{x, y, w, h};
+    }
+
     // Cria objetos
     LoadObjects(fileName);
 }
@@ -483,11 +509,13 @@ void Game::ProcessInput()
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;
                     if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
+                        // Comenta essa parte para tirar o zoom do mapa
                         mLogicalWindowWidth = static_cast<float>(mWindowWidth);
                         mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
                         SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
                     }
                     else {
+                        // Comenta essa parte para tirar o zoom do mapa
                         mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
                         mLogicalWindowHeight = static_cast<float>(mWindowHeight);
                         SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
@@ -539,8 +567,13 @@ void Game::UpdateGame()
         SDL_Delay((mTicksCount + frameDuration) - now);
 
     float deltaTime = static_cast<float>(SDL_GetTicks() - mTicksCount) / 1000.0f;
-    if (deltaTime > 0.05f)
+    if (deltaTime > 0.05f) {
         deltaTime = 0.05f;
+    }
+
+    // Para alterar velocidade do jogo (testes)
+    // deltaTime *= 0.5;
+    // deltaTime *= 2.5;
 
     mTicksCount = SDL_GetTicks();
 
@@ -549,11 +582,12 @@ void Game::UpdateGame()
     {
         if (mHitstopActive)
         {
-            if (mHitstopTimer < mHitstopDuration)
+            if (mHitstopTimer < mHitstopDuration) {
                 mHitstopTimer += deltaTime;
-
-            else
+            }
+            else {
                 mHitstopActive = false;
+            }
         }
         else
             UpdateActors(deltaTime);
@@ -614,6 +648,15 @@ void Game::RemoveFireball(class FireBall *f)
     auto iter = std::find(mFireBalls.begin(), mFireBalls.end(), f);
     if (iter != mFireBalls.end())
         mFireBalls.erase(iter);
+}
+
+void Game::AddParticle(class Particle *p) { mParticles.emplace_back(p); }
+
+void Game::RemoveParticle(class Particle *p)
+{
+    auto iter = std::find(mParticles.begin(), mParticles.end(), p);
+    if (iter != mParticles.end())
+        mParticles.erase(iter);
 }
 
 void Game::AddEnemy(class Enemy *e) { mEnemies.emplace_back(e); }
@@ -734,6 +777,18 @@ void Game::Shutdown()
         }
     }
     delete[] mLevelData;
+
+    // Delete level data Dynamic Grounds
+    if (mLevelDataDynamicGrounds != nullptr)
+    {
+        for (int i = 0; i < mLevelHeight; ++i)
+        {
+            if (mLevelDataDynamicGrounds[i] != nullptr)
+                delete[] mLevelDataDynamicGrounds[i];
+        }
+    }
+    delete[] mLevelDataDynamicGrounds;
+
     delete mCamera;
 
     if (mController)

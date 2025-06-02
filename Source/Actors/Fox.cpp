@@ -4,7 +4,8 @@
 
 #include "Fox.h"
 #include "Actor.h"
-
+#include "Effect.h"
+#include "ParticleSystem.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
@@ -49,8 +50,8 @@ Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoi
     mFireballDuration = 1.5f;
     mFireballTimer = 0.0f;
     mAlreadyFireballed = false;
-    mFireballWidth = 160 * mGame->GetScale();
-    mFireBallHeight = 80 * mGame->GetScale();
+    mFireballWidth = 100 * mGame->GetScale();
+    mFireBallHeight = 100 * mGame->GetScale();
     mFireballSpeed = 1400 * mGame->GetScale();
 
     mIsOnGround = true;
@@ -62,7 +63,7 @@ Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoi
     mSwordHitPlayer = false;
     mDistToSword = 200 * mGame->GetScale();
 
-    std::string foxAssets = "../Assets/Sprites/Raposa 2/";
+    std::string foxAssets = "../Assets/Sprites/Raposa/";
     // mDrawSpriteComponent = new DrawSpriteComponent(this, foxAssets + "Idle.png", 100, 100);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.3f, 0.91f * mWidth * 2.3f,
@@ -140,16 +141,31 @@ void Fox::OnUpdate(float deltaTime)
 
 void Fox::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
-    // Destroi chão que estava travando
+    // Abre chão que estava travando
     Ground* g1 = mGame->GetGroundById(96);
     Ground* g2 = mGame->GetGroundById(101);
-    // g1->SetState(ActorState::Destroy);
-    // g2->SetState(ActorState::Destroy);
     DynamicGround* dynamicGround1 = dynamic_cast<DynamicGround*>(g1);
     dynamicGround1->SetIsDecreasing(true);
     DynamicGround* dynamicGround2 = dynamic_cast<DynamicGround*>(g2);
     dynamicGround2->SetIsDecreasing(true);
     mGame->GetPlayer()->SetCanFireBall(true);
+
+    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
+
+    auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
+    blood->SetPosition(GetPosition());
+    blood->SetEmitDirection(Vector2::UnitY);
+    blood->SetParticleSpeedScale(1.4);
+    blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
+    blood->SetParticleGravity(true);
+
+    auto* circleBlur = new Effect(mGame);
+    circleBlur->SetDuration(1.0);
+    circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
+    circleBlur->SetEnemy(*this);
+    circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
+    circleBlur->SetEffect(TargetEffect::circle);
+    circleBlur->EnemyDestroyed();
 }
 
 
@@ -259,30 +275,30 @@ void Fox::MovementBeforePlayerSpotted()
         mPlayerSpotted = true;
 }
 
-void Fox::ManageAnimations()
-{
-    if (mIsRunning)
+void Fox::ManageAnimations() {
+    if (mIsRunning) {
         mDrawAnimatedComponent->SetAnimation("run");
-
-    else
+    }
+    else {
         mDrawAnimatedComponent->SetAnimation("idle");
-
-    if (mDashComponent->GetIsDashing())
+    }
+    if (mDashComponent->GetIsDashing()) {
         mDrawAnimatedComponent->SetAnimation("dash");
-
-    if (mIsFlashing)
+    }
+    if (mIsFlashing) {
         mDrawAnimatedComponent->SetAnimation("hit");
+    }
 }
 
-void Fox::Stop(float deltaTime)
-{
+void Fox::Stop(float deltaTime) {
     Player *player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
-    if (dist < 0)
+    if (dist < 0) {
         SetRotation(0.0);
-
-    else
+    }
+    else {
         SetRotation(Math::Pi);
+    }
 
     mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
     mStopTimer += deltaTime;
@@ -468,6 +484,7 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
     mMoveSpeed = mMoveSpeed / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
+    mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
     mDistToSpotPlayer = mDistToSpotPlayer / oldScale * newScale;
     mWalkingAroundMoveSpeed = mWalkingAroundMoveSpeed / oldScale * newScale;
     mFireballWidth = mFireballWidth / oldScale * newScale;

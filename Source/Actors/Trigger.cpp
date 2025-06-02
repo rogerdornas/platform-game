@@ -13,6 +13,7 @@ Trigger::Trigger(class Game *game, float width, float height)
     :Actor(game)
     ,mWidth(width)
     ,mHeight(height)
+    ,mTarget(Target::nothing)
     ,mDrawPolygonComponent(nullptr)
 
 {
@@ -93,6 +94,8 @@ void Trigger::OnUpdate(float deltaTime) {
             case Target::ground:
                 GroundTrigger();
             break;
+            default:
+            break;
         }
     }
 }
@@ -113,6 +116,8 @@ void Trigger::CameraTrigger() {
             break;
         case Event::scrollUp:
             camera->ChangeCameraMode(CameraMode::ScrollUp);
+            break;
+        default:
             break;
     }
 }
@@ -139,6 +144,8 @@ void Trigger::DynamicGroundTrigger() {
                 }
             }
             SetState(ActorState::Destroy);
+            break;
+        default:
             break;
     }
 }
@@ -178,6 +185,7 @@ void Trigger::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

@@ -23,6 +23,7 @@ public:
 
     bool Intersect(AABBComponent &b);
     std::array<bool, 4> ResolveCollision(AABBComponent &b);
+    std::array<bool, 4> CollisionSide(AABBComponent &b);
 
 private:
     Vector2 mMin;

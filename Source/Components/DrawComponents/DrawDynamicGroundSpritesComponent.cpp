@@ -8,10 +8,8 @@
 #include "../../Game.h"
 #include "../../Actors/DynamicGround.h"
 
-DrawDynamicGroundSpritesComponent::DrawDynamicGroundSpritesComponent(Actor *owner,
-                                                       std::unordered_map<std::string, std::vector<Vector2>> sprite_offset_map,
-                                                       int width, int height, const int drawOrder)
-    : DrawGroundSpritesComponent(owner, sprite_offset_map, width, height, drawOrder)
+DrawDynamicGroundSpritesComponent::DrawDynamicGroundSpritesComponent(Actor *owner, int width, int height, const int drawOrder)
+    : DrawGroundSpritesComponent(owner, width, height, drawOrder)
 {
     mOwnerDynamicGround = dynamic_cast<DynamicGround*>(mOwner);
 }
@@ -31,10 +29,14 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
     //  Se a rotação for zero, o sprite deve ser desenhado virado à direita. Se for igual a MAth::Pi, deve
     //  ser desenhado à esquerda.
 
-    for (const auto &pair: mTextureOffsetMap)
-    {
-        SDL_Texture *texture = pair.first;
+    SDL_Texture* texture = mOwner->GetGame()->GetTileSheet();
+    std::unordered_map<int, SDL_Rect> tileSheetData = mOwner->GetGame()->GetTileSheetData();
+
+    for (const auto &pair: mSpriteOffsetMap) {
+        int tileIndex = pair.first;
         const std::vector<Vector2> &offsets = pair.second;
+
+        SDL_Rect srcRect = tileSheetData[tileIndex];
 
         for (const Vector2 &offset: offsets)
         {
@@ -55,35 +57,41 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
                 if (offsetPos.x >= ownerMinOffsetPos.x && offsetPos.x + mWidth <= ownerMaxOffsetPos.x) {
                     region.x = offsetPos.x;
                     region.w = mWidth + 1;
+                    srcRect.w =  region.w;
                 }
                 else if (offsetPos.x < ownerMinOffsetPos.x && offsetPos.x + mWidth <= ownerMaxOffsetPos.x) {
                     region.x = ownerMinOffsetPos.x;
                     region.w = offsetPos.x + mWidth - ownerMinOffsetPos.x + 1;
+                    srcRect.w =  region.w;
                 }
                 else if (offsetPos.x >= ownerMinOffsetPos.x && offsetPos.x + mWidth > ownerMaxOffsetPos.x) {
                     region.x = offsetPos.x;
                     region.w = ownerMaxOffsetPos.x - offsetPos.x + 1;
+                    srcRect.w =  region.w;
                 }
 
                 // Vertical
                 if (offsetPos.y >= ownerMinOffsetPos.y && offsetPos.y + mHeight <= ownerMaxOffsetPos.y) {
                     region.y = offsetPos.y;
                     region.h = mHeight + 1;
+                    srcRect.h =  region.h;
                 }
                 else if (offsetPos.y < ownerMinOffsetPos.y && offsetPos.y + mHeight <= ownerMaxOffsetPos.y) {
                     region.y = ownerMinOffsetPos.y;
                     region.h = offsetPos.y + mHeight - ownerMinOffsetPos.y + 1;
+                    srcRect.h =  region.h;
                 }
                 else if (offsetPos.y >= ownerMinOffsetPos.y && offsetPos.y + mHeight > ownerMaxOffsetPos.y) {
                     region.y = offsetPos.y;
                     region.h = ownerMaxOffsetPos.y - offsetPos.y + 1;
+                    srcRect.h =  region.h;
                 }
 
                 SDL_RendererFlip flip = SDL_FLIP_NONE;
                 if (GetOwner()->GetRotation() == Math::Pi)
                     flip = SDL_FLIP_HORIZONTAL;
 
-                SDL_RenderCopyEx(renderer, texture, nullptr, &region, 0.0f, nullptr, flip);
+                SDL_RenderCopyEx(renderer, texture, &srcRect, &region, 0.0f, nullptr, flip);
             }
         }
     }

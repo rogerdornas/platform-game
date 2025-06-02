@@ -3,18 +3,44 @@
 //
 
 #pragma once
+#include <string>
 #include "Actor.h"
 
 class Particle : public Actor
 {
 public:
-    Particle(class Game *game, float lifeTime = 10.0f);
+    Particle(class Game *game);
+    ~Particle() override;
+
     void OnUpdate(float deltaTime) override;
-    void SetLife(float life) { mDeathTimer = life; }
+    void SetSize(float size);
+    void SetLifeDuration(float life) { mLifeTDuration = life; }
+    void SetIsSplash(bool isSplash) { mIsSplash = isSplash; }
+    void SetParticleColor(SDL_Color color) { mColor = color; }
+    void SetGravity(bool g) { mGravity = g; }
+    void SetSpeedScale(float speedScale) { mSpeedScale = speedScale; }
+    void SetDirection(Vector2 direction);
+
+    void Activate();
+    void Deactivate();
+
+    void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    float mDeathTimer;
+    float mSize;
+    float mLifeTDuration;
+    float mLifeTimer;
+    bool mIsSplash;
+    std::string mTexturePath;
+    SDL_Color mColor;
+    bool mGravity;
+    float mGravityForce;
+    Vector2 mDirection;
+    float mSpeedScale;
 
-    // class DrawComponent* mDrawComponent;
+    class DrawPolygonComponent *mDrawPolygonComponent;
+    class DrawSpriteComponent *mDrawSpriteComponent;
+    class DrawParticleComponent *mDrawParticleComponent;
     class RigidBodyComponent *mRigidBodyComponent;
+    class AABBComponent *mAABBComponent;
 };

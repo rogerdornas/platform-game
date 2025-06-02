@@ -19,15 +19,11 @@
 #include "Actors/FlyingEnemySimple.h"
 #include "Math.h"
 #include <string>
+#include <unordered_map>
 
 class Game
 {
 public:
-    // int LEVEL_WIDTH = 0;
-    // int LEVEL_HEIGHT = 0;
-    // int TILE_SIZE = 0;
-    // int SPAWN_DISTANCE = 700;
-
     Game(int windowWidth, int windowHeight, int FPS);
 
     bool Initialize();
@@ -68,12 +64,19 @@ public:
     void RemoveFireball(class FireBall *f);
     std::vector<class FireBall *> &GetFireBalls() { return mFireBalls; }
 
+    void AddParticle(class Particle *p);
+    void RemoveParticle(class Particle *p);
+    std::vector<class Particle *> &GetParticles() { return mParticles; }
+
     void AddEnemy(class Enemy *e);
     void RemoveEnemy(class Enemy *e);
     std::vector<class Enemy *> &GetEnemies() { return mEnemies; }
 
     int **GetLevelData() const { return mLevelData; }
     int **GetLevelDataDynamicGrounds() const { return mLevelDataDynamicGrounds; }
+    SDL_Texture* GetTileSheet() const { return mTileSheet; }
+    std::unordered_map<int, SDL_Rect> GetTileSheetData() { return mSTileSheetData; }
+
     int GetTileSize() { return mTileSize; }
 
     bool mResetLevel;
@@ -137,12 +140,15 @@ private:
     class Player *mPlayer;
     std::vector<class Ground *> mGrounds;
     std::vector<class FireBall *> mFireBalls;
+    std::vector<class Particle *> mParticles;
     std::vector<class Enemy *> mEnemies;
     SDL_GameController *mController;
 
     // Level data
     int **mLevelData;
     int **mLevelDataDynamicGrounds;
+    SDL_Texture* mTileSheet;
+    std::unordered_map<int, SDL_Rect> mSTileSheetData;
     int mLevelWidth;
     int mLevelHeight;
     int mTileSize;

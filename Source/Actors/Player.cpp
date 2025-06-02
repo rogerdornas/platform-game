@@ -4,9 +4,11 @@
 
 #include "Player.h"
 
+#include "Effect.h"
 #include "../Game.h"
 #include "../Actors/Sword.h"
 #include "../Actors/FireBall.h"
+#include "../Actors/ParticleSystem.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DashComponent.h"
@@ -43,6 +45,8 @@ Player::Player(Game *game, float width, float height)
       mSwordCooldownDuration(0.4f),
       mSwordDirection(0),
       mSwordHitEnemy(false),
+      mSwordHitGround(false),
+      mSwordHitSpike(false),
 
       mCanFireBall(true),
       mPrevFireBallPressed(false),
@@ -52,8 +56,8 @@ Player::Player(Game *game, float width, float height)
       mStopInAirFireBallTimer(0.0f),
       mStopInAirFireBallMaxDuration(0.0f),
       mFireballRecoil(0.0f * mGame->GetScale()),
-      mFireballWidth(80 * mGame->GetScale()),
-      mFireBallHeight(40 * mGame->GetScale()),
+      mFireballWidth(50 * mGame->GetScale()),
+      mFireBallHeight(50 * mGame->GetScale()),
       mFireballSpeed(1800 * mGame->GetScale()),
 
       mCanWallSlide(true),
@@ -386,6 +390,8 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
         mSword->SetRotation(mSwordDirection);
         mSword->SetPosition(GetPosition());
         mSwordHitEnemy = false;
+        mSwordHitGround = false;
+        mSwordHitSpike = false;
 
         // Inicia cooldown
         mSwordCooldownTimer = 0;
@@ -636,6 +642,39 @@ void Player::ResolveGroundCollision()
                         }
                     }
                 }
+
+                if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) {
+                    // Colisão da sword com grounds
+                    if (!mSwordHitGround) {
+                        collisionSide = mSword->GetComponent<AABBComponent>()->CollisionSide(*g->GetComponent<AABBComponent>());
+                        if ((collisionSide[0] && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionSide[1] && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionSide[2] && Math::Abs(mSword->GetForward().x) == 1) ||
+                            (collisionSide[3] && Math::Abs(mSword->GetForward().x) == 1) )
+                        {
+                            auto *grass = new ParticleSystem(mGame, 6, 150.0, 0.30, 0.05f);
+                            if (collisionSide[0]) {
+                                grass->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y - g->GetHeight() / 2));
+                            }
+                            if (collisionSide[1]) {
+                                grass->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y + g->GetHeight() / 2));
+                            }
+                            if (collisionSide[2]) {
+                                grass->SetPosition(Vector2(g->GetPosition().x - g->GetWidth() / 2, GetPosition().y));
+                            }
+                            if (collisionSide[3]) {
+                                grass->SetPosition(Vector2(g->GetPosition().x + g->GetWidth() / 2, GetPosition().y));
+                            }
+
+                            grass->SetEmitDirection(mSword->GetForward() * -1);
+                            grass->SetIsSplash(true);
+                            grass->SetParticleSpeedScale(0.5);
+                            grass->SetParticleColor(SDL_Color{80, 148, 45, 255});
+                            grass->SetParticleGravity(true);
+                            mSwordHitGround = true;
+                        }
+                    }
+                }
             }
             else if (g->GetIsSpike())
             { // Colisão com spikes
@@ -678,6 +717,37 @@ void Player::ResolveGroundCollision()
                 }
                 else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>()))
                 { // Colisão da sword com spikes
+                    if (!mSwordHitSpike) {
+                        collisionSide = mSword->GetComponent<AABBComponent>()->CollisionSide(*g->GetComponent<AABBComponent>());
+                        if ((collisionSide[0] && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionSide[1] && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionSide[2] && Math::Abs(mSword->GetForward().x) == 1) ||
+                            (collisionSide[3] && Math::Abs(mSword->GetForward().x) == 1) )
+                        {
+                            for (int i = 0; i < 3; i++) {
+                                auto* sparkEffect = new Effect(mGame);
+                                sparkEffect->SetDuration(0.1f);
+
+                                collisionSide = mSword->GetComponent<AABBComponent>()->CollisionSide(*g->GetComponent<AABBComponent>());
+                                if (collisionSide[0]) {
+                                    sparkEffect->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y - g->GetHeight() / 2));
+                                }
+                                if (collisionSide[1]) {
+                                    sparkEffect->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y + g->GetHeight() / 2));
+                                }
+                                if (collisionSide[2]) {
+                                    sparkEffect->SetPosition(Vector2(g->GetPosition().x - g->GetWidth() / 2, GetPosition().y));
+                                }
+                                if (collisionSide[3]) {
+                                    sparkEffect->SetPosition(Vector2(g->GetPosition().x + g->GetWidth() / 2, GetPosition().y));
+                                }
+                                sparkEffect->SetEffect(TargetEffect::swordHit);
+                            }
+                            mSwordHitSpike = true;
+                            mSwordHitGround = true;
+                        }
+                    }
+
                     if (mSword->GetRotation() == Math::Pi / 2)
                     {
                         if (!mDashComponent->GetIsDashing())
@@ -773,6 +843,30 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection)
         if (vel.Length() > 0)
             vel.Normalize();
 
+        // ParticleSystem* blood = new ParticleSystem(mGame, 10, 170.0, 3.0, 0.07f);
+        // blood->SetEmitDirection(knockBackDirection);
+        // blood->SetPosition(GetPosition());
+        // blood->SetParticleColor(SDL_Color{170, 113, 84, 255});
+
+        // Uint8 color1 = 10;
+        // Uint8 color2 = 200;
+        // SDL_Color color{color2, color2, color2, 255};
+
+        // for (int i = 0; i < 3; i++) {
+        //     if (color.r == color1) {
+        //         color = {color2, color2, color2, 255};
+        //     }
+        //     else {
+        //         color = {color1, color1, color1, 255};
+        //     }
+        //     auto* effect = new Effect(mGame);
+        //     effect->SetDuration(0.3f);
+        //     effect->SetPosition(GetPosition());
+        //     effect->SetSize(320);
+        //     effect->SetColor(color);
+        //     effect->SetEffect(TargetEffect::swordHit);
+        // }
+
         mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBackSpeed + vel * (mKnockBackSpeed / 3));
         mKnockBackTimer = 0;
         mInvulnerableTimer = 0;
@@ -822,7 +916,7 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
-
+    }
 }

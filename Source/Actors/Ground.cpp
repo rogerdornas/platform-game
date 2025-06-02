@@ -52,6 +52,7 @@ Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMovin
     mRigidBodyComponent = new RigidBodyComponent(this, 1);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
+    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize());
     if (mIsMoving) {
         mRigidBodyComponent->SetVelocity(mVelocity);
     }
@@ -84,13 +85,7 @@ void Ground::SetIsMoving(bool isMoving) {
     }
 }
 
-
 void Ground::SetSprites() {
-    if (mDrawGroundSpritesComponent) {
-        RemoveComponent(mDrawGroundSpritesComponent);
-        delete mDrawGroundSpritesComponent;
-    }
-
     int rows = mHeight / mGame->GetTileSize();
     int cols = mWidth / mGame->GetTileSize();
 
@@ -103,14 +98,12 @@ void Ground::SetSprites() {
     int minCol = topLeftX / mGame->GetTileSize();
     int maxCol = minCol + cols;
 
-    std::unordered_map<std::string, std::vector<Vector2> > sprite_offset_map;
+    std::unordered_map<int, std::vector<Vector2> > spriteOffsetMap;
 
     int **levelData = mGame->GetLevelData();
 
-    for (int row = minRow; row < maxRow; ++row)
-    {
-        for (int col = minCol; col < maxCol; ++col)
-        {
+    for (int row = minRow; row < maxRow; ++row) {
+        for (int col = minCol; col < maxCol; ++col) {
             int tile = levelData[row][col];
 
             int tileX = col * mGame->GetTileSize();
@@ -118,18 +111,14 @@ void Ground::SetSprites() {
 
             Vector2 offset = Vector2(tileX, tileY) - mStartingPosition;
 
-            if (tile >= 0)
-            {
-                std::ostringstream tileName;
-                tileName << std::setw(2) << std::setfill('0') << tile;
-                std::string file = tileName.str();
-                sprite_offset_map["../Assets/Sprites/Forest/" + file + ".png"].push_back(offset);
+            if (tile >= 0) {
+                spriteOffsetMap[tile].emplace_back(offset);
             }
         }
     }
-
-    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, sprite_offset_map, mGame->GetTileSize(),
-                                                                 mGame->GetTileSize());
+    mDrawGroundSpritesComponent->SetSpriteOffsetMap(spriteOffsetMap);
+    mDrawGroundSpritesComponent->SetWidth(mGame->GetTileSize());
+    mDrawGroundSpritesComponent->SetHeight(mGame->GetTileSize());
 }
 
 void Ground::ChangeResolution(float oldScale, float newScale) {
@@ -160,8 +149,8 @@ void Ground::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
-
+    }
     SetSprites();
 }

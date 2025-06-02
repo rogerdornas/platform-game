@@ -167,6 +167,7 @@ void Sword::Deactivate()
 void Sword::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
+    SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
     mDrawAnimatedComponent->SetWidth(mWidth);
     mDrawAnimatedComponent->SetHeight(mHeight);

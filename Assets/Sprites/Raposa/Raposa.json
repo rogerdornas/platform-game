@@ -1,11 +1,11 @@
 {
   "frames": [
     {
-      "filename": "Hitted.png",
+      "filename": "Dash1.png",
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "rotated": false,
@@ -13,11 +13,36 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "sourceSize": {
-        "w": 38,
+        "w": 46,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Hitted.png",
+      "frame": {
+        "x": 0,
+        "y": 42,
+        "w": 46,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 46,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 46,
         "h": 42
       },
       "pivot": {
@@ -28,9 +53,9 @@
     {
       "filename": "Idle.png",
       "frame": {
-        "x": 0,
-        "y": 42,
-        "w": 38,
+        "x": 46,
+        "y": 0,
+        "w": 46,
         "h": 42
       },
       "rotated": false,
@@ -38,11 +63,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "sourceSize": {
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "pivot": {
@@ -53,9 +78,9 @@
     {
       "filename": "Run1.png",
       "frame": {
-        "x": 38,
-        "y": 0,
-        "w": 38,
+        "x": 0,
+        "y": 84,
+        "w": 46,
         "h": 42
       },
       "rotated": false,
@@ -63,11 +88,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "sourceSize": {
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "pivot": {
@@ -78,9 +103,9 @@
     {
       "filename": "Run2.png",
       "frame": {
-        "x": 0,
-        "y": 84,
-        "w": 38,
+        "x": 46,
+        "y": 42,
+        "w": 46,
         "h": 42
       },
       "rotated": false,
@@ -88,11 +113,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "sourceSize": {
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "pivot": {
@@ -103,9 +128,9 @@
     {
       "filename": "Run3.png",
       "frame": {
-        "x": 38,
-        "y": 42,
-        "w": 38,
+        "x": 92,
+        "y": 0,
+        "w": 46,
         "h": 42
       },
       "rotated": false,
@@ -113,11 +138,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "sourceSize": {
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "pivot": {
@@ -128,9 +153,9 @@
     {
       "filename": "Run4.png",
       "frame": {
-        "x": 76,
-        "y": 0,
-        "w": 38,
+        "x": 0,
+        "y": 126,
+        "w": 46,
         "h": 42
       },
       "rotated": false,
@@ -138,11 +163,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "sourceSize": {
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "pivot": {
@@ -153,9 +178,9 @@
     {
       "filename": "Run5.png",
       "frame": {
-        "x": 0,
-        "y": 84,
-        "w": 38,
+        "x": 46,
+        "y": 42,
+        "w": 46,
         "h": 42
       },
       "rotated": false,
@@ -163,11 +188,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "sourceSize": {
-        "w": 38,
+        "w": 46,
         "h": 42
       },
       "pivot": {
@@ -182,8 +207,8 @@
     "image": "Raposa.png",
     "format": "RGBA8888",
     "size": {
-      "w": 114,
-      "h": 126
+      "w": 138,
+      "h": 168
     },
     "scale": 1
   }

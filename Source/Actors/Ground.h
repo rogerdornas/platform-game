@@ -18,8 +18,8 @@ public:
     bool GetIsMoving() const { return mIsMoving; }
     void SetIsMoving(bool isMoving);
 
-    float GetHeight() const { return mHeight; }
-    float GetWidth() const { return mWidth; }
+    float GetWidth() override { return mWidth; }
+    float GetHeight() override { return mHeight; }
 
     void SetRespawPosition(Vector2 pos) { mRespawnPosition = pos; }
     Vector2 GetRespawPosition() { return mRespawnPosition; }

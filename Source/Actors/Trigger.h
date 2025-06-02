@@ -10,7 +10,8 @@
 enum Target {
     camera,
     dynamicGround,
-    ground
+    ground,
+    nothing
 };
 
 enum Event {
@@ -40,7 +41,7 @@ public:
 
 protected:
     void CameraTrigger();
-    void DynamicGroundTrigger();
+    virtual void DynamicGroundTrigger();
     void GroundTrigger();
 
     float mWidth;

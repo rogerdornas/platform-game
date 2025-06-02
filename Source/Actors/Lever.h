@@ -17,7 +17,7 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void DynamicGroundTrigger();
+    void DynamicGroundTrigger() override;
 
     bool mActivate;
     float mActivatingDuration;

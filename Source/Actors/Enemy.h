@@ -9,19 +9,21 @@ class Enemy : public Actor
 {
 public:
     Enemy(Game *game, float width, float height, float moveSpeed, float healthPoints, float contactDamage);
-    ~Enemy();
+    ~Enemy() override;
 
     void SetHealthPoints(float hp) { mHealthPoints = hp; }
     float GetHealthPoints() const { return mHealthPoints; }
     void ReceiveHit(float damage, Vector2 knockBackDirection);
     float GetContactDamage() const { return mContactDamage; }
     float GetKnockBack() const { return mKnockBackSpeed; }
+    float GetWidth() override { return mWidth; }
+    float GetHeight() override { return mHeight; }
 
 protected:
     bool Died();
 
-    float mHeight;
     float mWidth;
+    float mHeight;
 
     float mMoveSpeed;
 
@@ -31,6 +33,7 @@ protected:
     float mKnockBackSpeed;
     float mKnockBackTimer;
     float mKnockBackDuration;
+    float mCameraShakeStrength;
 
     bool mIsFlashing;
     float mFlashDuration;

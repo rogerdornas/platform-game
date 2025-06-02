@@ -14,6 +14,8 @@ public:
     void OnUpdate(float deltaTime) override;
 
     float GetDamage() { return mDamage; }
+    float GetWidth() override { return mWidth; }
+    float GetHeight() override { return mHeight; }
 
     void ChangeResolution(float oldScale, float newScale) override;
 

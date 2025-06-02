@@ -64,6 +64,8 @@ private:
     const float mSwordCooldownDuration; // Cooldown da espada
     float mSwordDirection;              // Director da espada(esquerda, direita, cima, baixo)
     bool mSwordHitEnemy;
+    bool mSwordHitGround;
+    bool mSwordHitSpike;
 
     bool mCanFireBall;
     bool mPrevFireBallPressed; // Se apertou botão de fireball no último frame
