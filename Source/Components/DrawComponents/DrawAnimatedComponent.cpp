@@ -13,7 +13,11 @@ DrawAnimatedComponent::DrawAnimatedComponent(Actor *owner, float width, float he
                                              int drawOrder)
     : DrawSpriteComponent(owner, spriteSheetPath, width, height, drawOrder),
       mIsBlinking(false),
-      mTransparency(127)
+      mTransparency(127),
+      mUseFlip(false),
+      mFlip(SDL_FLIP_NONE),
+      mUseRotation(false),
+      mOffsetRotation(0.0f)
 {
     LoadSpriteSheet(spriteSheetPath, spriteSheetData);
 }
@@ -82,30 +86,44 @@ void DrawAnimatedComponent::Draw(SDL_Renderer *renderer)
     SDL_Rect dstRect;
     dstRect.h = mHeight;
     dstRect.w = mWidth;
-    dstRect.x = mOwner->GetPosition().x - mWidth / 2 - GetGame()->GetCamera()->GetPosCamera().x;
-    dstRect.y = mOwner->GetPosition().y - mHeight / 2 - GetGame()->GetCamera()->GetPosCamera().y;
+    dstRect.x = static_cast<int>(round(mOwner->GetPosition().x - mWidth / 2 - GetGame()->GetCamera()->GetPosCamera().x));
+    dstRect.y = static_cast<int>(round(mOwner->GetPosition().y - mHeight / 2 - GetGame()->GetCamera()->GetPosCamera().y));
+
+    if (!mUseFlip) {
+        mFlip = SDL_FLIP_NONE;
+    }
 
     // Define o flip (espelhamento) baseado na escala
     SDL_RendererFlip flip = SDL_FLIP_NONE;
-    if (GetOwner()->GetRotation() == Math::Pi)
+    if (GetOwner()->GetRotation() == Math::Pi) {
         flip = SDL_FLIP_HORIZONTAL;
+    }
 
+    // float angle = 0;
+    // if (GetOwner()->GetRotation() == 3 * Math::Pi / 2 || GetOwner()->GetRotation() == Math::Pi / 2) {
+    //     angle = Math::ToDegrees(GetOwner()->GetRotation());
+    // }
 
     float angle = 0;
-    if (GetOwner()->GetRotation() == 3 * Math::Pi / 2 || GetOwner()->GetRotation() == Math::Pi / 2)
-        angle = Math::ToDegrees(GetOwner()->GetRotation());
+    if (mUseRotation) {
+        angle = Math::ToDegrees(GetOwner()->GetRotation()) + mOffsetRotation;
+    }
 
-    if (mIsBlinking)
-    {
+    if (mIsBlinking) {
         mTransparency += 128;
         mTransparency = mTransparency % 256;
     }
-    else
+    else {
         mTransparency = 255;
+    }
+
+    if (mFlip == SDL_FLIP_NONE) {
+        mFlip = flip;
+    }
 
     SDL_SetTextureBlendMode(mSpriteSheetSurface, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(mSpriteSheetSurface, mTransparency);
-    SDL_RenderCopyEx(renderer, mSpriteSheetSurface, srcRect, &dstRect, angle, nullptr, flip);
+    SDL_RenderCopyEx(renderer, mSpriteSheetSurface, srcRect, &dstRect, angle, nullptr, mFlip);
 }
 
 void DrawAnimatedComponent::Update(float deltaTime)

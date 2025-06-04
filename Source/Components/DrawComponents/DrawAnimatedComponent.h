@@ -18,6 +18,11 @@ public:
     void Draw(SDL_Renderer *renderer) override;
     void Update(float deltaTime) override;
 
+    void UseFlip(bool useFlip) { mUseFlip = useFlip; }
+    void SetFlip(SDL_RendererFlip flip) { mFlip = flip; }
+    void UseRotation(bool useRotation) { mUseRotation = useRotation; }
+    void SetOffsetRotation(float offset) { mOffsetRotation = offset; }
+
     // Use to change the FPS of the animation
     void SetAnimFPS(float fps) { mAnimFPS = fps; }
 
@@ -52,6 +57,11 @@ private:
 
     // Whether the animation is paused (defaults to false)
     bool mIsPaused = false;
+
+    bool mUseFlip;
+    SDL_RendererFlip mFlip;
+    bool mUseRotation;
+    float mOffsetRotation;
 
     bool mIsBlinking;
     int mTransparency;

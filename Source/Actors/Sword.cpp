@@ -99,6 +99,12 @@ void Sword::OnUpdate(float deltaTime)
                 mDrawSpriteComponent->SetWidth(mWidth);
                 mDrawSpriteComponent->SetHeight(mHeight);
             }
+            if (mDrawAnimatedComponent)
+            {
+                mDrawAnimatedComponent->SetWidth(mWidth);
+                mDrawAnimatedComponent->SetHeight(mHeight);
+                mDrawAnimatedComponent->UseRotation(false);
+            }
             offset = mWidth / 2;
         }
         else
@@ -123,6 +129,12 @@ void Sword::OnUpdate(float deltaTime)
             {
                 mDrawSpriteComponent->SetWidth(mHeight);
                 mDrawSpriteComponent->SetHeight(mWidth);
+            }
+            if (mDrawAnimatedComponent)
+            {
+                mDrawAnimatedComponent->SetWidth(mWidth);
+                mDrawAnimatedComponent->SetHeight(mHeight);
+                mDrawAnimatedComponent->UseRotation(true);
             }
             offset = mWidth / 2;
         }

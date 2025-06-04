@@ -178,6 +178,8 @@ void FireBall::ChangeResolution(float oldScale, float newScale) {
     mSpeed = mSpeed / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
     mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
     mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
 

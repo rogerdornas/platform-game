@@ -133,6 +133,8 @@ void FlyingEnemySimple::ChangeResolution(float oldScale, float newScale) {
     mDistToSpotPlayer = mDistToSpotPlayer / oldScale * newScale;
     mFlyingAroundMoveSpeed = mFlyingAroundMoveSpeed / oldScale * newScale;
 
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
     mDrawSpriteComponent->SetWidth(mWidth * 1.28f);
     mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
 

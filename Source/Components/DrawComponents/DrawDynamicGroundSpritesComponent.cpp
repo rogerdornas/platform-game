@@ -41,9 +41,9 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
         for (const Vector2 &offset: offsets)
         {
             // owner width
-            float ownerWidth = mOwner->GetComponent<AABBComponent>()->GetMax().x - mOwner->GetComponent<AABBComponent>()->GetMin().x;
+            float ownerWidth = mOwner->GetWidth();
             // owner height
-            float ownerHeight = mOwner->GetComponent<AABBComponent>()->GetMax().y - mOwner->GetComponent<AABBComponent>()->GetMin().y;
+            float ownerHeight = mOwner->GetHeight();
 
             if (ownerWidth != 0 && ownerHeight != 0) {
                 SDL_Rect region;
@@ -57,34 +57,40 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
                 if (offsetPos.x >= ownerMinOffsetPos.x && offsetPos.x + mWidth <= ownerMaxOffsetPos.x) {
                     region.x = offsetPos.x;
                     region.w = mWidth + 1;
-                    srcRect.w =  region.w;
+                    // srcRect.w =  region.w;
+                    srcRect.w = 32 + 1;
                 }
                 else if (offsetPos.x < ownerMinOffsetPos.x && offsetPos.x + mWidth <= ownerMaxOffsetPos.x) {
                     region.x = ownerMinOffsetPos.x;
                     region.w = offsetPos.x + mWidth - ownerMinOffsetPos.x + 1;
-                    srcRect.w =  region.w;
+                    // srcRect.w = region.w;
+                    srcRect.w = offsetPos.x + 32 - ownerMinOffsetPos.x + 1;
                 }
                 else if (offsetPos.x >= ownerMinOffsetPos.x && offsetPos.x + mWidth > ownerMaxOffsetPos.x) {
                     region.x = offsetPos.x;
                     region.w = ownerMaxOffsetPos.x - offsetPos.x + 1;
-                    srcRect.w =  region.w;
+                    // srcRect.w = region.w;
+                    srcRect.w = ownerMaxOffsetPos.x - offsetPos.x + 1;
                 }
 
                 // Vertical
                 if (offsetPos.y >= ownerMinOffsetPos.y && offsetPos.y + mHeight <= ownerMaxOffsetPos.y) {
                     region.y = offsetPos.y;
                     region.h = mHeight + 1;
-                    srcRect.h =  region.h;
+                    // srcRect.h = region.h;
+                    srcRect.h = 32 + 1;
                 }
                 else if (offsetPos.y < ownerMinOffsetPos.y && offsetPos.y + mHeight <= ownerMaxOffsetPos.y) {
                     region.y = ownerMinOffsetPos.y;
                     region.h = offsetPos.y + mHeight - ownerMinOffsetPos.y + 1;
-                    srcRect.h =  region.h;
+                    // srcRect.h = region.h;
+                    srcRect.h = offsetPos.y + 32 - ownerMinOffsetPos.y + 1;
                 }
                 else if (offsetPos.y >= ownerMinOffsetPos.y && offsetPos.y + mHeight > ownerMaxOffsetPos.y) {
                     region.y = offsetPos.y;
                     region.h = ownerMaxOffsetPos.y - offsetPos.y + 1;
-                    srcRect.h =  region.h;
+                    // srcRect.h = region.h;
+                    srcRect.h = ownerMaxOffsetPos.y - offsetPos.y + 1;;
                 }
 
                 SDL_RendererFlip flip = SDL_FLIP_NONE;

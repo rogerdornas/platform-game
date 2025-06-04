@@ -142,12 +142,20 @@ void Fox::OnUpdate(float deltaTime)
 void Fox::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
     // Abre chão que estava travando
-    Ground* g1 = mGame->GetGroundById(96);
-    Ground* g2 = mGame->GetGroundById(101);
-    DynamicGround* dynamicGround1 = dynamic_cast<DynamicGround*>(g1);
-    dynamicGround1->SetIsDecreasing(true);
-    DynamicGround* dynamicGround2 = dynamic_cast<DynamicGround*>(g2);
-    dynamicGround2->SetIsDecreasing(true);
+    for (int id : mUnlockGroundsIds) {
+        Ground *g = mGame->GetGroundById(id);
+        DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
+        if (dynamicGround) {
+            dynamicGround->SetIsDecreasing(true);
+        }
+    }
+    // Ground* g1 = mGame->GetGroundById(96);
+    // Ground* g2 = mGame->GetGroundById(101);
+    // DynamicGround* dynamicGround1 = dynamic_cast<DynamicGround*>(g1);
+    // dynamicGround1->SetIsDecreasing(true);
+    // DynamicGround* dynamicGround2 = dynamic_cast<DynamicGround*>(g2);
+    // dynamicGround2->SetIsDecreasing(true);
+
     mGame->GetPlayer()->SetCanFireBall(true);
 
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
@@ -494,6 +502,8 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
     mGravity = mGravity / oldScale * newScale;
     mDistToSword = mDistToSword / oldScale * newScale;
     mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);
+
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
     mDrawAnimatedComponent->SetWidth(mWidth * 2.3f);
     mDrawAnimatedComponent->SetHeight(0.91f * mWidth * 2.3f);

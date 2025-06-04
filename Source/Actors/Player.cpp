@@ -899,6 +899,8 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mRigidBodyComponent->SetMaxSpeedY(mRigidBodyComponent->GetMaxSpeedY() / oldScale * newScale);
     mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);
 
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
     mDrawAnimatedComponent->SetWidth(mWidth * 2.5f);
     mDrawAnimatedComponent->SetHeight(mWidth * 2.5f);
 

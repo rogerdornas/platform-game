@@ -22,6 +22,7 @@ public:
 
     void ReceiveHit(float damage, Vector2 knockBackDirection);
     void SetCanFireBall(bool canFireBall) { mCanFireBall = canFireBall; }
+    void SetCanWallSlide(bool canWallSlide) { mCanWallSlide = canWallSlide; }
 
     class Sword* GetSword() { return mSword; }
 

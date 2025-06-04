@@ -22,6 +22,7 @@
 #include <SDL_image.h>
 #include "Actors/DynamicGround.h"
 #include "Actors/Fox.h"
+#include "Actors/Frog.h"
 #include "Actors/Lever.h"
 #include "Actors/Trigger.h"
 
@@ -79,8 +80,8 @@ bool Game::Initialize()
 
     mWindow = SDL_CreateWindow("Game-v0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                mWindowWidth, mWindowHeight,
-                               // SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-                               SDL_WINDOW_FULLSCREEN_DESKTOP);
+                               SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                               // SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (!mWindow)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -107,7 +108,7 @@ bool Game::Initialize()
 
 
     // Esconde o cursor
-    SDL_ShowCursor(SDL_DISABLE);
+    // SDL_ShowCursor(SDL_DISABLE);
 
     // Inicializa controle
     for (int i = 0; i < SDL_NumJoysticks(); ++i)
@@ -161,6 +162,7 @@ void Game::InitializeActors() {
     LoadLevel(levelsAssets + "Forest/Forest.json");
     // LoadLevel(levelsAssets + "Pain/Pain.json");
     // LoadLevel(levelsAssets + "Run/Run.json");
+    // LoadLevel(levelsAssets + "Musgo/Musgo.json");
 
     mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                        mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -383,6 +385,12 @@ void Game::LoadObjects(const std::string &fileName)
                 std::string name = obj["name"];
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
+                float MinPosX = 0;
+                float MaxPosX = 0;
+                float MinPosY = 0;
+                float MaxPosY = 0;
+                std::string grounds;
+                std::vector<int> ids;
                 if (name == "Enemy Simple")
                 {
                     auto *enemySimple = new EnemySimple(this, 60, 60, 200, 100);
@@ -395,8 +403,47 @@ void Game::LoadObjects(const std::string &fileName)
                 }
                 else if (name == "Fox")
                 {
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "UnlockGrounds") {
+                                grounds = prop["value"];
+                            }
+                        }
+                    }
+                    ids = ParseIntList(grounds);
                     auto *fox = new Fox(this, 100, 170, 300, 200);
                     fox->SetPosition(Vector2(x, y));
+                    fox->SetUnlockGroundsIds(ids);
+                }
+                else if (name == "Frog")
+                {
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "MinPosX") {
+                                MinPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosX") {
+                                MaxPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MinPosY") {
+                                MinPosY =static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosY") {
+                                MaxPosY = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "UnlockGrounds") {
+                                grounds = prop["value"];
+                            }
+                        }
+                    }
+                    ids = ParseIntList(grounds);
+                    auto *frog = new Frog(this, 165, 137, 300, 200);
+                    frog->SetPosition(Vector2(x, y));
+                    frog->SetArenaMinPos(Vector2(MinPosX, MinPosY));
+                    frog->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
+                    frog->SetUnlockGroundsIds(ids);
                 }
             }
         if (layer["name"] == "Player")
@@ -456,10 +503,18 @@ void Game::LoadLevel(const std::string &fileName) {
     }
 
     // Load tilesheet texture
-    mTileSheet = LoadTexture("../Assets/Levels/Forest/Forest.png");
+    size_t pos = fileName.rfind(".json");
+    std::string tileSheetTexturePath = fileName.substr(0, pos) + ".png";
+    mTileSheet = LoadTexture(tileSheetTexturePath);
+    // mTileSheet = LoadTexture("../Assets/Levels/Forest/Forest.png");
+    // mTileSheet = LoadTexture("../Assets/Levels/Musgo/Musgo.png");
 
     // Load tilesheet data
-    std::ifstream tileSheetFile("../Assets/Levels/Forest/ForestTileSet.json");
+    std::string tileSheetDataPath = fileName.substr(0, pos) + "TileSet.json";
+    std::ifstream tileSheetFile(tileSheetDataPath);
+    // std::ifstream tileSheetFile("../Assets/Levels/Forest/ForestTileSet.json");
+    // std::ifstream tileSheetFile("../Assets/Levels/Musgo/MusgoTileSet.json");
+
     nlohmann::json tileSheetData = nlohmann::json::parse(tileSheetFile);
 
     for (const auto &tile: tileSheetData["sprites"]) {

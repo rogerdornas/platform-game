@@ -142,6 +142,8 @@ void EnemySimple::ChangeResolution(float oldScale, float newScale) {
     mWalkingAroundMoveSpeed = mWalkingAroundMoveSpeed / oldScale * newScale;
     mGravity = mGravity / oldScale * newScale;
 
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
     mDrawSpriteComponent->SetWidth(mWidth * 1.2f);
     mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
 

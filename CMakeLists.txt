@@ -70,6 +70,10 @@ add_executable(${PROJECT_NAME}
         Source/Components/DrawComponents/DrawParticleComponent.h
         Source/Actors/Effect.cpp
         Source/Actors/Effect.h
+        Source/Actors/Frog.cpp
+        Source/Actors/Frog.h
+        Source/Actors/FrogTongue.cpp
+        Source/Actors/FrogTongue.h
 )
 
 

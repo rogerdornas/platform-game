@@ -21,6 +21,7 @@ class Fox : public Enemy
 public:
     Fox(Game *game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
+    void SetUnlockGroundsIds(const std::vector<int>& ids) { mUnlockGroundsIds = ids; }
 
     void ChangeResolution(float oldScale, float newScale) override;
 
@@ -76,6 +77,8 @@ private:
     class Sword *mSword;
     bool mSwordHitPlayer;
     float mDistToSword;
+
+    std::vector<int> mUnlockGroundsIds;
 
     State mState;
 
