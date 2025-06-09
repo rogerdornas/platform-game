@@ -77,6 +77,7 @@ private:
     float mTongueDuration;
     float mTongueTimer;
     bool mIsLicking;
+    float mJumpComboProbability;
 
     std::vector<int> mUnlockGroundsIds;
 

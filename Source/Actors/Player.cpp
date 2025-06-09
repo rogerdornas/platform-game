@@ -84,6 +84,9 @@ Player::Player(Game *game, float width, float height)
       mInvulnerableTimer(mInvulnerableDuration),
 
       mIsRunning(false),
+      mRunningSoundIntervalDuration(0.3f),
+      mRunningSoundIntervalTimer(0.0f),
+      mWasOnGround(false),
 
       mDrawPolygonComponent(nullptr),
       mDrawSpriteComponent(nullptr),
@@ -340,6 +343,7 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
                 mIsJumping = true;
                 mCanJump = false;
                 mJumpTimer = 0.0f;
+                mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
             }
             // Wall jumping
             if (mIsWallSliding && !mIsJumping && mCanJump)
@@ -354,6 +358,7 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
                 mCanJump = false;
                 mJumpTimer = 0.0f;
                 mWallJumpTimer = 0;
+                mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
             }
             // Pulo no ar
             if (!(mIsOnGround || mIsWallSliding) && mJumpCountInAir < mMaxJumpsInAir && mCanJump
@@ -365,6 +370,7 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
                 mCanJump = false;
                 mJumpTimer = 0.0f;
                 mJumpCountInAir++; // Incrementa número de pulos
+                mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
             }
         }
     }
@@ -377,14 +383,16 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
     // Dash
     if (mCanDash)
     {
-        if (dash && !mIsFireAttacking)
+        if (dash && !mIsFireAttacking) {
             mDashComponent->UseDash(mIsOnGround);
+        }
     }
 
     // Sword
     // Detecta borda de descida da tecla K e cooldown pronto
     if (sword && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration)
     {
+        mSwordSound = mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         // Ativa a espada
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
@@ -503,12 +511,32 @@ void Player::OnUpdate(float deltaTime)
     ResolveEnemyCollision();
     ResolveGroundCollision();
 
+    if (mIsRunning && mIsOnGround) {
+        mRunningSoundIntervalTimer += deltaTime;
+        if (mRunningSoundIntervalTimer >= mRunningSoundIntervalDuration) {
+            mRunningSoundIntervalTimer -= mRunningSoundIntervalDuration;
+            mGame->GetAudio()->PlayVariantSound("StepsInGrass/StepsInGrass.wav", 4);
+        }
+    }
+
+    if (mWasOnGround == false) {
+        if (mIsOnGround) {
+            mGame->GetAudio()->PlaySound("FallOnGround.wav");
+            mRunningSoundIntervalTimer = 0;
+        }
+    }
+
+    mWasOnGround = mIsOnGround;
+
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 20000 * mGame->GetScale())
         SetPosition(mStartingPosition);
 
-    if (Died())
+    if (Died()) {
         mGame->mResetLevel = true;
+        mGame->GetAudio()->StopAllSounds();
+        SetState(ActorState::Paused);
+    }
 
     if (mDrawAnimatedComponent)
         ManageAnimations();
@@ -724,6 +752,7 @@ void Player::ResolveGroundCollision()
                             (collisionSide[2] && Math::Abs(mSword->GetForward().x) == 1) ||
                             (collisionSide[3] && Math::Abs(mSword->GetForward().x) == 1) )
                         {
+                            mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
                             for (int i = 0; i < 3; i++) {
                                 auto* sparkEffect = new Effect(mGame);
                                 sparkEffect->SetDuration(0.1f);

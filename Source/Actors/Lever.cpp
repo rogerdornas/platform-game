@@ -49,6 +49,7 @@ void Lever::OnUpdate(float deltaTime) {
         Player* player = mGame->GetPlayer();
         Sword* playerSword = player->GetSword();
         if (mAABBComponent->Intersect(*playerSword->GetComponent<AABBComponent>())) {
+            mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
             mActivate = true;
             // Spark effect
             for (int i = 0; i < 3; i++) {

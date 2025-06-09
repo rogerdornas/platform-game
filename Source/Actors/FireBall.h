@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Actor.h"
+#include "../AudioSystem.h"
 
 class FireBall : public Actor
 {
@@ -40,6 +41,8 @@ private:
     float mDamage;
 
     bool mIsFromEnemy;
+
+    SoundHandle mSound;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;

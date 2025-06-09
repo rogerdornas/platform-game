@@ -76,8 +76,14 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     circleBlur->SetEnemy(*this);
     circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
     circleBlur->SetEffect(TargetEffect::circle);
+
+    mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
 }
 
 bool Enemy::Died() {
-    return mHealthPoints <= 0;
+    if (mHealthPoints <= 0) {
+        mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
+        return true;
+    }
+    return false;
 }

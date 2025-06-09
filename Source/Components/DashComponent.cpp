@@ -5,6 +5,7 @@
 #include "DashComponent.h"
 #include "../Actors/Actor.h"
 #include "RigidBodyComponent.h"
+#include "../Game.h"
 
 DashComponent::DashComponent(class Actor *owner, float dashSpeed, float dashDuration, float dashCooldown)
     : Component(owner),
@@ -22,6 +23,7 @@ void DashComponent::UseDash(bool isOnGround)
 {
     if (mDashCooldownTimer <= 0 && !mIsDashing && (isOnGround || !mHasDashedInAir))
     {
+        mOwner->GetGame()->GetAudio()->PlayVariantSound("Dash/Dash.wav", 3);
         mIsDashing = true;
         mDashTimer = 0.0f;
         mDashCooldownTimer = mDashCooldown;

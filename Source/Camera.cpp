@@ -36,7 +36,6 @@ void Camera::StartCameraShake(float duration, float strength)
 
 void Camera::Update(float deltaTime) {
     Vector2 targetPosition = Vector2::Zero;
-
     switch (mCameraMode) {
         case CameraMode::Fixed:
             targetPosition = Fixed(Vector2(mFixedCameraPosition));
@@ -133,7 +132,12 @@ Vector2 Camera::ScrollRight(float deltaTime, float speed) {
     targetPos.y = playerPos.y - mGame->GetLogicalWindowHeight() / 2;
 
     if (playerPos.x < targetPos.x - 50) {
+        mGame->GetPlayer()->ReceiveHit(10, Vector2::Zero);
         mGame->mResetLevel = true;
+        mGame->GetAudio()->StopAllSounds();
+        mGame->GetPlayer()->SetState(ActorState::Paused);
+        mFixedCameraPosition = mPos - Vector2(mGame->GetLogicalWindowWidth() / 2, 0);
+        mCameraMode = CameraMode::Fixed;
     }
 
     return targetPos;
@@ -146,7 +150,12 @@ Vector2 Camera::ScrollUp(float deltaTime, float speed) {
     targetPos.y = mPos.y + speed * deltaTime;
 
     if (playerPos.y > targetPos.y + mGame->GetLogicalWindowHeight() + 50) {
+        mGame->GetPlayer()->ReceiveHit(10, Vector2::Zero);
         mGame->mResetLevel = true;
+        mGame->GetAudio()->StopAllSounds();
+        mGame->GetPlayer()->SetState(ActorState::Paused);
+        mFixedCameraPosition = mPos + Vector2(0, mGame->GetLogicalWindowHeight() / 2);
+        mCameraMode = CameraMode::Fixed;
     }
 
     return targetPos;

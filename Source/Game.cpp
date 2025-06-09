@@ -25,6 +25,8 @@
 #include "Actors/Frog.h"
 #include "Actors/Lever.h"
 #include "Actors/Trigger.h"
+#include <SDL_mixer.h>
+
 
 std::vector<int> ParseIntList(const std::string& str) {
     std::vector<int> result;
@@ -55,15 +57,24 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
       mIsPaused(false),
       mCamera(nullptr),
       mPlayer(nullptr),
+      mLevelData(nullptr),
+      mLevelDataDynamicGrounds(nullptr),
       mController(nullptr),
       mHitstopActive(false),
       mHitstopDuration(0.15f),
       mHitstopTimer(0.0f),
+      mIsSlowMotion(false),
+      mIsAccelerated(false),
       mBackGroundTexture(nullptr),
       mSky(nullptr),
       mMountains(nullptr),
       mTreesBack(nullptr),
-      mTreesFront(nullptr)
+      mTreesFront(nullptr),
+      mAudio(nullptr),
+      mSceneManagerTimer(0.0f),
+      mSceneManagerState(SceneManagerState::None),
+      mGameScene(GameScene::Level1),
+      mNextScene(GameScene::Level1)
 {
     float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
     int tileSize = static_cast<int>(mOriginalTileSize / ratio);
@@ -80,18 +91,27 @@ bool Game::Initialize()
 
     mWindow = SDL_CreateWindow("Game-v0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                mWindowWidth, mWindowHeight,
-                               SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-                               // SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if (!mWindow)
-    {
+                               // SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                               SDL_WINDOW_FULLSCREEN_DESKTOP);
+    if (!mWindow) {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return false;
     }
 
     mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!mRenderer)
-    {
+    if (!mRenderer) {
         SDL_Log("Failed to create renderer: %s", SDL_GetError());
+        return false;
+    }
+
+    if (IMG_Init(IMG_INIT_PNG) == 0) {
+        SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
+        return false;
+    }
+
+    // Initialize SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1) {
+        SDL_Log("Failed to initialize SDL_mixer");
         return false;
     }
 
@@ -129,10 +149,14 @@ bool Game::Initialize()
     //  Utilize a função Random::Init para inicializar o gerador de números aleatórios (~1 linha).
     Random::Init();
 
+    mAudio = new AudioSystem(16);
+
     mTicksCount = SDL_GetTicks();
 
     // Init all game actors
-    InitializeActors();
+    // InitializeActors();
+
+    SetGameScene(GameScene::Level1);
 
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
     mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
@@ -144,6 +168,109 @@ bool Game::Initialize()
     // mTreesFront = LoadTexture(backgroundAssets + "pine2.png");
 
     return true;
+}
+
+void Game::SetGameScene(Game::GameScene scene, float transitionTime)
+{
+    // --------------
+    // TODO - PARTE 2
+    // --------------
+
+    // TODO 1.: Verifique se o estado do SceneManager mSceneManagerState é SceneManagerState::None.
+    //  Se sim, verifique se a cena passada scene passada como parâmetro é uma das cenas válidas (MainMenu, Level1, Level2).
+    //  Se a cena for válida, defina mNextScene como essa nova cena, mSceneManagerState como SceneManagerState::Entering e
+    //  mSceneManagerTimer como o tempo de transição passado como parâmetro.
+    //  Se a cena for inválida, registre um erro no log e retorne.
+    //  Se o estado do SceneManager não for SceneManagerState::None, registre um erro no log e retorne.
+    // Verifica se o gerenciador de cenas está pronto para uma nova transição
+    if (mSceneManagerState == SceneManagerState::None) {
+        // Verifica se a cena é válida
+        if (scene == GameScene::MainMenu || scene == GameScene::Level1 || scene == GameScene::Level2 || scene == GameScene::Level3) {
+            mNextScene = scene;
+            mSceneManagerState = SceneManagerState::Entering;
+            mSceneManagerTimer = transitionTime;
+        }
+        else {
+            SDL_Log("SetGameScene: Cena inválida passada como parâmetro.");
+            return;
+        }
+    }
+    else {
+        SDL_Log("SetGameScene: Já há uma transição de cena em andamento.");
+        return;
+    }
+}
+
+void Game::ResetGameScene(float transitionTime)
+{
+    // --------------
+    // TODO - PARTE 2
+    // --------------
+
+    // TODO 1.: Chame SetGameScene passando o mGameScene atual e o tempo de transição.
+    SetGameScene(mGameScene, transitionTime);
+}
+
+void Game::ChangeScene()
+{
+    // Unload current Scene
+    UnloadScene();
+
+    // Pool de Fireballs
+    for (int i = 0; i < 5; i++) {
+        new FireBall(this);
+    }
+
+    // Pool de Partículas
+    for (int i = 0; i < 200; i++) {
+        new Particle(this);
+    }
+
+    // Reset gameplay state
+    mGamePlayState = GamePlayState::Playing;
+
+    // Scene Manager FSM: using if/else instead of switch
+    if (mNextScene == GameScene::MainMenu) {
+
+    }
+    else if (mNextScene == GameScene::Level1) {
+        const std::string levelsAssets = "../Assets/Levels/";
+
+        LoadLevel(levelsAssets + "Forest/Forest.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mAudio->CacheSound("Hornet.wav");
+        mAudio->CacheSound("MantisLords.wav");
+    }
+    else if (mNextScene == GameScene::Level2) {
+        const std::string levelsAssets = "../Assets/Levels/";
+
+        LoadLevel(levelsAssets + "Run/Run.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+    }
+    else if (mNextScene == GameScene::Level3) {
+        const std::string levelsAssets = "../Assets/Levels/";
+
+        LoadLevel(levelsAssets + "Pain/Pain.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+    }
+
+    // Set new scene
+    mGameScene = mNextScene;
 }
 
 void Game::InitializeActors() {
@@ -304,6 +431,7 @@ void Game::LoadObjects(const std::string &fileName)
                 std::vector<int> ids;
                 float fixedCameraPositionX = 0;
                 float fixedCameraPositionY = 0;
+                std::string scene;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
@@ -322,6 +450,9 @@ void Game::LoadObjects(const std::string &fileName)
                         else if (propName == "FixedCameraPositionY") {
                             fixedCameraPositionY = prop["value"];
                         }
+                        else if (propName == "Scene") {
+                            scene = prop["value"];
+                        }
                     }
                 }
                 if ((target == "DynamicGround" || target == "Ground") && !grounds.empty()) {
@@ -333,6 +464,7 @@ void Game::LoadObjects(const std::string &fileName)
                 trigger->SetEvent(event);
                 trigger->SetGroundsIds(ids);
                 trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
+                trigger->SetScene(scene);
             }
         }
         if (layer["name"] == "Levers") {
@@ -583,17 +715,45 @@ void Game::ProcessInput()
                 break;
 
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE)
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
                     mIsPaused = !mIsPaused;
+                    if (mIsPaused) {
+                        mAudio->PauseSound(mMusicHandle);
+                        mAudio->PauseSound(mBossMusic);
+                    }
+                    else {
+                        mAudio->ResumeSound(mMusicHandle);
+                        mAudio->ResumeSound(mBossMusic);
+                    }
+                }
 
                 if (event.key.keysym.sym == SDLK_8)
                     Quit();
 
+                if (event.key.keysym.sym == SDLK_5) {
+                    mIsSlowMotion = !mIsSlowMotion;
+                    mIsAccelerated = false;
+                }
+
+                if (event.key.keysym.sym == SDLK_6) {
+                    mIsAccelerated = !mIsAccelerated;
+                    mIsSlowMotion = false;
+                }
+
                 break;
 
             case SDL_CONTROLLERBUTTONDOWN:
-                if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START)
+                if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
                     mIsPaused = !mIsPaused;
+                    if (mIsPaused) {
+                        mAudio->PauseSound(mMusicHandle);
+                        mAudio->PauseSound(mBossMusic);
+                    }
+                    else {
+                        mAudio->ResumeSound(mMusicHandle);
+                        mAudio->ResumeSound(mBossMusic);
+                    }
+                }
 
                 break;
 
@@ -632,6 +792,13 @@ void Game::UpdateGame()
 
     mTicksCount = SDL_GetTicks();
 
+    if (mIsSlowMotion) {
+        deltaTime *= 0.5;
+    }
+    if (mIsAccelerated) {
+        deltaTime *= 1.5;
+    }
+
     // Update all actors and pending actors
     if (!mIsPaused)
     {
@@ -648,10 +815,47 @@ void Game::UpdateGame()
             UpdateActors(deltaTime);
     }
 
-    if (mResetLevel)
-        ResetLevel();
+    if (mResetLevel) {
+        // ResetLevel();
+        ResetGameScene(3.5f);
+        mResetLevel = false;
+    }
+
+    mAudio->Update(deltaTime);
 
     UpdateCamera(deltaTime);
+
+    UpdateSceneManager(deltaTime);
+
+}
+
+void Game::UpdateSceneManager(float deltaTime)
+{
+    // --------------
+    // TODO - PARTE 2
+    // --------------
+
+    // TODO 1.: Verifique se o estado do SceneManager é SceneManagerState::Entering. Se sim, decremente o mSceneManagerTimer
+    //  usando o deltaTime. Em seguida, verifique se o mSceneManagerTimer é menor ou igual a 0. Se for, reinicie o
+    //  mSceneManagerTimer para TRANSITION_TIME e mude o estado do SceneManager para SceneManagerState::Active.
+    if (mSceneManagerState == SceneManagerState::Entering) {
+        mSceneManagerTimer -= deltaTime;
+        if (mSceneManagerTimer <= 0.0f) {
+            mSceneManagerTimer = TRANSITION_TIME;  // Reinicia timer para próxima fase
+            mSceneManagerState = SceneManagerState::Active;
+        }
+    }
+
+    // TODO 2.: Verifique se o estado do SceneManager é SceneManagerState::Active. Se sim, decremente o mSceneManagerTimer
+    //  usando o deltaTime. Em seguida, verifique se o mSceneManagerTimer é menor ou igual a 0. Se for, chame ChangeScene()
+    //  e mude o estado do SceneManager para SceneManagerState::None.
+    if (mSceneManagerState == SceneManagerState::Active) {
+        mSceneManagerTimer -= deltaTime;
+        if (mSceneManagerTimer <= 0.0f) {
+            ChangeScene();  // Realiza a troca de cena
+            mSceneManagerState = SceneManagerState::None;
+        }
+    }
 }
 
 void Game::UpdateActors(float deltaTime)
@@ -676,7 +880,12 @@ void Game::UpdateActors(float deltaTime)
         delete actor;
 }
 
-void Game::UpdateCamera(float deltaTime) { mCamera->Update(deltaTime); }
+void Game::UpdateCamera(float deltaTime) {
+    if (!mPlayer) {
+        return;
+    }
+    mCamera->Update(deltaTime);
+}
 
 void Game::AddGround(class Ground *g) { mGrounds.emplace_back(g); }
 
@@ -767,6 +976,16 @@ void Game::RemoveDrawable(class DrawComponent *drawable)
     mDrawables.erase(iter);
 }
 
+void Game::StarBossMusic(SoundHandle music) {
+    mBossMusic = music;
+    mAudio->PauseSound(mMusicHandle);
+}
+
+void Game::StopBossMusic() {
+    mAudio->StopSound(mBossMusic);
+    mAudio->ResumeSound(mMusicHandle);
+}
+
 void Game::GenerateOutput()
 {
     // Set draw color to green
@@ -775,15 +994,28 @@ void Game::GenerateOutput()
     // Clear back buffer
     SDL_RenderClear(mRenderer);
 
-    DrawParallaxBackground(); // desenha o fundo com repetição horizontal
-    // Ordem de desenho: mais distantes primeiro
-    // DrawParallaxLayer(mSky,        0.1f, 0, mWindowHeight / 2);  // camada mais distante
-    // DrawParallaxLayer(mMountains,  0.3f, mWindowHeight / 4, mWindowHeight / 3);  // montanhas ao fundo
-    // DrawParallaxLayer(mTreesBack,  0.5f, mWindowHeight / 3, mWindowHeight / 2);  // árvores distantes
-    // DrawParallaxLayer(mTreesFront, 0.7f, mWindowHeight / 2, mWindowHeight / 2);  // árvores próximas
+    if (mCamera) {
+        DrawParallaxBackground(); // desenha o fundo com repetição horizontal
+        // Ordem de desenho: mais distantes primeiro
+        // DrawParallaxLayer(mSky,        0.1f, 0, mWindowHeight / 2);  // camada mais distante
+        // DrawParallaxLayer(mMountains,  0.3f, mWindowHeight / 4, mWindowHeight / 3);  // montanhas ao fundo
+        // DrawParallaxLayer(mTreesBack,  0.5f, mWindowHeight / 3, mWindowHeight / 2);  // árvores distantes
+        // DrawParallaxLayer(mTreesFront, 0.7f, mWindowHeight / 2, mWindowHeight / 2);  // árvores próximas
+    }
 
     for (auto drawable: mDrawables)
         drawable->Draw(mRenderer);
+
+    if (mSceneManagerState == SceneManagerState::Active) {
+        // Define a cor preta (RGBA)
+        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
+
+        // Cria o retângulo cobrindo toda a tela
+        SDL_Rect fullScreenRect = { 0, 0, mWindowWidth, mWindowHeight };
+
+        // Desenha o retângulo preenchido
+        SDL_RenderFillRect(mRenderer, &fullScreenRect);
+    }
 
     // Swap front buffer and back buffer
     SDL_RenderPresent(mRenderer);
@@ -816,7 +1048,7 @@ SDL_Texture *Game::LoadTexture(const std::string &texturePath)
     return texture;
 }
 
-void Game::Shutdown()
+void Game::UnloadScene()
 {
     // Delete actors
     while (!mActors.empty())
@@ -832,6 +1064,7 @@ void Game::Shutdown()
         }
     }
     delete[] mLevelData;
+    mLevelData = nullptr;
 
     // Delete level data Dynamic Grounds
     if (mLevelDataDynamicGrounds != nullptr)
@@ -843,13 +1076,58 @@ void Game::Shutdown()
         }
     }
     delete[] mLevelDataDynamicGrounds;
+    mLevelDataDynamicGrounds = nullptr;
+
+    SDL_DestroyTexture(mTileSheet);
+    mTileSheet = nullptr;
 
     delete mCamera;
+}
+
+void Game::Shutdown()
+{
+    UnloadScene();
+    // // Delete actors
+    // while (!mActors.empty())
+    //     delete mActors.back();
+    //
+    // // Delete level data
+    // if (mLevelData != nullptr)
+    // {
+    //     for (int i = 0; i < mLevelHeight; ++i)
+    //     {
+    //         if (mLevelData[i] != nullptr)
+    //             delete[] mLevelData[i];
+    //     }
+    // }
+    // delete[] mLevelData;
+    //
+    // // Delete level data Dynamic Grounds
+    // if (mLevelDataDynamicGrounds != nullptr)
+    // {
+    //     for (int i = 0; i < mLevelHeight; ++i)
+    //     {
+    //         if (mLevelDataDynamicGrounds[i] != nullptr)
+    //             delete[] mLevelDataDynamicGrounds[i];
+    //     }
+    // }
+    // delete[] mLevelDataDynamicGrounds;
+    //
+    // SDL_DestroyTexture(mTileSheet);
+    // mTileSheet = nullptr;
+    //
+    // delete mCamera;
 
     if (mController)
         SDL_GameControllerClose(mController);
 
-    SDL_Quit();
+    delete mAudio;
+    mAudio = nullptr;
+
+    Mix_CloseAudio();
+
+    Mix_Quit();
+    IMG_Quit();
 
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);
@@ -919,6 +1197,21 @@ void Game::ResetLevel()
         }
     }
     delete[] mLevelData;
+
+    // Delete level data Dynamic Grounds
+    if (mLevelDataDynamicGrounds != nullptr)
+    {
+        for (int i = 0; i < mLevelHeight; ++i)
+        {
+            if (mLevelDataDynamicGrounds[i] != nullptr)
+                delete[] mLevelDataDynamicGrounds[i];
+        }
+    }
+    delete[] mLevelDataDynamicGrounds;
+
+    SDL_DestroyTexture(mTileSheet);
+    mTileSheet = nullptr;
+
     delete mCamera;
 
     InitializeActors();
@@ -932,9 +1225,10 @@ void Game::ChangeResolution(float oldScale)
     for (auto actor : mActors) {
         actor->ChangeResolution(oldScale, mScale);
     }
-    mCamera->ChangeResolution(oldScale, mScale);
-    mCamera->SetPosition(Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2, mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
-
+    if (mCamera) {
+        mCamera->ChangeResolution(oldScale, mScale);
+        mCamera->SetPosition(Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2, mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+    }
     if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
         mLogicalWindowWidth = static_cast<float>(mWindowWidth);
         mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);

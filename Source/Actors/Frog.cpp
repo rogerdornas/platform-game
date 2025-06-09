@@ -52,6 +52,7 @@ Frog::Frog(Game *game, float width, float height, float moveSpeed, float healthP
     mTongueDuration = 1.2f;
     mTongueTimer = 0.0f;
     mIsLicking = false;
+    mJumpComboProbability = 0.5f;
 
     std::string frogAssets = "../Assets/Sprites/Frog/";
 
@@ -238,6 +239,8 @@ void Frog::TriggerBossDefeat() {
     circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
     circleBlur->SetEffect(TargetEffect::circle);
     circleBlur->EnemyDestroyed();
+
+    mGame->StopBossMusic();
 }
 
 
@@ -315,8 +318,10 @@ void Frog::MovementBeforePlayerSpotted()
 
     // Testa se spotted player
     Vector2 dist = GetPosition() - player->GetPosition();
-    if (dist.Length() < mDistToSpotPlayer)
+    if (dist.Length() < mDistToSpotPlayer) {
         mPlayerSpotted = true;
+        mGame->StarBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav"));
+    }
 }
 
 void Frog::ManageAnimations() {
@@ -569,12 +574,20 @@ void Frog::Stop(float deltaTime) {
         return;
 
     mStopTimer = 0;
-    if (Random::GetFloat() < 0.5) {
+    if (Random::GetFloat() < mJumpComboProbability) {
         mState = FrogState::frogJumpCombo;
     }
     else {
         mState = FrogState::frogTongue;
         mIsLicking = true;
+    }
+
+    // Controla probabilidade de combo de pulo para não ficar spamando
+    if (mState == FrogState::frogJumpCombo) {
+        mJumpComboProbability -= 0.1;
+    }
+    else {
+        mJumpComboProbability = 0.5;
     }
 
     // if (Math::Abs(dist) < 700) {

@@ -174,6 +174,8 @@ void Fox::TriggerBossDefeat() {
     circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
     circleBlur->SetEffect(TargetEffect::circle);
     circleBlur->EnemyDestroyed();
+
+    mGame->StopBossMusic();
 }
 
 
@@ -279,8 +281,10 @@ void Fox::MovementBeforePlayerSpotted()
 
     // Testa se spotted player
     Vector2 dist = GetPosition() - player->GetPosition();
-    if (dist.Length() < mDistToSpotPlayer)
+    if (dist.Length() < mDistToSpotPlayer) {
         mPlayerSpotted = true;
+        mGame->StarBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav"));
+    }
 }
 
 void Fox::ManageAnimations() {

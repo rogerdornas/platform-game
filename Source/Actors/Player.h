@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Actor.h"
+#include "../AudioSystem.h"
 
 enum class WallSlideSide { notSliding, left, right };
 
@@ -104,6 +105,14 @@ private:
     float mInvulnerableTimer;
 
     bool mIsRunning; // Atributos para animar sprites
+
+    // Atributos para sounds
+    float mRunningSoundIntervalTimer;
+    float mRunningSoundIntervalDuration;
+
+    bool mWasOnGround;
+
+    SoundHandle mSwordSound;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;

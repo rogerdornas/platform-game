@@ -8,6 +8,8 @@ project(${PROJECT_NAME})
 
 find_package(SDL2 2.32.2 EXACT REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 
 add_executable(${PROJECT_NAME}
         Source/Main.cpp
@@ -74,9 +76,12 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Frog.h
         Source/Actors/FrogTongue.cpp
         Source/Actors/FrogTongue.h
+        Source/AudioSystem.cpp
+        Source/AudioSystem.h
 )
 
 
 #target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)
+#target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)
 

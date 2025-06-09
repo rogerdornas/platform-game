@@ -103,6 +103,9 @@ void FireBall::Activate() {
         mDrawAnimatedComponent->SetIsVisible(true);
     }
     mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
+    if (!mSound.IsValid()) {
+        mSound = mGame->GetAudio()->PlaySound("FireBall/ShootFireBall.wav");
+    }
 }
 
 void FireBall::Deactivate() {
@@ -129,6 +132,21 @@ void FireBall::Deactivate() {
     explosion->SetParticleSpeedScale(mWidth / 50 / mGame->GetScale());
     explosion->SetParticleColor(SDL_Color{247, 118, 34, 255});
     explosion->SetParticleGravity(false);
+    if (mSound.IsValid()) {
+        if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
+            mGame->GetAudio()->StopSound(mSound);
+        }
+        // Verifica se fireball está dentro da tela
+        if (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth() &&
+        GetPosition().x > mGame->GetCamera()->GetPosCamera().x &&
+        GetPosition().y > mGame->GetCamera()->GetPosCamera().y &&
+        GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight()
+        )
+        {
+            mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
+        }
+        mSound.Reset();
+    }
 }
 
 void FireBall::ResolveGroundCollision() {

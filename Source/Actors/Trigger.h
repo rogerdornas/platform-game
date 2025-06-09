@@ -11,6 +11,7 @@ enum Target {
     camera,
     dynamicGround,
     ground,
+    game,
     nothing
 };
 
@@ -22,6 +23,8 @@ enum Event {
 
     setIsGrowing,
     setIsDecreasing,
+
+    changeScene,
 
     setIsMoving
 };
@@ -35,6 +38,7 @@ public:
     void SetEvent(std::string event);
     void SetGroundsIds(const std::vector<int>& ids) { mGroundsIds = ids; }
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
+    void SetScene(std::string scene);
 
     void OnUpdate(float deltaTime) override;
     void ChangeResolution(float oldScale, float newScale) override;
@@ -43,6 +47,7 @@ protected:
     void CameraTrigger();
     virtual void DynamicGroundTrigger();
     void GroundTrigger();
+    void GameTrigger();
 
     float mWidth;
     float mHeight;
@@ -50,6 +55,8 @@ protected:
     Event mEvent;
     std::vector<int> mGroundsIds;
     Vector2 mFixedCameraPosition;
+
+    Game::GameScene mScene;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class AABBComponent *mAABBComponent;

@@ -20,10 +20,38 @@
 #include "Math.h"
 #include <string>
 #include <unordered_map>
+#include "AudioSystem.h"
 
 class Game
 {
 public:
+    static const int TRANSITION_TIME = 1;
+
+    enum class GameScene
+    {
+        MainMenu,
+        Level1,
+        Level2,
+        Level3
+    };
+
+    enum class SceneManagerState
+    {
+        None,
+        Entering,
+        Active,
+        Exiting
+    };
+
+    enum class GamePlayState
+    {
+        Playing,
+        Paused,
+        GameOver,
+        LevelComplete,
+        Leaving
+    };
+
     Game(int windowWidth, int windowHeight, int FPS);
 
     bool Initialize();
@@ -90,6 +118,21 @@ public:
         mHitstopActive = true;
         mHitstopTimer = 0;
     }
+
+    // Audio functions
+    class AudioSystem* GetAudio() { return mAudio; }
+    void SetMusicHandle(SoundHandle music) { mMusicHandle = music; }
+    SoundHandle GetMusicHandle() { return mMusicHandle; }
+    void StarBossMusic(SoundHandle music);
+    void StopBossMusic();
+
+    // Scene management
+    void SetGameScene(GameScene scene, float transitionTime = .0f);
+    void ResetGameScene(float transitionTime = .0f);
+    void UnloadScene();
+
+    void SetGamePlayState(GamePlayState state) { mGamePlayState = state; }
+    GamePlayState GetGamePlayState() const { return mGamePlayState; }
 
 private:
     void ProcessInput();
@@ -159,6 +202,26 @@ private:
     bool mHitstopActive;
     float mHitstopDuration;
     float mHitstopTimer;
+
+    bool mIsSlowMotion;
+    bool mIsAccelerated;
+
+    AudioSystem* mAudio;
+    SoundHandle mMusicHandle;
+    SoundHandle mBossMusic;
+
+    // Scene management
+    void UpdateSceneManager(float deltaTime);
+    void ChangeScene();
+    SceneManagerState mSceneManagerState;
+    float mSceneManagerTimer;
+
+    GamePlayState mGamePlayState;
+
+    // Track level state
+    GameScene mGameScene;
+    GameScene mNextScene;
+
 
     void DrawParallaxBackground();
     void DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h);

@@ -45,6 +45,10 @@ void Trigger::SetTarget(std::string target) {
         mTarget = Target::ground;
         return;
     }
+    if (target == "Game") {
+        mTarget = Target::game;
+        return;
+    }
 }
 
 void Trigger::SetEvent(std::string event) {
@@ -78,7 +82,28 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::setIsMoving;
         return;
     }
+
+    if (event == "ChangeScene") {
+        mEvent = Event::changeScene;
+        return;
+    }
 }
+
+void Trigger::SetScene(std::string scene) {
+    if (scene == "Level1") {
+        mScene = Game::GameScene::Level1;
+        return;
+    }
+    if (scene == "Level2") {
+        mScene = Game::GameScene::Level2;
+        return;
+    }
+    if (scene == "Level3") {
+        mScene = Game::GameScene::Level3;
+        return;
+    }
+}
+
 
 
 void Trigger::OnUpdate(float deltaTime) {
@@ -93,6 +118,9 @@ void Trigger::OnUpdate(float deltaTime) {
             break;
             case Target::ground:
                 GroundTrigger();
+            break;
+            case Target::game:
+                GameTrigger();
             break;
             default:
             break;
@@ -162,6 +190,17 @@ void Trigger::GroundTrigger() {
     }
 }
 
+void Trigger::GameTrigger() {
+    switch (mEvent) {
+        case Event::changeScene:
+            mGame->GetAudio()->StopAllSounds();
+            mGame->SetGameScene(mScene, 0.5f);
+            SetState(ActorState::Destroy);
+        break;
+        default:
+        break;
+    }
+}
 
 
 void Trigger::ChangeResolution(float oldScale, float newScale) {

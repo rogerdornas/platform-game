@@ -1085,6 +1085,33 @@
                  "width":1088,
                  "x":3520,
                  "y":7552
+                }, 
+                {
+                 "height":192,
+                 "id":52,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"ChangeScene"
+                        }, 
+                        {
+                         "name":"Scene",
+                         "type":"string",
+                         "value":"Level1"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Game"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":192,
+                 "x":19264,
+                 "y":5152
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1126,7 +1153,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":52,
+ "nextobjectid":53,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
