@@ -87,3 +87,16 @@ bool Enemy::Died() {
     }
     return false;
 }
+
+void Enemy::ResolveEnemyCollision() {
+    std::vector<Enemy *> enemies = mGame->GetEnemies();
+    if (!enemies.empty()) {
+        for (Enemy *e: enemies) {
+            if (e != this) {
+                if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
+                    mAABBComponent->ResolveCollision(*e->GetComponent<AABBComponent>());
+                }
+            }
+        }
+    }
+}

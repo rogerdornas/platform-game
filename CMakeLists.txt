@@ -78,6 +78,10 @@ add_executable(${PROJECT_NAME}
         Source/Actors/FrogTongue.h
         Source/AudioSystem.cpp
         Source/AudioSystem.h
+        Source/Actors/FlyingShooterEnemy.cpp
+        Source/Actors/FlyingShooterEnemy.h
+        Source/Actors/Projectile.cpp
+        Source/Actors/Projectile.h
 )
 
 

@@ -112,6 +112,7 @@ void Fox::OnUpdate(float deltaTime)
 
     ResolvePlayerCollision();
     ResolveGroundCollision();
+    ResolveEnemyCollision();
 
     if (mPlayerSpotted)
         MovementAfterPlayerSpotted(deltaTime);
@@ -405,6 +406,7 @@ void Fox::RunAndSword(float deltaTime)
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3, mRigidBodyComponent->GetVelocity().y));
     if (Math::Abs(dist) < mDistToSword)
     {
+        mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(GetRotation());
         mSword->SetPosition(GetPosition());

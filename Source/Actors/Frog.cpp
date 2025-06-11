@@ -113,6 +113,7 @@ void Frog::OnUpdate(float deltaTime)
 
     ResolvePlayerCollision();
     ResolveGroundCollision();
+    ResolveEnemyCollision();
 
     Vector2 v1;
     Vector2 v2;

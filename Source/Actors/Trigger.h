@@ -7,36 +7,43 @@
 #include "Actor.h"
 #include "../Game.h"
 
-enum Target {
-    camera,
-    dynamicGround,
-    ground,
-    game,
-    nothing
-};
-
-enum Event {
-    fixed,
-    followPlayer,
-    scrollRight,
-    scrollUp,
-
-    setIsGrowing,
-    setIsDecreasing,
-
-    changeScene,
-
-    setIsMoving
-};
 
 class Trigger : public Actor
 {
 public:
+    enum class Target {
+        camera,
+        dynamicGround,
+        ground,
+        game,
+        enemy,
+        nothing
+    };
+
+    enum class Event {
+        fixed,
+        followPlayer,
+        followPlayerHorizontally,
+        scrollRight,
+        scrollUp,
+
+        setIsGrowing,
+        setIsDecreasing,
+        setIsDecreasingAfterKillingEnemies,
+
+        changeScene,
+
+        spotPlayer,
+
+        setIsMoving
+    };
+
     Trigger(class Game *game, float width, float height);
 
     void SetTarget(std::string target);
     void SetEvent(std::string event);
     void SetGroundsIds(const std::vector<int>& ids) { mGroundsIds = ids; }
+    void SetEnemiesIds(const std::vector<int>& ids) { mEnemiesIds = ids; }
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
     void SetScene(std::string scene);
 
@@ -48,12 +55,14 @@ protected:
     virtual void DynamicGroundTrigger();
     void GroundTrigger();
     void GameTrigger();
+    void EnemyTrigger();
 
     float mWidth;
     float mHeight;
     Target mTarget;
     Event mEvent;
     std::vector<int> mGroundsIds;
+    std::vector<int> mEnemiesIds;
     Vector2 mFixedCameraPosition;
 
     Game::GameScene mScene;

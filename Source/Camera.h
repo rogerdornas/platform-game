@@ -9,6 +9,7 @@
 enum CameraMode {
     Fixed,
     FollowPlayer,
+    FollowPlayerHorizontally,
     ScrollRight,
     ScrollUp
 };
@@ -34,6 +35,7 @@ public:
 private:
     Vector2 Fixed(Vector2 pos);
     Vector2 FollowPlayer();
+    Vector2 FollowPlayerHorizontally();
     Vector2 ScrollRight(float deltaTime, float speed);
     Vector2 ScrollUp(float deltaTime, float speed);
 
@@ -45,8 +47,6 @@ private:
 
     Vector2 mOffset;
     float mDistMove;
-    float mTimerToStartLooking;
-    float mLookDelay;
 
     bool mIsShaking;
     float mShakeDuration;

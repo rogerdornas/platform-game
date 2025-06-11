@@ -35,9 +35,10 @@ void FlyingEnemySimple::OnUpdate(float deltaTime)
     mFlyingAroundTimer += deltaTime;
 
     ResolveGroundCollision();
+    ResolveEnemyCollision();
 
     if (mPlayerSpotted)
-        MovementAfterPlayerSpotted();
+        MovementAfterPlayerSpotted(deltaTime);
 
     else
         MovementBeforePlayerSpotted();
@@ -88,7 +89,7 @@ void FlyingEnemySimple::ResolveGroundCollision()
         }
 }
 
-void FlyingEnemySimple::MovementAfterPlayerSpotted()
+void FlyingEnemySimple::MovementAfterPlayerSpotted(float deltaTime)
 {
     Player *player = GetGame()->GetPlayer();
 
@@ -103,7 +104,7 @@ void FlyingEnemySimple::MovementAfterPlayerSpotted()
     SetRotation(angle);
 
     if (mKnockBackTimer >= mKnockBackDuration)
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mMoveSpeed));
+        mRigidBodyComponent->SetVelocity(GetForward() * mMoveSpeed);
 }
 
 void FlyingEnemySimple::MovementBeforePlayerSpotted()

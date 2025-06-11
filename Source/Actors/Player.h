@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Actor.h"
+#include "../Actors/Sword.h"
 #include "../AudioSystem.h"
 
 enum class WallSlideSide { notSliding, left, right };
@@ -26,6 +27,9 @@ public:
     void SetCanWallSlide(bool canWallSlide) { mCanWallSlide = canWallSlide; }
 
     class Sword* GetSword() { return mSword; }
+    void SetSword() { mSword = new Sword(mGame, this, mWidth * 3.6, mHeight * 1.3, 0.15f, 10.0f); }
+
+    void ResetHealthPoints() { mHealthPoints = mMaxHealthPoints; }
 
     void ChangeResolution(float oldScale, float newScale) override;
 
@@ -99,6 +103,7 @@ private:
     float mKnockBackDuration;
     float mCameraShakeStrength;
 
+    float mMaxHealthPoints;
     float mHealthPoints;
     bool mIsInvulnerable;
     float mInvulnerableDuration;
@@ -111,8 +116,6 @@ private:
     float mRunningSoundIntervalDuration;
 
     bool mWasOnGround;
-
-    SoundHandle mSwordSound;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;

@@ -26,6 +26,8 @@
 #include "Actors/Lever.h"
 #include "Actors/Trigger.h"
 #include <SDL_mixer.h>
+#include "Actors/FlyingShooterEnemy.h"
+#include "Actors/Projectile.h"
 
 
 std::vector<int> ParseIntList(const std::string& str) {
@@ -128,7 +130,7 @@ bool Game::Initialize()
 
 
     // Esconde o cursor
-    // SDL_ShowCursor(SDL_DISABLE);
+    SDL_ShowCursor(SDL_DISABLE);
 
     // Inicializa controle
     for (int i = 0; i < SDL_NumJoysticks(); ++i)
@@ -156,10 +158,10 @@ bool Game::Initialize()
     // Init all game actors
     // InitializeActors();
 
-    SetGameScene(GameScene::Level1);
+    SetGameScene(GameScene::Level4);
 
-    const std::string backgroundAssets = "../Assets/Sprites/Background/";
-    mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+    // const std::string backgroundAssets = "../Assets/Sprites/Background/";
+    // mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
     // mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
     // mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
     // mSky = LoadTexture(backgroundAssets + "sky_cloud.png");
@@ -185,7 +187,7 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime)
     // Verifica se o gerenciador de cenas está pronto para uma nova transição
     if (mSceneManagerState == SceneManagerState::None) {
         // Verifica se a cena é válida
-        if (scene == GameScene::MainMenu || scene == GameScene::Level1 || scene == GameScene::Level2 || scene == GameScene::Level3) {
+        if (scene == GameScene::MainMenu || scene == GameScene::Level1 || scene == GameScene::Level2 || scene == GameScene::Level3 || scene == GameScene::Level4) {
             mNextScene = scene;
             mSceneManagerState = SceneManagerState::Entering;
             mSceneManagerTimer = transitionTime;
@@ -216,6 +218,8 @@ void Game::ChangeScene()
     // Unload current Scene
     UnloadScene();
 
+    const std::string backgroundAssets = "../Assets/Sprites/Background/";
+
     // Pool de Fireballs
     for (int i = 0; i < 5; i++) {
         new FireBall(this);
@@ -226,6 +230,11 @@ void Game::ChangeScene()
         new Particle(this);
     }
 
+    // Pool de Projectiles
+    for (int i = 0; i < 10; i++) {
+        new Projectile(this);
+    }
+
     // Reset gameplay state
     mGamePlayState = GamePlayState::Playing;
 
@@ -234,6 +243,8 @@ void Game::ChangeScene()
 
     }
     else if (mNextScene == GameScene::Level1) {
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+
         const std::string levelsAssets = "../Assets/Levels/";
 
         LoadLevel(levelsAssets + "Forest/Forest.json");
@@ -247,6 +258,8 @@ void Game::ChangeScene()
         mAudio->CacheSound("MantisLords.wav");
     }
     else if (mNextScene == GameScene::Level2) {
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
+
         const std::string levelsAssets = "../Assets/Levels/";
 
         LoadLevel(levelsAssets + "Run/Run.json");
@@ -258,6 +271,8 @@ void Game::ChangeScene()
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
     }
     else if (mNextScene == GameScene::Level3) {
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
+
         const std::string levelsAssets = "../Assets/Levels/";
 
         LoadLevel(levelsAssets + "Pain/Pain.json");
@@ -267,6 +282,20 @@ void Game::ChangeScene()
 
         // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+    }
+    else if (mNextScene == GameScene::Level4) {
+        mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+
+        const std::string levelsAssets = "../Assets/Levels/";
+
+        LoadLevel(levelsAssets + "Musgo/Musgo.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mAudio->CacheSound("MantisLords.wav");
     }
 
     // Set new scene
@@ -428,7 +457,9 @@ void Game::LoadObjects(const std::string &fileName)
                 std::string target;
                 std::string event;
                 std::string grounds;
-                std::vector<int> ids;
+                std::string enemies;
+                std::vector<int> groundsIds;
+                std::vector<int> enemiesIds;
                 float fixedCameraPositionX = 0;
                 float fixedCameraPositionY = 0;
                 std::string scene;
@@ -444,6 +475,9 @@ void Game::LoadObjects(const std::string &fileName)
                         else if (propName == "Grounds") {
                             grounds = prop["value"];
                         }
+                        else if (propName == "Enemies") {
+                            enemies = prop["value"];
+                        }
                         else if (propName == "FixedCameraPositionX") {
                             fixedCameraPositionX = prop["value"];
                         }
@@ -455,14 +489,15 @@ void Game::LoadObjects(const std::string &fileName)
                         }
                     }
                 }
-                if ((target == "DynamicGround" || target == "Ground") && !grounds.empty()) {
-                    ids = ParseIntList(grounds);
-                }
+                groundsIds = ParseIntList(grounds);
+                enemiesIds = ParseIntList(enemies);
+
                 auto* trigger = new Trigger(this, width, height);
                 trigger->SetPosition(Vector2(x + width / 2, y + height / 2));
                 trigger->SetTarget(target);
                 trigger->SetEvent(event);
-                trigger->SetGroundsIds(ids);
+                trigger->SetGroundsIds(groundsIds);
+                trigger->SetEnemiesIds(enemiesIds);
                 trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
                 trigger->SetScene(scene);
             }
@@ -476,7 +511,9 @@ void Game::LoadObjects(const std::string &fileName)
                 std::string target;
                 std::string event;
                 std::string grounds;
-                std::vector<int> ids;
+                std::string enemies;
+                std::vector<int> groundsIds;
+                std::vector<int> enemiesIds;
                 float fixedCameraPositionX = 0;
                 float fixedCameraPositionY = 0;
                 if (obj.contains("properties")) {
@@ -491,6 +528,9 @@ void Game::LoadObjects(const std::string &fileName)
                         else if (propName == "Grounds") {
                             grounds = prop["value"];
                         }
+                        else if (propName == "Enemies") {
+                            enemies = prop["value"];
+                        }
                         else if (propName == "FixedCameraPositionX") {
                             fixedCameraPositionX = prop["value"];
                         }
@@ -500,21 +540,25 @@ void Game::LoadObjects(const std::string &fileName)
                     }
                 }
                 if ((target == "DynamicGround" || target == "Ground") && !grounds.empty()) {
-                    ids = ParseIntList(grounds);
+                    groundsIds = ParseIntList(grounds);
+                }
+                if (target == "Enemy") {
+                    enemiesIds = ParseIntList(enemies);
                 }
                 auto* lever = new Lever(this);
                 lever->SetPosition(Vector2(x + width / 2, y + height / 2));
                 lever->SetTarget(target);
                 lever->SetEvent(event);
-                lever->SetGroundsIds(ids);
+                lever->SetGroundsIds(groundsIds);
+                lever->SetEnemiesIds(enemiesIds);
                 lever->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
-
             }
         }
         if (layer["name"] == "Enemies")
             for (const auto &obj: layer["objects"])
             {
                 std::string name = obj["name"];
+                int id = obj["id"];
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
                 float MinPosX = 0;
@@ -525,13 +569,21 @@ void Game::LoadObjects(const std::string &fileName)
                 std::vector<int> ids;
                 if (name == "Enemy Simple")
                 {
-                    auto *enemySimple = new EnemySimple(this, 60, 60, 200, 100);
+                    auto *enemySimple = new EnemySimple(this, 60, 60, 200, 50);
                     enemySimple->SetPosition(Vector2(x, y));
+                    enemySimple->SetId(id);
                 }
                 else if (name == "Flying Enemy")
                 {
-                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 200);
+                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 70);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
+                    flyingEnemySimple->SetId(id);
+                }
+                else if (name == "FlyingShooterEnemy")
+                {
+                    auto *flyingShooterEnemy = new FlyingShooterEnemy(this, 50, 80, 250, 50);
+                    flyingShooterEnemy->SetPosition(Vector2(x, y));
+                    flyingShooterEnemy->SetId(id);
                 }
                 else if (name == "Fox")
                 {
@@ -546,6 +598,7 @@ void Game::LoadObjects(const std::string &fileName)
                     ids = ParseIntList(grounds);
                     auto *fox = new Fox(this, 100, 170, 300, 200);
                     fox->SetPosition(Vector2(x, y));
+                    fox->SetId(id);
                     fox->SetUnlockGroundsIds(ids);
                 }
                 else if (name == "Frog")
@@ -573,6 +626,7 @@ void Game::LoadObjects(const std::string &fileName)
                     ids = ParseIntList(grounds);
                     auto *frog = new Frog(this, 165, 137, 300, 200);
                     frog->SetPosition(Vector2(x, y));
+                    frog->SetId(id);
                     frog->SetArenaMinPos(Vector2(MinPosX, MinPosY));
                     frog->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                     frog->SetUnlockGroundsIds(ids);
@@ -583,7 +637,13 @@ void Game::LoadObjects(const std::string &fileName)
             {
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
-                mPlayer = new Player(this, 50, 85);
+                if (mPlayer) {
+                    mPlayer->SetSword();
+                }
+                else {
+                    mPlayer = new Player(this, 50, 85);
+                }
+                mPlayer->SetState(ActorState::Active);
                 mPlayer->SetPosition(Vector2(x, y));
                 mPlayer->SetStartingPosition(Vector2(x, y));
             }
@@ -718,12 +778,20 @@ void Game::ProcessInput()
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     mIsPaused = !mIsPaused;
                     if (mIsPaused) {
-                        mAudio->PauseSound(mMusicHandle);
-                        mAudio->PauseSound(mBossMusic);
+                        if (mMusicHandle.IsValid()) {
+                            mAudio->PauseSound(mMusicHandle);
+                        }
+                        if (mBossMusic.IsValid()) {
+                            mAudio->PauseSound(mBossMusic);
+                        }
                     }
                     else {
-                        mAudio->ResumeSound(mMusicHandle);
-                        mAudio->ResumeSound(mBossMusic);
+                        if (mMusicHandle.IsValid()) {
+                            mAudio->ResumeSound(mMusicHandle);
+                        }
+                        if (mBossMusic.IsValid()) {
+                            mAudio->ResumeSound(mBossMusic);
+                        }
                     }
                 }
 
@@ -746,12 +814,20 @@ void Game::ProcessInput()
                 if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
                     mIsPaused = !mIsPaused;
                     if (mIsPaused) {
-                        mAudio->PauseSound(mMusicHandle);
-                        mAudio->PauseSound(mBossMusic);
+                        if (mMusicHandle.IsValid()) {
+                            mAudio->PauseSound(mMusicHandle);
+                        }
+                        if (mBossMusic.IsValid()) {
+                            mAudio->PauseSound(mBossMusic);
+                        }
                     }
                     else {
-                        mAudio->ResumeSound(mMusicHandle);
-                        mAudio->ResumeSound(mBossMusic);
+                        if (mMusicHandle.IsValid()) {
+                            mAudio->ResumeSound(mMusicHandle);
+                        }
+                        if (mBossMusic.IsValid()) {
+                            mAudio->ResumeSound(mBossMusic);
+                        }
                     }
                 }
 
@@ -811,8 +887,9 @@ void Game::UpdateGame()
                 mHitstopActive = false;
             }
         }
-        else
+        else {
             UpdateActors(deltaTime);
+        }
     }
 
     if (mResetLevel) {
@@ -881,7 +958,7 @@ void Game::UpdateActors(float deltaTime)
 }
 
 void Game::UpdateCamera(float deltaTime) {
-    if (!mPlayer) {
+    if (!mCamera) {
         return;
     }
     mCamera->Update(deltaTime);
@@ -923,6 +1000,15 @@ void Game::RemoveParticle(class Particle *p)
         mParticles.erase(iter);
 }
 
+void Game::AddProjectile(class Projectile *p) { mProjectiles.emplace_back(p); }
+
+void Game::RemoveProjectile(class Projectile *p)
+{
+    auto iter = std::find(mProjectiles.begin(), mProjectiles.end(), p);
+    if (iter != mProjectiles.end())
+        mProjectiles.erase(iter);
+}
+
 void Game::AddEnemy(class Enemy *e) { mEnemies.emplace_back(e); }
 
 void Game::RemoveEnemy(class Enemy *e)
@@ -930,6 +1016,15 @@ void Game::RemoveEnemy(class Enemy *e)
     auto iter = std::find(mEnemies.begin(), mEnemies.end(), e);
     if (iter != mEnemies.end())
         mEnemies.erase(iter);
+}
+
+Enemy* Game::GetEnemyById(int id) {
+    for (Enemy* e : mEnemies) {
+        if (e->GetId() == id) {
+            return e;
+        }
+    }
+    return nullptr;
 }
 
 void Game::AddActor(Actor *actor)
@@ -1050,9 +1145,19 @@ SDL_Texture *Game::LoadTexture(const std::string &texturePath)
 
 void Game::UnloadScene()
 {
-    // Delete actors
-    while (!mActors.empty())
-        delete mActors.back();
+    if (mPlayer) {
+        mPlayer->SetState(ActorState::Paused);
+    }
+
+    for (auto it = mActors.begin(); it != mActors.end(); ) {
+        Actor* actor = *it;
+        if (actor != mPlayer) {
+            it = mActors.erase(it);
+            delete actor;
+        } else {
+            ++it;
+        }
+    }
 
     // Delete level data
     if (mLevelData != nullptr)
@@ -1081,11 +1186,17 @@ void Game::UnloadScene()
     SDL_DestroyTexture(mTileSheet);
     mTileSheet = nullptr;
 
+    if (mBackGroundTexture) {
+        SDL_DestroyTexture(mBackGroundTexture);
+        mBackGroundTexture = nullptr;
+    }
+
     delete mCamera;
 }
 
 void Game::Shutdown()
 {
+    delete mPlayer;
     UnloadScene();
     // // Delete actors
     // while (!mActors.empty())

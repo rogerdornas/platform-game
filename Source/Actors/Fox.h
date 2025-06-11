@@ -5,20 +5,19 @@
 #include "Actor.h"
 #include "Enemy.h"
 
-enum State
-{
-    Dash,
-    RunAway,
-    Stop,
-    RunAndSword,
-    Fireball,
-    Jump
-};
-
-
 class Fox : public Enemy
 {
 public:
+    enum class State
+    {
+        Dash,
+        RunAway,
+        Stop,
+        RunAndSword,
+        Fireball,
+        Jump
+    };
+
     Fox(Game *game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
     void SetUnlockGroundsIds(const std::vector<int>& ids) { mUnlockGroundsIds = ids; }

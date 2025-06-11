@@ -10,7 +10,7 @@ class DrawDynamicGroundSpritesComponent : public DrawGroundSpritesComponent
 {
 public:
     // (Lower draw order corresponds with further back)
-    DrawDynamicGroundSpritesComponent(Actor *owner, int width = 0, int height = 0, int drawOrder = 100);
+    DrawDynamicGroundSpritesComponent(Actor *owner, int width = 0, int height = 0, int drawOrder = 101);
 
     void Draw(SDL_Renderer *renderer) override;
 

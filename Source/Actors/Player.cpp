@@ -33,7 +33,7 @@ Player::Player(Game *game, float width, float height)
       mJumpForce(-900.0f * mGame->GetScale()),
       mCanJump(true),
       mJumpCountInAir(0),
-      mMaxJumpsInAir(1),
+      mMaxJumpsInAir(0),
       mLowGravity(50.0f * mGame->GetScale()),
       mMediumGravity(3000.0f * mGame->GetScale()),
       mHighGravity(4500.0f * mGame->GetScale()),
@@ -60,7 +60,7 @@ Player::Player(Game *game, float width, float height)
       mFireBallHeight(50 * mGame->GetScale()),
       mFireballSpeed(1800 * mGame->GetScale()),
 
-      mCanWallSlide(true),
+      mCanWallSlide(false),
       mIsWallSliding(false),
       mWallSlideSide(WallSlideSide::notSliding),
       mWallSlideSpeed(300 * mGame->GetScale()),
@@ -78,7 +78,8 @@ Player::Player(Game *game, float width, float height)
       mKnockBackDuration(0.2f),
       mCameraShakeStrength(60.0f * mGame->GetScale()),
 
-      mHealthPoints(100.0f),
+      mMaxHealthPoints(100.0f),
+      mHealthPoints(mMaxHealthPoints),
       mIsInvulnerable(false),
       mInvulnerableDuration(0.7f),
       mInvulnerableTimer(mInvulnerableDuration),
@@ -171,12 +172,12 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
                      || (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000
                          && SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
 
-    bool lookUp = state[SDL_SCANCODE_UP]
-                  || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_UP)
+    bool lookUp = (state[SDL_SCANCODE_UP] && state[SDL_SCANCODE_LCTRL])
+                  // || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_UP)
                   || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) < -28000;
 
-    bool lodDown = state[SDL_SCANCODE_DOWN]
-                   || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+    bool lodDown = (state[SDL_SCANCODE_DOWN] && state[SDL_SCANCODE_LCTRL])
+                   // || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)
                    || SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) > 28000;
 
     bool up = state[SDL_SCANCODE_UP]
@@ -392,7 +393,7 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
     // Detecta borda de descida da tecla K e cooldown pronto
     if (sword && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration)
     {
-        mSwordSound = mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
+        mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         // Ativa a espada
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
@@ -533,6 +534,11 @@ void Player::OnUpdate(float deltaTime)
         SetPosition(mStartingPosition);
 
     if (Died()) {
+        mRigidBodyComponent->SetVelocity(Vector2::Zero);
+        mKnockBackTimer = mKnockBackDuration;
+        mInvulnerableTimer = mInvulnerableDuration;
+        mDrawAnimatedComponent->SetIsBlinking(false);
+        ResetHealthPoints();
         mGame->mResetLevel = true;
         mGame->GetAudio()->StopAllSounds();
         SetState(ActorState::Paused);

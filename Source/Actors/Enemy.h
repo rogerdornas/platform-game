@@ -18,10 +18,16 @@ public:
     float GetKnockBack() const { return mKnockBackSpeed; }
     float GetWidth() override { return mWidth; }
     float GetHeight() override { return mHeight; }
+    void SetSpottedPlayer(bool spotted) { mPlayerSpotted = spotted; }
+
+    void SetId(int id) { mId = id; }
+    int GetId() { return mId; }
 
 protected:
     bool Died();
+    void ResolveEnemyCollision();
 
+    int mId;
     float mWidth;
     float mHeight;
 

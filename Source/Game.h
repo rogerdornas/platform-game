@@ -32,7 +32,8 @@ public:
         MainMenu,
         Level1,
         Level2,
-        Level3
+        Level3,
+        Level4
     };
 
     enum class SceneManagerState
@@ -96,9 +97,14 @@ public:
     void RemoveParticle(class Particle *p);
     std::vector<class Particle *> &GetParticles() { return mParticles; }
 
+    void AddProjectile(class Projectile *p);
+    void RemoveProjectile(class Projectile *p);
+    std::vector<class Projectile *> &GetProjectiles() { return mProjectiles; }
+
     void AddEnemy(class Enemy *e);
     void RemoveEnemy(class Enemy *e);
     std::vector<class Enemy *> &GetEnemies() { return mEnemies; }
+    Enemy* GetEnemyById(int id);
 
     int **GetLevelData() const { return mLevelData; }
     int **GetLevelDataDynamicGrounds() const { return mLevelDataDynamicGrounds; }
@@ -184,6 +190,7 @@ private:
     std::vector<class Ground *> mGrounds;
     std::vector<class FireBall *> mFireBalls;
     std::vector<class Particle *> mParticles;
+    std::vector<class Projectile *> mProjectiles;
     std::vector<class Enemy *> mEnemies;
     SDL_GameController *mController;
 

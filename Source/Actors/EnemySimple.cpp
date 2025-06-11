@@ -37,6 +37,7 @@ void EnemySimple::OnUpdate(float deltaTime) {
     mWalkingAroundTimer += deltaTime;
 
     ResolveGroundCollision();
+    ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
         MovementAfterPlayerSpotted();

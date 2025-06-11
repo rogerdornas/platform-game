@@ -14,9 +14,9 @@ public:
 
     void ChangeResolution(float oldScale, float newScale) override;
 
-private:
+protected:
     void ResolveGroundCollision();
-    void MovementAfterPlayerSpotted();
+    virtual void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
 
     float mDistToSpotPlayer;
