@@ -40,7 +40,6 @@ FireBall::FireBall(class Game *game)
     // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale());
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0, mHeight * 2.0, "../Assets/Sprites/Fireball/Fireball.png", "../Assets/Sprites/Fireball/Fireball.json", 999);
-    // mDrawAnimatedComponent->SetOffset(Vector2(mWidth / 2, 0));
     std::vector<int> firing = {0, 1, 2, 3, 4};
     mDrawAnimatedComponent->AddAnimation("firing", firing);
 

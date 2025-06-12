@@ -222,6 +222,8 @@ private:
     void ChangeScene();
     SceneManagerState mSceneManagerState;
     float mSceneManagerTimer;
+    float mFadeDuration;
+    Uint8 mFadeAlpha;
 
     GamePlayState mGamePlayState;
 

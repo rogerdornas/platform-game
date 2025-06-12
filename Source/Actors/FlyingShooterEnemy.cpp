@@ -18,7 +18,7 @@
 FlyingShooterEnemy::FlyingShooterEnemy(Game *game, float width, float height, float movespeed, float healthpoints)
     : FlyingEnemySimple(game, width, height, movespeed, healthpoints)
     ,mState(FlyingShooterEnemy::State::Fly)
-    ,mHoverHeight(350.0f * mGame->GetScale())
+    ,mHoverHeight(300.0f * mGame->GetScale())
     ,mPatrolRangeX(400.0f * mGame->GetScale())
     ,mPatrolRangeY(100.0f * mGame->GetScale())
     ,mTargetSet(false)

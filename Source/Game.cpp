@@ -26,6 +26,8 @@
 #include "Actors/Lever.h"
 #include "Actors/Trigger.h"
 #include <SDL_mixer.h>
+
+#include "Actors/Fairy.h"
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Projectile.h"
 
@@ -73,8 +75,10 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
       mTreesBack(nullptr),
       mTreesFront(nullptr),
       mAudio(nullptr),
-      mSceneManagerTimer(0.0f),
       mSceneManagerState(SceneManagerState::None),
+      mFadeDuration(1.0f),
+      mSceneManagerTimer(0.0f),
+      mFadeAlpha(0),
       mGameScene(GameScene::Level1),
       mNextScene(GameScene::Level1)
 {
@@ -917,9 +921,17 @@ void Game::UpdateSceneManager(float deltaTime)
     //  mSceneManagerTimer para TRANSITION_TIME e mude o estado do SceneManager para SceneManagerState::Active.
     if (mSceneManagerState == SceneManagerState::Entering) {
         mSceneManagerTimer -= deltaTime;
+
+        // Cálculo proporcional da opacidade
+        if (mSceneManagerTimer <= mFadeDuration) {
+            float progress = 1.0f - (mSceneManagerTimer / mFadeDuration);
+            mFadeAlpha = static_cast<Uint8>(progress * 255.0f);
+        }
+
         if (mSceneManagerTimer <= 0.0f) {
             mSceneManagerTimer = TRANSITION_TIME;  // Reinicia timer para próxima fase
             mSceneManagerState = SceneManagerState::Active;
+            mFadeAlpha = 0;
         }
     }
 
@@ -930,7 +942,22 @@ void Game::UpdateSceneManager(float deltaTime)
         mSceneManagerTimer -= deltaTime;
         if (mSceneManagerTimer <= 0.0f) {
             ChangeScene();  // Realiza a troca de cena
+            mSceneManagerTimer = mFadeDuration;
+            mSceneManagerState = SceneManagerState::Exiting;
+        }
+    }
+
+    if (mSceneManagerState == SceneManagerState::Exiting) {
+        mSceneManagerTimer -= deltaTime;
+
+        // Cálculo proporcional da opacidade
+        float progress = mSceneManagerTimer / mFadeDuration;
+        mFadeAlpha = static_cast<Uint8>(progress * 255.0f);
+
+        if (mSceneManagerTimer <= 0.0f) {
+            mSceneManagerTimer = TRANSITION_TIME;  // Reinicia timer para próxima fase
             mSceneManagerState = SceneManagerState::None;
+            mFadeAlpha = 0;
         }
     }
 }
@@ -1100,6 +1127,18 @@ void Game::GenerateOutput()
 
     for (auto drawable: mDrawables)
         drawable->Draw(mRenderer);
+
+    if (mSceneManagerState == SceneManagerState::Entering || mSceneManagerState == SceneManagerState::Exiting) {
+        SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
+        // Define a cor preta (RGBA)
+        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, mFadeAlpha);
+
+        // Cria o retângulo cobrindo toda a tela
+        SDL_Rect fullScreenRect = { 0, 0, mWindowWidth, mWindowHeight };
+
+        // Desenha o retângulo preenchido
+        SDL_RenderFillRect(mRenderer, &fullScreenRect);
+    }
 
     if (mSceneManagerState == SceneManagerState::Active) {
         // Define a cor preta (RGBA)

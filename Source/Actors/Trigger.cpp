@@ -242,7 +242,7 @@ void Trigger::GameTrigger() {
     switch (mEvent) {
         case Event::changeScene:
             mGame->GetAudio()->StopAllSounds();
-            mGame->SetGameScene(mScene, 0.5f);
+            mGame->SetGameScene(mScene, 2.0f);
             SetState(ActorState::Destroy);
         break;
         default:
