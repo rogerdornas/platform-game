@@ -82,8 +82,19 @@ add_executable(${PROJECT_NAME}
         Source/Actors/FlyingShooterEnemy.h
         Source/Actors/Projectile.cpp
         Source/Actors/Projectile.h
-        Source/Actors/Fairy.cpp
-        Source/Actors/Fairy.h
+        Source/UIElements/UIScreen.h
+        Source/UIElements/UIScreen.cpp
+        Source/UIElements/UIFont.h
+        Source/UIElements/UIFont.cpp
+        Source/UIElements/UIButton.cpp
+        Source/UIElements/UIButton.h
+        Source/UIElements/UIText.cpp
+        Source/UIElements/UIText.h
+        Source/UIElements/UIElement.cpp
+        Source/UIElements/UIElement.h
+        Source/UIElements/UIImage.cpp
+        Source/UIElements/UIImage.h
+        Source/HUD.cpp
 )
 
 

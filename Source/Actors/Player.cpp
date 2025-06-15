@@ -50,8 +50,8 @@ Player::Player(Game *game, float width, float height)
 
       mCanFireBall(true),
       mPrevFireBallPressed(false),
+      mFireBallCooldownDuration(0.1f),
       mFireBallCooldownTimer(0.0f),
-      mFireBallCooldownDuration(1.0f),
       mIsFireAttacking(false),
       mStopInAirFireBallTimer(0.0f),
       mStopInAirFireBallMaxDuration(0.0f),
@@ -59,6 +59,10 @@ Player::Player(Game *game, float width, float height)
       mFireballWidth(50 * mGame->GetScale()),
       mFireBallHeight(50 * mGame->GetScale()),
       mFireballSpeed(1800 * mGame->GetScale()),
+      mMaxMana(90.0f),
+      mMana(90.0f),
+      mManaIncreaseRate(6.0f),
+      mFireballManaCost(30.0f),
 
       mCanWallSlide(false),
       mIsWallSliding(false),
@@ -78,11 +82,17 @@ Player::Player(Game *game, float width, float height)
       mKnockBackDuration(0.2f),
       mCameraShakeStrength(60.0f * mGame->GetScale()),
 
-      mMaxHealthPoints(100.0f),
+      mMaxHealthPoints(70.0f),
       mHealthPoints(mMaxHealthPoints),
       mIsInvulnerable(false),
       mInvulnerableDuration(0.7f),
       mInvulnerableTimer(mInvulnerableDuration),
+      mMaxHealCount(3),
+      mHealCount(mMaxHealCount),
+      mHealAmount(30.0f),
+      mIsHealing(false),
+      mHealAnimationDuration(1.0f),
+      mHealAnimationTimer(0.0f),
 
       mIsRunning(false),
       mRunningSoundIntervalDuration(0.3f),
@@ -199,6 +209,9 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
 
     bool fireBall = state[SDL_SCANCODE_A]
                     || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_B);
+
+    bool heal = state[SDL_SCANCODE_V] ||
+                SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
 
     if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking
         && !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration))
@@ -410,7 +423,10 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
     // FireBall
     if (mCanFireBall)
     {
-        if (fireBall && !mPrevFireBallPressed && mFireBallCooldownTimer >= mFireBallCooldownDuration)
+        if (fireBall &&
+            !mPrevFireBallPressed &&
+            mFireBallCooldownTimer >= mFireBallCooldownDuration &&
+            mMana >= mFireballManaCost)
         {
             std::vector<FireBall *> fireBalls = mGame->GetFireBalls();
             for (FireBall *f: fireBalls)
@@ -425,6 +441,7 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
                     f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                     mIsFireAttacking = true;
                     mStopInAirFireBallTimer = 0;
+                    mMana -= mFireballManaCost;
                     break;
                 }
             }
@@ -432,6 +449,28 @@ void Player::OnProcessInput(const uint8_t *state, SDL_GameController &controller
             mFireBallCooldownTimer = 0;
         }
         mPrevFireBallPressed = fireBall;
+    }
+
+    // Heal
+    if (heal && mHealCount > 0 && mHealthPoints < mMaxHealthPoints && mIsOnGround) {
+        if (left || leftSlow || right || rightSlow || jump || dash || sword || fireBall) {
+            mHealAnimationTimer = 0;
+        }
+        else {
+            mIsHealing = true;
+            if (mHealAnimationTimer >= mHealAnimationDuration) {
+                mHealAnimationTimer = 0;
+                mHealthPoints += mHealAmount;
+                mHealCount--;
+                if (mHealthPoints > mMaxHealthPoints) {
+                    mHealthPoints = mMaxHealthPoints;
+                }
+            }
+        }
+    }
+    else {
+        mIsHealing = false;
+        mHealAnimationTimer = 0;
     }
 }
 
@@ -461,6 +500,17 @@ void Player::OnUpdate(float deltaTime)
     {
         mIsInvulnerable = false;
         mDrawAnimatedComponent->SetIsBlinking(false);
+    }
+
+    if (mMana < mMaxMana) {
+        mMana += mManaIncreaseRate * deltaTime;
+        if (mMana > mMaxMana) {
+            mMana = mMaxMana;
+        }
+    }
+
+    if (mIsHealing) {
+        mHealAnimationTimer += deltaTime;
     }
 
     mTimerToLeaveWallSlidingLeft += mTryingLeavingWallSlideLeft * deltaTime;
@@ -538,7 +588,7 @@ void Player::OnUpdate(float deltaTime)
         mKnockBackTimer = mKnockBackDuration;
         mInvulnerableTimer = mInvulnerableDuration;
         mDrawAnimatedComponent->SetIsBlinking(false);
-        ResetHealthPoints();
+        mAABBComponent->SetActive(false);
         mGame->mResetLevel = true;
         mGame->GetAudio()->StopAllSounds();
         SetState(ActorState::Paused);
@@ -804,6 +854,7 @@ void Player::ResolveEnemyCollision()
     std::vector<Enemy *> enemies = mGame->GetEnemies();
     if (!enemies.empty())
     {
+        bool swordHitEnemy = false;
         for (Enemy *e: enemies)
         {
             if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>()))
@@ -836,7 +887,8 @@ void Player::ResolveEnemyCollision()
                 if (!mSwordHitEnemy)
                 {
                     e->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
-                    mSwordHitEnemy = true;
+                    // mSwordHitEnemy = true;
+                    swordHitEnemy = true;
                 }
                 if (mSword->GetRotation() == Math::Pi / 2)
                 {
@@ -848,6 +900,9 @@ void Player::ResolveEnemyCollision()
                     mJumpCountInAir = 0;
                 }
             }
+        }
+        if (swordHitEnemy) {
+            mSwordHitEnemy = true;
         }
     }
 }
@@ -907,6 +962,7 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection)
         mInvulnerableTimer = 0;
         mGame->ActiveHitstop();
         mDrawAnimatedComponent->SetIsBlinking(true);
+        mHealAnimationTimer = 0;
         mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
     }
 }

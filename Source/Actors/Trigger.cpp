@@ -232,7 +232,9 @@ void Trigger::GroundTrigger() {
         case Event::setIsMoving:
             for (int id : mGroundsIds) {
                 Ground *g = mGame->GetGroundById(id);
-                g->SetIsMoving(true);
+                if (g) {
+                    g->SetIsMoving(true);
+                }
             }
         break;
     }
@@ -256,7 +258,9 @@ void Trigger::EnemyTrigger() {
         case Event::spotPlayer:
             for (int id : mEnemiesIds) {
                 Enemy *e = mGame->GetEnemyById(id);
-                e->SetSpottedPlayer(true);
+                if (e) {
+                    e->SetSpottedPlayer(true);
+                }
             }
             SetState(ActorState::Destroy);
         break;

@@ -23,6 +23,8 @@ const int SCREEN_HEIGHT = 1000;
 // const int SCREEN_HEIGHT = 360;
 // const int SCREEN_WIDTH = 1280;
 // const int SCREEN_HEIGHT = 360;
+// const int SCREEN_WIDTH = 500;
+// const int SCREEN_HEIGHT = 1000;
 const int FPS = 120;
 
 int main(int argc, char **argv)

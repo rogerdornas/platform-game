@@ -26,6 +26,15 @@ class Game
 {
 public:
     static const int TRANSITION_TIME = 1;
+    const int DEAD_ZONE = 8000;
+    float mTransitionTime = 0.2f;
+
+    // Estados de movimento do analógico vertical
+    enum class StickState {
+        Neutral,
+        Up,
+        Down
+    };
 
     enum class GameScene
     {
@@ -115,6 +124,8 @@ public:
 
     bool mResetLevel;
 
+    // Loading functions
+    class UIFont* LoadFont(const std::string& fileName);
     SDL_Texture *LoadTexture(const std::string &texturePath);
 
     int GetFPS() { return mFPS; }
@@ -132,13 +143,21 @@ public:
     void StarBossMusic(SoundHandle music);
     void StopBossMusic();
 
+    // UI functions
+    void PushUI(class UIScreen* screen) { mUIStack.emplace_back(screen); }
+    std::vector<class UIScreen*>& GetUIStack() { return mUIStack; }
+
     // Scene management
     void SetGameScene(GameScene scene, float transitionTime = .0f);
     void ResetGameScene(float transitionTime = .0f);
     void UnloadScene();
 
+    void TogglePause();
+
     void SetGamePlayState(GamePlayState state) { mGamePlayState = state; }
     GamePlayState GetGamePlayState() const { return mGamePlayState; }
+
+    SDL_Renderer* GetRenderer() { return mRenderer; }
 
 private:
     void ProcessInput();
@@ -148,6 +167,8 @@ private:
     // Load Level
     void LoadObjects(const std::string &fileName);
     void LoadLevel(const std::string &fileName);
+    void LoadMainMenu();
+    UIScreen* LoadPauseMenu();
 
     void ResetLevel();
     void ChangeResolution(float oldScale);
@@ -162,6 +183,7 @@ private:
     // SDL stuff
     SDL_Window *mWindow;
     SDL_Renderer *mRenderer;
+    AudioSystem* mAudio;
 
     // Window properties
     int mWindowWidth;
@@ -193,6 +215,7 @@ private:
     std::vector<class Projectile *> mProjectiles;
     std::vector<class Enemy *> mEnemies;
     SDL_GameController *mController;
+    class HUD *mHUD;
 
     // Level data
     int **mLevelData;
@@ -213,7 +236,8 @@ private:
     bool mIsSlowMotion;
     bool mIsAccelerated;
 
-    AudioSystem* mAudio;
+    StickState mLeftStickYState;
+
     SoundHandle mMusicHandle;
     SoundHandle mBossMusic;
 
@@ -225,11 +249,17 @@ private:
     float mFadeDuration;
     Uint8 mFadeAlpha;
 
+    // All the UI elements
+    std::vector<class UIScreen*> mUIStack;
+    std::unordered_map<std::string, class UIFont*> mFonts;
+    UIScreen* mPauseMenu;
+
     GamePlayState mGamePlayState;
 
     // Track level state
     GameScene mGameScene;
     GameScene mNextScene;
+    GameScene mContinueScene;
 
 
     void DrawParallaxBackground();

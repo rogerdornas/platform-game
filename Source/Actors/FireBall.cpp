@@ -67,6 +67,16 @@ void FireBall::OnUpdate(float deltaTime) {
         ResolveGroundCollision();
         ResolveEnemyCollision();
         ResolvePlayerCollision();
+
+        // Verifica se fireball está fora da tela mais um intervalo
+        float fireballOffscreenLimit = 0.2f;
+        if (GetPosition().x > mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth() + mGame->GetLogicalWindowWidth() * fireballOffscreenLimit ||
+        GetPosition().x < mGame->GetCamera()->GetPosCamera().x - mGame->GetLogicalWindowWidth() * fireballOffscreenLimit ||
+        GetPosition().y < mGame->GetCamera()->GetPosCamera().y - mGame->GetLogicalWindowHeight() * fireballOffscreenLimit ||
+        GetPosition().y > mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight() + mGame->GetLogicalWindowHeight() * fireballOffscreenLimit)
+        {
+            Deactivate();
+        }
     }
     ManageAnimations();
 }
@@ -139,8 +149,7 @@ void FireBall::Deactivate() {
         if (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth() &&
         GetPosition().x > mGame->GetCamera()->GetPosCamera().x &&
         GetPosition().y > mGame->GetCamera()->GetPosCamera().y &&
-        GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight()
-        )
+        GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight())
         {
             mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
         }

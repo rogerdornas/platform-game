@@ -30,6 +30,20 @@ public:
     void SetSword() { mSword = new Sword(mGame, this, mWidth * 3.6, mHeight * 1.3, 0.15f, 10.0f); }
 
     void ResetHealthPoints() { mHealthPoints = mMaxHealthPoints; }
+    float GetHealthPoints() { return mHealthPoints; }
+    float GetMaxHealthPoints() { return mMaxHealthPoints; }
+
+    void ResetMana() { mMana = mMaxMana; }
+    float GetMana() { return mMana; }
+    float GetMaxMana() { return mMaxMana; }
+
+    void ResetHealCount() { mHealCount = mMaxHealCount; }
+    int GetHealCount() { return mHealCount; }
+
+    void SetCanJump(bool j) { mCanJump = j; }
+    void SetPrevFireBallPressed(bool f) { mPrevFireBallPressed = f; }
+
+    bool Died();
 
     void ChangeResolution(float oldScale, float newScale) override;
 
@@ -38,8 +52,6 @@ private:
     void ResolveEnemyCollision();
 
     void ManageAnimations();
-
-    bool Died();
 
     Vector2 mStartingPosition;
 
@@ -84,6 +96,10 @@ private:
     float mFireballWidth;
     float mFireBallHeight;
     float mFireballSpeed;
+    float mMaxMana;
+    float mMana;
+    float mManaIncreaseRate;
+    float mFireballManaCost;
 
     bool mCanWallSlide;                  // Habilidade de agarrar na parede
     bool mIsWallSliding;                 // Se esta deslizando
@@ -108,6 +124,12 @@ private:
     bool mIsInvulnerable;
     float mInvulnerableDuration;
     float mInvulnerableTimer;
+    int mMaxHealCount;
+    int mHealCount;
+    float mHealAmount;
+    bool mIsHealing;
+    float mHealAnimationDuration;
+    float mHealAnimationTimer;
 
     bool mIsRunning; // Atributos para animar sprites
 
