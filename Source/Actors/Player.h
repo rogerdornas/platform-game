@@ -3,18 +3,19 @@
 //
 
 #pragma once
+
 #include "Actor.h"
 #include "../Actors/Sword.h"
 #include "../AudioSystem.h"
 
-enum class WallSlideSide { notSliding, left, right };
-
 class Player : public Actor
 {
 public:
-    Player(Game *game, float width, float height);
+    enum class WallSlideSide { notSliding, left, right };
 
-    void OnProcessInput(const Uint8 *keyState, SDL_GameController &controller) override;
+    Player(Game* game, float width, float height);
+
+    void OnProcessInput(const Uint8* keyState, SDL_GameController &controller) override;
     void OnUpdate(float deltaTime) override;
 
     bool GetIsOnGround() const { return mIsOnGround; }
@@ -26,20 +27,21 @@ public:
     void SetCanFireBall(bool canFireBall) { mCanFireBall = canFireBall; }
     void SetCanWallSlide(bool canWallSlide) { mCanWallSlide = canWallSlide; }
 
-    class Sword* GetSword() { return mSword; }
+    class Sword* GetSword() const { return mSword; }
     void SetSword() { mSword = new Sword(mGame, this, mWidth * 3.6, mHeight * 1.3, 0.15f, 10.0f); }
 
     void ResetHealthPoints() { mHealthPoints = mMaxHealthPoints; }
-    float GetHealthPoints() { return mHealthPoints; }
-    float GetMaxHealthPoints() { return mMaxHealthPoints; }
+    float GetHealthPoints() const { return mHealthPoints; }
+    float GetMaxHealthPoints() const { return mMaxHealthPoints; }
 
     void ResetMana() { mMana = mMaxMana; }
-    float GetMana() { return mMana; }
-    float GetMaxMana() { return mMaxMana; }
+    float GetMana() const { return mMana; }
+    float GetMaxMana() const { return mMaxMana; }
 
     void ResetHealCount() { mHealCount = mMaxHealCount; }
-    int GetHealCount() { return mHealCount; }
+    int GetHealCount() const { return mHealCount; }
 
+    // Funções para sair da pausa com o controle sem pular ou atirar bola de fogo
     void SetCanJump(bool j) { mCanJump = j; }
     void SetPrevFireBallPressed(bool f) { mPrevFireBallPressed = f; }
 
@@ -76,7 +78,7 @@ private:
 
     bool mCanDash;
 
-    class Sword *mSword;
+    class Sword* mSword;
     bool mPrevSwordPressed;             // Se apertou botão de espada no último frame
     float mSwordCooldownTimer;          // Timer de cooldown da espada
     const float mSwordCooldownDuration; // Cooldown da espada
@@ -139,11 +141,11 @@ private:
 
     bool mWasOnGround;
 
-    class DrawPolygonComponent *mDrawPolygonComponent;
-    class DrawSpriteComponent *mDrawSpriteComponent;
-    class DrawAnimatedComponent *mDrawAnimatedComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
 
-    class RigidBodyComponent *mRigidBodyComponent;
-    class AABBComponent *mAABBComponent;
-    class DashComponent *mDashComponent;
+    class RigidBodyComponent* mRigidBodyComponent;
+    class AABBComponent* mAABBComponent;
+    class DashComponent* mDashComponent;
 };

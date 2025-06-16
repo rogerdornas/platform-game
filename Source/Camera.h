@@ -3,10 +3,11 @@
 //
 
 #pragma once
+
 #include "Math.h"
 #include "Game.h"
 
-enum CameraMode {
+enum class CameraMode {
     Fixed,
     FollowPlayer,
     FollowPlayerHorizontally,
@@ -20,17 +21,17 @@ public:
     Camera(class Game *game, Vector2 startPosition);
 
     void SetPosition(Vector2 pos) { mPos = pos; }
-    Vector2 GetPosCamera() { return mPos; }
+    Vector2 GetPosCamera() const { return mPos; }
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos; }
 
     void Update(float deltaTime);
 
+    void SetLookUp() { mLookUp = true; }
+    void SetLookDown() { mLookDown = true; }
+
     void StartCameraShake(float duration = 1.0f, float strength = 5.0f);
     void ChangeCameraMode(CameraMode cameraMode) { mCameraMode = cameraMode; }
     void ChangeResolution(float oldScale, float newScale);
-
-    bool mLookUp;
-    bool mLookDown;
 
 private:
     Vector2 Fixed(Vector2 pos);
@@ -41,11 +42,10 @@ private:
 
     Vector2 mPos;
     class Game *mGame;
-    float mCameraLerpSpeed = 6.0f;
+    float mCameraLerpSpeed;
     CameraMode mCameraMode;
     Vector2 mFixedCameraPosition;
 
-    Vector2 mOffset;
     float mDistMove;
 
     bool mIsShaking;
@@ -54,4 +54,7 @@ private:
     float mShakeStrength;
 
     float mCameraSpeed;
+
+    bool mLookUp;
+    bool mLookDown;
 };

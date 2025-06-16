@@ -3,20 +3,19 @@
 //
 
 #pragma once
+
 #include "Actor.h"
 #include "../Game.h"
-#include "../Random.h"
 
-enum TargetEffect {
-    bloodParticle,
-    swordHit,
-    circle
+enum class TargetEffect {
+    SwordHit,
+    Circle
 };
 
 class Effect : public Actor
 {
 public:
-    Effect(class Game *game);
+    Effect(class Game* game);
 
     void SetEffect(TargetEffect targetEffect);
     void SetSize(float size) { mSize = size; }
@@ -29,9 +28,8 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void BloodParticleEffect(float deltaTime);
     void SwordHitEffect(float deltaTime);
-    void Circle(float deltaTime);
+    void CircleEffect(float deltaTime);
 
     TargetEffect mTargetEffect;
 
@@ -42,8 +40,8 @@ private:
 
     SDL_Color mColor;
 
-    class DrawPolygonComponent *mDrawPolygonComponent;
-    class DrawSpriteComponent *mDrawSpriteComponent;
-    class DrawParticleComponent *mDrawParticleComponent;
-    class DrawAnimatedComponent *mDrawAnimatedComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+    class DrawParticleComponent* mDrawParticleComponent;
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
 };

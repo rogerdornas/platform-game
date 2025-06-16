@@ -6,17 +6,18 @@
 #include "../../Actors/Actor.h"
 #include "../../Game.h"
 
-DrawParticleComponent::DrawParticleComponent(class Actor *owner, const std::string &texturePath, const int width,
+DrawParticleComponent::DrawParticleComponent(class Actor* owner, const std::string& texturePath, const int width,
                                          const int height, SDL_Color color, int drawOrder)
     :DrawSpriteComponent(owner, texturePath, width, height, drawOrder)
     ,mColor(color)
 {
 }
 
-void DrawParticleComponent::Draw(SDL_Renderer *renderer)
+void DrawParticleComponent::Draw(SDL_Renderer* renderer)
 {
-    if (!mIsVisible)
+    if (!mIsVisible) {
         return;
+    }
 
     SDL_Rect dstRect;
     dstRect.h = mHeight;
@@ -25,8 +26,9 @@ void DrawParticleComponent::Draw(SDL_Renderer *renderer)
     dstRect.y = mOwner->GetPosition().y - mHeight / 2 - GetGame()->GetCamera()->GetPosCamera().y;
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;
-    if (GetOwner()->GetRotation() == Math::Pi)
+    if (GetOwner()->GetRotation() == Math::Pi) {
         flip = SDL_FLIP_HORIZONTAL;
+    }
 
     float angle = 0;
     angle = Math::ToDegrees(GetOwner()->GetRotation());

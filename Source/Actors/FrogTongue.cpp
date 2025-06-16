@@ -3,7 +3,6 @@
 //
 
 #include "FrogTongue.h"
-
 #include "Frog.h"
 #include "Sword.h"
 #include "../Game.h"
@@ -13,26 +12,19 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-FrogTongue::FrogTongue(class Game *game, Actor *owner, float damage)
+FrogTongue::FrogTongue(class Game* game, Frog* owner, float damage)
     :Actor(game)
     ,mWidth(0.0f * mGame->GetScale())
     ,mHeight(44.0f * mGame->GetScale())
-    ,mDuration(0.8f)
-    ,mDurationTimer(mDuration)
-    ,mIncreaseDuration(mDuration / 2)
-    ,mIncreaseTimer(mIncreaseDuration)
-    ,mDecreaseDuration(mDuration / 2)
-    ,mDecreaseTimer(mDecreaseDuration)
+    ,mDuration(1.4f)
     ,mDamage(damage)
     ,mOwner(owner)
     ,mNumOfFrames(10)
     ,mFrameDuration(mDuration / 2 / mNumOfFrames)
     ,mFrameTimer(0.0f)
     ,mFrameIndex(0)
-    ,mGrowDist(70.0f * mGame->GetScale())
-    ,mGrowSpeed(700 / mIncreaseDuration * mGame->GetScale())
-    ,mMaxAttack(1)
-    ,mAttackCount(0)
+    ,mTongueRange(1000.0f)
+    ,mGrowSpeed(mTongueRange / (mDuration / 2) * mGame->GetScale())
     ,mIsIncreasing(false)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
@@ -57,14 +49,6 @@ FrogTongue::FrogTongue(class Game *game, Actor *owner, float damage)
                                                        frogTongueAssets + "FrogTongue.png",
                                                        frogTongueAssets + "FrogTongue.json", 1001);
 
-    const std::vector increase = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    mDrawAnimatedComponent->AddAnimation("increase", increase);
-
-    const std::vector decrease = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    mDrawAnimatedComponent->AddAnimation("decrease", decrease);
-
-    const std::vector end = {0};
-    mDrawAnimatedComponent->AddAnimation("end", end);
 
     const std::vector extending0 = {0};
     mDrawAnimatedComponent->AddAnimation("extending0", extending0);
@@ -100,16 +84,8 @@ FrogTongue::FrogTongue(class Game *game, Actor *owner, float damage)
     mDrawAnimatedComponent->AddAnimation("extending10", extending10);
 
 
-    // const std::vector extending = {0, 1, 2, 3, 4, 4, 4, 4, 4};
-    // mDrawAnimatedComponent->AddAnimation("extending", extending);
-    //
-    // const std::vector Retracting = {4, 3, 2, 1};
-    // mDrawAnimatedComponent->AddAnimation("Retracting", Retracting);
-
-    mDrawAnimatedComponent->SetAnimation("end");
-    const float fps = 10.0f / mIncreaseDuration;
-    mDrawAnimatedComponent->SetAnimFPS(fps);
-
+    mDrawAnimatedComponent->SetAnimation("extending0");
+    mDrawAnimatedComponent->SetAnimFPS(1.0f);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3);
@@ -118,33 +94,23 @@ FrogTongue::FrogTongue(class Game *game, Actor *owner, float damage)
 void FrogTongue::SetDuration(float duration) {
     mDuration = duration;
     mFrameDuration = mDuration / 2 / mNumOfFrames;
-    mGrowSpeed = 700 / (mDuration / 2) * mGame->GetScale();
+    mGrowSpeed = mTongueRange / (mDuration / 2) * mGame->GetScale();
 }
 
-
 void FrogTongue::OnUpdate(float deltaTime) {
-    // mDurationTimer += deltaTime;
-    // if (mDurationTimer >= mDuration) {
-    //     Deactivate();
-    //     return;
-    // }
-
     ResolveGroundCollision();
     ResolvePlayerCollision();
 
     if (mFrameIndex < 1 && !mIsIncreasing) {
         Deactivate();
-        return;
     }
     else {
         Activate();
         if (mIsIncreasing) {
             mWidth += mGrowSpeed * deltaTime;
-            // mFrameIndex++;
         }
         else {
             mWidth -= mGrowSpeed * deltaTime;
-            // mFrameIndex--;
         }
 
         Vector2 v1(-mWidth / 2, -mHeight / 2);
@@ -185,219 +151,22 @@ void FrogTongue::OnUpdate(float deltaTime) {
             mFrameTimer -= mFrameDuration;
             if (mFrameIndex >= 10) {
                 mIsIncreasing = false;
-                // mFrameTimer += deltaTime;
             }
 
             if (mIsIncreasing) {
-                // mWidth += mGrowSpeed * deltaTime;
                 mFrameIndex++;
             }
             else {
-                // mWidth -= mGrowSpeed * deltaTime;
                 mFrameIndex--;
             }
-
-            // Vector2 v1(-mWidth / 2, -mHeight / 2);
-            // Vector2 v2(mWidth / 2, -mHeight / 2);
-            // Vector2 v3(mWidth / 2, mHeight / 2);
-            // Vector2 v4(-mWidth / 2, mHeight / 2);
-            // std::vector<Vector2> vertices;
-            // vertices.emplace_back(v1);
-            // vertices.emplace_back(v2);
-            // vertices.emplace_back(v3);
-            // vertices.emplace_back(v4);
-            //
-            // mAABBComponent->SetMin(v1);
-            // mAABBComponent->SetMax(v3);
-            //
-            // if (mDrawPolygonComponent) {
-            //     mDrawPolygonComponent->SetVertices(vertices);
-            // }
-            // if (mDrawSpriteComponent) {
-            //     mDrawSpriteComponent->SetWidth(mWidth);
-            //     mDrawSpriteComponent->SetHeight(mHeight);
-            // }
-            // if (mDrawAnimatedComponent) {
-            //     mDrawAnimatedComponent->SetWidth(mWidth);
-            //     mDrawAnimatedComponent->SetHeight(mHeight);
-            //     mDrawAnimatedComponent->UseRotation(false);
-            //     mDrawAnimatedComponent->SetAnimation("extending" + std::to_string(mFrameIndex));
-            // }
-            // if (GetRotation() == 0) {
-            //     SetPosition(mOwner->GetPosition() + Vector2(mWidth / 2, 0) + Vector2(30, 0));
-            // }
-            // else if (GetRotation() == Math::Pi) {
-            //     SetPosition(mOwner->GetPosition() - Vector2(mWidth / 2, 0) - Vector2(30, 0));
-            // }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // if (mIncreaseTimer < mIncreaseDuration) {
-        //     mIncreaseTimer += deltaTime;
-        //     mDrawAnimatedComponent->SetAnimation("increase");
-        //     // mWidth += mGrowDist;
-        //     mWidth += mGrowSpeed * deltaTime;
-        //
-        //     Vector2 v1(-mWidth / 2, -mHeight / 2);
-        //     Vector2 v2(mWidth / 2, -mHeight / 2);
-        //     Vector2 v3(mWidth / 2, mHeight / 2);
-        //     Vector2 v4(-mWidth / 2, mHeight / 2);
-        //     std::vector<Vector2> vertices;
-        //     vertices.emplace_back(v1);
-        //     vertices.emplace_back(v2);
-        //     vertices.emplace_back(v3);
-        //     vertices.emplace_back(v4);
-        //
-        //     mAABBComponent->SetMin(v1);
-        //     mAABBComponent->SetMax(v3);
-        //
-        //     if (mDrawPolygonComponent) {
-        //         mDrawPolygonComponent->SetVertices(vertices);
-        //     }
-        //     if (mDrawSpriteComponent) {
-        //         mDrawSpriteComponent->SetWidth(mWidth);
-        //         mDrawSpriteComponent->SetHeight(mHeight);
-        //     }
-        //     if (mDrawAnimatedComponent) {
-        //         mDrawAnimatedComponent->SetWidth(mWidth);
-        //         mDrawAnimatedComponent->SetHeight(mHeight);
-        //         mDrawAnimatedComponent->UseRotation(false);
-        //     }
-        //     if (GetRotation() == 0) {
-        //         SetPosition(mOwner->GetPosition() + Vector2(mWidth / 2, 0) + Vector2(30, 0));
-        //     }
-        //     else if (GetRotation() == Math::Pi) {
-        //         SetPosition(mOwner->GetPosition() - Vector2(mWidth / 2, 0) - Vector2(30, 0));
-        //     }
-        // }
-        // else if (mDecreaseTimer < mDecreaseDuration){
-        //     mDecreaseTimer += deltaTime;
-        //     mDrawAnimatedComponent->SetAnimation("decrease");
-        //     // mWidth -= mGrowDist;
-        //     mWidth -= mGrowSpeed * deltaTime;
-        //
-        //     Vector2 v1(-mWidth / 2, -mHeight / 2);
-        //     Vector2 v2(mWidth / 2, -mHeight / 2);
-        //     Vector2 v3(mWidth / 2, mHeight / 2);
-        //     Vector2 v4(-mWidth / 2, mHeight / 2);
-        //     std::vector<Vector2> vertices;
-        //     vertices.emplace_back(v1);
-        //     vertices.emplace_back(v2);
-        //     vertices.emplace_back(v3);
-        //     vertices.emplace_back(v4);
-        //
-        //     mAABBComponent->SetMin(v1);
-        //     mAABBComponent->SetMax(v3);
-        //
-        //     if (mDrawPolygonComponent) {
-        //         mDrawPolygonComponent->SetVertices(vertices);
-        //     }
-        //     if (mDrawSpriteComponent) {
-        //         mDrawSpriteComponent->SetWidth(mWidth);
-        //         mDrawSpriteComponent->SetHeight(mHeight);
-        //     }
-        //     if (mDrawAnimatedComponent) {
-        //         mDrawAnimatedComponent->SetWidth(mWidth);
-        //         mDrawAnimatedComponent->SetHeight(mHeight);
-        //         mDrawAnimatedComponent->UseRotation(false);
-        //     }
-        //     if (GetRotation() == 0) {
-        //         SetPosition(mOwner->GetPosition() + Vector2(mWidth / 2, 0) + Vector2(30, 0));
-        //     }
-        //     else if (GetRotation() == Math::Pi) {
-        //         SetPosition(mOwner->GetPosition() - Vector2(mWidth / 2, 0) - Vector2(30, 0));
-        //     }
-        // }
-
-
-
-
-
-
-
-    //     mFrameTimer += deltaTime;
-    //     // SetRotation(mOwner->GetRotation());
-    //
-    //     if (mFrameTimer >= mFrameDuration) {
-    //         if (mFrameIndex >= 10) {
-    //             mIsIncreasing = false;
-    //         }
-    //
-    //         // if (mFrameIndex <= 0 && !mIsIncreasing) {
-    //         //     Deactivate();
-    //         //     return;
-    //         // }
-    //
-    //         if (mIsIncreasing) {
-    //             mWidth += mGrowDist;
-    //             mFrameIndex++;
-    //         }
-    //         else {
-    //             mWidth -= mGrowDist;
-    //             mFrameIndex--;
-    //         }
-    //
-    //         if (mFrameIndex == 0) {
-    //             Deactivate();
-    //             return;
-    //         }
-    //
-    //         mFrameTimer -= mFrameDuration;
-    //
-    //         // SDL_Log("%d", mFrameIndex);
-    //         Vector2 v1(-mWidth / 2, -mHeight / 2);
-    //         Vector2 v2(mWidth / 2, -mHeight / 2);
-    //         Vector2 v3(mWidth / 2, mHeight / 2);
-    //         Vector2 v4(-mWidth / 2, mHeight / 2);
-    //         std::vector<Vector2> vertices;
-    //         vertices.emplace_back(v1);
-    //         vertices.emplace_back(v2);
-    //         vertices.emplace_back(v3);
-    //         vertices.emplace_back(v4);
-    //
-    //         mAABBComponent->SetMin(v1);
-    //         mAABBComponent->SetMax(v3);
-    //
-    //         if (mDrawPolygonComponent) {
-    //             mDrawPolygonComponent->SetVertices(vertices);
-    //         }
-    //         if (mDrawSpriteComponent) {
-    //             mDrawSpriteComponent->SetWidth(mWidth);
-    //             mDrawSpriteComponent->SetHeight(mHeight);
-    //         }
-    //         if (mDrawAnimatedComponent) {
-    //             mDrawAnimatedComponent->SetWidth(mWidth);
-    //             mDrawAnimatedComponent->SetHeight(mHeight);
-    //             mDrawAnimatedComponent->SetAnimation("extending" + std::to_string(mFrameIndex));
-    //             mDrawAnimatedComponent->UseRotation(false);
-    //         }
-    //         if (GetRotation() == 0) {
-    //             SetPosition(mOwner->GetPosition() + Vector2(mWidth / 2, 0) + Vector2(30, 0));
-    //         }
-    //         else if (GetRotation() == Math::Pi) {
-    //             SetPosition(mOwner->GetPosition() - Vector2(mWidth / 2, 0) - Vector2(mGrowDist, 0));
-    //         }
-    //     }
     }
 }
 
 void FrogTongue::ResolveGroundCollision() {
-    std::vector<Ground *> grounds = GetGame()->GetGrounds();
+    std::vector<Ground* > grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
-        for (Ground *g: grounds) {
+        for (Ground* g: grounds) {
             if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
                 mIsIncreasing = false;
                 break;
@@ -407,17 +176,16 @@ void FrogTongue::ResolveGroundCollision() {
 }
 
 void FrogTongue::ResolvePlayerCollision() {
-    Player *player = GetGame()->GetPlayer();
+    Player* player = GetGame()->GetPlayer();
     if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
         player->ReceiveHit(mDamage, GetForward());
         mIsIncreasing = false;
     }
-    Sword *sword = player->GetSword();
+    Sword* sword = player->GetSword();
     if (mAABBComponent->Intersect(*sword->GetComponent<AABBComponent>())) {
         mIsIncreasing = false;
     }
 }
-
 
 void FrogTongue::Activate()
 {
@@ -430,38 +198,27 @@ void FrogTongue::Activate()
 
     if (mDrawAnimatedComponent) {
         mDrawAnimatedComponent->SetIsVisible(true);
-        // mDrawAnimatedComponent->SetAnimation("extending");
-        // mDrawAnimatedComponent->SetAnimation("increase");
     }
-    Frog* frog = dynamic_cast<Frog*>(mOwner);
-    frog->SetIsLicking(true);
+    mOwner->SetIsLicking(true);
 }
 
-void FrogTongue::Deactivate()
-{
-    // SDL_Log("pausou");
+void FrogTongue::Deactivate() {
     SetState(ActorState::Paused);
     mAABBComponent->SetActive(false); // desativa colisão
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetIsVisible(false);
-
-    if (mDrawSpriteComponent)
-        mDrawSpriteComponent->SetIsVisible(false);
-
-    if (mDrawAnimatedComponent)
-    {
-        mDrawAnimatedComponent->SetIsVisible(false);
-        // mDrawAnimatedComponent->SetAnimation("end");
     }
-    mDurationTimer = 0;
-    mIncreaseTimer = 0;
-    mDecreaseTimer = 0;
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetIsVisible(false);
+    }
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetIsVisible(false);
+    }
     mFrameTimer = 0;
     mFrameIndex = 0;
     mWidth = 0;
     mIsIncreasing = true;
-    Frog* frog = dynamic_cast<Frog*>(mOwner);
-    frog->SetIsLicking(false);
+    mOwner->SetIsLicking(false);
 }
 
 void FrogTongue::ChangeResolution(float oldScale, float newScale) {
@@ -489,6 +246,7 @@ void FrogTongue::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

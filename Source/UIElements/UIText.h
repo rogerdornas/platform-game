@@ -27,6 +27,5 @@ protected:
     SDL_Texture *mTextTexture;
 
     float mPointSize;
-    // float mPointSizeFloat;
     unsigned int mWrapLength;
 };

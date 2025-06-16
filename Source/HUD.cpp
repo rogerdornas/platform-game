@@ -16,13 +16,13 @@ HUD::HUD(class Game* game, const std::string& fontName)
     ,mWaitToDecreaseManaTimer(0.0f)
     ,mPlayerDie(false)
 {
-    float HPBarX = 20 * mGame->GetScale();
-    float HPBarY = 20 * mGame->GetScale();
+    float HPBarX = 50 * mGame->GetScale();
+    float HPBarY = 50 * mGame->GetScale();
     float HPBarWidth = 400 * mGame->GetScale();
     float HPBarHeight = 30 * mGame->GetScale();
 
-    float ManaBarX = 20 * mGame->GetScale();
-    float ManaBarY = 55 * mGame->GetScale();
+    float ManaBarX = 50 * mGame->GetScale();
+    float ManaBarY = 85 * mGame->GetScale();
     float ManaBarWidth = 250 * mGame->GetScale();
     float ManaBarHeight = 30 * mGame->GetScale();
 
@@ -35,30 +35,10 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mManaUsedBar = mManaBar;
     mManaRemainingBar = mManaBar;
 
-    // --------------
-    // TODO - PARTE 3
-    // --------------
-    mPlayerHealCount = AddText(std::to_string(mGame->GetPlayer()->GetHealCount()), Vector2(20, 90) * mGame->GetScale(), Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(), POINT_SIZE * mGame->GetScale());
-    // TODO 1.: Adicione um texto com a string "Time" no canto superior direito da tela, como no jogo orginal. Note que
-    //  a classe HUD tem constantes WORD_HEIGHT, WORD_OFFSET, CHAR_WIDTH, POINT_SIZE e HUD_POS_Y que podem ser usadas
-    //  para posicionar e definir o tamanho do texto.
-    // AddText("Time", Vector2(mGame->GetLogicalWindowWidth() - 100, HUD_POS_Y), Vector2(4 * CHAR_WIDTH, WORD_HEIGHT), POINT_SIZE);
-
-    // TODO 2.: Adicione um texto com a string "400" (400 segundos) logo abaixo do texto "Time".
-    //  Guarde o ponteiro do texto em um membro chamado mTimeText.
-    // mTimeText = AddText("400", Vector2(mGame->GetLogicalWindowWidth() - 100, HUD_POS_Y + WORD_HEIGHT), Vector2(3 * CHAR_WIDTH, WORD_HEIGHT), POINT_SIZE);
-
-    // TODO 3.: Adicione um texto com a string "World" à esquerda do texto "Time", como no jogo original.
-    // AddText("World", Vector2(mGame->GetLogicalWindowWidth() - 250, HUD_POS_Y), Vector2(5 * CHAR_WIDTH, WORD_HEIGHT), POINT_SIZE);
-
-    // TODO 4.: Adicione um texto com a string "1-1" logo abaixo do texto "World".
-    // mLevelName = AddText("1-1", Vector2(mGame->GetLogicalWindowWidth() - 250, HUD_POS_Y + WORD_HEIGHT), Vector2(3 * CHAR_WIDTH, WORD_HEIGHT), POINT_SIZE);
-
-    // TODO 5.: Adicione um texto com a string "Mario" no canto superior esquerdo da tela, como no jogo original.
-    // AddText("Mario", Vector2(50, HUD_POS_Y), Vector2(5 * CHAR_WIDTH, WORD_HEIGHT), POINT_SIZE);
-
-    // TODO 6.: Adicione um texto com a string "000000" logo abaixo do texto "Mario".
-    // mScoreCounter = AddText("000000", Vector2(50, HUD_POS_Y + WORD_HEIGHT), Vector2(6 * CHAR_WIDTH, WORD_HEIGHT), POINT_SIZE);
+    mPlayerHealCount = AddText(std::to_string(mGame->GetPlayer()->GetHealCount()),
+                                Vector2(50, 120) * mGame->GetScale(),
+                               Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(),
+                                POINT_SIZE * mGame->GetScale());
 }
 
 HUD::~HUD()
@@ -116,68 +96,20 @@ void HUD::Update(float deltaTime) {
         mWaitToDecreaseManaTimer = 0;
     }
 
-
     if (mGame->GetPlayer()->Died()) {
         mPlayerDie = true;
     }
 }
 
-
-void HUD::SetTime(int time)
-{
-    // --------------
-    // TODO - PARTE 3
-    // --------------
-
-    // TODO 1.: Utilize o método SetText() do mTimeText para atualizar o texto com o tempo restante. Lembre-se que
-    //  o tempo é um inteiro que representa os segundos restantes, e deve ser convertido para string.
-    std::string timeStr = std::to_string(time);
-    mTimeText->SetText(timeStr);
-
-    // TODO 2.: A posição e o tamanho do texto irão mudar dependendo do número de dígitos na variável time.
-    //  Ajuste a posição e o tamanho do mTimeText de acordo com o número de dígitos, de tal forma que
-    //  o texto fique alinhado à direita com o texto "Time" e o tamanho do texto seja proporcional ao número de dígitos.
-    int numDigits = timeStr.length();
-
-    float alignRightX = mGame->GetLogicalWindowWidth() - 100 + 4 * CHAR_WIDTH; // posição x da borda direita do texto "Time"
-    mTimeText->SetPosition(Vector2(alignRightX - numDigits * CHAR_WIDTH, HUD_POS_Y + WORD_HEIGHT));
-}
-
-void HUD::SetLevelName(const std::string &levelName)
-{
-    // --------------
-    // TODO - PARTE 3
-    // --------------
-
-    // TODO 1.: Utilize o método SetText() do mLevelName para atualizar o texto com o nome do nível.
-    mLevelName->SetText(levelName);
-}
-
 void HUD::Draw(class SDL_Renderer *renderer) {
-    // --------------
-    // TODO - PARTE 1-1
-    // --------------
-
-    // TODO 1.: Percorra a listas de textos (mTexts) e chame o método Draw de cada UIText, passando o renderer
-    //  e a posição da tela (mPos).
     for (UIText* text : mTexts) {
         text->Draw(renderer, mPos);
     }
 
-    // --------------
-    // TODO - PARTE 1-2
-    // --------------
-
-    // TODO 1.: Percorra a lista de botões (mButtons) e chame o método Draw de cada UIButton, passando o renderer
     for (UIButton* button : mButtons) {
         button->Draw(renderer, mPos);
     }
 
-    // --------------
-    // TODO - PARTE 1-3
-    // --------------
-
-    // TODO 1.: Percorra a lista de imagens (mImages) e chame o método Draw de cada UIImage, passando o renderer
     for (UIImage* image : mImages) {
         image->Draw(renderer, mPos);
     }
@@ -210,7 +142,6 @@ void HUD::DrawLifeBar(class SDL_Renderer *renderer) {
     HPGrowingBar.y = static_cast<int>(mHPGrowingBar.y);
     HPGrowingBar.w = static_cast<int>(mHPGrowingBar.w);
     HPGrowingBar.h = static_cast<int>(mHPGrowingBar.h);
-
 
     SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
     SDL_RenderFillRect(renderer, &HPBar);

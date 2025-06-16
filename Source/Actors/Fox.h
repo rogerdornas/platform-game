@@ -2,6 +2,7 @@
 // Created by roger on 15/05/2025.
 //
 #pragma once
+
 #include "Actor.h"
 #include "Enemy.h"
 
@@ -18,14 +19,14 @@ public:
         Jump
     };
 
-    Fox(Game *game, float width, float height, float moveSpeed, float healthPoints);
+    Fox(Game* game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
     void SetUnlockGroundsIds(const std::vector<int>& ids) { mUnlockGroundsIds = ids; }
 
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void ResolveGroundCollision();
+    void ResolveGroundCollision() override;
     void ResolvePlayerCollision();
     void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
@@ -73,7 +74,7 @@ private:
     float mJumpForce;
     float mGravity;
 
-    class Sword *mSword;
+    class Sword* mSword;
     bool mSwordHitPlayer;
     float mDistToSword;
 
@@ -81,5 +82,5 @@ private:
 
     State mState;
 
-    class DashComponent *mDashComponent;
+    class DashComponent* mDashComponent;
 };

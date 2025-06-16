@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "../Component.h"
 #include "../../Math.h"
 #include <vector>
@@ -12,10 +13,10 @@ class DrawComponent : public Component
 {
 public:
     // (Lower draw order corresponds with further back)
-    explicit DrawComponent(class Actor *owner, int drawOrder = 100);
+    explicit DrawComponent(class Actor* owner, int drawOrder = 100);
     ~DrawComponent() override;
 
-    virtual void Draw(SDL_Renderer *renderer);
+    virtual void Draw(SDL_Renderer* renderer);
 
     bool IsVisible() const { return mIsVisible; }
     void SetIsVisible(const bool isVisible) { mIsVisible = isVisible; }

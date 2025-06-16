@@ -14,18 +14,16 @@
 #include "../Actors/Ground.h"
 #include "../Actors/DynamicGround.h"
 
-Lever::Lever(class Game *game)
+Lever::Lever(class Game* game)
     :Trigger(game, 64.0f * game->GetScale(), 64.0f * game->GetScale())
     ,mActivate(false)
     ,mActivatingDuration(0.4f)
     ,mActivatingTimer(0.0f)
-
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
 
 {
     mDrawPolygonComponent = nullptr;
-
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight,
                                                    "../Assets/Sprites/Lever/Lever.png",
                                                    "../Assets/Sprites/Lever/Lever.json", 150);
@@ -56,38 +54,44 @@ void Lever::OnUpdate(float deltaTime) {
                 auto* sparkEffect = new Effect(mGame);
                 sparkEffect->SetDuration(0.1f);
                 sparkEffect->SetPosition(GetPosition());
-                sparkEffect->SetEffect(TargetEffect::swordHit);
+                sparkEffect->SetEffect(TargetEffect::SwordHit);
             }
             switch (mTarget) {
-                case Target::camera:
+                case Target::Camera:
                     CameraTrigger();
-                break;
-                case Target::dynamicGround:
+                    break;
+
+                case Target::DynamicGround:
                     DynamicGroundTrigger();
-                break;
-                case Target::ground:
+                    break;
+
+                case Target::Ground:
                     GroundTrigger();
-                break;
+                    break;
+
                 default:
-                break;
+                    break;
             }
         }
-        std::vector<FireBall *> fireBalls = mGame->GetFireBalls();
-        for (FireBall *f: fireBalls) {
+        std::vector<FireBall* > fireBalls = mGame->GetFireBalls();
+        for (FireBall* f: fireBalls) {
             if (mAABBComponent->Intersect(*f->GetComponent<AABBComponent>())) {
                 mActivate = true;
                 switch (mTarget) {
-                    case Target::camera:
+                    case Target::Camera:
                         CameraTrigger();
-                    break;
-                    case Target::dynamicGround:
+                        break;
+
+                    case Target::DynamicGround:
                         DynamicGroundTrigger();
-                    break;
-                    case Target::ground:
+                        break;
+
+                    case Target::Ground:
                         GroundTrigger();
-                    break;
+                        break;
+
                     default:
-                    break;
+                        break;
                 }
                 f->Deactivate();
             }
@@ -107,20 +111,20 @@ void Lever::OnUpdate(float deltaTime) {
 }
 
 void Lever::DynamicGroundTrigger() {
-    std::vector<Ground *> grounds = mGame->GetGrounds();
+    std::vector<Ground* > grounds = mGame->GetGrounds();
     switch (mEvent) {
-        case Event::setIsGrowing:
+        case Event::SetIsGrowing:
             for (int id : mGroundsIds) {
-                Ground *g = mGame->GetGroundById(id);
+                Ground* g = mGame->GetGroundById(id);
                 DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
                 if (dynamicGround) {
                     dynamicGround->SetIsGrowing(true);
                 }
             }
         break;
-        case Event::setIsDecreasing:
+        case Event::SetIsDecreasing:
             for (int id : mGroundsIds) {
-                Ground *g = mGame->GetGroundById(id);
+                Ground* g = mGame->GetGroundById(id);
                 DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
                 if (dynamicGround) {
                     dynamicGround->SetIsDecreasing(true);

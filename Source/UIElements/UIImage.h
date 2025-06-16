@@ -8,7 +8,7 @@
 #include <SDL_image.h>
 #include "UIElement.h"
 
-class UIImage :  public UIElement
+class UIImage : public UIElement
 {
 public:
     UIImage(const std::string &imagePath, const Vector2 &pos = Vector2::Zero,

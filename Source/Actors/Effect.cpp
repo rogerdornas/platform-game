@@ -3,11 +3,12 @@
 //
 
 #include "Effect.h"
+#include "../Random.h"
 #include "../Components/DrawComponents/DrawParticleComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 
 
-Effect::Effect(class Game *game)
+Effect::Effect(class Game* game)
     :Actor(game)
     ,mDuration(0.1f)
     ,mDurationTimer(0.0f)
@@ -25,13 +26,13 @@ void Effect::SetEffect(TargetEffect targetEffect) {
     mTargetEffect = targetEffect;
     float size;
     switch (mTargetEffect) {
-        case TargetEffect::swordHit:
+        case TargetEffect::SwordHit:
             SetRotation(Random::GetFloatRange(-Math::Pi/4, Math::Pi/4));
             size = Random::GetFloatRange(1.2 * mSize, 1.5 * mSize);
             mDrawParticleComponent = new DrawParticleComponent(this, "../Assets/Sprites/Effects/Spark.png",
                                                                 size * 2, size / 2, mColor);
         break;
-        case TargetEffect::circle:
+        case TargetEffect::Circle:
             SetPosition(mEnemy->GetPosition());
             mDrawParticleComponent = new DrawParticleComponent(this, "../Assets/Sprites/Effects/ImperfectCircleBlur.png",
                                                         mSize, mSize, mColor);
@@ -42,19 +43,16 @@ void Effect::SetEffect(TargetEffect targetEffect) {
 
 void Effect::OnUpdate(float deltaTime) {
     switch (mTargetEffect) {
-        case TargetEffect::bloodParticle:
-            BloodParticleEffect(deltaTime);
-            break;
-        case TargetEffect::swordHit:
+        case TargetEffect::SwordHit:
             SwordHitEffect(deltaTime);
             break;
-        case TargetEffect::circle:
-            Circle(deltaTime);
+        case TargetEffect::Circle:
+            CircleEffect(deltaTime);
             break;
     }
 }
 
-void Effect::Circle(float deltaTime) {
+void Effect::CircleEffect(float deltaTime) {
     mDurationTimer += deltaTime;
     if (mDurationTimer >= mDuration) {
         SetState(ActorState::Destroy);
@@ -62,23 +60,12 @@ void Effect::Circle(float deltaTime) {
     }
 
     SDL_Color color = mColor;
-    // if (mDurationTimer < mDuration / 2) {
-    //     color.a = mDurationTimer / mDuration * mColor.a;
-    // }
-    // else {
-    //     color.a = (1 - mDurationTimer / mDuration) * mColor.a;
-    // }
-
     color.a = (1 - mDurationTimer / mDuration) * mColor.a;
 
     mDrawParticleComponent->SetColor(color);
     if (mEnemy) {
         SetPosition(mEnemy->GetPosition());
     }
-}
-
-void Effect::BloodParticleEffect(float deltaTime) {
-
 }
 
 void Effect::SwordHitEffect(float deltaTime) {
@@ -89,18 +76,17 @@ void Effect::SwordHitEffect(float deltaTime) {
     }
 
     mDrawParticleComponent->SetColor(mColor);
-
 }
 
 void Effect::ChangeResolution(float oldScale, float newScale) {
     mSize = mSize / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
     switch (mTargetEffect) {
-        case TargetEffect::swordHit:
+        case TargetEffect::SwordHit:
             mDrawParticleComponent->SetWidth(mSize * 2);
             mDrawParticleComponent->SetHeight(mSize / 2);
         break;
-        case TargetEffect::circle:
+        case TargetEffect::Circle:
             mDrawParticleComponent->SetWidth(mSize);
             mDrawParticleComponent->SetHeight(mSize);
         break;

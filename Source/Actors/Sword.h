@@ -3,17 +3,17 @@
 //
 
 #pragma once
+
 #include "Actor.h"
 
 class Sword : public Actor
 {
 public:
-    Sword(class Game *game, Actor *owner, float width = 60.0f, float height = 20.0f, float duration = 0.1f,
-          float damage = 10);
+    Sword(class Game *game, Actor *owner, float width = 60.0f, float height = 20.0f, float duration = 0.1f, float damage = 10);
 
     void OnUpdate(float deltaTime) override;
 
-    float GetDamage() { return mDamage; }
+    float GetDamage() const { return mDamage; }
     float GetWidth() override { return mWidth; }
     float GetHeight() override { return mHeight; }
 

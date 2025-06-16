@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "Actor.h"
 #include "Enemy.h"
 
@@ -15,7 +16,6 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void ResolveGroundCollision();
     void MovementAfterPlayerSpotted();
     void MovementBeforePlayerSpotted();
 

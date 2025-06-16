@@ -7,27 +7,22 @@
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include <unordered_map>
-#include <iomanip>
-#include <sstream>
 #include "../Components/DrawComponents/DrawGroundSpritesComponent.h"
+#include <unordered_map>
 
-Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMoving, float movingDuration,
-               Vector2 velocity)
-    : Actor(game),
-      mStartingPosition(Vector2::Zero),
-      mRespawnPosition(Vector2::Zero),
-      mHeight(height),
-      mWidth(width),
-      mIsSpike(isSpike),
-      mIsMoving(isMoving),
-      mMovingTimer(movingDuration),
-      mMovingDuration(movingDuration),
-      mVelocity(velocity * mGame->GetScale()),
-      mDrawPolygonComponent(nullptr),
-      mDrawSpriteComponent(nullptr),
-      mDrawGroundSpritesComponent(nullptr)
+Ground::Ground(Game* game, float width, float height, bool isSpike, bool isMoving, float movingDuration, Vector2 velocity)
+    :Actor(game)
+    ,mStartingPosition(Vector2::Zero)
+    ,mRespawnPosition(Vector2::Zero)
+    ,mHeight(height)
+    ,mWidth(width)
+    ,mIsSpike(isSpike)
+    ,mIsMoving(isMoving)
+    ,mMovingTimer(movingDuration)
+    ,mMovingDuration(movingDuration)
+    ,mVelocity(velocity * mGame->GetScale())
+    ,mDrawPolygonComponent(nullptr)
+    ,mDrawGroundSpritesComponent(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -62,13 +57,10 @@ Ground::Ground(Game *game, float width, float height, bool isSpike, bool isMovin
 
 Ground::~Ground() { mGame->RemoveGround(this); }
 
-void Ground::OnUpdate(float deltaTime)
-{
-    if (mIsMoving)
-    {
+void Ground::OnUpdate(float deltaTime) {
+    if (mIsMoving) {
         mMovingTimer += deltaTime;
-        if (mMovingTimer > mMovingDuration)
-        {
+        if (mMovingTimer > mMovingDuration) {
             mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() * -1);
             mMovingTimer = 0;
         }
@@ -100,7 +92,7 @@ void Ground::SetSprites() {
 
     std::unordered_map<int, std::vector<Vector2> > spriteOffsetMap;
 
-    int **levelData = mGame->GetLevelData();
+    int** levelData = mGame->GetLevelData();
 
     for (int row = minRow; row < maxRow; ++row) {
         for (int col = minCol; col < maxCol; ++col) {

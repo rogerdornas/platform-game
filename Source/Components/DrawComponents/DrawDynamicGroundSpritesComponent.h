@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "DrawComponent.h"
 #include "DrawGroundSpritesComponent.h"
 
@@ -10,9 +11,9 @@ class DrawDynamicGroundSpritesComponent : public DrawGroundSpritesComponent
 {
 public:
     // (Lower draw order corresponds with further back)
-    DrawDynamicGroundSpritesComponent(Actor *owner, int width = 0, int height = 0, int drawOrder = 101);
+    DrawDynamicGroundSpritesComponent(Actor* owner, int width = 0, int height = 0, int drawOrder = 101);
 
-    void Draw(SDL_Renderer *renderer) override;
+    void Draw(SDL_Renderer* renderer) override;
 
 protected:
     class DynamicGround* mOwnerDynamicGround;

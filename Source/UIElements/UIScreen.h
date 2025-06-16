@@ -1,17 +1,8 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #pragma once
 
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <list>
 
 #include "../Math.h"
 #include "UIText.h"
@@ -28,12 +19,6 @@ public:
         Closing
     };
 
-	// const int POINT_SIZE = 68;
-	// const int WORD_HEIGHT = 30.0f;
-	// const int WORD_OFFSET = 25.0f;
-	// const int CHAR_WIDTH = 30.0f;
-	// const int HUD_POS_Y = 10.0f;
-
 	UIScreen(class Game* game, const std::string& fontName);
 	virtual ~UIScreen();
 
@@ -45,8 +30,8 @@ public:
 
 	void SetPosition(Vector2 position) { mPos = position; }
 	void SetSize(Vector2 size) { mSize = size; }
-	Vector2 GetPosition() { return mPos; }
-	Vector2 GetSize() { return mSize; }
+	Vector2 GetPosition() const { return mPos; }
+	Vector2 GetSize() const { return mSize; }
 
     // Set state to closing
 	void Close();
@@ -55,7 +40,7 @@ public:
 	UIState GetState() const { return mState; }
 
     // Game getter
-    class Game* GetGame() { return mGame; }
+    class Game* GetGame() const { return mGame; }
 
     // Add a button to this screen
 	UIButton* AddButton(const std::string& name, const Vector2& pos, const Vector2& dims, const int pointSize, std::function<void()> onClick);

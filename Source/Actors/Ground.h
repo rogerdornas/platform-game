@@ -3,14 +3,15 @@
 //
 
 #pragma once
+
 #include "Actor.h"
 
 class Ground : public Actor
 {
 public:
-    Ground(Game *game, float width, float height, bool isSpike = false, bool isMoving = false,
+    Ground(Game* game, float width, float height, bool isSpike = false, bool isMoving = false,
            float movingDuration = 0.0f, Vector2 velocity = Vector2::Zero);
-    ~Ground();
+    ~Ground() override;
 
     void OnUpdate(float deltaTime) override;
 
@@ -24,7 +25,7 @@ public:
     void SetRespawPosition(Vector2 pos) { mRespawnPosition = pos; }
     Vector2 GetRespawPosition() { return mRespawnPosition; }
 
-    void SetSprites();
+    virtual void SetSprites();
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
     Vector2 GetStartingPosition() { return mStartingPosition; }
@@ -46,11 +47,9 @@ protected:
     Vector2 mRespawnPosition;
     Vector2 mVelocity;
 
-    class DrawPolygonComponent *mDrawPolygonComponent;
-    class DrawSpriteComponent *mDrawSpriteComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawGroundSpritesComponent* mDrawGroundSpritesComponent;
 
-    class DrawGroundSpritesComponent *mDrawGroundSpritesComponent;
-
-    class RigidBodyComponent *mRigidBodyComponent;
-    class AABBComponent *mAABBComponent;
+    class RigidBodyComponent* mRigidBodyComponent;
+    class AABBComponent* mAABBComponent;
 };

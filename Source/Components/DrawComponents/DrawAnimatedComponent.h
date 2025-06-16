@@ -11,11 +11,11 @@ class DrawAnimatedComponent : public DrawSpriteComponent
 {
 public:
     // (Lower draw order corresponds with further back)
-    DrawAnimatedComponent(Actor *owner, float width, float height, const std::string &spriteSheetPath,
+    DrawAnimatedComponent(Actor* owner, float width, float height, const std::string &spriteSheetPath,
                           const std::string &spriteSheetData, int drawOrder = 100);
     ~DrawAnimatedComponent() override;
 
-    void Draw(SDL_Renderer *renderer) override;
+    void Draw(SDL_Renderer* renderer) override;
     void Update(float deltaTime) override;
 
     void UseFlip(bool useFlip) { mUseFlip = useFlip; }
@@ -41,7 +41,7 @@ private:
     void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath);
 
     // Vector of sprites
-    std::vector<SDL_Rect *> mSpriteSheetData;
+    std::vector<SDL_Rect* > mSpriteSheetData;
 
     // Map of animation name to vector of textures corresponding to the animation
     std::unordered_map<std::string, std::vector<int> > mAnimations;

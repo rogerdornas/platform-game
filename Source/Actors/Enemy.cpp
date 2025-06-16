@@ -3,7 +3,6 @@
 //
 
 #include "Enemy.h"
-
 #include "Effect.h"
 #include "ParticleSystem.h"
 #include "../Game.h"
@@ -13,12 +12,13 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-Enemy::Enemy(Game *game, float width, float height, float moveSpeed, float heathPoints, float contactDamage)
+Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heathPoints, float contactDamage)
     :Actor(game)
     ,mWidth(width * mGame->GetScale())
     ,mHeight(height * mGame->GetScale())
     ,mMoveSpeed(moveSpeed * mGame->GetScale())
     ,mHealthPoints(heathPoints)
+    ,mMaxHealthPoints(heathPoints)
     ,mContactDamage(contactDamage)
     ,mKnockBackSpeed(0.0f)
     ,mKnockBackTimer(0.0f)
@@ -56,7 +56,6 @@ Enemy::~Enemy() {
 
 void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mHealthPoints -= damage;
-    // mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBack);
     mRigidBodyComponent->SetVelocity(mRigidBodyComponent->GetVelocity() + knockBackDirection * mKnockBackSpeed);
     mKnockBackTimer = 0;
     mIsFlashing = true;
@@ -75,12 +74,12 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 3.5f);
     circleBlur->SetEnemy(*this);
     circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
-    circleBlur->SetEffect(TargetEffect::circle);
+    circleBlur->SetEffect(TargetEffect::Circle);
 
     mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
 }
 
-bool Enemy::Died() {
+bool Enemy::Died() const {
     if (mHealthPoints <= 0) {
         mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
         return true;
@@ -88,13 +87,50 @@ bool Enemy::Died() {
     return false;
 }
 
-void Enemy::ResolveEnemyCollision() {
-    std::vector<Enemy *> enemies = mGame->GetEnemies();
+void Enemy::ResolveEnemyCollision() const {
+    std::vector<Enemy* > enemies = mGame->GetEnemies();
     if (!enemies.empty()) {
-        for (Enemy *e: enemies) {
+        for (Enemy* e: enemies) {
             if (e != this) {
                 if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
                     mAABBComponent->ResolveCollision(*e->GetComponent<AABBComponent>());
+                }
+            }
+        }
+    }
+}
+
+void Enemy::ResolveGroundCollision() {
+    std::vector<Ground*> grounds = GetGame()->GetGrounds();
+    if (!grounds.empty()) {
+        for (Ground* g : grounds) {
+            if (!g->GetIsSpike()) { // Colosão com ground
+                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                    mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                }
+            }
+            else if (g->GetIsSpike()) { // Colisão com spikes
+                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                    std::array<bool, 4> collisionSide{};
+                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                    // Colidiu top
+                    if (collisionSide[0]) {
+                        ReceiveHit(10, Vector2::NegUnitY);
+                    }
+                    // Colidiu bot
+                    if (collisionSide[1]) {
+                        ReceiveHit(10, Vector2::UnitY);
+                    }
+                    //Colidiu left
+                    if (collisionSide[2]) {
+                        ReceiveHit(10, Vector2::NegUnitX);
+                    }
+                    //Colidiu right
+                    if (collisionSide[3]) {
+                        ReceiveHit(10, Vector2::UnitX);
+                    }
+
+                    mKnockBackTimer = 0;
                 }
             }
         }

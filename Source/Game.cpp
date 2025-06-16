@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include <algorithm>
 #include <vector>
 #include "Game.h"
@@ -29,7 +21,6 @@
 #include "Actors/Frog.h"
 #include "Actors/Lever.h"
 #include "Actors/Trigger.h"
-
 #include "Actors/Fairy.h"
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Projectile.h"
@@ -52,48 +43,45 @@ std::vector<int> ParseIntList(const std::string& str) {
 }
 
 Game::Game(int windowWidth, int windowHeight, int FPS)
-    : mResetLevel(false),
-      mWindow(nullptr),
-      mRenderer(nullptr),
-      mWindowWidth(windowWidth),
-      mWindowHeight(windowHeight),
-      mLogicalWindowWidth(windowWidth),
-      mLogicalWindowHeight(windowHeight),
-      mTicksCount(0),
-      mIsRunning(true),
-      mUpdatingActors(false),
-      mFPS(FPS),
-      mIsPaused(false),
-      mCamera(nullptr),
-      mPlayer(nullptr),
-      mLevelData(nullptr),
-      mLevelDataDynamicGrounds(nullptr),
-      mController(nullptr),
-      mHitstopActive(false),
-      mHitstopDuration(0.15f),
-      mHitstopTimer(0.0f),
-      mIsSlowMotion(false),
-      mIsAccelerated(false),
-      mLeftStickYState(StickState::Neutral),
-      mBackGroundTexture(nullptr),
-      mSky(nullptr),
-      mMountains(nullptr),
-      mTreesBack(nullptr),
-      mTreesFront(nullptr),
-      mAudio(nullptr),
-      mHUD(nullptr),
-      mPauseMenu(nullptr),
-      mSceneManagerState(SceneManagerState::None),
-      mFadeDuration(0.5f),
-      mSceneManagerTimer(0.0f),
-      mFadeAlpha(0),
-      mGameScene(GameScene::MainMenu),
-      mNextScene(GameScene::MainMenu),
-      mContinueScene(GameScene::Level4)
+    :mResetLevel(false)
+    ,mWindow(nullptr)
+    ,mRenderer(nullptr)
+    ,mWindowWidth(windowWidth)
+    ,mWindowHeight(windowHeight)
+    ,mLogicalWindowWidth(windowWidth)
+    ,mLogicalWindowHeight(windowHeight)
+    ,mTicksCount(0)
+    ,mIsRunning(true)
+    ,mUpdatingActors(false)
+    ,mFPS(FPS)
+    ,mIsPaused(false)
+    ,mCamera(nullptr)
+    ,mPlayer(nullptr)
+    ,mLevelData(nullptr)
+    ,mLevelDataDynamicGrounds(nullptr)
+    ,mController(nullptr)
+    ,mHitstopActive(false)
+    ,mHitstopDuration(0.15f)
+    ,mHitstopTimer(0.0f)
+    ,mIsSlowMotion(false)
+    ,mIsAccelerated(false)
+    ,mLeftStickYState(StickState::Neutral)
+    ,mBackGroundTexture(nullptr)
+    ,mSky(nullptr)
+    ,mMountains(nullptr)
+    ,mTreesBack(nullptr)
+    ,mTreesFront(nullptr)
+    ,mAudio(nullptr)
+    ,mHUD(nullptr)
+    ,mPauseMenu(nullptr)
+    ,mSceneManagerState(SceneManagerState::None)
+    ,mFadeDuration(0.5f)
+    ,mSceneManagerTimer(0.0f)
+    ,mFadeAlpha(0)
+    ,mGameScene(GameScene::MainMenu)
+    ,mNextScene(GameScene::MainMenu)
+    ,mContinueScene(GameScene::Level4)
 {
-    // float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
-    // int tileSize = static_cast<int>(mOriginalTileSize / ratio);
-    // mScale = static_cast<float>(tileSize) / mOriginalTileSize;
 }
 
 bool Game::Initialize()
@@ -169,20 +157,11 @@ bool Game::Initialize()
         }
     }
 
-    // --------------
-    // TODO - PARTE 3
-    // --------------
-
-    // TODO 1. (1 linha): Uma biblioteca Random.h foi incluída nesse projeto para a geração de números aleatórios.
-    //  Utilize a função Random::Init para inicializar o gerador de números aleatórios (~1 linha).
     Random::Init();
 
     mAudio = new AudioSystem(16);
 
     mTicksCount = SDL_GetTicks();
-
-    // Init all game actors
-    // InitializeActors();
 
     SetGameScene(GameScene::MainMenu);
 
@@ -200,16 +179,6 @@ bool Game::Initialize()
 
 void Game::SetGameScene(Game::GameScene scene, float transitionTime)
 {
-    // --------------
-    // TODO - PARTE 2
-    // --------------
-
-    // TODO 1.: Verifique se o estado do SceneManager mSceneManagerState é SceneManagerState::None.
-    //  Se sim, verifique se a cena passada scene passada como parâmetro é uma das cenas válidas (MainMenu, Level1, Level2).
-    //  Se a cena for válida, defina mNextScene como essa nova cena, mSceneManagerState como SceneManagerState::Entering e
-    //  mSceneManagerTimer como o tempo de transição passado como parâmetro.
-    //  Se a cena for inválida, registre um erro no log e retorne.
-    //  Se o estado do SceneManager não for SceneManagerState::None, registre um erro no log e retorne.
     // Verifica se o gerenciador de cenas está pronto para uma nova transição
     if (mSceneManagerState == SceneManagerState::None) {
         // Verifica se a cena é válida
@@ -231,11 +200,6 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime)
 
 void Game::ResetGameScene(float transitionTime)
 {
-    // --------------
-    // TODO - PARTE 2
-    // --------------
-
-    // TODO 1.: Chame SetGameScene passando o mGameScene atual e o tempo de transição.
     SetGameScene(mGameScene, transitionTime);
 }
 
@@ -248,7 +212,7 @@ void Game::ChangeScene()
 
     if (mNextScene != GameScene::MainMenu) {
         // Pool de Fireballs
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             new FireBall(this);
         }
 
@@ -300,8 +264,8 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
         mAudio->CacheSound("Hornet.wav");
         mAudio->CacheSound("MantisLords.wav");
     }
@@ -317,8 +281,8 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
     }
     else if (mNextScene == GameScene::Level3) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
@@ -332,8 +296,8 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
     }
     else if (mNextScene == GameScene::Level4) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
@@ -347,8 +311,8 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        // TODO 1. Toque a música de fundo "MusicMain.ogg" em loop e armaze o SoundHandle retornado em mMusicHandle.
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
         mAudio->CacheSound("MantisLords.wav");
     }
 
@@ -356,27 +320,19 @@ void Game::ChangeScene()
     mGameScene = mNextScene;
 }
 
-void Game::LoadMainMenu()
-{
-    // --------------
-    // TODO - PARTE 1
-    // --------------
-    // Esse método será usado para criar uma tela de UI e adicionar os elementos do menu principal.
+void Game::LoadMainMenu() {
     auto mainMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
     const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 8, 50 * mScale);
     mainMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
     mainMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
     Vector2 buttonPos = Vector2((mainMenu->GetSize().x - buttonSize.x) / 2, 0);
-    // buttonPos = Vector2::Zero;
 
     std::string name = "CONTINUAR";
-    Vector2 nameDims = Vector2(30 * name.size(), 44) * mScale;
     int buttonPointSize = static_cast<int>(34 * mScale);
     mainMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize,
     [this]() {SetGameScene(mContinueScene, 0.5f);});
 
     name = "NOVO JOGO";
-    nameDims = Vector2(30 * name.size(), 44) * mScale;
     mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize,
     [this]() {
     SetGameScene(GameScene::Level4, 0.5f);
@@ -385,43 +341,31 @@ void Game::LoadMainMenu()
 });
 
     name = "OPÇÕES";
-    nameDims = Vector2(30 * name.size(), 44) * mScale;
     mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize,
     nullptr);
 
     name = "SAIR";
-    nameDims = Vector2(30 * name.size(), 44) * mScale;
     mainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize,
     [this]() {Quit();});
 }
 
-UIScreen* Game::LoadPauseMenu()
-{
-    // --------------
-    // TODO - PARTE 1
-    // --------------
-
-    // Esse método será usado para criar uma tela de UI e adicionar os elementos do menu principal.
+UIScreen* Game::LoadPauseMenu() {
     auto pauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
     const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 6, 50 * mScale);
     pauseMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
     pauseMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
     Vector2 buttonPos = Vector2((pauseMenu->GetSize().x - buttonSize.x) / 2, 0);
-    // const Vector2 buttonPos = Vector2::Zero;
 
     std::string name = "CONTINUAR";
-    Vector2 nameDims = Vector2(15 * name.size(), 28) * mScale;
     int buttonPointSize = static_cast<int>(34 * mScale);
     pauseMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize,
     [this]() {TogglePause();});
 
     name = "OPÇÕES";
-    nameDims = Vector2(15 * name.size(), 28) * mScale;
     pauseMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize,
     nullptr);
 
     name = "VOLTAR AO MENU";
-    nameDims = Vector2(15 * name.size(), 28) * mScale;
     pauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize,
     [this]() {
         SetGameScene(GameScene::MainMenu, 0.5f);
@@ -430,46 +374,18 @@ UIScreen* Game::LoadPauseMenu()
     return pauseMenu;
 }
 
-void Game::InitializeActors() {
-    // Pool de Fireballs
-    for (int i = 0; i < 5; i++) {
-        new FireBall(this);
-    }
-
-    // Pool de Partículas
-    for (int i = 0; i < 200; i++) {
-        new Particle(this);
-    }
-
-    const std::string levelsAssets = "../Assets/Levels/";
-
-    LoadLevel(levelsAssets + "Forest/Forest.json");
-    // LoadLevel(levelsAssets + "Pain/Pain.json");
-    // LoadLevel(levelsAssets + "Run/Run.json");
-    // LoadLevel(levelsAssets + "Musgo/Musgo.json");
-
-    mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
-                                       mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
-}
-
-
-void Game::LoadObjects(const std::string &fileName)
-{
+void Game::LoadObjects(const std::string &fileName) {
     std::ifstream file(fileName);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         SDL_Log("Erro ao abrir o arquivo");
         return;
     }
     nlohmann::json mapData;
     file >> mapData;
     Ground *ground;
-    for (const auto &layer: mapData["layers"])
-    {
-        if (layer["name"] == "Grounds")
-        {
-            for (const auto &obj: layer["objects"])
-            {
+    for (const auto &layer: mapData["layers"]) {
+        if (layer["name"] == "Grounds") {
+            for (const auto &obj: layer["objects"]) {
                 std::string name = obj["name"];
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
@@ -550,14 +466,17 @@ void Game::LoadObjects(const std::string &fileName)
                             dynamicGround->SetGrowDirection(GrowthDirection::Up);
                             dynamicGround->SetPosition(Vector2(x + width / 2, y + height - minHeight / 2));
                         break;
+
                         case 1:
                             dynamicGround->SetGrowDirection(GrowthDirection::Down);
                             dynamicGround->SetPosition(Vector2(x + width / 2, y + minHeight / 2));
                         break;
+
                         case 2:
                             dynamicGround->SetGrowDirection(GrowthDirection::Left);
                             dynamicGround->SetPosition(Vector2(x + width - minWidth / 2, y + height / 2));
                         break;
+
                         case 3:
                             dynamicGround->SetGrowDirection(GrowthDirection::Right);
                             dynamicGround->SetPosition(Vector2(x + minWidth / 2, y + height / 2));
@@ -682,9 +601,8 @@ void Game::LoadObjects(const std::string &fileName)
                 lever->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
             }
         }
-        if (layer["name"] == "Enemies")
-            for (const auto &obj: layer["objects"])
-            {
+        if (layer["name"] == "Enemies") {
+            for (const auto &obj: layer["objects"]) {
                 std::string name = obj["name"];
                 int id = obj["id"];
                 float x = static_cast<float>(obj["x"]) * mScale;
@@ -695,26 +613,22 @@ void Game::LoadObjects(const std::string &fileName)
                 float MaxPosY = 0;
                 std::string grounds;
                 std::vector<int> ids;
-                if (name == "Enemy Simple")
-                {
+                if (name == "Enemy Simple") {
                     auto *enemySimple = new EnemySimple(this, 60, 60, 200, 50);
                     enemySimple->SetPosition(Vector2(x, y));
                     enemySimple->SetId(id);
                 }
-                else if (name == "Flying Enemy")
-                {
+                else if (name == "Flying Enemy") {
                     auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 70);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                     flyingEnemySimple->SetId(id);
                 }
-                else if (name == "FlyingShooterEnemy")
-                {
+                else if (name == "FlyingShooterEnemy") {
                     auto *flyingShooterEnemy = new FlyingShooterEnemy(this, 50, 80, 250, 50);
                     flyingShooterEnemy->SetPosition(Vector2(x, y));
                     flyingShooterEnemy->SetId(id);
                 }
-                else if (name == "Fox")
-                {
+                else if (name == "Fox") {
                     if (obj.contains("properties")) {
                         for (const auto &prop: obj["properties"]) {
                             std::string propName = prop["name"];
@@ -729,8 +643,7 @@ void Game::LoadObjects(const std::string &fileName)
                     fox->SetId(id);
                     fox->SetUnlockGroundsIds(ids);
                 }
-                else if (name == "Frog")
-                {
+                else if (name == "Frog") {
                     if (obj.contains("properties")) {
                         for (const auto &prop: obj["properties"]) {
                             std::string propName = prop["name"];
@@ -760,9 +673,9 @@ void Game::LoadObjects(const std::string &fileName)
                     frog->SetUnlockGroundsIds(ids);
                 }
             }
-        if (layer["name"] == "Player")
-            for (const auto &obj: layer["objects"])
-            {
+        }
+        if (layer["name"] == "Player") {
+            for (const auto &obj: layer["objects"]) {
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
                 if (mPlayer) {
@@ -779,14 +692,14 @@ void Game::LoadObjects(const std::string &fileName)
                 mPlayer->SetStartingPosition(Vector2(x, y));
                 mPlayer->GetComponent<AABBComponent>()->SetActive(true);
             }
+        }
     }
 }
 
 void Game::LoadLevel(const std::string &fileName) {
     // Abre arquivo json
     std::ifstream file(fileName);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         SDL_Log("Erro ao abrir o arquivo");
         return;
     }
@@ -830,14 +743,10 @@ void Game::LoadLevel(const std::string &fileName) {
     size_t pos = fileName.rfind(".json");
     std::string tileSheetTexturePath = fileName.substr(0, pos) + ".png";
     mTileSheet = LoadTexture(tileSheetTexturePath);
-    // mTileSheet = LoadTexture("../Assets/Levels/Forest/Forest.png");
-    // mTileSheet = LoadTexture("../Assets/Levels/Musgo/Musgo.png");
 
     // Load tilesheet data
     std::string tileSheetDataPath = fileName.substr(0, pos) + "TileSet.json";
     std::ifstream tileSheetFile(tileSheetDataPath);
-    // std::ifstream tileSheetFile("../Assets/Levels/Forest/ForestTileSet.json");
-    // std::ifstream tileSheetFile("../Assets/Levels/Musgo/MusgoTileSet.json");
 
     nlohmann::json tileSheetData = nlohmann::json::parse(tileSheetFile);
 
@@ -1049,12 +958,9 @@ void Game::UpdateGame()
         deltaTime = 0.05f;
     }
 
-    // Para alterar velocidade do jogo (testes)
-    // deltaTime *= 0.5;
-    // deltaTime *= 2.5;
-
     mTicksCount = SDL_GetTicks();
 
+    // testes para alterar velocidade do jogo
     if (mIsSlowMotion) {
         deltaTime *= 0.5;
     }
@@ -1079,6 +985,9 @@ void Game::UpdateGame()
         }
         else {
             UpdateActors(deltaTime);
+            if (mHUD) {
+                mHUD->Update(deltaTime);
+            }
         }
     }
 
@@ -1086,8 +995,10 @@ void Game::UpdateGame()
 
     // Reinsert UI screens
     for (auto ui : mUIStack) {
-        if (ui->GetState() == UIScreen::UIState::Active) {
-            ui->Update(deltaTime);
+        if (ui != mHUD) {
+            if (ui->GetState() == UIScreen::UIState::Active) {
+                ui->Update(deltaTime);
+            }
         }
     }
 
@@ -1103,7 +1014,6 @@ void Game::UpdateGame()
     }
 
     if (mResetLevel) {
-        // ResetLevel();
         ResetGameScene(3.5f);
         mPlayer->ResetHealthPoints();
         mPlayer->ResetMana();
@@ -1119,13 +1029,6 @@ void Game::UpdateGame()
 
 void Game::UpdateSceneManager(float deltaTime)
 {
-    // --------------
-    // TODO - PARTE 2
-    // --------------
-
-    // TODO 1.: Verifique se o estado do SceneManager é SceneManagerState::Entering. Se sim, decremente o mSceneManagerTimer
-    //  usando o deltaTime. Em seguida, verifique se o mSceneManagerTimer é menor ou igual a 0. Se for, reinicie o
-    //  mSceneManagerTimer para TRANSITION_TIME e mude o estado do SceneManager para SceneManagerState::Active.
     if (mSceneManagerState == SceneManagerState::Entering) {
         mSceneManagerTimer -= deltaTime;
 
@@ -1143,9 +1046,6 @@ void Game::UpdateSceneManager(float deltaTime)
         }
     }
 
-    // TODO 2.: Verifique se o estado do SceneManager é SceneManagerState::Active. Se sim, decremente o mSceneManagerTimer
-    //  usando o deltaTime. Em seguida, verifique se o mSceneManagerTimer é menor ou igual a 0. Se for, chame ChangeScene()
-    //  e mude o estado do SceneManager para SceneManagerState::None.
     if (mSceneManagerState == SceneManagerState::Active) {
         mSceneManagerTimer -= deltaTime;
         if (mSceneManagerTimer <= 0.0f) {
@@ -1307,7 +1207,7 @@ void Game::RemoveDrawable(class DrawComponent *drawable)
     mDrawables.erase(iter);
 }
 
-void Game::StarBossMusic(SoundHandle music) {
+void Game::StartBossMusic(SoundHandle music) {
     mBossMusic = music;
     mAudio->PauseSound(mMusicHandle);
 }
@@ -1320,9 +1220,6 @@ void Game::StopBossMusic() {
 
 void Game::GenerateOutput()
 {
-    // Set draw color to green
-    // SDL_SetRenderDrawColor(mRenderer, 0, 88, 105, 255);
-
     // Clear back buffer
     SDL_RenderClear(mRenderer);
 
@@ -1382,9 +1279,6 @@ void Game::GenerateOutput()
 
 SDL_Texture *Game::LoadTexture(const std::string &texturePath)
 {
-    // TODO 4.1 (~4 linhas): Utilize a função `IMG_Load` para carregar a imagem passada como parâmetro
-    //  `texturePath`. Esse função retorna um ponteiro para `SDL_Surface*`. Retorne `nullptr` se a
-    //  imagem não foi carregada com sucesso.
     SDL_Surface *surface = IMG_Load(texturePath.c_str());
     if (!surface)
     {
@@ -1392,10 +1286,6 @@ SDL_Texture *Game::LoadTexture(const std::string &texturePath)
         return nullptr;
     }
 
-    // TODO 4.2 (~6 linhas): Utilize a função `SDL_CreateTextureFromSurface` para criar uma textura a partir
-    //  da imagem carregada anteriormente. Essa função retorna um ponteiro para `SDL_Texture*`. Logo após criar
-    //  a textura, utilize a função `SDL_FreeSurface` para liberar a imagem carregada. Se a textura foi carregada
-    //  com sucesso, retorne o ponteiro para a textura. Caso contrário, retorne `nullptr`.
     SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface); // Libera a superfície, já não é mais necessária
 
@@ -1409,15 +1299,6 @@ SDL_Texture *Game::LoadTexture(const std::string &texturePath)
 
 UIFont* Game::LoadFont(const std::string& fileName)
 {
-    // --------------
-    // TODO - PARTE 1-1
-    // --------------
-
-    // TODO 1.: Verifique se o arquivo de fonte já está carregado no mapa mFonts.
-    //  Se sim, retorne o ponteiro para a fonte carregada.
-    //  Se não, crie um novo objeto UIFont, carregue a fonte do arquivo usando o método Load,
-    //  e se o carregamento for bem-sucedido, adicione a fonte ao mapa mFonts.
-    //  Se o carregamento falhar, descarregue a fonte com Unload e delete o objeto UIFont, retornando nullptr.
     auto iter = mFonts.find(fileName);
     if (iter != mFonts.end()) {
         return iter->second;
@@ -1501,36 +1382,6 @@ void Game::Shutdown()
     delete mPlayer;
     mPlayer = nullptr;
     UnloadScene();
-    // // Delete actors
-    // while (!mActors.empty())
-    //     delete mActors.back();
-    //
-    // // Delete level data
-    // if (mLevelData != nullptr)
-    // {
-    //     for (int i = 0; i < mLevelHeight; ++i)
-    //     {
-    //         if (mLevelData[i] != nullptr)
-    //             delete[] mLevelData[i];
-    //     }
-    // }
-    // delete[] mLevelData;
-    //
-    // // Delete level data Dynamic Grounds
-    // if (mLevelDataDynamicGrounds != nullptr)
-    // {
-    //     for (int i = 0; i < mLevelHeight; ++i)
-    //     {
-    //         if (mLevelDataDynamicGrounds[i] != nullptr)
-    //             delete[] mLevelDataDynamicGrounds[i];
-    //     }
-    // }
-    // delete[] mLevelDataDynamicGrounds;
-    //
-    // SDL_DestroyTexture(mTileSheet);
-    // mTileSheet = nullptr;
-    //
-    // delete mCamera;
 
     for (auto font : mFonts) {
         font.second->Unload();
@@ -1601,44 +1452,6 @@ void Game::DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, 
 
         SDL_RenderCopy(mRenderer, texture, nullptr, &dest);
     }
-}
-
-void Game::ResetLevel()
-{
-    // Delete actors
-    while (!mActors.empty())
-        delete mActors.back();
-
-    // Delete level data
-    if (mLevelData != nullptr)
-    {
-        for (int i = 0; i < mLevelHeight; ++i)
-        {
-            if (mLevelData[i] != nullptr)
-                delete[] mLevelData[i];
-        }
-    }
-    delete[] mLevelData;
-
-    // Delete level data Dynamic Grounds
-    if (mLevelDataDynamicGrounds != nullptr)
-    {
-        for (int i = 0; i < mLevelHeight; ++i)
-        {
-            if (mLevelDataDynamicGrounds[i] != nullptr)
-                delete[] mLevelDataDynamicGrounds[i];
-        }
-    }
-    delete[] mLevelDataDynamicGrounds;
-
-    SDL_DestroyTexture(mTileSheet);
-    mTileSheet = nullptr;
-
-    delete mCamera;
-
-    InitializeActors();
-
-    mResetLevel = false;
 }
 
 void Game::ChangeResolution(float oldScale)

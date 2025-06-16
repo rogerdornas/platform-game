@@ -9,13 +9,12 @@
 class FlyingEnemySimple : public Enemy
 {
 public:
-    FlyingEnemySimple(Game* game, float width, float height, float movespeed, float healthpoints);
+    FlyingEnemySimple(Game* game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
 
 protected:
-    void ResolveGroundCollision();
     virtual void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
 

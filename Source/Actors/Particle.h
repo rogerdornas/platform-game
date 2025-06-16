@@ -3,13 +3,14 @@
 //
 
 #pragma once
+
 #include <string>
 #include "Actor.h"
 
 class Particle : public Actor
 {
 public:
-    Particle(class Game *game);
+    Particle(class Game* game);
     ~Particle() override;
 
     void OnUpdate(float deltaTime) override;
@@ -38,9 +39,8 @@ private:
     Vector2 mDirection;
     float mSpeedScale;
 
-    class DrawPolygonComponent *mDrawPolygonComponent;
-    class DrawSpriteComponent *mDrawSpriteComponent;
-    class DrawParticleComponent *mDrawParticleComponent;
-    class RigidBodyComponent *mRigidBodyComponent;
-    class AABBComponent *mAABBComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawParticleComponent* mDrawParticleComponent;
+    class RigidBodyComponent* mRigidBodyComponent;
+    class AABBComponent* mAABBComponent;
 };

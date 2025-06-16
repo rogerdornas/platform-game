@@ -10,18 +10,17 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-
 Sword::Sword(class Game *game, Actor *owner, float width, float height, float duration, float damage)
-    : Actor(game),
-      mWidth(width),
-      mHeight(height),
-      mDuration(duration),
-      mDurationTimer(mDuration),
-      mDamage(damage),
-      mOwner(owner),
-      mDrawPolygonComponent(nullptr),
-      mDrawSpriteComponent(nullptr),
-      mDrawAnimatedComponent(nullptr)
+    :Actor(game)
+    ,mWidth(width)
+    ,mHeight(height)
+    ,mDuration(duration)
+    ,mDurationTimer(mDuration)
+    ,mDamage(damage)
+    ,mOwner(owner)
+    ,mDrawPolygonComponent(nullptr)
+    ,mDrawSpriteComponent(nullptr)
+    ,mDrawAnimatedComponent(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -57,27 +56,25 @@ Sword::Sword(class Game *game, Actor *owner, float width, float height, float du
     mAABBComponent = new AABBComponent(this, v1, v3);
 }
 
-void Sword::OnUpdate(float deltaTime)
-{
+void Sword::OnUpdate(float deltaTime) {
     mDurationTimer += deltaTime;
-    if (mDurationTimer >= mDuration)
+    if (mDurationTimer >= mDuration) {
         Deactivate();
-
-    else
-    {
+    }
+    else {
         Activate();
         // Troca rotação da espada para horizontal ou vertical
-        // class Player* player = GetGame()->GetPlayer();
         bool isHorizontal = true;
-        if (GetRotation() == 0 || GetRotation() == Math::Pi)
+        if (GetRotation() == 0 || GetRotation() == Math::Pi) {
             isHorizontal = true;
+        }
 
-        if (GetRotation() == Math::Pi / 2 || GetRotation() == 3 * Math::Pi / 2)
+        if (GetRotation() == Math::Pi / 2 || GetRotation() == 3 * Math::Pi / 2) {
             isHorizontal = false;
+        }
 
         float offset = 0;
-        if (isHorizontal)
-        {
+        if (isHorizontal) {
             Vector2 v1(-mWidth / 2, -mHeight / 2);
             Vector2 v2(mWidth / 2, -mHeight / 2);
             Vector2 v3(mWidth / 2, mHeight / 2);
@@ -91,24 +88,22 @@ void Sword::OnUpdate(float deltaTime)
             mAABBComponent->SetMin(v1);
             mAABBComponent->SetMax(v3);
 
-            if (mDrawPolygonComponent)
+            if (mDrawPolygonComponent) {
                 mDrawPolygonComponent->SetVertices(vertices);
+            }
 
-            if (mDrawSpriteComponent)
-            {
+            if (mDrawSpriteComponent) {
                 mDrawSpriteComponent->SetWidth(mWidth);
                 mDrawSpriteComponent->SetHeight(mHeight);
             }
-            if (mDrawAnimatedComponent)
-            {
+            if (mDrawAnimatedComponent) {
                 mDrawAnimatedComponent->SetWidth(mWidth);
                 mDrawAnimatedComponent->SetHeight(mHeight);
                 mDrawAnimatedComponent->UseRotation(false);
             }
             offset = mWidth / 2;
         }
-        else
-        {
+        else {
             Vector2 v1(-mHeight / 2, -mWidth / 2);
             Vector2 v2(mHeight / 2, -mWidth / 2);
             Vector2 v3(mHeight / 2, mWidth / 2);
@@ -122,16 +117,15 @@ void Sword::OnUpdate(float deltaTime)
             mAABBComponent->SetMin(v1);
             mAABBComponent->SetMax(v3);
 
-            if (mDrawPolygonComponent)
+            if (mDrawPolygonComponent) {
                 mDrawPolygonComponent->SetVertices(vertices);
+            }
 
-            if (mDrawSpriteComponent)
-            {
+            if (mDrawSpriteComponent) {
                 mDrawSpriteComponent->SetWidth(mHeight);
                 mDrawSpriteComponent->SetHeight(mWidth);
             }
-            if (mDrawAnimatedComponent)
-            {
+            if (mDrawAnimatedComponent) {
                 mDrawAnimatedComponent->SetWidth(mWidth);
                 mDrawAnimatedComponent->SetHeight(mHeight);
                 mDrawAnimatedComponent->UseRotation(true);
@@ -145,14 +139,15 @@ void Sword::OnUpdate(float deltaTime)
 void Sword::Activate()
 {
     mAABBComponent->SetActive(true); // reativa colisão
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetIsVisible(true);
+    }
 
-    if (mDrawSpriteComponent)
+    if (mDrawSpriteComponent) {
         mDrawSpriteComponent->SetIsVisible(true);
+    }
 
-    if (mDrawAnimatedComponent)
-    {
+    if (mDrawAnimatedComponent) {
         mDrawAnimatedComponent->SetIsVisible(true);
         mDrawAnimatedComponent->SetAnimation("slash");
     }
@@ -162,14 +157,15 @@ void Sword::Deactivate()
 {
     SetState(ActorState::Paused);
     mAABBComponent->SetActive(false); // desativa colisão
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetIsVisible(false);
+    }
 
-    if (mDrawSpriteComponent)
+    if (mDrawSpriteComponent) {
         mDrawSpriteComponent->SetIsVisible(false);
+    }
 
-    if (mDrawAnimatedComponent)
-    {
+    if (mDrawAnimatedComponent) {
         mDrawAnimatedComponent->SetIsVisible(false);
         mDrawAnimatedComponent->SetAnimation("end");
     }
@@ -198,6 +194,7 @@ void Sword::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

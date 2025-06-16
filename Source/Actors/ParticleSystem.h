@@ -9,7 +9,7 @@
 class ParticleSystem : public Actor
 {
 public:
-    ParticleSystem(class Game *game, float particleSize, float emitRate = 20.0f, float particleLifeTime = 0.7f, float lifeTime = 1.0f);
+    ParticleSystem(class Game* game, float particleSize, float emitRate = 20.0f, float particleLifeTime = 0.7f, float lifeTime = 1.0f);
 
     void OnUpdate(float deltaTime) override;
     void SetParticleLifeTime(float time) { mParticleLifeTime = time; }

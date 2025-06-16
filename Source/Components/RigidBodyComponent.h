@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "Component.h"
 #include "../Math.h"
 
@@ -10,8 +11,7 @@ class RigidBodyComponent : public Component
 {
 public:
     // Lower update order to update first
-    RigidBodyComponent(class Actor *owner, float mass = 1.0f, float maxSpeedX = 10000, float maxSpeedY = 10000,
-                       int updateOrder = 10);
+    RigidBodyComponent(class Actor* owner, float mass = 1.0f, float maxSpeedX = 10000, float maxSpeedY = 10000, int updateOrder = 10);
 
     void Update(float deltaTime) override;
 
@@ -26,8 +26,8 @@ public:
 
     void SetMaxSpeedX(float v) { mMaxSpeedX = v; }
     void SetMaxSpeedY(float v) { mMaxSpeedY = v; }
-    float GetMaxSpeedX() { return mMaxSpeedX; }
-    float GetMaxSpeedY() { return mMaxSpeedY; }
+    float GetMaxSpeedX() const { return mMaxSpeedX; }
+    float GetMaxSpeedY() const { return mMaxSpeedY; }
 
     void ApplyForce(const Vector2 &force);
 

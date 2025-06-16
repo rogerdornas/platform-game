@@ -1,15 +1,7 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #pragma once
+
 #include <SDL.h>
 #include <vector>
-
 #include "Camera.h"
 #include "Actors/Ground.h"
 #include "Actors/Player.h"
@@ -25,9 +17,8 @@
 class Game
 {
 public:
-    static const int TRANSITION_TIME = 1;
     const int DEAD_ZONE = 8000;
-    float mTransitionTime = 0.2f;
+    const float mTransitionTime = 0.2f;
 
     // Estados de movimento do analógico vertical
     enum class StickState {
@@ -70,7 +61,6 @@ public:
     void Quit() { mIsRunning = false; }
 
     // Actor functions
-    void InitializeActors();
     void UpdateActors(float deltaTime);
     void AddActor(class Actor *actor);
     void RemoveActor(class Actor *actor);
@@ -82,10 +72,10 @@ public:
     // Window functions
     int GetWindowWidth() const { return mWindowWidth; }
     int GetWindowHeight() const { return mWindowHeight; }
-    float GetLogicalWindowWidth() { return mLogicalWindowWidth; }
-    float GetLogicalWindowHeight() { return mLogicalWindowHeight; }
+    float GetLogicalWindowWidth() const { return mLogicalWindowWidth; }
+    float GetLogicalWindowHeight() const { return mLogicalWindowHeight; }
 
-    float GetScale() { return mScale; }
+    float GetScale() const { return mScale; }
 
     // Game-specific
     void AddGround(class Ground *g);
@@ -93,10 +83,10 @@ public:
     std::vector<class Ground *> &GetGrounds() { return mGrounds; }
     Ground* GetGroundById(int id);
 
-    Player *GetPlayer() { return mPlayer; }
+    Player *GetPlayer() const { return mPlayer; }
 
     void UpdateCamera(float deltaTime);
-    class Camera *GetCamera() { return mCamera; }
+    class Camera *GetCamera() const { return mCamera; }
 
     void AddFireBall(class FireBall *f);
     void RemoveFireball(class FireBall *f);
@@ -115,20 +105,20 @@ public:
     std::vector<class Enemy *> &GetEnemies() { return mEnemies; }
     Enemy* GetEnemyById(int id);
 
+    void SetResetLevel() { mResetLevel = true; }
+
     int **GetLevelData() const { return mLevelData; }
     int **GetLevelDataDynamicGrounds() const { return mLevelDataDynamicGrounds; }
     SDL_Texture* GetTileSheet() const { return mTileSheet; }
     std::unordered_map<int, SDL_Rect> GetTileSheetData() { return mSTileSheetData; }
 
-    int GetTileSize() { return mTileSize; }
-
-    bool mResetLevel;
+    int GetTileSize() const { return mTileSize; }
 
     // Loading functions
     class UIFont* LoadFont(const std::string& fileName);
     SDL_Texture *LoadTexture(const std::string &texturePath);
 
-    int GetFPS() { return mFPS; }
+    int GetFPS() const { return mFPS; }
 
     void ActiveHitstop()
     {
@@ -137,10 +127,12 @@ public:
     }
 
     // Audio functions
-    class AudioSystem* GetAudio() { return mAudio; }
+    class AudioSystem* GetAudio() const { return mAudio; }
     void SetMusicHandle(SoundHandle music) { mMusicHandle = music; }
-    SoundHandle GetMusicHandle() { return mMusicHandle; }
-    void StarBossMusic(SoundHandle music);
+    SoundHandle GetMusicHandle() const { return mMusicHandle; }
+    void SetBossMusicHandle(SoundHandle music) { mBossMusic = music; }
+    SoundHandle GetBossMusicHandle() const { return mBossMusic; }
+    void StartBossMusic(SoundHandle music);
     void StopBossMusic();
 
     // UI functions
@@ -157,7 +149,7 @@ public:
     void SetGamePlayState(GamePlayState state) { mGamePlayState = state; }
     GamePlayState GetGamePlayState() const { return mGamePlayState; }
 
-    SDL_Renderer* GetRenderer() { return mRenderer; }
+    SDL_Renderer* GetRenderer() const { return mRenderer; }
 
 private:
     void ProcessInput();
@@ -170,7 +162,6 @@ private:
     void LoadMainMenu();
     UIScreen* LoadPauseMenu();
 
-    void ResetLevel();
     void ChangeResolution(float oldScale);
 
     // All the actors in the game
@@ -203,6 +194,7 @@ private:
     int mFPS;
 
     bool mIsPaused;
+    bool mResetLevel;
 
     // Camera
     class Camera *mCamera;

@@ -3,34 +3,31 @@
 //
 
 #include "Camera.h"
-
 #include "Random.h"
 
-Camera::Camera(class Game *game, Vector2 startPosition)
-    : mPos(startPosition),
-      mGame(game)
+Camera::Camera(class Game* game, Vector2 startPosition)
+    :mPos(startPosition)
+    ,mGame(game)
+    ,mCameraLerpSpeed(6.0f)
+    ,mCameraMode(CameraMode::FollowPlayer)
+    ,mFixedCameraPosition(Vector2::Zero)
+    ,mDistMove(300 * mGame->GetScale())
+    ,mIsShaking(false)
+    ,mShakeDuration(1.0f)
+    ,mShakeTimer(0.0f)
+    ,mShakeStrength(5.0f * mGame->GetScale())
+    ,mCameraSpeed(500.0f * mGame->GetScale())
+    ,mLookUp(false)
+    ,mLookDown(false)
 {
-    mLookUp = false;
-    mLookDown = false;
-    mCameraMode = CameraMode::FollowPlayer;
-    mFixedCameraPosition = Vector2::Zero;
-    mOffset = Vector2::Zero;
-    mDistMove = 300 * mGame->GetScale();
-    mIsShaking = false;
-    mShakeDuration = 1.0f;
-    mShakeTimer = 0.0f;
-    mShakeStrength = 5 * mGame->GetScale();
-    mCameraSpeed = 500.0f * mGame->GetScale();
 }
 
-void Camera::StartCameraShake(float duration, float strength)
-{
+void Camera::StartCameraShake(float duration, float strength) {
     mIsShaking = true;
     mShakeTimer = 0.0f;
     mShakeDuration = duration;
     mShakeStrength = strength;
 }
-
 
 void Camera::Update(float deltaTime) {
     Vector2 targetPosition = Vector2::Zero;
@@ -38,15 +35,19 @@ void Camera::Update(float deltaTime) {
         case CameraMode::Fixed:
             targetPosition = Fixed(Vector2(mFixedCameraPosition));
             break;
+
         case CameraMode::FollowPlayer:
             targetPosition = FollowPlayer();
             break;
+
         case CameraMode::FollowPlayerHorizontally:
             targetPosition = FollowPlayerHorizontally();
             break;
+
         case CameraMode::ScrollRight:
             targetPosition = ScrollRight(deltaTime, mCameraSpeed);
             break;
+
         case CameraMode::ScrollUp:
             targetPosition = ScrollUp(deltaTime, -mCameraSpeed / 2);
             break;
@@ -129,8 +130,11 @@ Vector2 Camera::ScrollRight(float deltaTime, float speed) {
     targetPos.x = mPos.x + speed * deltaTime;
     targetPos.y = playerPos.y - mGame->GetLogicalWindowHeight() / 2;
 
-    if (playerPos.x < targetPos.x - 50) {
-        mGame->GetPlayer()->ReceiveHit(100, Vector2::Zero);
+    if (playerPos.x < targetPos.x - 50 * mGame->GetScale()) {
+        mGame->GetPlayer()->ReceiveHit(mGame->GetPlayer()->GetMaxHealthPoints(), Vector2::Zero);
+        mGame->SetResetLevel();
+        mGame->GetAudio()->StopAllSounds();
+        mGame->GetPlayer()->SetState(ActorState::Paused);
         // mGame->mResetLevel = true;
         // mGame->GetAudio()->StopAllSounds();
         // mGame->GetPlayer()->SetState(ActorState::Paused);
@@ -147,8 +151,11 @@ Vector2 Camera::ScrollUp(float deltaTime, float speed) {
     targetPos.x = playerPos.x - mGame->GetLogicalWindowWidth() / 2;
     targetPos.y = mPos.y + speed * deltaTime;
 
-    if (playerPos.y > targetPos.y + mGame->GetLogicalWindowHeight() + 50) {
-        mGame->GetPlayer()->ReceiveHit(100, Vector2::Zero);
+    if (playerPos.y > targetPos.y + mGame->GetLogicalWindowHeight() + 50 * mGame->GetScale()) {
+        mGame->GetPlayer()->ReceiveHit(mGame->GetPlayer()->GetMaxHealthPoints(), Vector2::Zero);
+        mGame->SetResetLevel();
+        mGame->GetAudio()->StopAllSounds();
+        mGame->GetPlayer()->SetState(ActorState::Paused);
         // mGame->mResetLevel = true;
         // mGame->GetAudio()->StopAllSounds();
         // mGame->GetPlayer()->SetState(ActorState::Paused);

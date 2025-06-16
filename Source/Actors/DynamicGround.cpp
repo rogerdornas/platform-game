@@ -3,20 +3,16 @@
 //
 
 #include "DynamicGround.h"
-
 #include <unordered_map>
-#include <iomanip>
-#include <sstream>
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawDynamicGroundSpritesComponent.h"
 
-DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike, bool isMoving, float movingDuration,
-               Vector2 velocity)
-    : Ground(game, width, height, isSpike, isMoving, movingDuration, velocity)
+DynamicGround::DynamicGround(Game* game, float width, float height, bool isSpike, bool isMoving,
+                             float movingDuration, Vector2 velocity)
+    :Ground(game, width, height, isSpike, isMoving, movingDuration, velocity)
     ,mMaxWidth(width)
     ,mMaxHeight(height)
     ,mGrowSpeed(Vector2::Zero)
@@ -25,15 +21,11 @@ DynamicGround::DynamicGround(Game *game, float width, float height, bool isSpike
     ,mIsOscillating(false)
     ,mGrowthDirection(GrowthDirection::Centered)
     ,mDrawDynamicGroundSpritesComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
 {
     mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize());
 }
 
-DynamicGround::~DynamicGround() { mGame->RemoveGround(this); }
-
-void DynamicGround::OnUpdate(float deltaTime)
-{
+void DynamicGround::OnUpdate(float deltaTime) {
     if ((mWidth == 0 || mHeight == 0) && !mIsGrowing && !mIsDecreasing) {
         if (mDrawPolygonComponent) {
             mDrawPolygonComponent->SetIsVisible(false);
@@ -93,10 +85,6 @@ void DynamicGround::OnUpdate(float deltaTime)
 
         mWidth += growX;
         mHeight += growY;
-        if (mDrawSpriteComponent) {
-            mDrawSpriteComponent->SetWidth(mWidth);
-            mDrawSpriteComponent->SetHeight(mHeight);
-        }
 
         if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
             mIsGrowing = false;
@@ -156,7 +144,7 @@ void DynamicGround::SetSprites() {
 
     std::unordered_map<int, std::vector<Vector2> > spriteOffsetMap;
 
-    int **levelData = mGame->GetLevelDataDynamicGrounds();
+    int** levelData = mGame->GetLevelDataDynamicGrounds();
 
     for (int row = minRow; row < maxRow; ++row) {
         for (int col = minCol; col < maxCol; ++col) {

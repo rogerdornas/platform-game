@@ -2,28 +2,28 @@
 // Created by roger on 02/06/2025.
 //
 #pragma once
+
 #include "Actor.h"
 #include "Enemy.h"
-
-enum FrogState
-{
-    frogStop,
-    frogJumpCombo,
-    frogTongue
-};
-
-enum FrogWallSide
-{
-    frogBottom,
-    frogTop,
-    frogLeft,
-    frogRight
-};
-
 
 class Frog : public Enemy
 {
 public:
+    enum class State
+    {
+        Stop,
+        JumpCombo,
+        Tongue
+    };
+
+    enum class WallSide
+    {
+        Bottom,
+        Top,
+        Left,
+        Right
+    };
+
     Frog(Game *game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
     void SetArenaMinPos(Vector2 pos) { mArenaMinPos = pos; }
@@ -34,7 +34,7 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void ResolveGroundCollision();
+    void ResolveGroundCollision() override;
     void ResolvePlayerCollision();
     void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
@@ -46,7 +46,6 @@ private:
     void Stop(float deltaTime);
     void JumpCombo(float deltaTime);
     void Tongue(float delTime);
-
 
     float mDistToSpotPlayer;
     float mWalkingAroundTimer;
@@ -65,8 +64,8 @@ private:
     float mTimerBetweenJumps;
     float mDurationBetweenJumps;
 
-    FrogWallSide mWallPosition;
-    FrogWallSide mDestinyWall;
+    WallSide mWallPosition;
+    WallSide mDestinyWall;
     float mGravity;
 
     Vector2 mArenaMinPos;
@@ -81,5 +80,5 @@ private:
 
     std::vector<int> mUnlockGroundsIds;
 
-    FrogState mState;
+    State mState;
 };

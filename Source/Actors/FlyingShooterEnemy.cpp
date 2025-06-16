@@ -5,22 +5,21 @@
 #include "FlyingShooterEnemy.h"
 #include "FlyingEnemySimple.h"
 #include "Actor.h"
-#include "Effect.h"
-#include "ParticleSystem.h"
 #include "Projectile.h"
 #include "../Game.h"
+#include "../Random.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-FlyingShooterEnemy::FlyingShooterEnemy(Game *game, float width, float height, float movespeed, float healthpoints)
-    : FlyingEnemySimple(game, width, height, movespeed, healthpoints)
-    ,mState(FlyingShooterEnemy::State::Fly)
-    ,mHoverHeight(300.0f * mGame->GetScale())
+FlyingShooterEnemy::FlyingShooterEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints)
+    :FlyingEnemySimple(game, width, height, moveSpeed, healthPoints)
+    ,mState(State::Fly)
     ,mPatrolRangeX(400.0f * mGame->GetScale())
     ,mPatrolRangeY(100.0f * mGame->GetScale())
+    ,mHoverHeight(300.0f * mGame->GetScale())
     ,mTargetSet(false)
     ,mPatrolTargetDuration(1.0f)
     ,mPatrolTargetTimer(0.0f)
@@ -37,14 +36,13 @@ FlyingShooterEnemy::FlyingShooterEnemy(Game *game, float width, float height, fl
     mKnockBackSpeed = 800.0f * mGame->GetScale();
 }
 
-void FlyingShooterEnemy::MovementAfterPlayerSpotted(float deltaTime)
-{
+void FlyingShooterEnemy::MovementAfterPlayerSpotted(float deltaTime) {
     switch (mState) {
-        case FlyingShooterEnemy::State::Fly:
+        case State::Fly:
             Fly(deltaTime);
         break;
 
-        case FlyingShooterEnemy::State::Shoot:
+        case State::Shoot:
             Shoot(deltaTime);
         break;
     }
@@ -56,7 +54,7 @@ void FlyingShooterEnemy::Fly(float deltaTime) {
     if (mFlyTimer >= mFlyDuration) {
         mFlyTimer = 0;
         mTargetSet = false; // reseta alvo da próxima patrulha
-        mState = FlyingShooterEnemy::State::Shoot;
+        mState = State::Shoot;
         return;
     }
     Vector2 playerPos = GetGame()->GetPlayer()->GetPosition();
@@ -95,7 +93,7 @@ void FlyingShooterEnemy::Shoot(float deltaTime) {
     if (mShootTimer >= mShootDuration) {
         mShootTimer = 0;
         mShot = false;
-        mState = FlyingShooterEnemy::State::Fly;
+        mState = State::Fly;
         return;
     }
 
@@ -109,8 +107,8 @@ void FlyingShooterEnemy::Shoot(float deltaTime) {
         if (direction.Length() > 0) {
             direction.Normalize();
         }
-        std::vector<Projectile *> projectiles = mGame->GetProjectiles();
-        for (Projectile *p: projectiles) {
+        std::vector<Projectile* > projectiles = mGame->GetProjectiles();
+        for (Projectile* p: projectiles) {
             if (p->GetState() == ActorState::Paused) {
                 p->SetState(ActorState::Active);
                 p->SetRotation(Math::Atan2(direction.y, direction.x));

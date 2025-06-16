@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "Actor.h"
 #include "FlyingEnemySimple.h"
 
@@ -15,7 +16,7 @@ public:
         Shoot
     };
 
-    FlyingShooterEnemy(Game* game, float width, float height, float movespeed, float healthpoints);
+    FlyingShooterEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints);
 
     void ChangeResolution(float oldScale, float newScale) override;
 
@@ -25,7 +26,7 @@ private:
     void Fly(float deltaTime);
     void Shoot(float deltaTime);
 
-    FlyingShooterEnemy::State mState;
+    State mState;
     float mPatrolRangeX;             // largura da patrulha horizontal
     float mPatrolRangeY;
     float mHoverHeight;              // altura constante acima do player

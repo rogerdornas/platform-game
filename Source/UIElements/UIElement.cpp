@@ -9,5 +9,4 @@ UIElement::UIElement(const Vector2 &pos, const Vector2 &size, const Vector3 &col
         ,mSize(size)
         ,mColor(color)
 {
-
 }

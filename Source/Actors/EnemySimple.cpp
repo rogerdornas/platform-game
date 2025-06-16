@@ -14,7 +14,7 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
 
-EnemySimple::EnemySimple(Game *game, float width, float height, float moveSpeed, float healthPoints)
+EnemySimple::EnemySimple(Game* game, float width, float height, float moveSpeed, float healthPoints)
     :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
 {
     mKnockBackSpeed = 800.0f * mGame->GetScale();
@@ -32,7 +32,6 @@ EnemySimple::EnemySimple(Game *game, float width, float height, float moveSpeed,
 }
 
 void EnemySimple::OnUpdate(float deltaTime) {
-
     mKnockBackTimer += deltaTime;
     mWalkingAroundTimer += deltaTime;
 
@@ -73,27 +72,8 @@ void EnemySimple::OnUpdate(float deltaTime) {
         circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
         circleBlur->SetEnemy(*this);
         circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
-        circleBlur->SetEffect(TargetEffect::circle);
+        circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
-    }
-}
-
-void EnemySimple::ResolveGroundCollision() {
-    std::vector<Ground*> grounds;
-    grounds = GetGame()->GetGrounds();
-    if (!grounds.empty()) {
-        for (Ground* g : grounds) {
-            if (!g->GetIsSpike()) { // Colosão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
-                }
-            }
-            else if (g->GetIsSpike()) { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    SetPosition(Vector2::Zero);
-                }
-            }
-        }
     }
 }
 
@@ -162,6 +142,7 @@ void EnemySimple::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

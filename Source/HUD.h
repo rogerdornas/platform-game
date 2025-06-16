@@ -5,7 +5,6 @@
 #pragma once
 
 #include <string>
-
 #include "UIElements/UIScreen.h"
 
 class HUD : public UIScreen
@@ -26,22 +25,12 @@ public:
 
     void Update(float deltaTime) override;
 
-    // Reinsert the HUD elements
-    void SetTime(int time);
-
-    void SetLevelName(const std::string& levelName);
-
     void Draw(class SDL_Renderer *renderer) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
     // HUD elements
-    UIText* mScoreCounter;
-    UIText* mLevelName;
-    UIText* mLivesCount;
-    UIText* mTimeText;
-
     UIText* mPlayerHealCount;
 
     float mSpeedHPDecrease;
@@ -64,6 +53,7 @@ private:
     // SDL_Rect mManaBar;
     // SDL_Rect mManaUsedBar;
     // SDL_Rect mManaRemainingBar;
+
     float mWaitToDecreaseDuration;
     float mWaitToDecreaseTimer;
     float mWaitToDecreaseManaDuration;

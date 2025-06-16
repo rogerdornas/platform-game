@@ -3,20 +3,21 @@
 //
 
 #pragma once
+
 #include "Component.h"
 
 class DashComponent : public Component
 {
 public:
-    DashComponent(class Actor *owner, float dashSpeed, float dashDuration, float dashCooldown);
+    DashComponent(class Actor* owner, float dashSpeed, float dashDuration, float dashCooldown);
 
     void UseDash(bool isOnGround);
-    bool GetIsDashing() { return mIsDashing; }
+    bool GetIsDashing() const { return mIsDashing; }
     void SetHasDashedInAir(bool hasDashedInAir) { mHasDashedInAir = hasDashedInAir; }
 
     void StopDash();
     void SetDashSpeed(float dashSpeed) { mDashSpeed = dashSpeed; }
-    float GetDashSpeed() { return mDashSpeed; }
+    float GetDashSpeed() const { return mDashSpeed; }
 
     void Update(float deltaTime) override;
 

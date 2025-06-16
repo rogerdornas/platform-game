@@ -3,39 +3,39 @@
 //
 
 #pragma once
+
 #include <string>
 #include "Actor.h"
 #include "../Game.h"
-
 
 class Trigger : public Actor
 {
 public:
     enum class Target {
-        camera,
-        dynamicGround,
-        ground,
-        game,
-        enemy,
-        nothing
+        Camera,
+        DynamicGround,
+        Ground,
+        Game,
+        Enemy,
+        Nothing
     };
 
     enum class Event {
-        fixed,
-        followPlayer,
-        followPlayerHorizontally,
-        scrollRight,
-        scrollUp,
+        Fixed,
+        FollowPlayer,
+        FollowPlayerHorizontally,
+        ScrollRight,
+        ScrollUp,
 
-        setIsGrowing,
-        setIsDecreasing,
-        setIsDecreasingAfterKillingEnemies,
+        SetIsGrowing,
+        SetIsDecreasing,
+        SetIsDecreasingAfterKillingEnemies,
 
-        changeScene,
+        ChangeScene,
 
-        spotPlayer,
+        SpotPlayer,
 
-        setIsMoving
+        SetIsMoving
     };
 
     Trigger(class Game *game, float width, float height);

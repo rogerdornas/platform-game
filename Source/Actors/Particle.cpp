@@ -12,23 +12,22 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 
-Particle::Particle(Game *game)
-    : Actor(game),
-      mSize(8.0f * mGame->GetScale()),
-      mLifeTDuration(0.0f),
-      mLifeTimer(0.0f),
-      mIsSplash(false),
-      mTexturePath("../Assets/Sprites/Particle/Ellipse.png"),
-      mColor(SDL_Color{255, 255, 255, 255}),
-      mGravity(true),
-      mGravityForce(2000.0f),
-      mDirection(Vector2::Zero),
-      mSpeedScale(1.0f * mGame->GetScale()),
-      mDrawPolygonComponent(nullptr),
-      mDrawSpriteComponent(nullptr),
-      mDrawParticleComponent(nullptr),
-      mRigidBodyComponent(nullptr),
-      mAABBComponent(nullptr)
+Particle::Particle(Game* game)
+    :Actor(game)
+    ,mSize(8.0f * mGame->GetScale())
+    ,mLifeTDuration(0.0f)
+    ,mLifeTimer(0.0f)
+    ,mIsSplash(false)
+    ,mTexturePath("../Assets/Sprites/Particle/Ellipse.png")
+    ,mColor(SDL_Color{255, 255, 255, 255})
+    ,mGravity(true)
+    ,mGravityForce(2000.0f)
+    ,mDirection(Vector2::Zero)
+    ,mSpeedScale(1.0f * mGame->GetScale())
+    ,mDrawPolygonComponent(nullptr)
+    ,mDrawParticleComponent(nullptr)
+    ,mRigidBodyComponent(nullptr)
+    ,mAABBComponent(nullptr)
 {
     float size = Random::GetFloatRange(mSize * 0.5, mSize * 1.5);
     float width = 1.2 * size;
@@ -131,6 +130,7 @@ void Particle::OnUpdate(float deltaTime)
                                                      mRigidBodyComponent->GetVelocity().y +
                                                      mGravityForce * deltaTime));
         }
+
         if (!mIsSplash) {
             std::vector<Ground*> grounds = mGame->GetGrounds();
             if (!grounds.empty()) {
@@ -178,11 +178,6 @@ void Particle::Activate() {
         mDrawPolygonComponent->SetVertices(vertices);
         mDrawPolygonComponent->SetIsVisible(true);
     }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(width * 1.6);
-        mDrawSpriteComponent->SetHeight(height * 1.6);
-        mDrawSpriteComponent->SetIsVisible(true);
-    }
     if (mDrawParticleComponent) {
         mDrawParticleComponent->SetWidth(width * 1.6);
         mDrawParticleComponent->SetHeight(height * 1.6);
@@ -198,9 +193,6 @@ void Particle::Deactivate() {
     mAABBComponent->SetActive(false); // desativa colisão
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetIsVisible(false);
-    }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetIsVisible(false);
     }
     if (mDrawParticleComponent) {
         mDrawParticleComponent->SetIsVisible(false);

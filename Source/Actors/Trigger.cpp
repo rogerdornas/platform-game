@@ -3,6 +3,7 @@
 //
 
 #include "Trigger.h"
+#include "../Camera.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
@@ -13,7 +14,7 @@ Trigger::Trigger(class Game *game, float width, float height)
     :Actor(game)
     ,mWidth(width)
     ,mHeight(height)
-    ,mTarget(Target::nothing)
+    ,mTarget(Target::Nothing)
     ,mDrawPolygonComponent(nullptr)
 
 {
@@ -34,74 +35,74 @@ Trigger::Trigger(class Game *game, float width, float height)
 
 void Trigger::SetTarget(std::string target) {
     if (target == "Camera") {
-        mTarget = Target::camera;
+        mTarget = Target::Camera;
         return;
     }
     if (target == "DynamicGround") {
-        mTarget = Target::dynamicGround;
+        mTarget = Target::DynamicGround;
         return;
     }
     if (target == "Ground") {
-        mTarget = Target::ground;
+        mTarget = Target::Ground;
         return;
     }
     if (target == "Game") {
-        mTarget = Target::game;
+        mTarget = Target::Game;
         return;
     }
     if (target == "Enemy") {
-        mTarget = Target::enemy;
+        mTarget = Target::Enemy;
         return;
     }
 }
 
 void Trigger::SetEvent(std::string event) {
     if (event == "Fixed") {
-        mEvent = Event::fixed;
+        mEvent = Event::Fixed;
         return;
     }
     if (event == "FollowPlayer") {
-        mEvent = Event::followPlayer;
+        mEvent = Event::FollowPlayer;
         return;
     }
     if (event == "FollowPlayerHorizontally") {
-        mEvent = Event::followPlayerHorizontally;
+        mEvent = Event::FollowPlayerHorizontally;
         return;
     }
     if (event == "ScrollRight") {
-        mEvent = Event::scrollRight;
+        mEvent = Event::ScrollRight;
         return;
     }
     if (event == "ScrollUp") {
-        mEvent = Event::scrollUp;
+        mEvent = Event::ScrollUp;
         return;
     }
 
     if (event == "SetIsGrowing") {
-        mEvent = Event::setIsGrowing;
+        mEvent = Event::SetIsGrowing;
         return;
     }
     if (event == "SetIsDecreasing") {
-        mEvent = Event::setIsDecreasing;
+        mEvent = Event::SetIsDecreasing;
         return;
     }
     if (event == "SetIsDecreasingAfterKillingEnemies") {
-        mEvent = Event::setIsDecreasingAfterKillingEnemies;
+        mEvent = Event::SetIsDecreasingAfterKillingEnemies;
         return;
     }
 
     if (event == "SetIsMoving") {
-        mEvent = Event::setIsMoving;
+        mEvent = Event::SetIsMoving;
         return;
     }
 
     if (event == "ChangeScene") {
-        mEvent = Event::changeScene;
+        mEvent = Event::ChangeScene;
         return;
     }
 
     if (event == "SpotPlayer") {
-        mEvent = Event::spotPlayer;
+        mEvent = Event::SpotPlayer;
         return;
     }
 }
@@ -131,23 +132,28 @@ void Trigger::OnUpdate(float deltaTime) {
     Player* player = mGame->GetPlayer();
     if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
         switch (mTarget) {
-            case Target::camera:
+            case Target::Camera:
                 CameraTrigger();
-            break;
-            case Target::dynamicGround:
+                break;
+
+            case Target::DynamicGround:
                 DynamicGroundTrigger();
-            break;
-            case Target::ground:
+                break;
+
+            case Target::Ground:
                 GroundTrigger();
-            break;
-            case Target::game:
+                break;
+
+            case Target::Game:
                 GameTrigger();
-            break;
-            case Target::enemy:
+                break;
+
+            case Target::Enemy:
                 EnemyTrigger();
-            break;
+                break;
+
             default:
-            break;
+                break;
         }
     }
 }
@@ -155,24 +161,29 @@ void Trigger::OnUpdate(float deltaTime) {
 void Trigger::CameraTrigger() {
     Camera* camera = mGame->GetCamera();
     switch (mEvent) {
-        case Event::fixed:
+        case Event::Fixed:
             camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::Fixed);
             SetState(ActorState::Destroy);
             break;
-        case Event::followPlayer:
+
+        case Event::FollowPlayer:
             camera->ChangeCameraMode(CameraMode::FollowPlayer);
             break;
-        case Event::followPlayerHorizontally:
+
+        case Event::FollowPlayerHorizontally:
             camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::FollowPlayerHorizontally);
             break;
-        case Event::scrollRight:
+
+        case Event::ScrollRight:
             camera->ChangeCameraMode(CameraMode::ScrollRight);
             break;
-        case Event::scrollUp:
+
+        case Event::ScrollUp:
             camera->ChangeCameraMode(CameraMode::ScrollUp);
             break;
+
         default:
             break;
     }
@@ -183,7 +194,7 @@ void Trigger::DynamicGroundTrigger() {
     std::vector<Enemy *> enemies = mGame->GetEnemies();
     bool allEnemiesDie = true;
     switch (mEvent) {
-        case Event::setIsGrowing:
+        case Event::SetIsGrowing:
             for (int id : mGroundsIds) {
                 Ground *g = mGame->GetGroundById(id);
                 DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
@@ -193,7 +204,8 @@ void Trigger::DynamicGroundTrigger() {
             }
             SetState(ActorState::Destroy);
             break;
-        case Event::setIsDecreasing:
+
+        case Event::SetIsDecreasing:
             for (int id : mGroundsIds) {
                 Ground *g = mGame->GetGroundById(id);
                 DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
@@ -203,7 +215,8 @@ void Trigger::DynamicGroundTrigger() {
             }
             SetState(ActorState::Destroy);
             break;
-        case Event::setIsDecreasingAfterKillingEnemies:
+
+        case Event::SetIsDecreasingAfterKillingEnemies:
             for (int id : mEnemiesIds) {
                 Enemy *e = mGame->GetEnemyById(id);
                 if (e != nullptr) {
@@ -221,6 +234,7 @@ void Trigger::DynamicGroundTrigger() {
                 SetState(ActorState::Destroy);
             }
             break;
+
         default:
             break;
     }
@@ -229,33 +243,36 @@ void Trigger::DynamicGroundTrigger() {
 void Trigger::GroundTrigger() {
     std::vector<Ground *> grounds = mGame->GetGrounds();
     switch (mEvent) {
-        case Event::setIsMoving:
+        case Event::SetIsMoving:
             for (int id : mGroundsIds) {
                 Ground *g = mGame->GetGroundById(id);
                 if (g) {
                     g->SetIsMoving(true);
                 }
             }
-        break;
+            break;
+        default:
+            break;
     }
 }
 
 void Trigger::GameTrigger() {
     switch (mEvent) {
-        case Event::changeScene:
+        case Event::ChangeScene:
             mGame->GetAudio()->StopAllSounds();
             mGame->SetGameScene(mScene, 2.0f);
             SetState(ActorState::Destroy);
-        break;
+            break;
+
         default:
-        break;
+            break;
     }
 }
 
 void Trigger::EnemyTrigger() {
     std::vector<Enemy *> enemies = mGame->GetEnemies();
     switch (mEvent) {
-        case Event::spotPlayer:
+        case Event::SpotPlayer:
             for (int id : mEnemiesIds) {
                 Enemy *e = mGame->GetEnemyById(id);
                 if (e) {
@@ -263,9 +280,10 @@ void Trigger::EnemyTrigger() {
                 }
             }
             SetState(ActorState::Destroy);
-        break;
+            break;
+
         default:
-        break;
+            break;
     }
 }
 

@@ -13,8 +13,8 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, float movespeed, float healthpoints)
-    : Enemy(game, width, height, movespeed, healthpoints, 5.0f)
+FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, float moveSpeed, float healthPoints)
+    :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
 {
     mKnockBackSpeed = 1000.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
@@ -29,23 +29,24 @@ FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, floa
                                                    static_cast<int>(mHeight * 1.2));
 }
 
-void FlyingEnemySimple::OnUpdate(float deltaTime)
-{
+void FlyingEnemySimple::OnUpdate(float deltaTime) {
     mKnockBackTimer += deltaTime;
     mFlyingAroundTimer += deltaTime;
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
 
-    if (mPlayerSpotted)
+    if (mPlayerSpotted) {
         MovementAfterPlayerSpotted(deltaTime);
-
-    else
+    }
+    else {
         MovementBeforePlayerSpotted();
+    }
 
     // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale())
+    if (GetPosition().y > 20000 * mGame->GetScale()) {
         SetPosition(Vector2::Zero);
+    }
 
     // Se morreu
     if (Died()) {
@@ -65,32 +66,12 @@ void FlyingEnemySimple::OnUpdate(float deltaTime)
         circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
         circleBlur->SetEnemy(*this);
         circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
-        circleBlur->SetEffect(TargetEffect::circle);
+        circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
 }
 
-void FlyingEnemySimple::ResolveGroundCollision()
-{
-    std::vector<Ground *> grounds = GetGame()->GetGrounds();
-    if (!grounds.empty())
-        for (Ground *g: grounds)
-        {
-            if (!g->GetIsSpike())
-            { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>()))
-                    mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
-            }
-            else if (g->GetIsSpike())
-            { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>()))
-                    SetPosition(Vector2::Zero);
-            }
-        }
-}
-
-void FlyingEnemySimple::MovementAfterPlayerSpotted(float deltaTime)
-{
+void FlyingEnemySimple::MovementAfterPlayerSpotted(float deltaTime) {
     Player *player = GetGame()->GetPlayer();
 
     float dx = player->GetPosition().x - GetPosition().x;
@@ -98,30 +79,32 @@ void FlyingEnemySimple::MovementAfterPlayerSpotted(float deltaTime)
 
     float angle = Math::Atan2(dy, dx);
     // Ajustar para intervalo [0, 2*pi)
-    if (angle < 0)
+    if (angle < 0) {
         angle += 2 * Math::Pi;
+    }
 
     SetRotation(angle);
 
-    if (mKnockBackTimer >= mKnockBackDuration)
+    if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(GetForward() * mMoveSpeed);
+    }
 }
 
-void FlyingEnemySimple::MovementBeforePlayerSpotted()
-{
+void FlyingEnemySimple::MovementBeforePlayerSpotted() {
     Player *player = GetGame()->GetPlayer();
-    if (mFlyingAroundTimer > mFlyingAroundDuration)
-    {
+    if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
         mFlyingAroundTimer = 0;
     }
-    if (mKnockBackTimer >= mKnockBackDuration)
+    if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mFlyingAroundMoveSpeed));
+    }
 
     // Testa se spotted player
     Vector2 dist = GetPosition() - player->GetPosition();
-    if (dist.Length() < mDistToSpotPlayer)
+    if (dist.Length() < mDistToSpotPlayer) {
         mPlayerSpotted = true;
+    }
 }
 
 void FlyingEnemySimple::ChangeResolution(float oldScale, float newScale) {
@@ -153,6 +136,7 @@ void FlyingEnemySimple::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

@@ -8,26 +8,17 @@
 #include "../../Game.h"
 #include "../../Actors/DynamicGround.h"
 
-DrawDynamicGroundSpritesComponent::DrawDynamicGroundSpritesComponent(Actor *owner, int width, int height, const int drawOrder)
-    : DrawGroundSpritesComponent(owner, width, height, drawOrder)
+DrawDynamicGroundSpritesComponent::DrawDynamicGroundSpritesComponent(Actor* owner, int width, int height, const int drawOrder)
+    :DrawGroundSpritesComponent(owner, width, height, drawOrder)
 {
     mOwnerDynamicGround = dynamic_cast<DynamicGround*>(mOwner);
 }
 
-void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
+void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer* renderer)
 {
-    if (!mIsVisible)
-    {
+    if (!mIsVisible) {
         return;
     }
-    // TODO 1.2 (~5 linhas): Utilize a função SDL_RenderCopyEx para desenhar a textura armazenada
-    //  no atributo mSpriteSheetSurface. Você terá que criar um SDL_Rect para definir a região
-    //  da tela onde será desenhado o sprite. Para que o objeto seja desenhado em relação a posição da câmera,
-    //  subtraia a posição da câmera da posição do objeto. Além disso, você terá que criar uma flag do tipo
-    //  SDL_RendererFlip para definir se o sprite será desenhado virado à direita ou à
-    //  esquerda. A orientação do sprite (esquerda ou direita) depende da rotação do objeto dono do sprite.
-    //  Se a rotação for zero, o sprite deve ser desenhado virado à direita. Se for igual a MAth::Pi, deve
-    //  ser desenhado à esquerda.
 
     SDL_Texture* texture = mOwner->GetGame()->GetTileSheet();
     std::unordered_map<int, SDL_Rect> tileSheetData = mOwner->GetGame()->GetTileSheetData();
@@ -57,19 +48,16 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
                 if (offsetPos.x >= ownerMinOffsetPos.x && offsetPos.x + mWidth <= ownerMaxOffsetPos.x) {
                     region.x = offsetPos.x;
                     region.w = mWidth + 1;
-                    // srcRect.w =  region.w;
                     srcRect.w = 32 + 1;
                 }
                 else if (offsetPos.x < ownerMinOffsetPos.x && offsetPos.x + mWidth <= ownerMaxOffsetPos.x) {
                     region.x = ownerMinOffsetPos.x;
                     region.w = offsetPos.x + mWidth - ownerMinOffsetPos.x + 1;
-                    // srcRect.w = region.w;
                     srcRect.w = offsetPos.x + 32 - ownerMinOffsetPos.x + 1;
                 }
                 else if (offsetPos.x >= ownerMinOffsetPos.x && offsetPos.x + mWidth > ownerMaxOffsetPos.x) {
                     region.x = offsetPos.x;
                     region.w = ownerMaxOffsetPos.x - offsetPos.x + 1;
-                    // srcRect.w = region.w;
                     srcRect.w = ownerMaxOffsetPos.x - offsetPos.x + 1;
                 }
 
@@ -77,19 +65,16 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer *renderer)
                 if (offsetPos.y >= ownerMinOffsetPos.y && offsetPos.y + mHeight <= ownerMaxOffsetPos.y) {
                     region.y = offsetPos.y;
                     region.h = mHeight + 1;
-                    // srcRect.h = region.h;
                     srcRect.h = 32 + 1;
                 }
                 else if (offsetPos.y < ownerMinOffsetPos.y && offsetPos.y + mHeight <= ownerMaxOffsetPos.y) {
                     region.y = ownerMinOffsetPos.y;
                     region.h = offsetPos.y + mHeight - ownerMinOffsetPos.y + 1;
-                    // srcRect.h = region.h;
                     srcRect.h = offsetPos.y + 32 - ownerMinOffsetPos.y + 1;
                 }
                 else if (offsetPos.y >= ownerMinOffsetPos.y && offsetPos.y + mHeight > ownerMaxOffsetPos.y) {
                     region.y = offsetPos.y;
                     region.h = ownerMaxOffsetPos.y - offsetPos.y + 1;
-                    // srcRect.h = region.h;
                     srcRect.h = ownerMaxOffsetPos.y - offsetPos.y + 1;;
                 }
 

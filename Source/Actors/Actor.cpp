@@ -1,22 +1,14 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "Actor.h"
 #include "../Game.h"
 #include "../Components/Component.h"
 #include <algorithm>
 
-Actor::Actor(Game *game)
-    : mGame(game),
-      mState(ActorState::Active),
-      mPosition(Vector2::Zero),
-      mScale(1.0f),
-      mRotation(0.0f)
+Actor::Actor(Game* game)
+    :mGame(game)
+    ,mState(ActorState::Active)
+    ,mPosition(Vector2::Zero)
+    ,mScale(1.0f)
+    ,mRotation(0.0f)
 {
     mGame->AddActor(this);
 }
@@ -25,8 +17,7 @@ Actor::~Actor()
 {
     mGame->RemoveActor(this);
 
-    for (auto component: mComponents)
-    {
+    for (auto component: mComponents) {
         delete component;
     }
     mComponents.clear();
@@ -34,10 +25,8 @@ Actor::~Actor()
 
 void Actor::Update(float deltaTime)
 {
-    if (mState == ActorState::Active)
-    {
-        for (auto comp: mComponents)
-        {
+    if (mState == ActorState::Active) {
+        for (auto comp: mComponents) {
             comp->Update(deltaTime);
         }
 
@@ -47,12 +36,10 @@ void Actor::Update(float deltaTime)
 
 void Actor::OnUpdate(float deltaTime) {}
 
-void Actor::ProcessInput(const Uint8 *keyState, SDL_GameController &controller)
+void Actor::ProcessInput(const Uint8* keyState, SDL_GameController& controller)
 {
-    if (mState == ActorState::Active)
-    {
-        for (auto comp: mComponents)
-        {
+    if (mState == ActorState::Active) {
+        for (auto comp: mComponents) {
             comp->ProcessInput(keyState);
         }
 
@@ -60,18 +47,18 @@ void Actor::ProcessInput(const Uint8 *keyState, SDL_GameController &controller)
     }
 }
 
-void Actor::OnProcessInput(const Uint8 *keyState, SDL_GameController &controller) {}
+void Actor::OnProcessInput(const Uint8* keyState, SDL_GameController& controller) {}
 
-void Actor::AddComponent(Component *c)
+void Actor::AddComponent(Component* c)
 {
     mComponents.emplace_back(c);
-    std::sort(mComponents.begin(), mComponents.end(), [](Component *a, Component *b)
+    std::sort(mComponents.begin(), mComponents.end(), [](const Component* a, const Component* b)
     {
         return a->GetUpdateOrder() < b->GetUpdateOrder();
     });
 }
 
-void Actor::RemoveComponent(class Component *c) {
+void Actor::RemoveComponent(const class Component* c) {
     auto iter = std::find(mComponents.begin(), mComponents.end(), c);
     mComponents.erase(iter);
 }

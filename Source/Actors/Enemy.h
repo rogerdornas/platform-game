@@ -3,12 +3,13 @@
 //
 
 #pragma once
+
 #include "Actor.h"
 
 class Enemy : public Actor
 {
 public:
-    Enemy(Game *game, float width, float height, float moveSpeed, float healthPoints, float contactDamage);
+    Enemy(Game* game, float width, float height, float moveSpeed, float healthPoints, float contactDamage);
     ~Enemy() override;
 
     void SetHealthPoints(float hp) { mHealthPoints = hp; }
@@ -21,11 +22,12 @@ public:
     void SetSpottedPlayer(bool spotted) { mPlayerSpotted = spotted; }
 
     void SetId(int id) { mId = id; }
-    int GetId() { return mId; }
+    int GetId() const { return mId; }
 
 protected:
-    bool Died();
-    void ResolveEnemyCollision();
+    bool Died() const;
+    void ResolveEnemyCollision() const;
+    virtual void ResolveGroundCollision();
 
     int mId;
     float mWidth;
@@ -33,6 +35,7 @@ protected:
 
     float mMoveSpeed;
 
+    float mMaxHealthPoints;
     float mHealthPoints;
     float mContactDamage;
 
@@ -47,10 +50,10 @@ protected:
 
     bool mPlayerSpotted;
 
-    class DrawPolygonComponent *mDrawPolygonComponent;
-    class DrawSpriteComponent *mDrawSpriteComponent;
-    class DrawAnimatedComponent *mDrawAnimatedComponent;
+    class DrawPolygonComponent* mDrawPolygonComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
 
-    class RigidBodyComponent *mRigidBodyComponent;
-    class AABBComponent *mAABBComponent;
+    class RigidBodyComponent* mRigidBodyComponent;
+    class AABBComponent* mAABBComponent;
 };

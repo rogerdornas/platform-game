@@ -131,9 +131,9 @@ SoundHandle AudioSystem::PlaySound(const std::string& soundName, bool looping)
     //  e quebre do loop.
 	if (availableChannel == -1)	{
 		for (auto it = mHandleMap.begin(); it != mHandleMap.end(); ++it) {
-			if (it->second.mIsLooping) {
+			if (!it->second.mIsLooping) {
 				availableChannel = it->second.mChannel;
-				SDL_Log("Parando som em loop '%s' para liberar canal.", it->second.mSoundName.c_str());
+				SDL_Log("Parando som sem loop '%s' para liberar canal.", it->second.mSoundName.c_str());
 				StopSound(it->first);
 				break;
 			}

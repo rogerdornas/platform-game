@@ -11,7 +11,7 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-FireBall::FireBall(class Game *game)
+FireBall::FireBall(class Game* game)
     :Actor(game)
     ,mWidth(80.0f * mGame->GetScale())
     ,mHeight(80.0f * mGame->GetScale())
@@ -158,8 +158,7 @@ void FireBall::Deactivate() {
 }
 
 void FireBall::ResolveGroundCollision() {
-    std::vector<Ground*> grounds;
-    grounds = mGame->GetGrounds();
+    std::vector<Ground*> grounds = mGame->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
@@ -171,10 +170,9 @@ void FireBall::ResolveGroundCollision() {
 
 void FireBall::ResolveEnemyCollision() {
     if (!mIsFromEnemy) {
-        std::vector<Enemy*> enemys;
-        enemys = mGame->GetEnemies();
-        if (!enemys.empty()) {
-            for (Enemy* e : enemys) {
+        std::vector<Enemy*> enemies = mGame->GetEnemies();
+        if (!enemies.empty()) {
+            for (Enemy* e : enemies) {
                 if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
                     e->ReceiveHit(mDamage, GetForward());
                     Deactivate();

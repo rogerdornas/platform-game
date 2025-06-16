@@ -6,16 +6,19 @@
 #include "../../Actors/Actor.h"
 #include "../../Game.h"
 
-DrawPolygonComponent::DrawPolygonComponent(Actor *owner, std::vector<Vector2> &vertices, SDL_Color color, int drawOrder)
-    : DrawComponent(owner),
-      mDrawOrder(drawOrder),
-      mVertices(vertices),
-      mColor(color) {}
-
-void DrawPolygonComponent::Draw(SDL_Renderer *renderer)
+DrawPolygonComponent::DrawPolygonComponent(Actor* owner, std::vector<Vector2>& vertices, SDL_Color color, int drawOrder)
+    :DrawComponent(owner)
+    ,mDrawOrder(drawOrder)
+    ,mVertices(vertices)
+    ,mColor(color)
 {
-    if (!mIsVisible)
+}
+
+void DrawPolygonComponent::Draw(SDL_Renderer* renderer)
+{
+    if (!mIsVisible) {
         return;
+    }
 
     SDL_SetRenderDrawColor(renderer, mColor.r, mColor.g, mColor.b, mColor.a);
 
@@ -23,8 +26,7 @@ void DrawPolygonComponent::Draw(SDL_Renderer *renderer)
     Vector2 cameraPos = mOwner->GetGame()->GetCamera()->GetPosCamera();
 
     // Render vertices as lines
-    for (int i = 0; i < mVertices.size() - 1; i++)
-    {
+    for (int i = 0; i < mVertices.size() - 1; i++) {
         SDL_RenderDrawLine(renderer, pos.x + mVertices[i].x - cameraPos.x,
                            pos.y + mVertices[i].y - cameraPos.y,
                            pos.x + mVertices[i + 1].x - cameraPos.x,

@@ -19,8 +19,8 @@
 #include "../Actors/DynamicGround.h"
 
 
-Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    : Enemy(game, width, height, moveSpeed, healthPoints, 10)
+Fox::Fox(Game* game, float width, float height, float moveSpeed, float healthPoints)
+    :Enemy(game, width, height, moveSpeed, healthPoints, 10)
 {
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
@@ -90,39 +90,44 @@ Fox::Fox(Game *game, float width, float height, float moveSpeed, float healthPoi
     mSword = new Sword(game, this, mWidth * 3.6f, mHeight * 1.3f, 0.2f, 10.0f);
 }
 
-void Fox::OnUpdate(float deltaTime)
-{
+void Fox::OnUpdate(float deltaTime) {
     mIsRunning = false;
     mIsOnGround = false;
     mKnockBackTimer += deltaTime;
     mWalkingAroundTimer += deltaTime;
 
-    if (mFlashTimer < mFlashDuration)
+    if (mFlashTimer < mFlashDuration) {
         mFlashTimer += deltaTime;
-
-    else
+    }
+    else {
         mIsFlashing = false;
-
-
-    // Gravidade
-    if (!mIsOnGround)
-        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
-                                                 mRigidBodyComponent->GetVelocity().y
-                                                 + mGravity * deltaTime));
+    }
 
     ResolvePlayerCollision();
     ResolveGroundCollision();
     ResolveEnemyCollision();
 
-    if (mPlayerSpotted)
-        MovementAfterPlayerSpotted(deltaTime);
+    // Gravidade
+    if (!mIsOnGround) {
+        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
+                                                 mRigidBodyComponent->GetVelocity().y
+                                                 + mGravity * deltaTime));
+    }
 
-    else
+    if (mPlayerSpotted) {
+        if (!mGame->GetBossMusicHandle().IsValid()) {
+            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav"));
+        }
+        MovementAfterPlayerSpotted(deltaTime);
+    }
+    else {
         MovementBeforePlayerSpotted();
+    }
 
     // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale())
+    if (GetPosition().y > 20000 * mGame->GetScale()) {
         SetPosition(Vector2::Zero);
+    }
 
     // Se morreu
     if (Died()) {
@@ -130,10 +135,7 @@ void Fox::OnUpdate(float deltaTime)
     }
 
     ManageAnimations();
-
-    // SDL_Log("Life: %f", mHealthPoints);
-    if (mHealthPoints <= 100)
-    {
+    if (mHealthPoints <= mMaxHealthPoints / 2) {
         mStopDuration = 0.5;
         mFireballDuration = 1.0;
         mMaxJumps = 2;
@@ -144,19 +146,14 @@ void Fox::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
     // Abre chão que estava travando
     for (int id : mUnlockGroundsIds) {
-        Ground *g = mGame->GetGroundById(id);
+        Ground* g = mGame->GetGroundById(id);
         DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
         if (dynamicGround) {
             dynamicGround->SetIsDecreasing(true);
         }
     }
-    // Ground* g1 = mGame->GetGroundById(96);
-    // Ground* g2 = mGame->GetGroundById(101);
-    // DynamicGround* dynamicGround1 = dynamic_cast<DynamicGround*>(g1);
-    // dynamicGround1->SetIsDecreasing(true);
-    // DynamicGround* dynamicGround2 = dynamic_cast<DynamicGround*>(g2);
-    // dynamicGround2->SetIsDecreasing(true);
 
+    // Player ganha poder
     mGame->GetPlayer()->SetCanFireBall(true);
 
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
@@ -173,53 +170,67 @@ void Fox::TriggerBossDefeat() {
     circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
     circleBlur->SetEnemy(*this);
     circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
-    circleBlur->SetEffect(TargetEffect::circle);
+    circleBlur->SetEffect(TargetEffect::Circle);
     circleBlur->EnemyDestroyed();
 
     mGame->StopBossMusic();
 }
 
 
-void Fox::ResolveGroundCollision()
-{
+void Fox::ResolveGroundCollision() {
     std::array<bool, 4> collisionSide{};
-    std::vector<Ground *> grounds = GetGame()->GetGrounds();
-    if (!grounds.empty())
-    {
-        for (Ground *g: grounds)
-        {
-            if (!g->GetIsSpike())
-            { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>()))
+    std::vector<Ground* > grounds = GetGame()->GetGrounds();
+    if (!grounds.empty()) {
+        for (Ground* g: grounds) {
+            if (!g->GetIsSpike()) { // Colisão com ground
+                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
                     collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
-
-                else
+                }
+                else {
                     collisionSide = {false, false, false, false};
+                }
 
                 // colidiu top
-                if (collisionSide[0])
+                if (collisionSide[0]) {
                     mIsOnGround = true;
-
-                if (collisionSide[2] || collisionSide[3])
-                    if (mState == State::RunAway)
+                }
+                if (collisionSide[2] || collisionSide[3]) {
+                    if (mState == State::RunAway) {
                         mRunAwayTimer = mRunAwayDuration;
+                    }
+                }
             }
-            else if (g->GetIsSpike())
-            { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>()))
-                    SetPosition(Vector2::Zero);
+            else if (g->GetIsSpike()) { // Colisão com spikes
+                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                    // Colidiu top
+                    if (collisionSide[0]) {
+                        ReceiveHit(10, Vector2::NegUnitY);
+                    }
+                    // Colidiu bot
+                    if (collisionSide[1]) {
+                        ReceiveHit(10, Vector2::UnitY);
+                    }
+                    //Colidiu left
+                    if (collisionSide[2]) {
+                        ReceiveHit(10, Vector2::NegUnitX);
+                    }
+                    //Colidiu right
+                    if (collisionSide[3]) {
+                        ReceiveHit(10, Vector2::UnitX);
+                    }
+
+                    mKnockBackTimer = 0;
+                }
             }
         }
     }
 }
 
-void Fox::ResolvePlayerCollision()
-{
-    Player *player = GetGame()->GetPlayer();
-    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>()))
-    { // Colisão da Fox com o ‘player’
-        if (mState == State::Dash)
-        {
+void Fox::ResolvePlayerCollision() {
+    Player* player = GetGame()->GetPlayer();
+    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) { // Colisão da Fox com o player
+        if (mState == State::Dash) {
             mDashCount = 0;
             mDashTimer = 0;
             mDashComponent->StopDash();
@@ -227,20 +238,16 @@ void Fox::ResolvePlayerCollision()
             mState = State::RunAway;
         }
     }
-    else if (mSword->GetComponent<AABBComponent>()->Intersect(*player->GetComponent<AABBComponent>()))
-    { // Colisão da sword da ‘fox’ com o ‘player’
-        if (!mSwordHitPlayer)
-        {
+    else if (mSword->GetComponent<AABBComponent>()->Intersect(*player->GetComponent<AABBComponent>())) { // Colisão da sword da fox com o player
+        if (!mSwordHitPlayer) {
             player->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
             mSwordHitPlayer = true;
         }
     }
 }
 
-void Fox::MovementAfterPlayerSpotted(float deltaTime)
-{
-    switch (mState)
-    {
+void Fox::MovementAfterPlayerSpotted(float deltaTime) {
+    switch (mState) {
         case State::Stop:
             Stop(deltaTime);
             break;
@@ -267,24 +274,22 @@ void Fox::MovementAfterPlayerSpotted(float deltaTime)
     }
 }
 
-void Fox::MovementBeforePlayerSpotted()
-{
+void Fox::MovementBeforePlayerSpotted() {
     mIsRunning = true;
-    Player *player = GetGame()->GetPlayer();
-    if (mWalkingAroundTimer > mWalkingAroundDuration)
-    {
+    Player* player = GetGame()->GetPlayer();
+    if (mWalkingAroundTimer > mWalkingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
         mWalkingAroundTimer = 0;
     }
-    if (mKnockBackTimer >= mKnockBackDuration)
+    if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mWalkingAroundMoveSpeed,
                                                  mRigidBodyComponent->GetVelocity().y));
+    }
 
     // Testa se spotted player
     Vector2 dist = GetPosition() - player->GetPosition();
     if (dist.Length() < mDistToSpotPlayer) {
         mPlayerSpotted = true;
-        mGame->StarBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav"));
     }
 }
 
@@ -304,7 +309,7 @@ void Fox::ManageAnimations() {
 }
 
 void Fox::Stop(float deltaTime) {
-    Player *player = GetGame()->GetPlayer();
+    Player* player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
@@ -315,78 +320,62 @@ void Fox::Stop(float deltaTime) {
 
     mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
     mStopTimer += deltaTime;
-    if (mStopTimer < mStopDuration)
+    if (mStopTimer < mStopDuration) {
         return;
+    }
 
     mStopTimer = 0;
 
-    if (Random::GetFloat() < 0.5)
+    if (Random::GetFloat() < 0.5) {
         mState = State::RunAndSword;
-
-    else
+    }
+    else {
         mState = State::Fireball;
-
-    // if (Math::Abs(dist) < 700) {
-    //     mState = State::RunAndSword;
-    // }
-    // else {
-    //     mState = State::Fireball;
-    // }
+    }
 }
 
-void Fox::Dash(float deltaTime)
-{
-    // Player* player = GetGame()->GetPlayer();
-    // float dist = GetPosition().x - player->GetPosition().x;
-    // if (dist < 0) {
-    //     SetRotation(0.0);
-    // }
-    // else {
-    //     SetRotation(Math::Pi);
-    // }
-
-    if (mDashCount >= mMaxDashes)
-    {
+void Fox::Dash(float deltaTime) {
+    if (mDashCount >= mMaxDashes) {
         mDashCount = 0;
         mState = State::Stop;
         return;
     }
     mDashTimer += deltaTime;
     mDashComponent->UseDash(true);
-    if (mDashTimer < mDashDuration)
+    if (mDashTimer < mDashDuration) {
         return;
+    }
 
     mDashCount++;
     mDashTimer = 0;
-    Player *player = GetGame()->GetPlayer();
+    Player* player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
-    if (dist < 0)
+    if (dist < 0) {
         SetRotation(0.0);
-
-    else
+    }
+    else {
         SetRotation(Math::Pi);
-
-    // mState = State::Stop;
+    }
 }
 
-void Fox::RunAway(float deltaTime)
-{
+void Fox::RunAway(float deltaTime) {
     mIsRunning = true;
     mRunAwayTimer += deltaTime;
 
-    Player *player = GetGame()->GetPlayer();
+    Player* player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
 
-    if (dist > 0)
+    if (dist > 0) {
         SetRotation(0.0);
-
-    else
+    }
+    else {
         SetRotation(Math::Pi);
-
+    }
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 4, mRigidBodyComponent->GetVelocity().y));
 
-    if (mRunAwayTimer < mRunAwayDuration)
+    if (mRunAwayTimer < mRunAwayDuration) {
         return;
+    }
 
     mRunAwayTimer = 0;
     mState = State::Stop;
@@ -395,17 +384,17 @@ void Fox::RunAway(float deltaTime)
 void Fox::RunAndSword(float deltaTime)
 {
     mIsRunning = true;
-    Player *player = GetGame()->GetPlayer();
+    Player* player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
-    if (dist < 0)
+    if (dist < 0) {
         SetRotation(0.0);
-
-    else
+    }
+    else {
         SetRotation(Math::Pi);
+    }
 
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3, mRigidBodyComponent->GetVelocity().y));
-    if (Math::Abs(dist) < mDistToSword)
-    {
+    if (Math::Abs(dist) < mDistToSword) {
         mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(GetRotation());
@@ -418,20 +407,19 @@ void Fox::RunAndSword(float deltaTime)
 void Fox::Fireball(float deltaTime)
 {
     mFireballTimer += deltaTime;
-    Player *player = GetGame()->GetPlayer();
+    Player* player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
-    if (!mAlreadyFireballed)
-    {
-        if (dist < 0)
+    if (!mAlreadyFireballed) {
+        if (dist < 0) {
             SetRotation(0.0);
-
-        else
+        }
+        else {
             SetRotation(Math::Pi);
+        }
 
-        std::vector<FireBall *> fireBalls = GetGame()->GetFireBalls();
-        for (FireBall *f: fireBalls)
-            if (f->GetState() == ActorState::Paused)
-            {
+        std::vector<FireBall* > fireBalls = GetGame()->GetFireBalls();
+        for (FireBall* f: fireBalls) {
+            if (f->GetState() == ActorState::Paused) {
                 f->SetState(ActorState::Active);
                 f->SetRotation(GetRotation());
                 f->SetWidth(mFireballWidth);
@@ -441,51 +429,44 @@ void Fox::Fireball(float deltaTime)
                 f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                 break;
             }
+        }
 
         mAlreadyFireballed = true;
     }
 
-    if (mFireballTimer < mFireballDuration)
+    if (mFireballTimer < mFireballDuration) {
         return;
+    }
 
     mAlreadyFireballed = false;
     mFireballTimer = 0;
 
-    if (Random::GetFloat() < 0.5)
+    if (Random::GetFloat() < 0.5) {
         mState = State::Jump;
-
-    else
+    }
+    else {
         mState = State::Dash;
-
-    // if (Math::Abs(dist) < 500) {
-    //     mState = State::Jump;
-    // }
-    // else {
-    //     mState = State::Dash;
-    // }
+    }
 }
 
 
-void Fox::Jump(float deltaTime)
-{
-    if (mJumpCount >= mMaxJumps)
-    {
-        if (mIsOnGround)
-        {
+void Fox::Jump(float deltaTime) {
+    if (mJumpCount >= mMaxJumps) {
+        if (mIsOnGround) {
             mJumpCount = 0;
             mState = State::Stop;
         }
         return;
     }
-    if (mIsOnGround)
-    {
-        Player *player = GetGame()->GetPlayer();
+    if (mIsOnGround) {
+        Player* player = GetGame()->GetPlayer();
         float dist = GetPosition().x - player->GetPosition().x;
-        if (dist < 0)
+        if (dist < 0) {
             SetRotation(0.0);
-
-        else
+        }
+        else {
             SetRotation(Math::Pi);
+        }
 
         mJumpCount++;
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2, mJumpForce));
@@ -528,7 +509,7 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
     mAABBComponent->SetMin(v1);
     mAABBComponent->SetMax(v3);
 
-    if (mDrawPolygonComponent)
+    if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
-
+    }
 }
