@@ -10,6 +10,13 @@
 class FireBall : public Actor
 {
 public:
+    enum class State
+    {
+        Deactivate,
+        Throwing,
+        Exploding
+    };
+
     FireBall(class Game *game);
     ~FireBall() override;
 
@@ -20,6 +27,7 @@ public:
     void SetHeight(float h) { mHeight = h; }
     void SetSpeed(float s) { mSpeed = s; }
     void SetIsFromEnemy() { mIsFromEnemy = true; }
+    void ExplodeFireball() { mDurationTimer = mDuration; }
 
     void Activate();
     void Deactivate();
@@ -31,6 +39,9 @@ private:
     void ResolveEnemyCollision();
     void ResolvePlayerCollision();
 
+    void ExplosionEffect();
+    bool IsOnScreen();
+
     void ManageAnimations();
 
     float mWidth;
@@ -39,8 +50,12 @@ private:
     float mDuration;
     float mDurationTimer;
 
-    float mDamage;
+    State mFireballState;
+    float mFireballOffscreenLimit;
+    float mDeactivateDuration;
+    float mDeactivateTimer;
 
+    float mDamage;
     bool mIsFromEnemy;
 
     SoundHandle mSound;

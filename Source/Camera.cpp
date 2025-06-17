@@ -125,44 +125,39 @@ Vector2 Camera::FollowPlayerHorizontally() {
 }
 
 Vector2 Camera::ScrollRight(float deltaTime, float speed) {
-    Vector2 targetPos;
-    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
-    targetPos.x = mPos.x + speed * deltaTime;
-    targetPos.y = playerPos.y - mGame->GetLogicalWindowHeight() / 2;
+    Vector2 targetPos = GetPosCamera();
+    if (mGame->GetGamePlayState() == Game::GamePlayState::Playing) {
+        Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+        targetPos.x = mPos.x + speed * deltaTime;
+        targetPos.y = playerPos.y - mGame->GetLogicalWindowHeight() / 2;
 
-    if (playerPos.x < targetPos.x - 50 * mGame->GetScale()) {
-        mGame->GetPlayer()->ReceiveHit(mGame->GetPlayer()->GetMaxHealthPoints(), Vector2::Zero);
-        mGame->SetResetLevel();
-        mGame->GetAudio()->StopAllSounds();
-        mGame->GetPlayer()->SetState(ActorState::Paused);
-        // mGame->mResetLevel = true;
-        // mGame->GetAudio()->StopAllSounds();
-        // mGame->GetPlayer()->SetState(ActorState::Paused);
-        mFixedCameraPosition = mPos - Vector2(mGame->GetLogicalWindowWidth() / 2, 0);
-        mCameraMode = CameraMode::Fixed;
+        if (playerPos.x < targetPos.x - 50 * mGame->GetScale()) {
+            mGame->SetResetLevel();
+            mGame->GetAudio()->StopAllSounds();
+            mGame->GetPlayer()->SetState(ActorState::Paused);
+            mFixedCameraPosition = mPos - Vector2(mGame->GetLogicalWindowWidth() / 2, 0);
+            mCameraMode = CameraMode::Fixed;
+        }
     }
-
     return targetPos;
 }
 
 Vector2 Camera::ScrollUp(float deltaTime, float speed) {
-    Vector2 targetPos;
-    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
-    targetPos.x = playerPos.x - mGame->GetLogicalWindowWidth() / 2;
-    targetPos.y = mPos.y + speed * deltaTime;
+    Vector2 targetPos = GetPosCamera();
+    if (mGame->GetGamePlayState() == Game::GamePlayState::Playing) {
+        Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+        targetPos.x = playerPos.x - mGame->GetLogicalWindowWidth() / 2;
+        targetPos.y = mPos.y + speed * deltaTime;
 
-    if (playerPos.y > targetPos.y + mGame->GetLogicalWindowHeight() + 50 * mGame->GetScale()) {
-        mGame->GetPlayer()->ReceiveHit(mGame->GetPlayer()->GetMaxHealthPoints(), Vector2::Zero);
-        mGame->SetResetLevel();
-        mGame->GetAudio()->StopAllSounds();
-        mGame->GetPlayer()->SetState(ActorState::Paused);
-        // mGame->mResetLevel = true;
-        // mGame->GetAudio()->StopAllSounds();
-        // mGame->GetPlayer()->SetState(ActorState::Paused);
-        mFixedCameraPosition = mPos + Vector2(0, mGame->GetLogicalWindowHeight() / 2);
-        mCameraMode = CameraMode::Fixed;
+
+        if (playerPos.y > targetPos.y + mGame->GetLogicalWindowHeight() + 50 * mGame->GetScale()) {
+            mGame->SetResetLevel();
+            mGame->GetAudio()->StopAllSounds();
+            mGame->GetPlayer()->SetState(ActorState::Paused);
+            mFixedCameraPosition = mPos + Vector2(0, mGame->GetLogicalWindowHeight() / 2);
+            mCameraMode = CameraMode::Fixed;
+        }
     }
-
     return targetPos;
 }
 

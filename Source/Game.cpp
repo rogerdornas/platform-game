@@ -614,7 +614,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::string grounds;
                 std::vector<int> ids;
                 if (name == "Enemy Simple") {
-                    auto *enemySimple = new EnemySimple(this, 60, 60, 200, 50);
+                    auto *enemySimple = new EnemySimple(this, 53, 45, 200, 50);
                     enemySimple->SetPosition(Vector2(x, y));
                     enemySimple->SetId(id);
                 }
@@ -926,6 +926,7 @@ void Game::TogglePause() {
                 mAudio->PauseSound(mBossMusic);
             }
             mPauseMenu = LoadPauseMenu();
+            mGamePlayState = GamePlayState::Paused;
         }
         else {
             if (mMusicHandle.IsValid()) {
@@ -937,6 +938,7 @@ void Game::TogglePause() {
             mPauseMenu->Close();
             delete mPauseMenu;
             mPauseMenu = nullptr;
+            mGamePlayState = GamePlayState::Playing;
         }
         mPlayer->SetCanJump(false);
         mPlayer->SetPrevFireBallPressed(true);

@@ -28,6 +28,7 @@ public:
 
     // Set the current active animation
     void SetAnimation(const std::string &name);
+    void ResetAnimationTimer() { mAnimTimer = 0; }
 
     // Use to pause/unpause the animation
     void SetIsPaused(bool pause) { mIsPaused = pause; }

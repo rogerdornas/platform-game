@@ -21,24 +21,39 @@ EnemySimple::EnemySimple(Game* game, float width, float height, float moveSpeed,
     mKnockBackDuration = 0.15f;
     mKnockBackTimer = mKnockBackDuration;
     mDistToSpotPlayer = 400 * mGame->GetScale();
+    mPatrolRadius = 50 * mGame->GetScale();
     mWalkingAroundDuration = 2.0f;
     mWalkingAroundTimer = mWalkingAroundDuration;
     mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
     mGravity = 3000 * mGame->GetScale();
 
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Goomba/Walk1.png",
-                                                    static_cast<int>(mWidth * 1.2),
-                                                    static_cast<int>(mHeight * 1.2));
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5, mHeight * 1.5, "../Assets/Sprites/Slime/Slime.png", "../Assets/Sprites/Slime/Slime.json", 999);
+    std::vector walk = {0, 1, 2, 3, 4, 6};
+    mDrawAnimatedComponent->AddAnimation("walk", walk);
+
+    std::vector hit = {5};
+    mDrawAnimatedComponent->AddAnimation("hit", hit);
+
+    mDrawAnimatedComponent->SetAnimation("walk");
+    mDrawAnimatedComponent->SetAnimFPS(10.0f);
 }
 
 void EnemySimple::OnUpdate(float deltaTime) {
     mKnockBackTimer += deltaTime;
     mWalkingAroundTimer += deltaTime;
 
+    if (mFlashTimer < mFlashDuration) {
+        mFlashTimer += deltaTime;
+    }
+    else {
+        mIsFlashing = false;
+    }
+
     ResolveGroundCollision();
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
+        mDrawAnimatedComponent->SetAnimFPS(15.0f);
         MovementAfterPlayerSpotted();
     }
     else {
@@ -75,15 +90,20 @@ void EnemySimple::OnUpdate(float deltaTime) {
         circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
+    ManageAnimations();
 }
 
 void EnemySimple::MovementAfterPlayerSpotted() {
     Player* player = GetGame()->GetPlayer();
-    if (GetPosition().x < player->GetPosition().x) {
-        SetRotation(0.0);
+    float playerX = player->GetPosition().x;
+    float enemyX = GetPosition().x;
+
+    // Verifica se o inimigo passou dos limites e deve inverter a direção
+    if (enemyX < playerX - mPatrolRadius) {
+        SetRotation(0.0); // anda para direita
     }
-    else {
-        SetRotation(Math::Pi);
+    else if (enemyX > playerX + mPatrolRadius) {
+        SetRotation(Math::Pi); // anda para esquerda
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -112,6 +132,16 @@ void EnemySimple::MovementBeforePlayerSpotted() {
     }
 }
 
+void EnemySimple::ManageAnimations() {
+    if (mIsFlashing) {
+        mDrawAnimatedComponent->SetAnimation("hit");
+    }
+    else {
+        mDrawAnimatedComponent->SetAnimation("walk");
+    }
+}
+
+
 void EnemySimple::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
@@ -120,13 +150,21 @@ void EnemySimple::ChangeResolution(float oldScale, float newScale) {
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
     mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
     mDistToSpotPlayer = mDistToSpotPlayer / oldScale * newScale;
+    mPatrolRadius = mPatrolRadius / oldScale * newScale;
     mWalkingAroundMoveSpeed = mWalkingAroundMoveSpeed / oldScale * newScale;
     mGravity = mGravity / oldScale * newScale;
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawSpriteComponent->SetWidth(mWidth * 1.2f);
-    mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth * 1.5f);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.5f);
+    }
+
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

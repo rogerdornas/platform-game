@@ -93,7 +93,7 @@ void Lever::OnUpdate(float deltaTime) {
                     default:
                         break;
                 }
-                f->Deactivate();
+                f->ExplodeFireball();
             }
             break;
         }

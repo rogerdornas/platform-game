@@ -19,7 +19,10 @@ private:
     void MovementAfterPlayerSpotted();
     void MovementBeforePlayerSpotted();
 
+    void ManageAnimations();
+
     float mDistToSpotPlayer;
+    float mPatrolRadius;
     float mWalkingAroundTimer;
     float mWalkingAroundDuration;
     float mWalkingAroundMoveSpeed;

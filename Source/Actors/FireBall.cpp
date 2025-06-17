@@ -18,6 +18,10 @@ FireBall::FireBall(class Game* game)
     ,mSpeed(1800.0f * mGame->GetScale())
     ,mDuration(3.0f)
     ,mDurationTimer(mDuration)
+    ,mFireballState(State::Exploding)
+    ,mFireballOffscreenLimit(0.2f)
+    ,mDeactivateDuration(0.3f)
+    ,mDeactivateTimer(mDeactivateDuration)
     ,mDamage(20)
     ,mIsFromEnemy(false)
     ,mDrawPolygonComponent(nullptr)
@@ -37,14 +41,21 @@ FireBall::FireBall(class Game* game)
     vertices.emplace_back(v4);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth + 30 * mGame->GetScale(), mHeight + 30 * mGame->GetScale());
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0, mHeight * 2.0, "../Assets/Sprites/Fireball/Fireball.png", "../Assets/Sprites/Fireball/Fireball.json", 999);
-    std::vector<int> firing = {0, 1, 2, 3, 4};
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mHeight * 1.8f, "../Assets/Sprites/Fireball2/Fireball.png", "../Assets/Sprites/Fireball2/Fireball.json", 1001);
+
+    std::vector<int> firing = {0, 1, 2, 3};
     mDrawAnimatedComponent->AddAnimation("firing", firing);
 
+    std::vector<int> explosion = {5, 6, 7, 8, 4, 4};
+    mDrawAnimatedComponent->AddAnimation("explosion", explosion);
+
+    const std::vector end = {4};
+    mDrawAnimatedComponent->AddAnimation("end", end);
+
     mDrawAnimatedComponent->SetAnimation("firing");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    const float fps = 4.0f / mDeactivateDuration;
+    mDrawAnimatedComponent->SetAnimFPS(fps);
 
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
@@ -58,28 +69,78 @@ FireBall::~FireBall() {
 }
 
 void FireBall::OnUpdate(float deltaTime) {
-    mDurationTimer += deltaTime;
-    if (mDurationTimer >= mDuration) {
-        Deactivate();
-    }
-    else {
-        Activate();
-        ResolveGroundCollision();
-        ResolveEnemyCollision();
-        ResolvePlayerCollision();
+    switch (mFireballState) {
+        case State::Deactivate:
+            Activate();
+            break;
+        case State::Throwing:
+            mDurationTimer += deltaTime;
+            if (mDurationTimer >= mDuration) {
+                if (mSound.IsValid()) {
+                    if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
+                        mGame->GetAudio()->StopSound(mSound);
+                    }
+                    // Verifica se fireball está dentro da tela mais um intervalo
+                    if (IsOnScreen()) {
+                        mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
+                    }
+                }
+                mDrawAnimatedComponent->ResetAnimationTimer();
+                mDrawAnimatedComponent->SetAnimation("explosion");
+                mWidth *= 1.5;
+                mHeight *= 1.5;
+                if (mDrawAnimatedComponent) {
+                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                }
+                mFireballState = State::Exploding;
+            }
+            ResolveGroundCollision();
+            ResolveEnemyCollision();
+            ResolvePlayerCollision();
 
-        // Verifica se fireball está fora da tela mais um intervalo
-        float fireballOffscreenLimit = 0.2f;
-        if (GetPosition().x > mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth() + mGame->GetLogicalWindowWidth() * fireballOffscreenLimit ||
-        GetPosition().x < mGame->GetCamera()->GetPosCamera().x - mGame->GetLogicalWindowWidth() * fireballOffscreenLimit ||
-        GetPosition().y < mGame->GetCamera()->GetPosCamera().y - mGame->GetLogicalWindowHeight() * fireballOffscreenLimit ||
-        GetPosition().y > mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight() + mGame->GetLogicalWindowHeight() * fireballOffscreenLimit)
-        {
-            Deactivate();
-        }
+            // Verifica se fireball está fora da tela mais um intervalo
+            if (!IsOnScreen()) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+                mDrawAnimatedComponent->SetAnimation("explosion");
+                mWidth *= 1.5;
+                mHeight *= 1.5;
+                if (mDrawAnimatedComponent) {
+                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                }
+                mFireballState = State::Exploding;
+            }
+            break;
+
+        case State::Exploding:
+            mRigidBodyComponent->SetVelocity(Vector2::Zero);
+            mAABBComponent->SetActive(false); // desativa colisão
+            mDeactivateTimer += deltaTime;
+            if (mDeactivateTimer >= mDeactivateDuration) {
+                Deactivate();
+            }
+            break;
     }
-    ManageAnimations();
 }
+
+void FireBall::ExplosionEffect() {
+    auto* explosion = new ParticleSystem(mGame, mWidth / 5 / mGame->GetScale(), 200.0, 0.2, 0.07f);
+    explosion->SetPosition(GetPosition() + GetForward() * (mWidth / 2));
+    explosion->SetEmitDirection(Vector2::Zero);
+    explosion->SetIsSplash(true);
+    explosion->SetParticleSpeedScale(mWidth / 50 / mGame->GetScale());
+    explosion->SetParticleColor(SDL_Color{247, 118, 34, 255});
+    explosion->SetParticleGravity(false);
+}
+
+bool FireBall::IsOnScreen() {
+    return (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth()  + mGame->GetLogicalWindowWidth() * mFireballOffscreenLimit &&
+            GetPosition().x > mGame->GetCamera()->GetPosCamera().x  - mGame->GetLogicalWindowWidth() * mFireballOffscreenLimit &&
+            GetPosition().y > mGame->GetCamera()->GetPosCamera().y - mGame->GetLogicalWindowHeight() * mFireballOffscreenLimit &&
+            GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight() + mGame->GetLogicalWindowHeight() * mFireballOffscreenLimit);
+}
+
 
 void FireBall::Activate() {
     Vector2 v1(-mWidth/2, -mHeight/2);
@@ -102,27 +163,30 @@ void FireBall::Activate() {
         mDrawPolygonComponent->SetIsVisible(true);
     }
     if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 2.0);
-        mDrawSpriteComponent->SetHeight(mHeight * 2.0);
+        mDrawSpriteComponent->SetWidth(mWidth * 1.8f);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.8f);
         mDrawSpriteComponent->SetIsVisible(true);
     }
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 2.0);
-        mDrawAnimatedComponent->SetHeight(mHeight * 2.0);
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
         mDrawAnimatedComponent->SetIsVisible(true);
+        mDrawAnimatedComponent->SetAnimation("firing");
     }
     mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
     if (!mSound.IsValid()) {
         mSound = mGame->GetAudio()->PlaySound("FireBall/ShootFireBall.wav");
     }
+    mFireballState = State::Throwing;
 }
 
 void FireBall::Deactivate() {
     mIsFromEnemy = false;
-    SetState(ActorState::Paused);
     mRigidBodyComponent->SetVelocity(Vector2::Zero);
-    mDurationTimer = 0;
     mAABBComponent->SetActive(false); // desativa colisão
+    mFireballState = State::Deactivate;
+    mDurationTimer = 0;
+    mDeactivateTimer = 0;
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetIsVisible(false);
@@ -132,29 +196,10 @@ void FireBall::Deactivate() {
     }
     if (mDrawAnimatedComponent) {
         mDrawAnimatedComponent->SetIsVisible(false);
+        mDrawAnimatedComponent->SetAnimation("end");
     }
-
-    auto* explosion = new ParticleSystem(mGame, mWidth / 5 / mGame->GetScale(), 200.0, 0.2, 0.07f);
-    explosion->SetPosition(GetPosition() + GetForward() * (mWidth / 2));
-    explosion->SetEmitDirection(Vector2::Zero);
-    explosion->SetIsSplash(true);
-    explosion->SetParticleSpeedScale(mWidth / 50 / mGame->GetScale());
-    explosion->SetParticleColor(SDL_Color{247, 118, 34, 255});
-    explosion->SetParticleGravity(false);
-    if (mSound.IsValid()) {
-        if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
-            mGame->GetAudio()->StopSound(mSound);
-        }
-        // Verifica se fireball está dentro da tela
-        if (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth() &&
-        GetPosition().x > mGame->GetCamera()->GetPosCamera().x &&
-        GetPosition().y > mGame->GetCamera()->GetPosCamera().y &&
-        GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight())
-        {
-            mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
-        }
-        mSound.Reset();
-    }
+    SetState(ActorState::Paused);
+    mSound.Reset();
 }
 
 void FireBall::ResolveGroundCollision() {
@@ -162,7 +207,24 @@ void FireBall::ResolveGroundCollision() {
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                Deactivate();
+                if (mSound.IsValid()) {
+                    if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
+                        mGame->GetAudio()->StopSound(mSound);
+                    }
+                    // Verifica se fireball está dentro da tela mais um intervalo
+                    if (IsOnScreen()) {
+                        mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
+                    }
+                }
+                mDrawAnimatedComponent->ResetAnimationTimer();
+                mDrawAnimatedComponent->SetAnimation("explosion");
+                mFireballState = State::Exploding;
+                mWidth *= 1.5;
+                mHeight *= 1.5;
+                if (mDrawAnimatedComponent) {
+                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                }
             }
         }
     }
@@ -175,7 +237,24 @@ void FireBall::ResolveEnemyCollision() {
             for (Enemy* e : enemies) {
                 if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
                     e->ReceiveHit(mDamage, GetForward());
-                    Deactivate();
+                    if (mSound.IsValid()) {
+                        if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
+                            mGame->GetAudio()->StopSound(mSound);
+                        }
+                        // Verifica se fireball está dentro da tela mais um intervalo
+                        if (IsOnScreen()) {
+                            mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
+                        }
+                    }
+                    mDrawAnimatedComponent->ResetAnimationTimer();
+                    mDrawAnimatedComponent->SetAnimation("explosion");
+                    mFireballState = State::Exploding;
+                    mWidth *= 1.5;
+                    mHeight *= 1.5;
+                    if (mDrawAnimatedComponent) {
+                        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                    }
                 }
             }
         }
@@ -187,7 +266,24 @@ void FireBall::ResolvePlayerCollision() {
         Player* player = mGame->GetPlayer();
         if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
             player->ReceiveHit(mDamage, GetForward());
-            Deactivate();
+            if (mSound.IsValid()) {
+                if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
+                    mGame->GetAudio()->StopSound(mSound);
+                }
+                // Verifica se fireball está dentro da tela mais um intervalo
+                if (IsOnScreen()) {
+                    mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
+                }
+            }
+            mDrawAnimatedComponent->ResetAnimationTimer();
+            mDrawAnimatedComponent->SetAnimation("explosion");
+            mFireballState = State::Exploding;
+            mWidth *= 1.5;
+            mHeight *= 1.5;
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+            }
         }
     }
 }
@@ -204,8 +300,8 @@ void FireBall::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
-    mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

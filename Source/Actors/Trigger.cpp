@@ -178,10 +178,12 @@ void Trigger::CameraTrigger() {
 
         case Event::ScrollRight:
             camera->ChangeCameraMode(CameraMode::ScrollRight);
+            SetState(ActorState::Destroy);
             break;
 
         case Event::ScrollUp:
             camera->ChangeCameraMode(CameraMode::ScrollUp);
+            SetState(ActorState::Destroy);
             break;
 
         default:
