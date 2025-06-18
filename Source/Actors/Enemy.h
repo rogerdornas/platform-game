@@ -25,13 +25,15 @@ public:
     int GetId() const { return mId; }
 
 protected:
-    bool Died() const;
+    bool Died();
     void ResolveEnemyCollision() const;
     virtual void ResolveGroundCollision();
 
     int mId;
     float mWidth;
     float mHeight;
+
+    int mMoneyDrop;
 
     float mMoveSpeed;
 

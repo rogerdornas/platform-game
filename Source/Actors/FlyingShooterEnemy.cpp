@@ -32,6 +32,7 @@ FlyingShooterEnemy::FlyingShooterEnemy(Game* game, float width, float height, fl
     ,mProjectileHeight(50 * mGame->GetScale())
     ,mProjectileSpeed(800 * mGame->GetScale())
 {
+    mMoneyDrop = 6;
     mMoveSpeed = 300 * mGame->GetScale();
     mKnockBackSpeed = 800.0f * mGame->GetScale();
 }
@@ -142,8 +143,15 @@ void FlyingShooterEnemy::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawSpriteComponent->SetWidth(mWidth * 1.28f);
-    mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth * 1.28f);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.28f);
+    }
+
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

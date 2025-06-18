@@ -32,6 +32,7 @@ public:
 private:
     // HUD elements
     UIText* mPlayerHealCount;
+    UIText* mPlayerMoney;
 
     float mSpeedHPDecrease;
     float mSpeedHPIncrease;

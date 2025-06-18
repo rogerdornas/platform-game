@@ -95,6 +95,8 @@ add_executable(${PROJECT_NAME}
         Source/UIElements/UIImage.cpp
         Source/UIElements/UIImage.h
         Source/HUD.cpp
+        Source/Actors/Money.cpp
+        Source/Actors/Money.h
 )
 
 

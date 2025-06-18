@@ -619,12 +619,12 @@ void Game::LoadObjects(const std::string &fileName) {
                     enemySimple->SetId(id);
                 }
                 else if (name == "Flying Enemy") {
-                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 50, 80, 250, 70);
+                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 70, 70, 250, 70);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                     flyingEnemySimple->SetId(id);
                 }
                 else if (name == "FlyingShooterEnemy") {
-                    auto *flyingShooterEnemy = new FlyingShooterEnemy(this, 50, 80, 250, 50);
+                    auto *flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 50);
                     flyingShooterEnemy->SetPosition(Vector2(x, y));
                     flyingShooterEnemy->SetId(id);
                 }

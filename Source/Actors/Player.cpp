@@ -94,6 +94,8 @@ Player::Player(Game* game, float width, float height)
     ,mHealAnimationDuration(1.0f)
     ,mHealAnimationTimer(0.0f)
 
+    ,mMoney(0)
+
     ,mIsRunning(false)
     ,mRunningSoundIntervalDuration(0.3f)
     ,mRunningSoundIntervalTimer(0.0f)

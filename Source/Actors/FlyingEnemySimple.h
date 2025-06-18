@@ -18,6 +18,8 @@ protected:
     virtual void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
 
+    void ManageAnimations();
+
     float mDistToSpotPlayer;
     float mFlyingAroundTimer;
     float mFlyingAroundDuration;

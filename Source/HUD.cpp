@@ -26,7 +26,7 @@ HUD::HUD(class Game* game, const std::string& fontName)
     float ManaBarWidth = 250 * mGame->GetScale();
     float ManaBarHeight = 30 * mGame->GetScale();
 
-    mHPBar = {HPBarX,HPBarY,HPBarWidth,HPBarHeight};
+    mHPBar = {HPBarX, HPBarY,HPBarWidth,HPBarHeight};
     mDamageTakenBar = mHPBar;
     mHPRemainingBar = mHPBar;
     mHPGrowingBar = mHPBar;
@@ -37,6 +37,11 @@ HUD::HUD(class Game* game, const std::string& fontName)
 
     mPlayerHealCount = AddText(std::to_string(mGame->GetPlayer()->GetHealCount()),
                                 Vector2(50, 120) * mGame->GetScale(),
+                               Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(),
+                                POINT_SIZE * mGame->GetScale());
+
+    mPlayerMoney = AddText(std::to_string(mGame->GetPlayer()->GetMoney()),
+                                Vector2(1800, 50) * mGame->GetScale(),
                                Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(),
                                 POINT_SIZE * mGame->GetScale());
 }
@@ -72,6 +77,9 @@ void HUD::Update(float deltaTime) {
 
         std::string playerHealCount = std::to_string(mGame->GetPlayer()->GetHealCount());
         mPlayerHealCount->SetText(playerHealCount);
+
+        std::string playerMoney = std::to_string(mGame->GetPlayer()->GetMoney());
+        mPlayerMoney->SetText(playerMoney);
     }
 
     if (mDamageTakenBar.w > mHPGrowingBar.w) {

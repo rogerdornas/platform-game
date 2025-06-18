@@ -4,8 +4,10 @@
 
 #include "Enemy.h"
 #include "Effect.h"
+#include "Money.h"
 #include "ParticleSystem.h"
 #include "../Game.h"
+#include "../Random.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
@@ -16,6 +18,7 @@ Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heath
     :Actor(game)
     ,mWidth(width * mGame->GetScale())
     ,mHeight(height * mGame->GetScale())
+    ,mMoneyDrop(1)
     ,mMoveSpeed(moveSpeed * mGame->GetScale())
     ,mHealthPoints(heathPoints)
     ,mMaxHealthPoints(heathPoints)
@@ -79,9 +82,31 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
 }
 
-bool Enemy::Died() const {
+bool Enemy::Died() {
     if (mHealthPoints <= 0) {
         mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
+
+        // Cria grandes
+        while (mMoneyDrop >= 10) {
+            auto* money = new Money(mGame, Money::MoneyType::Large);
+            money->SetPosition(GetPosition());
+            mMoneyDrop -= 10;
+        }
+
+        // Cria médios
+        while (mMoneyDrop >= 5) {
+            auto* money = new Money(mGame, Money::MoneyType::Medium);
+            money->SetPosition(GetPosition());
+            mMoneyDrop -= 5;
+        }
+
+        // Cria pequenos
+        while (mMoneyDrop >= 1) {
+            auto* money = new Money(mGame, Money::MoneyType::Small);
+            money->SetPosition(GetPosition());
+            mMoneyDrop -= 1;
+        }
+
         return true;
     }
     return false;

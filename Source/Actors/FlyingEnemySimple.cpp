@@ -16,6 +16,7 @@
 FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, float moveSpeed, float healthPoints)
     :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
 {
+    mMoneyDrop = 4;
     mKnockBackSpeed = 1000.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
     mKnockBackTimer = mKnockBackDuration;
@@ -24,19 +25,34 @@ FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, floa
     mFlyingAroundTimer = mFlyingAroundDuration;
     mFlyingAroundMoveSpeed = 100.0f * mGame->GetScale();
 
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/WalkRight0.png",
-                                                   static_cast<int>(mWidth * 1.28),
-                                                   static_cast<int>(mHeight * 1.2));
+    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/WalkRight0.png",
+    //                                                static_cast<int>(mWidth * 1.28),
+    //                                                static_cast<int>(mHeight * 1.2));
+
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/Beetle/Beetle.png", "../Assets/Sprites/Beetle/Beetle.json", 999);
+    std::vector fly = {0, 1, 2, 3};
+    mDrawAnimatedComponent->AddAnimation("fly", fly);
+
+    mDrawAnimatedComponent->SetAnimation("fly");
+    mDrawAnimatedComponent->SetAnimFPS(8.0f);
 }
 
 void FlyingEnemySimple::OnUpdate(float deltaTime) {
     mKnockBackTimer += deltaTime;
     mFlyingAroundTimer += deltaTime;
 
+    if (mFlashTimer < mFlashDuration) {
+        mFlashTimer += deltaTime;
+    }
+    else {
+        mIsFlashing = false;
+    }
+
     ResolveGroundCollision();
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
+        mDrawAnimatedComponent->SetAnimFPS(15.0f);
         MovementAfterPlayerSpotted(deltaTime);
     }
     else {
@@ -69,6 +85,7 @@ void FlyingEnemySimple::OnUpdate(float deltaTime) {
         circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
+    ManageAnimations();
 }
 
 void FlyingEnemySimple::MovementAfterPlayerSpotted(float deltaTime) {
@@ -107,6 +124,22 @@ void FlyingEnemySimple::MovementBeforePlayerSpotted() {
     }
 }
 
+void FlyingEnemySimple::ManageAnimations() {
+    // if (mIsFlashing) {
+    //     mDrawAnimatedComponent->SetAnimation("hit");
+    // }
+    // else {
+        mDrawAnimatedComponent->SetAnimation("fly");
+        if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
+            mDrawAnimatedComponent->UseFlip(true);
+            mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+        }
+    else {
+        mDrawAnimatedComponent->UseFlip(false);
+    }
+    // }
+}
+
 void FlyingEnemySimple::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
@@ -119,8 +152,15 @@ void FlyingEnemySimple::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawSpriteComponent->SetWidth(mWidth * 1.28f);
-    mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth * 1.28f);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.28f);
+    }
+
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

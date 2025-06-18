@@ -17,6 +17,7 @@
 EnemySimple::EnemySimple(Game* game, float width, float height, float moveSpeed, float healthPoints)
     :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
 {
+    mMoneyDrop = 2;
     mKnockBackSpeed = 800.0f * mGame->GetScale();
     mKnockBackDuration = 0.15f;
     mKnockBackTimer = mKnockBackDuration;
@@ -27,7 +28,7 @@ EnemySimple::EnemySimple(Game* game, float width, float height, float moveSpeed,
     mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
     mGravity = 3000 * mGame->GetScale();
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5, mHeight * 1.5, "../Assets/Sprites/Slime/Slime.png", "../Assets/Sprites/Slime/Slime.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/Slime/Slime.png", "../Assets/Sprites/Slime/Slime.json", 999);
     std::vector walk = {0, 1, 2, 3, 4, 6};
     mDrawAnimatedComponent->AddAnimation("walk", walk);
 
@@ -35,7 +36,7 @@ EnemySimple::EnemySimple(Game* game, float width, float height, float moveSpeed,
     mDrawAnimatedComponent->AddAnimation("hit", hit);
 
     mDrawAnimatedComponent->SetAnimation("walk");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawAnimatedComponent->SetAnimFPS(8.0f);
 }
 
 void EnemySimple::OnUpdate(float deltaTime) {

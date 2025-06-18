@@ -41,6 +41,9 @@ public:
     void ResetHealCount() { mHealCount = mMaxHealCount; }
     int GetHealCount() const { return mHealCount; }
 
+    void IncreaseMoney(int value) { mMoney += value; }
+    int GetMoney() const { return mMoney; }
+
     // Funções para sair da pausa com o controle sem pular ou atirar bola de fogo
     void SetCanJump(bool j) { mCanJump = j; }
     void SetPrevFireBallPressed(bool f) { mPrevFireBallPressed = f; }
@@ -132,6 +135,8 @@ private:
     bool mIsHealing;
     float mHealAnimationDuration;
     float mHealAnimationTimer;
+
+    int mMoney;
 
     bool mIsRunning; // Atributos para animar sprites
 
