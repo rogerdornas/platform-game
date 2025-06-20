@@ -15,8 +15,11 @@ public:
 
     void OpenStore();
     void CloseStore();
+    void LoadStoreMessage();
+    void CloseStoreMessage();
 
     bool StoreOpened() const { return mStoreOpened; }
+    bool StoreMessageOpened() const { return mStoreMessageOpened; }
 
     void ChangeResolution(float oldScale, float newScale);
 
@@ -24,8 +27,10 @@ private:
     class Game* mGame;
     std::string mFontName;
     UIScreen* mStoreMenu;
+    UIScreen* mStoreMessage;
 
     bool mStoreOpened;
+    bool mStoreMessageOpened;
 
     bool mSwordRangeUpgrade;
     float mSwordRangeIncrease;

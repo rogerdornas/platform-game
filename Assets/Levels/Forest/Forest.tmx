@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="163">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="166">
  <editorsettings>
   <export target="Forest.json" format="json"/>
  </editorsettings>
@@ -2344,12 +2344,13 @@
   <object id="132" x="25216" y="15360" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="55" x="26816" y="15392" width="32" height="32"/>
+  <object id="55" x="15680" y="15968" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="8" name="Checkpoint">
   <object id="160" name="Checkpoint" x="27040" y="15200" width="224" height="224"/>
   <object id="161" name="Checkpoint" x="27520" y="15200" width="224" height="224"/>
   <object id="162" name="Checkpoint" x="26080" y="15200" width="224" height="224"/>
+  <object id="165" name="Checkpoint" x="17984" y="16480" width="224" height="224"/>
  </objectgroup>
  <objectgroup id="5" name="Triggers">
   <object id="91" x="22176" y="16160" width="1728" height="192">
@@ -2449,5 +2450,7 @@
    </properties>
   </object>
   <object id="154" name="FlyingShooterEnemy" x="14688" y="15968" width="32" height="32"/>
+  <object id="163" name="Mantis" x="14528" y="16672" width="32" height="32"/>
+  <object id="164" name="Mantis" x="18688" y="16352" width="32" height="32"/>
  </objectgroup>
 </map>

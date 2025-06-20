@@ -24,6 +24,7 @@
 #include "Actors/Trigger.h"
 #include "Actors/Fairy.h"
 #include "Actors/FlyingShooterEnemy.h"
+#include "Actors/Mantis.h"
 #include "Actors/Money.h"
 #include "Actors/Projectile.h"
 #include "Components/AABBComponent.h"
@@ -68,6 +69,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mHitstopTimer(0.0f)
     ,mIsSlowMotion(false)
     ,mIsAccelerated(false)
+    ,mIsPlayingOnKeyboard(true)
     ,mLeftStickYState(StickState::Neutral)
     ,mBackGroundTexture(nullptr)
     ,mSky(nullptr)
@@ -427,7 +429,7 @@ void Game::LoadObjects(const std::string &fileName) {
     }
     nlohmann::json mapData;
     file >> mapData;
-    Ground *ground;
+    Ground* ground;
     for (const auto &layer: mapData["layers"]) {
         if (layer["name"] == "Grounds") {
             for (const auto &obj: layer["objects"]) {
@@ -659,19 +661,24 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::string grounds;
                 std::vector<int> ids;
                 if (name == "Enemy Simple") {
-                    auto *enemySimple = new EnemySimple(this, 53, 45, 200, 50);
+                    auto* enemySimple = new EnemySimple(this, 53, 45, 200, 50);
                     enemySimple->SetPosition(Vector2(x, y));
                     enemySimple->SetId(id);
                 }
                 else if (name == "Flying Enemy") {
-                    auto *flyingEnemySimple = new FlyingEnemySimple(this, 70, 70, 250, 70);
+                    auto* flyingEnemySimple = new FlyingEnemySimple(this, 70, 70, 250, 70);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                     flyingEnemySimple->SetId(id);
                 }
                 else if (name == "FlyingShooterEnemy") {
-                    auto *flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 50);
+                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 50);
                     flyingShooterEnemy->SetPosition(Vector2(x, y));
                     flyingShooterEnemy->SetId(id);
+                }
+                else if (name == "Mantis") {
+                    auto* mantis = new Mantis(this, 120, 120, 250, 100);
+                    mantis->SetPosition(Vector2(x, y));
+                    mantis->SetId(id);
                 }
                 else if (name == "Fox") {
                     if (obj.contains("properties")) {
@@ -683,7 +690,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto *fox = new Fox(this, 100, 170, 300, 200);
+                    auto* fox = new Fox(this, 100, 170, 300, 200);
                     fox->SetPosition(Vector2(x, y));
                     fox->SetId(id);
                     fox->SetUnlockGroundsIds(ids);
@@ -710,7 +717,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto *frog = new Frog(this, 165, 137, 300, 200);
+                    auto* frog = new Frog(this, 165, 137, 300, 200);
                     frog->SetPosition(Vector2(x, y));
                     frog->SetId(id);
                     frog->SetArenaMinPos(Vector2(MinPosX, MinPosY));
@@ -881,6 +888,7 @@ void Game::ProcessInput()
                 break;
 
             case SDL_KEYDOWN:
+                mIsPlayingOnKeyboard = true;
                 // Handle key press for UI screens
                 if (!mUIStack.empty()) {
                     mUIStack.back()->HandleKeyPress(event.key.keysym.sym, SDL_CONTROLLER_BUTTON_INVALID, 0);
@@ -914,6 +922,8 @@ void Game::ProcessInput()
                 break;
 
             case SDL_CONTROLLERBUTTONDOWN:
+                mIsPlayingOnKeyboard = false;
+
                 // Handle key press for UI screens
                 if (!mUIStack.empty()) {
                     mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, event.cbutton.button, 0);
@@ -933,6 +943,8 @@ void Game::ProcessInput()
                 break;
 
             case SDL_CONTROLLERAXISMOTION:
+                mIsPlayingOnKeyboard = false;
+
                 if (!mUIStack.empty()) {
                     if (event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY) {
                         int value = event.caxis.value;
@@ -962,6 +974,8 @@ void Game::ProcessInput()
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
+                mIsPlayingOnKeyboard = true;
+
                 // Handle mouse for UI screens
                 if (!mUIStack.empty()) {
                     mUIStack.back()->HandleMouse(event);
@@ -969,6 +983,8 @@ void Game::ProcessInput()
                 break;
 
             case SDL_MOUSEMOTION:
+                mIsPlayingOnKeyboard = true;
+
                 // Handle mouse for UI screens
                 if (!mUIStack.empty()) {
                     mUIStack.back()->HandleMouse(event);
@@ -980,7 +996,7 @@ void Game::ProcessInput()
         }
     }
 
-    const Uint8 *state = SDL_GetKeyboardState(nullptr);
+    const Uint8* state = SDL_GetKeyboardState(nullptr);
 
     if (!mIsPaused)
     {
@@ -1081,8 +1097,8 @@ void Game::UpdateGame()
     while (iter != mUIStack.end()) {
         if ((*iter)->GetState() == UIScreen::UIState::Closing) {
             delete *iter;
-            iter = mUIStack.erase(iter);
             *iter = nullptr;
+            iter = mUIStack.erase(iter);
         } else {
             ++iter;
         }
@@ -1167,7 +1183,7 @@ void Game::UpdateActors(float deltaTime)
 
     mPendingActors.clear();
 
-    std::vector<Actor *> deadActors;
+    std::vector<Actor* > deadActors;
     for (auto actor: mActors)
         if (actor->GetState() == ActorState::Destroy)
             deadActors.emplace_back(actor);
@@ -1183,16 +1199,16 @@ void Game::UpdateCamera(float deltaTime) {
     mCamera->Update(deltaTime);
 }
 
-void Game::AddGround(class Ground *g) { mGrounds.emplace_back(g); }
+void Game::AddGround(class Ground* g) { mGrounds.emplace_back(g); }
 
-void Game::RemoveGround(class Ground *g)
+void Game::RemoveGround(class Ground* g)
 {
     auto iter = std::find(mGrounds.begin(), mGrounds.end(), g);
     if (iter != mGrounds.end())
         mGrounds.erase(iter);
 }
 
-Ground *Game::GetGroundById(int id) {
+Ground* Game::GetGroundById(int id) {
     for (Ground* g : mGrounds) {
         if (g->GetId() == id) {
             return g;
@@ -1201,45 +1217,45 @@ Ground *Game::GetGroundById(int id) {
     return nullptr;
 }
 
-void Game::AddFireBall(class FireBall *f) { mFireBalls.emplace_back(f); }
+void Game::AddFireBall(class FireBall* f) { mFireBalls.emplace_back(f); }
 
-void Game::RemoveFireball(class FireBall *f)
+void Game::RemoveFireball(class FireBall* f)
 {
     auto iter = std::find(mFireBalls.begin(), mFireBalls.end(), f);
     if (iter != mFireBalls.end())
         mFireBalls.erase(iter);
 }
 
-void Game::AddParticle(class Particle *p) { mParticles.emplace_back(p); }
+void Game::AddParticle(class Particle* p) { mParticles.emplace_back(p); }
 
-void Game::RemoveParticle(class Particle *p)
+void Game::RemoveParticle(class Particle* p)
 {
     auto iter = std::find(mParticles.begin(), mParticles.end(), p);
     if (iter != mParticles.end())
         mParticles.erase(iter);
 }
 
-void Game::AddProjectile(class Projectile *p) { mProjectiles.emplace_back(p); }
+void Game::AddProjectile(class Projectile* p) { mProjectiles.emplace_back(p); }
 
-void Game::RemoveProjectile(class Projectile *p)
+void Game::RemoveProjectile(class Projectile* p)
 {
     auto iter = std::find(mProjectiles.begin(), mProjectiles.end(), p);
     if (iter != mProjectiles.end())
         mProjectiles.erase(iter);
 }
 
-void Game::AddMoney(class Money *m) { mMoneys.emplace_back(m); }
+void Game::AddMoney(class Money* m) { mMoneys.emplace_back(m); }
 
-void Game::RemoveMoney(class Money *m)
+void Game::RemoveMoney(class Money* m)
 {
     auto iter = std::find(mMoneys.begin(), mMoneys.end(), m);
     if (iter != mMoneys.end())
         mMoneys.erase(iter);
 }
 
-void Game::AddEnemy(class Enemy *e) { mEnemies.emplace_back(e); }
+void Game::AddEnemy(class Enemy* e) { mEnemies.emplace_back(e); }
 
-void Game::RemoveEnemy(class Enemy *e)
+void Game::RemoveEnemy(class Enemy* e)
 {
     auto iter = std::find(mEnemies.begin(), mEnemies.end(), e);
     if (iter != mEnemies.end())
@@ -1255,7 +1271,7 @@ Enemy* Game::GetEnemyById(int id) {
     return nullptr;
 }
 
-void Game::AddActor(Actor *actor)
+void Game::AddActor(Actor* actor)
 {
     if (mUpdatingActors)
         mPendingActors.emplace_back(actor);
@@ -1264,7 +1280,7 @@ void Game::AddActor(Actor *actor)
         mActors.emplace_back(actor);
 }
 
-void Game::RemoveActor(Actor *actor)
+void Game::RemoveActor(Actor* actor)
 {
     auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
     if (iter != mPendingActors.end())
@@ -1283,17 +1299,17 @@ void Game::RemoveActor(Actor *actor)
     }
 }
 
-void Game::AddDrawable(class DrawComponent *drawable)
+void Game::AddDrawable(class DrawComponent* drawable)
 {
     mDrawables.emplace_back(drawable);
 
-    std::sort(mDrawables.begin(), mDrawables.end(), [](const DrawComponent *a, const DrawComponent *b)
+    std::sort(mDrawables.begin(), mDrawables.end(), [](const DrawComponent* a, const DrawComponent* b)
     {
         return a->GetDrawOrder() < b->GetDrawOrder();
     });
 }
 
-void Game::RemoveDrawable(class DrawComponent *drawable)
+void Game::RemoveDrawable(class DrawComponent* drawable)
 {
     auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
     mDrawables.erase(iter);
@@ -1369,16 +1385,16 @@ void Game::GenerateOutput()
     SDL_RenderPresent(mRenderer);
 }
 
-SDL_Texture *Game::LoadTexture(const std::string &texturePath)
+SDL_Texture* Game::LoadTexture(const std::string &texturePath)
 {
-    SDL_Surface *surface = IMG_Load(texturePath.c_str());
+    SDL_Surface* surface = IMG_Load(texturePath.c_str());
     if (!surface)
     {
         SDL_Log("Falha ao carregar imagem %s: %s", texturePath.c_str(), IMG_GetError());
         return nullptr;
     }
 
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface); // Libera a superfície, já não é mais necessária
 
     if (!texture)
@@ -1527,7 +1543,7 @@ void Game::DrawParallaxBackground()
     }
 }
 
-void Game::DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h)
+void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h)
 {
     int texW, texH;
     SDL_QueryTexture(texture, nullptr, nullptr, &texW, &texH);

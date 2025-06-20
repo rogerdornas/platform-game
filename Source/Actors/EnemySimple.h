@@ -10,7 +10,7 @@
 class EnemySimple : public Enemy
 {
 public:
-    EnemySimple(Game *game, float width, float height, float moveSpeed, float healthPoints);
+    EnemySimple(Game* game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;

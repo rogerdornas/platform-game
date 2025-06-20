@@ -25,6 +25,7 @@ public:
 
     void ReceiveHit(float damage, Vector2 knockBackDirection);
     void SetCanFireBall(bool canFireBall) { mCanFireBall = canFireBall; }
+    bool GetCanFireBall() const { return mCanFireBall; }
     void SetCanWallSlide(bool canWallSlide) { mCanWallSlide = canWallSlide; }
 
     class Sword* GetSword() const { return mSword; }
@@ -47,7 +48,7 @@ public:
 
     void ResetHealCount() { mHealCount = mMaxHealCount; }
     int GetHealCount() const { return mHealCount; }
-    void IncreaseHealCount() { mHealCount++; }
+    void IncreaseHealCount() { mHealCount++; mMaxHealCount++; }
 
     void IncreaseMoney(int value) { mMoney += value; }
     void DecreaseMoney(int value) { mMoney -= value; }

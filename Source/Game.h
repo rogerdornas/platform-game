@@ -156,6 +156,8 @@ public:
     void SetGamePlayState(GamePlayState state) { mGamePlayState = state; }
     GamePlayState GetGamePlayState() const { return mGamePlayState; }
 
+    bool GetIsPlayingOnKeyboard() const { return mIsPlayingOnKeyboard; }
+
     SDL_Renderer* GetRenderer() const { return mRenderer; }
 
     Store* GetStore() const { return mStore; }
@@ -257,6 +259,9 @@ private:
     UIScreen* mPauseMenu;
 
     GamePlayState mGamePlayState;
+
+    // If is playing on controller or keyboard
+    bool mIsPlayingOnKeyboard;
 
     // Track level state
     GameScene mGameScene;

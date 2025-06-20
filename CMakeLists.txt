@@ -101,6 +101,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Checkpoint.h
         Source/Store.cpp
         Source/Store.h
+        Source/Actors/Mantis.cpp
+        Source/Actors/Mantis.h
 )
 
 

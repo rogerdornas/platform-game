@@ -11,7 +11,9 @@ Store::Store(class Game *game, const std::string &fontName)
     :mGame(game)
     ,mFontName(fontName)
     ,mStoreMenu(nullptr)
+    ,mStoreMessage(nullptr)
     ,mStoreOpened(false)
+    ,mStoreMessageOpened(false)
     ,mSwordRangeUpgrade(false)
     ,mSwordRangeIncrease(1.2f)
     ,mSwordRangeUpgradeCost(50)
@@ -156,21 +158,23 @@ void Store::OpenStore() {
     text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
     mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
 
-    name = "MELHORAR BOLA DE FOGO";
-    button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 7 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
-    [this]() {
-        if (!mFireballUpgrade && mGame->GetPlayer()->GetMoney() >= mFireballUpgradeCost) {
-            mGame->GetPlayer()->SetFireballDamage(mGame->GetPlayer()->GetFireballDamage() * mFireballDamageIncrease);
-            mGame->GetPlayer()->SetFireballWidth(mGame->GetPlayer()->GetFireballWidth() * mFireballSizeIncrease);
-            mGame->GetPlayer()->SetFireballHeight(mGame->GetPlayer()->GetFireballHeight() * mFireballSizeIncrease);
-            mGame->GetPlayer()->DecreaseMoney(mFireballUpgradeCost);
-            mFireballUpgrade = true;
-        }
-    }, textPos);
-    cost = std::to_string(mFireballUpgradeCost);
-    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    if (mGame->GetPlayer()->GetCanFireBall()) {
+        name = "MELHORAR BOLA DE FOGO";
+        button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 7 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]() {
+            if (!mFireballUpgrade && mGame->GetPlayer()->GetMoney() >= mFireballUpgradeCost) {
+                mGame->GetPlayer()->SetFireballDamage(mGame->GetPlayer()->GetFireballDamage() * mFireballDamageIncrease);
+                mGame->GetPlayer()->SetFireballWidth(mGame->GetPlayer()->GetFireballWidth() * mFireballSizeIncrease);
+                mGame->GetPlayer()->SetFireballHeight(mGame->GetPlayer()->GetFireballHeight() * mFireballSizeIncrease);
+                mGame->GetPlayer()->DecreaseMoney(mFireballUpgradeCost);
+                mFireballUpgrade = true;
+            }
+        }, textPos);
+        cost = std::to_string(mFireballUpgradeCost);
+        text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+        text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
+        mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    }
 
     name = "FECHAR LOJA";
     mStoreMenu->AddButton(name, buttonPos + Vector2(0, mStoreMenu->GetSize().y - buttonSize.y * 1.2), Vector2(mGame->GetLogicalWindowWidth() * 0.45, 75 * mGame->GetScale()), buttonPointSize, UIButton::TextPos::Center,
@@ -189,6 +193,31 @@ void Store::CloseStore() {
         mGame->TogglePause();
     }
 }
+
+void Store::LoadStoreMessage() {
+    if (mStoreMessageOpened) {
+        return;
+    }
+    mStoreMessage = new UIScreen(mGame, "../Assets/Fonts/K2D-Bold.ttf");
+    mStoreMessage->SetSize(Vector2(mGame->GetLogicalWindowWidth() / 3, 2 * mGame->GetLogicalWindowHeight() / 6));
+    mStoreMessage->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 3, 7 * mGame->GetLogicalWindowHeight() / 8));
+
+    if (mGame->GetIsPlayingOnKeyboard()) {
+        mStoreMessage->AddText("PRESSIONE ESPAÇO PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+    }
+    else {
+        mStoreMessage->AddText("PRESSIONE Y PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+    }
+    mStoreMessageOpened = true;
+}
+
+void Store::CloseStoreMessage() {
+    if (mStoreMessage != nullptr) {
+        mStoreMessage->Close();
+        mStoreMessageOpened = false;
+    }
+}
+
 
 void Store::ChangeResolution(float oldScale, float newScale) {
     mStoreMenu->ChangeResolution(oldScale, newScale);

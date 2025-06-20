@@ -13,6 +13,7 @@ Checkpoint::Checkpoint(class Game *game, float width, float height)
     ,mWidth(width)
     ,mHeight(height)
     ,mStoreOpened(false)
+    ,mStoreMessageOpened(false)
     ,mDrawPolygonComponent(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
@@ -34,6 +35,11 @@ Checkpoint::Checkpoint(class Game *game, float width, float height)
 void Checkpoint::OnProcessInput(const Uint8 *keyState, SDL_GameController &controller) {
     if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
         if (keyState[SDL_SCANCODE_SPACE] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_Y)) {
+            if (mGame->GetStore()->StoreMessageOpened() && mGame->GetPlayer()->GetIsOnGround()) {
+                mGame->GetStore()->CloseStoreMessage();
+                mStoreMessageOpened = false;
+            }
+
             if (!mGame->GetStore()->StoreOpened() && mGame->GetPlayer()->GetIsOnGround()) {
                 mGame->GetStore()->OpenStore();
                 mStoreOpened = true;
@@ -46,6 +52,21 @@ void Checkpoint::OnUpdate(float deltaTime) {
     if (!mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>()) && mGame->GetStore()->StoreOpened() && mStoreOpened) {
         mGame->GetStore()->CloseStore();
         mStoreOpened = false;
+    }
+
+    if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
+        if (!mGame->GetStore()->StoreMessageOpened() && mGame->GetPlayer()->GetIsOnGround()) {
+            mGame->GetStore()->LoadStoreMessage();
+            mStoreMessageOpened = true;
+        }
+    }
+    if (!mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>()) &&
+        mGame->GetStore()->StoreMessageOpened() && mStoreMessageOpened ||
+        mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>()) &&
+        !mGame->GetPlayer()->GetIsOnGround())
+    {
+        mGame->GetStore()->CloseStoreMessage();
+        mStoreMessageOpened = false;
     }
 }
 

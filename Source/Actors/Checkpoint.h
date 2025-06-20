@@ -22,6 +22,7 @@ private:
     float mHeight;
 
     bool mStoreOpened;
+    bool mStoreMessageOpened;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class AABBComponent *mAABBComponent;
