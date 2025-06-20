@@ -265,6 +265,7 @@ void Game::ChangeScene()
 
     // Scene Manager FSM: using if/else instead of switch
     if (mNextScene == GameScene::MainMenu) {
+        mGamePlayState = GamePlayState::Menu;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Menu6.png");
 
         // Initialize main menu actors
@@ -960,6 +961,20 @@ void Game::ProcessInput()
                 }
                 break;
 
+            case SDL_MOUSEBUTTONDOWN:
+                // Handle mouse for UI screens
+                if (!mUIStack.empty()) {
+                    mUIStack.back()->HandleMouse(event);
+                }
+                break;
+
+            case SDL_MOUSEMOTION:
+                // Handle mouse for UI screens
+                if (!mUIStack.empty()) {
+                    mUIStack.back()->HandleMouse(event);
+                }
+                break;
+
             default:
                 break;
         }
@@ -1071,6 +1086,14 @@ void Game::UpdateGame()
         } else {
             ++iter;
         }
+    }
+
+    if (mGamePlayState == GamePlayState::Playing) {
+        // Esconde o cursor
+        SDL_ShowCursor(SDL_DISABLE);
+    }
+    else {
+        SDL_ShowCursor(SDL_ENABLE);
     }
 
     if (mResetLevel) {

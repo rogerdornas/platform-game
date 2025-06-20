@@ -43,6 +43,16 @@ void UIButton::Draw(SDL_Renderer *renderer, const Vector2 &screenPos)
     }
 }
 
+bool UIButton::ContainsPoint(const Vector2 &pt) const {
+    if (pt.x < mPosition.x || pt.x > mPosition.x + mSize.x ||
+        pt.y < mPosition.y || pt.y > mPosition.y + mSize.y)
+    {
+        return false;
+    }
+    return true;
+}
+
+
 void UIButton::OnClick()
 {
     if (mOnClick) {

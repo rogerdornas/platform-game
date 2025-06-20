@@ -32,9 +32,8 @@ UIScreen::~UIScreen()
     mImages.clear();
 }
 
-void UIScreen::Update(float deltaTime)
-{
-	
+void UIScreen::Update(float deltaTime) {
+
 }
 
 void UIScreen::Draw(SDL_Renderer *renderer)
@@ -88,11 +87,44 @@ void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY
     }
 
     // Atualiza destaque dos botões
-    for (size_t i = 0; i < mButtons.size(); ++i)
-    {
+    for (size_t i = 0; i < mButtons.size(); ++i) {
         mButtons[i]->SetHighlighted(static_cast<int>(i) == mSelectedButtonIndex);
     }
 }
+
+void UIScreen::HandleMouse(const SDL_Event &event) {
+    if (event.button.button == SDL_BUTTON_LEFT) {
+        int x = event.button.x;
+        int y = event.button.y;
+        for (UIButton* button : mButtons) {
+            if (button->ContainsPoint(Vector2(x, y) - GetPosition())) {
+                button->OnClick();
+            }
+        }
+    }
+
+    if (event.type == SDL_MOUSEMOTION) {
+        int x = event.motion.x;
+        int y = event.motion.y;
+
+        int index = -1;
+
+        for (size_t i = 0; i < mButtons.size(); ++i) {
+            if (mButtons[i]->ContainsPoint(Vector2(x, y) - GetPosition())) {
+                index = i;
+                mSelectedButtonIndex = i;
+            }
+        }
+
+        // Atualiza destaque dos botões
+        if (index != -1) {
+            for (size_t i = 0; i < mButtons.size(); ++i) {
+                mButtons[i]->SetHighlighted(static_cast<int>(i) == index);
+            }
+        }
+    }
+}
+
 
 void UIScreen::Close()
 {

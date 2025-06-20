@@ -27,6 +27,7 @@ public:
 	virtual void Draw(class SDL_Renderer *renderer);
 	virtual void ProcessInput(const uint8_t* keys);
 	virtual void HandleKeyPress(int key, int controllerButton, int controllerAxisY);
+	virtual void HandleMouse(const SDL_Event& event);
 
 	void SetPosition(Vector2 position) { mPos = position; }
 	void SetSize(Vector2 size) { mSize = size; }

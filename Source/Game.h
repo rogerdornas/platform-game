@@ -51,7 +51,8 @@ public:
         Paused,
         GameOver,
         LevelComplete,
-        Leaving
+        Leaving,
+        Menu
     };
 
     Game(int windowWidth, int windowHeight, int FPS);
