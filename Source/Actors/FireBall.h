@@ -26,6 +26,7 @@ public:
     void SetWidth(float w) { mWidth = w; }
     void SetHeight(float h) { mHeight = h; }
     void SetSpeed(float s) { mSpeed = s; }
+    void SetDamage(float damage) { mDamage = damage; }
     void SetIsFromEnemy() { mIsFromEnemy = true; }
     void ExplodeFireball() { mDurationTimer = mDuration; }
 

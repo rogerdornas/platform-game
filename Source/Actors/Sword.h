@@ -14,8 +14,12 @@ public:
     void OnUpdate(float deltaTime) override;
 
     float GetDamage() const { return mDamage; }
+    void SetDamage(float damage) { mDamage = damage; }
     float GetWidth() override { return mWidth; }
     float GetHeight() override { return mHeight; }
+    void SetWidth(float width) { mWidth = width; }
+    void SetHeight(float height) { mHeight = height; }
+
 
     void ChangeResolution(float oldScale, float newScale) override;
 

@@ -15,6 +15,7 @@ Money::Money(class Game *game, MoneyType type)
     ,mWidth(15.0f * mGame->GetScale())
     ,mHeight(15.0f * mGame->GetScale())
     ,mMoneyState(State::FlyingOut)
+    ,mMoneyType(type)
 
     ,mFlySpeed(500.0f * mGame->GetScale())
     ,mHomingSpeed(1000.0f * mGame->GetScale())
@@ -23,25 +24,31 @@ Money::Money(class Game *game, MoneyType type)
     ,mFlyTimer(0.0f)
     ,mHoverDuration(0.5f)
     ,mHoverTimer(0.0f)
+
+    ,mDrawSpriteComponent(nullptr)
+    ,mDrawPolygonComponent(nullptr)
 {
 
-    switch (type) {
+    switch (mMoneyType) {
         case MoneyType::Large:
             mValue = 10;
-            mWidth = 35.0f * mGame->GetScale();
-            mHeight = 35.0f * mGame->GetScale();
+            mWidth = 36.0f * mGame->GetScale();
+            mHeight = 63.0f * mGame->GetScale();
+            mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Money/CristalLarge.png", mWidth, mHeight, 5000);
             break;
 
         case MoneyType::Medium:
             mValue = 5;
-            mWidth = 25.0f * mGame->GetScale();
-            mHeight = 25.0f * mGame->GetScale();
+            mWidth = 26.0f * mGame->GetScale();
+            mHeight = 45.5f * mGame->GetScale();
+            mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Money/CristalMedium.png", mWidth, mHeight, 5000);
             break;
 
         case MoneyType::Small:
             mValue = 1;
-            mWidth = 15.0f * mGame->GetScale();
-            mHeight = 15.0f * mGame->GetScale();
+            mWidth = 16.0f * mGame->GetScale();
+            mHeight = 28.0f * mGame->GetScale();
+            mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Money/CristalSmall.png", mWidth, mHeight, 5000);
             break;
     }
 
@@ -57,7 +64,7 @@ Money::Money(class Game *game, MoneyType type)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 5000);
+    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 5000);
 
     SetRotation(Random::GetFloatRange(Math::Pi, Math::TwoPi));
 
@@ -65,9 +72,30 @@ Money::Money(class Game *game, MoneyType type)
     mRigidBodyComponent->SetVelocity(GetForward() * mFlySpeed);
 
     mAABBComponent = new AABBComponent(this, v1, v3);
+
+    Deactivate();
+
+    mGame->AddMoney(this);
+}
+
+Money::~Money() {
+    mGame->RemoveMoney(this);
 }
 
 void Money::OnUpdate(float deltaTime) {
+    Activate();
+    // Colisão entre moneys
+    std::vector<Money*> moneys = mGame->GetMoneys();
+    if (!moneys.empty()) {
+        for (Money* m: moneys) {
+            if (m != this) {
+                if (mAABBComponent->Intersect(*m->GetComponent<AABBComponent>())) {
+                    mAABBComponent->ResolveCollision(*m->GetComponent<AABBComponent>());
+                }
+            }
+        }
+    }
+
     switch (mMoneyState) {
         case State::FlyingOut:
             mFlyTimer += deltaTime;
@@ -103,9 +131,38 @@ void Money::OnUpdate(float deltaTime) {
 
     if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
         mGame->GetPlayer()->IncreaseMoney(mValue);
-        SetState(ActorState::Destroy);
+        Deactivate();
     }
 }
+
+void Money::Activate() {
+    mAABBComponent->SetActive(true); // reativa colisão
+    if (mDrawPolygonComponent) {
+        mDrawPolygonComponent->SetIsVisible(true);
+    }
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetIsVisible(true);
+    }
+}
+
+void Money::Deactivate() {
+    SetState(ActorState::Paused);
+    mMoneyState = State::FlyingOut;
+    SetRotation(Random::GetFloatRange(Math::Pi, Math::TwoPi));
+    mRigidBodyComponent->SetVelocity(GetForward() * mFlySpeed);
+    mAABBComponent->SetActive(false); // desativa colisão
+    mFlyTimer = 0;
+    mHoverTimer = 0;
+
+    if (mDrawPolygonComponent) {
+        mDrawPolygonComponent->SetIsVisible(false);
+    }
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetIsVisible(false);
+    }
+}
+
+
 
 void Money::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
@@ -115,6 +172,11 @@ void Money::ChangeResolution(float oldScale, float newScale) {
     mHomingSpeed = mHomingSpeed / oldScale * newScale;
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth);
+        mDrawSpriteComponent->SetHeight(mHeight);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

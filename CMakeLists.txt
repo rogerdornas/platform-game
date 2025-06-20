@@ -97,6 +97,10 @@ add_executable(${PROJECT_NAME}
         Source/HUD.cpp
         Source/Actors/Money.cpp
         Source/Actors/Money.h
+        Source/Actors/Checkpoint.cpp
+        Source/Actors/Checkpoint.h
+        Source/Store.cpp
+        Source/Store.h
 )
 
 

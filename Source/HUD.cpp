@@ -10,6 +10,7 @@ HUD::HUD(class Game* game, const std::string& fontName)
     :UIScreen(game, fontName)
     ,mSpeedHPDecrease(200.0f * mGame->GetScale())
     ,mSpeedHPIncrease(400.0f * mGame->GetScale())
+    ,mNumOfSubManaBars(mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost())
     ,mWaitToDecreaseDuration(0.7f)
     ,mWaitToDecreaseTimer(0.0f)
     ,mWaitToDecreaseManaDuration(0.7f)
@@ -18,12 +19,12 @@ HUD::HUD(class Game* game, const std::string& fontName)
 {
     float HPBarX = 50 * mGame->GetScale();
     float HPBarY = 50 * mGame->GetScale();
-    float HPBarWidth = 400 * mGame->GetScale();
+    float HPBarWidth = mGame->GetPlayer()->GetMaxHealthPoints() * 5 * mGame->GetScale();
     float HPBarHeight = 30 * mGame->GetScale();
 
     float ManaBarX = 50 * mGame->GetScale();
     float ManaBarY = 85 * mGame->GetScale();
-    float ManaBarWidth = 250 * mGame->GetScale();
+    float ManaBarWidth = mGame->GetPlayer()->GetMaxMana() * 2.5 * mGame->GetScale();
     float ManaBarHeight = 30 * mGame->GetScale();
 
     mHPBar = {HPBarX, HPBarY,HPBarWidth,HPBarHeight};
@@ -39,6 +40,9 @@ HUD::HUD(class Game* game, const std::string& fontName)
                                 Vector2(50, 120) * mGame->GetScale(),
                                Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(),
                                 POINT_SIZE * mGame->GetScale());
+
+
+    AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(1765, 52) * mGame->GetScale(), Vector2(20, 35) * mGame->GetScale());
 
     mPlayerMoney = AddText(std::to_string(mGame->GetPlayer()->GetMoney()),
                                 Vector2(1800, 50) * mGame->GetScale(),
@@ -109,17 +113,26 @@ void HUD::Update(float deltaTime) {
     }
 }
 
+void HUD::IncreaseHPBar() {
+    mHPBar.w = mGame->GetPlayer()->GetMaxHealthPoints() * 5 * mGame->GetScale();
+}
+
+void HUD::IncreaseManaBar() {
+    mManaBar.w = mGame->GetPlayer()->GetMaxMana() * 2.5 * mGame->GetScale();
+    mNumOfSubManaBars = mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost();
+}
+
 void HUD::Draw(class SDL_Renderer *renderer) {
-    for (UIText* text : mTexts) {
-        text->Draw(renderer, mPos);
+    for (UIImage* image : mImages) {
+        image->Draw(renderer, mPos);
     }
 
     for (UIButton* button : mButtons) {
         button->Draw(renderer, mPos);
     }
 
-    for (UIImage* image : mImages) {
-        image->Draw(renderer, mPos);
+    for (UIText* text : mTexts) {
+        text->Draw(renderer, mPos);
     }
 
     DrawLifeBar(renderer);
@@ -194,11 +207,11 @@ void HUD::DrawManaBar(struct SDL_Renderer *renderer) {
     SDL_RenderFillRect(renderer, &ManaRemainingBar);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    for (int i = 1; i < 3; i++) {
+    for (int i = 1; i < mNumOfSubManaBars; i++) {
         SDL_RenderDrawLine(renderer,
-                    mManaBar.x + i * mManaBar.w / 3,
+                    mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
                     mManaBar.y,
-                    mManaBar.x + i * mManaBar.w / 3,
+                    mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
                     mManaBar.y + mManaBar.h);
     }
 }
@@ -208,6 +221,10 @@ void HUD::ChangeResolution(float oldScale, float newScale) {
     mPos.y = mPos.y / oldScale * newScale;
     mSize.x = mSize.x / oldScale * newScale;
     mSize.y = mSize.y / oldScale * newScale;
+
+    for (UIImage* image : mImages) {
+        image->ChangeResolution(oldScale, newScale);
+    }
 
     for (UIButton* button: mButtons) {
         button->ChangeResolution(oldScale, newScale);

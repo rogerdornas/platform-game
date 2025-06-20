@@ -14,10 +14,17 @@
 class UIButton : public UIElement
 {
 public:
+    enum class TextPos {
+        AlignLeft,
+        AlignRight,
+        Center
+    };
+
     UIButton(const std::string& text, class UIFont* font, std::function<void()> onClick,
              const Vector2& pos, const Vector2& size, const Vector3& color = Vector3(30, 30, 30),
              int pointSize = 72, const unsigned wrapLength = 1024,
              const Vector2& textPos = Vector2::Zero,
+             const TextPos textAlign = TextPos::Center,
              const Vector2& textSize = Vector2(140.f, 20.0f),
              const Vector3& textColor = Color::White);
 
@@ -44,6 +51,9 @@ private:
 
     // Button name
     UIText* mText;
+
+    // Alinhamento do texto do botão
+    TextPos mTextAlign;
 
     // Check if the button is highlighted
     bool mHighlighted;

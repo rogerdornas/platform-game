@@ -13,6 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include "AudioSystem.h"
+#include "Store.h"
 
 class Game
 {
@@ -83,26 +84,30 @@ public:
     std::vector<class Ground *> &GetGrounds() { return mGrounds; }
     Ground* GetGroundById(int id);
 
-    Player *GetPlayer() const { return mPlayer; }
+    Player* GetPlayer() const { return mPlayer; }
 
     void UpdateCamera(float deltaTime);
-    class Camera *GetCamera() const { return mCamera; }
+    class Camera* GetCamera() const { return mCamera; }
 
     void AddFireBall(class FireBall *f);
     void RemoveFireball(class FireBall *f);
-    std::vector<class FireBall *> &GetFireBalls() { return mFireBalls; }
+    std::vector<class FireBall*> &GetFireBalls() { return mFireBalls; }
 
     void AddParticle(class Particle *p);
     void RemoveParticle(class Particle *p);
-    std::vector<class Particle *> &GetParticles() { return mParticles; }
+    std::vector<class Particle*> &GetParticles() { return mParticles; }
 
     void AddProjectile(class Projectile *p);
     void RemoveProjectile(class Projectile *p);
     std::vector<class Projectile *> &GetProjectiles() { return mProjectiles; }
 
+    void AddMoney(class Money *m);
+    void RemoveMoney(class Money *m);
+    std::vector<class Money*> &GetMoneys() { return mMoneys; }
+
     void AddEnemy(class Enemy *e);
     void RemoveEnemy(class Enemy *e);
-    std::vector<class Enemy *> &GetEnemies() { return mEnemies; }
+    std::vector<class Enemy*> &GetEnemies() { return mEnemies; }
     Enemy* GetEnemyById(int id);
 
     void SetResetLevel() { mResetLevel = true; }
@@ -110,7 +115,7 @@ public:
     int **GetLevelData() const { return mLevelData; }
     int **GetLevelDataDynamicGrounds() const { return mLevelDataDynamicGrounds; }
     SDL_Texture* GetTileSheet() const { return mTileSheet; }
-    std::unordered_map<int, SDL_Rect> GetTileSheetData() { return mSTileSheetData; }
+    std::unordered_map<int, SDL_Rect> GetTileSheetData() { return mTileSheetData; }
 
     int GetTileSize() const { return mTileSize; }
 
@@ -138,6 +143,7 @@ public:
     // UI functions
     void PushUI(class UIScreen* screen) { mUIStack.emplace_back(screen); }
     std::vector<class UIScreen*>& GetUIStack() { return mUIStack; }
+    class HUD* GetHUD() const { return mHUD; }
 
     // Scene management
     void SetGameScene(GameScene scene, float transitionTime = .0f);
@@ -150,6 +156,8 @@ public:
     GamePlayState GetGamePlayState() const { return mGamePlayState; }
 
     SDL_Renderer* GetRenderer() const { return mRenderer; }
+
+    Store* GetStore() const { return mStore; }
 
 private:
     void ProcessInput();
@@ -201,10 +209,11 @@ private:
 
     // Game-specific
     class Player *mPlayer;
-    std::vector<class Ground *> mGrounds;
-    std::vector<class FireBall *> mFireBalls;
-    std::vector<class Particle *> mParticles;
-    std::vector<class Projectile *> mProjectiles;
+    std::vector<class Ground*> mGrounds;
+    std::vector<class FireBall*> mFireBalls;
+    std::vector<class Particle*> mParticles;
+    std::vector<class Projectile*> mProjectiles;
+    std::vector<class Money*> mMoneys;
     std::vector<class Enemy *> mEnemies;
     SDL_GameController *mController;
     class HUD *mHUD;
@@ -213,7 +222,7 @@ private:
     int **mLevelData;
     int **mLevelDataDynamicGrounds;
     SDL_Texture* mTileSheet;
-    std::unordered_map<int, SDL_Rect> mSTileSheetData;
+    std::unordered_map<int, SDL_Rect> mTileSheetData;
     int mLevelWidth;
     int mLevelHeight;
     int mTileSize;
@@ -253,6 +262,7 @@ private:
     GameScene mNextScene;
     GameScene mContinueScene;
 
+    Store* mStore;
 
     void DrawParallaxBackground();
     void DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h);

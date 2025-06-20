@@ -30,8 +30,6 @@ UIScreen::~UIScreen()
         delete image;
     }
     mImages.clear();
-
-    mGame->GetUIStack().pop_back();
 }
 
 void UIScreen::Update(float deltaTime)
@@ -41,17 +39,16 @@ void UIScreen::Update(float deltaTime)
 
 void UIScreen::Draw(SDL_Renderer *renderer)
 {
-
-    for (UIText* text : mTexts) {
-        text->Draw(renderer, mPos);
+    for (UIImage* image : mImages) {
+        image->Draw(renderer, mPos);
     }
 
     for (UIButton* button : mButtons) {
         button->Draw(renderer, mPos);
     }
 
-    for (UIImage* image : mImages) {
-        image->Draw(renderer, mPos);
+    for (UIText* text : mTexts) {
+        text->Draw(renderer, mPos);
     }
 }
 
@@ -84,6 +81,9 @@ void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY
         // Ativa o botão selecionado
         if (mSelectedButtonIndex >= 0 && mSelectedButtonIndex < static_cast<int>(mButtons.size())) {
             mButtons[mSelectedButtonIndex]->OnClick();
+            if (mGame->GetPlayer()) {
+                mGame->GetPlayer()->SetCanJump(false);
+            }
         }
     }
 
@@ -108,9 +108,9 @@ UIText* UIScreen::AddText(const std::string &name, const Vector2 &pos, const Vec
     return t;
 }
 
-UIButton* UIScreen::AddButton(const std::string& name, const Vector2 &pos, const Vector2& dims, const int pointSize, std::function<void()> onClick)
+UIButton* UIScreen::AddButton(const std::string& name, const Vector2 &pos, const Vector2& dims, const int pointSize, UIButton::TextPos alignText, std::function<void()> onClick, Vector2 textPos)
 {
-    UIButton* b = new UIButton(name, mFont, onClick, pos, dims, Vector3{1.0f, 0.5f, 0.0f}, pointSize, 1024, Vector2::Zero);
+    UIButton* b = new UIButton(name, mFont, onClick, pos, dims, Vector3{1.0f, 0.5f, 0.0f}, pointSize, 1024, textPos, alignText);
     mButtons.emplace_back(b);
 
     if (mButtons.size() == 1) {
@@ -135,6 +135,10 @@ void UIScreen::ChangeResolution(float oldScale, float newScale) {
     mPos.y = mPos.y / oldScale * newScale;
     mSize.x = mSize.x / oldScale * newScale;
     mSize.y = mSize.y / oldScale * newScale;
+
+    for (UIImage* image : mImages) {
+        image->ChangeResolution(oldScale, newScale);
+    }
 
     for (UIButton* button: mButtons) {
         button->ChangeResolution(oldScale, newScale);

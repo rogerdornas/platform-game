@@ -39,3 +39,10 @@ void UIImage::Draw(SDL_Renderer* renderer, const Vector2 &screenPos)
 
     SDL_RenderCopyEx(renderer, mTexture, nullptr, &dstRect, 0.0, nullptr, SDL_FLIP_NONE);
 }
+
+void UIImage::ChangeResolution(float oldScale, float newScale) {
+    mPosition.x = mPosition.x / oldScale * newScale;
+    mPosition.y = mPosition.y / oldScale * newScale;
+    mSize.x = mSize.x / oldScale * newScale;
+    mSize.y = mSize.y / oldScale * newScale;
+}

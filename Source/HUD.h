@@ -25,6 +25,9 @@ public:
 
     void Update(float deltaTime) override;
 
+    void IncreaseHPBar();
+    void IncreaseManaBar();
+
     void Draw(class SDL_Renderer *renderer) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
@@ -45,6 +48,7 @@ private:
     RectF mManaBar;
     RectF mManaUsedBar;
     RectF mManaRemainingBar;
+    int mNumOfSubManaBars;
 
     // SDL_Rect mHPBar;
     // SDL_Rect mDamageTakenBar;

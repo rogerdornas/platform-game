@@ -7,10 +7,11 @@
 UIButton::UIButton(const std::string& text, class UIFont* font, std::function<void()> onClick,
                     const Vector2& pos, const Vector2& size, const Vector3& color,
                     int pointSize , unsigned wrapLength,
-                    const Vector2 &textPos, const Vector2 &textSize, const Vector3& textColor)
+                    const Vector2 &textPos, TextPos textAlign, const Vector2 &textSize, const Vector3& textColor)
         :UIElement(pos, size, color)
         ,mOnClick(onClick)
         ,mHighlighted(false)
+        ,mTextAlign(textAlign)
 {
     mText = new UIText(text, font, pointSize, wrapLength, textPos, textSize, textColor);
 }
@@ -34,7 +35,12 @@ void UIButton::Draw(SDL_Renderer *renderer, const Vector2 &screenPos)
         SDL_RenderFillRect(renderer, &titleQuad);
     }
 
-    mText->Draw(renderer, screenPos + mPosition + mSize * 0.5f - mText->GetSize() * 0.5f);
+    if (mTextAlign == TextPos::AlignLeft) {
+        mText->Draw(renderer, screenPos + mPosition);
+    }
+    else if (mTextAlign == TextPos::Center) {
+        mText->Draw(renderer, screenPos + mPosition + mSize * 0.5f - mText->GetSize() * 0.5f);
+    }
 }
 
 void UIButton::OnClick()

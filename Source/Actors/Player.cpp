@@ -43,6 +43,9 @@ Player::Player(Game* game, float width, float height)
     ,mPrevSwordPressed(false)
     ,mSwordCooldownTimer(0.0f)
     ,mSwordCooldownDuration(0.4f)
+    ,mSwordWidth(mWidth * 3.6f)
+    ,mSwordHeight(mHeight * 1.3f)
+    ,mSwordDamage(10.0f)
     ,mSwordDirection(0)
     ,mSwordHitEnemy(false)
     ,mSwordHitGround(false)
@@ -59,6 +62,7 @@ Player::Player(Game* game, float width, float height)
     ,mFireballWidth(50 * mGame->GetScale())
     ,mFireBallHeight(50 * mGame->GetScale())
     ,mFireballSpeed(1500 * mGame->GetScale())
+    ,mFireballDamage(20.0f)
     ,mMaxMana(90.0f)
     ,mMana(90.0f)
     ,mManaIncreaseRate(6.0f)
@@ -94,7 +98,7 @@ Player::Player(Game* game, float width, float height)
     ,mHealAnimationDuration(1.0f)
     ,mHealAnimationTimer(0.0f)
 
-    ,mMoney(0)
+    ,mMoney(500)
 
     ,mIsRunning(false)
     ,mRunningSoundIntervalDuration(0.3f)
@@ -159,7 +163,7 @@ Player::Player(Game* game, float width, float height)
     mAABBComponent = new AABBComponent(this, v1, v3);
     mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), 0.2f, 0.5f);
 
-    mSword = new Sword(mGame, this, mWidth * 3.6, mHeight * 1.3, 0.15f, 10.0f);
+    mSword = new Sword(mGame, this, mSwordWidth, mSwordHeight, 0.15f, mSwordDamage);
 }
 
 void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller) {
@@ -410,6 +414,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                     f->SetWidth(mFireballWidth);
                     f->SetHeight(mFireBallHeight);
                     f->SetSpeed(mFireballSpeed);
+                    f->SetDamage(mFireballDamage);
                     f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                     mIsFireAttacking = true;
                     mStopInAirFireBallTimer = 0;

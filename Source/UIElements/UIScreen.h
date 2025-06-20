@@ -43,8 +43,8 @@ public:
     class Game* GetGame() const { return mGame; }
 
     // Add a button to this screen
-	UIButton* AddButton(const std::string& name, const Vector2& pos, const Vector2& dims, const int pointSize, std::function<void()> onClick);
-    UIText* AddText(const std::string& name, const Vector2& pos, const Vector2& dims, const int pointSize = 40, const int unsigned wrapLength = 1024);
+	UIButton* AddButton(const std::string& name, const Vector2& pos, const Vector2& dims, const int pointSize, UIButton::TextPos alignText, std::function<void()> onClick, Vector2 textPos = Vector2::Zero);
+    UIText* AddText(const std::string& name, const Vector2& pos = Vector2::Zero, const Vector2& dims = Vector2::Zero, const int pointSize = 40, const int unsigned wrapLength = 1024);
     UIImage* AddImage(const std::string& imagePath, const Vector2& pos, const Vector2& dims, const Vector3& color = Color::White);
 
 	virtual void ChangeResolution(float oldScale, float newScale);

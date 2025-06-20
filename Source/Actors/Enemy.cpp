@@ -86,25 +86,41 @@ bool Enemy::Died() {
     if (mHealthPoints <= 0) {
         mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
 
+        std::vector<Money*> moneys = mGame->GetMoneys();
         // Cria grandes
         while (mMoneyDrop >= 10) {
-            auto* money = new Money(mGame, Money::MoneyType::Large);
-            money->SetPosition(GetPosition());
-            mMoneyDrop -= 10;
+            for (Money* m: moneys) {
+                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Large) {
+                    m->SetState(ActorState::Active);
+                    m->SetPosition(GetPosition());
+                    mMoneyDrop -= 10;
+                    break;
+                }
+            }
         }
 
         // Cria médios
         while (mMoneyDrop >= 5) {
-            auto* money = new Money(mGame, Money::MoneyType::Medium);
-            money->SetPosition(GetPosition());
-            mMoneyDrop -= 5;
+            for (Money* m: moneys) {
+                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Medium) {
+                    m->SetState(ActorState::Active);
+                    m->SetPosition(GetPosition());
+                    mMoneyDrop -= 5;
+                    break;
+                }
+            }
         }
 
         // Cria pequenos
         while (mMoneyDrop >= 1) {
-            auto* money = new Money(mGame, Money::MoneyType::Small);
-            money->SetPosition(GetPosition());
-            mMoneyDrop -= 1;
+            for (Money* m: moneys) {
+                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Small) {
+                    m->SetState(ActorState::Active);
+                    m->SetPosition(GetPosition());
+                    mMoneyDrop -= 1;
+                    break;
+                }
+            }
         }
 
         return true;

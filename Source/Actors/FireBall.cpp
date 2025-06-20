@@ -187,6 +187,7 @@ void FireBall::Deactivate() {
     mFireballState = State::Deactivate;
     mDurationTimer = 0;
     mDeactivateTimer = 0;
+    mDamage = 20;
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetIsVisible(false);

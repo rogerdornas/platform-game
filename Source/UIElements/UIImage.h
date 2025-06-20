@@ -18,6 +18,8 @@ public:
 
     void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
 
+    void ChangeResolution(float oldScale, float newScale) override;
+
 private:
     SDL_Texture* mTexture; // Texture for the image
 };

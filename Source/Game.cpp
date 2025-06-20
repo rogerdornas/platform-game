@@ -15,6 +15,7 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include "HUD.h"
+#include "Actors/Checkpoint.h"
 #include "UIElements/UIScreen.h"
 #include "Actors/DynamicGround.h"
 #include "Actors/Fox.h"
@@ -23,6 +24,7 @@
 #include "Actors/Trigger.h"
 #include "Actors/Fairy.h"
 #include "Actors/FlyingShooterEnemy.h"
+#include "Actors/Money.h"
 #include "Actors/Projectile.h"
 #include "Components/AABBComponent.h"
 #include "Components/DrawComponents/DrawAnimatedComponent.h"
@@ -59,6 +61,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mPlayer(nullptr)
     ,mLevelData(nullptr)
     ,mLevelDataDynamicGrounds(nullptr)
+    ,mTileSheet(nullptr)
     ,mController(nullptr)
     ,mHitstopActive(false)
     ,mHitstopDuration(0.15f)
@@ -144,7 +147,7 @@ bool Game::Initialize()
 
 
     // Esconde o cursor
-    SDL_ShowCursor(SDL_DISABLE);
+    // SDL_ShowCursor(SDL_DISABLE);
 
     // Inicializa controle
     for (int i = 0; i < SDL_NumJoysticks(); ++i)
@@ -164,6 +167,8 @@ bool Game::Initialize()
     mTicksCount = SDL_GetTicks();
 
     SetGameScene(GameScene::MainMenu);
+
+    mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
 
     // const std::string backgroundAssets = "../Assets/Sprites/Background/";
     // mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
@@ -208,6 +213,8 @@ void Game::ChangeScene()
     // Unload current Scene
     UnloadScene();
 
+    mAudio->StopAllSounds();
+
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
 
     if (mNextScene != GameScene::MainMenu) {
@@ -222,8 +229,19 @@ void Game::ChangeScene()
         }
 
         // Pool de Projectiles
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             new Projectile(this);
+        }
+
+        // Pool de Moneys
+        for (int i = 0; i < 50; i++) {
+            new Money(this, Money::MoneyType::Small);
+        }
+        for (int i = 0; i < 50; i++) {
+            new Money(this, Money::MoneyType::Medium);
+        }
+        for (int i = 0; i < 50; i++) {
+            new Money(this, Money::MoneyType::Large);
         }
 
         // Volta player
@@ -251,6 +269,9 @@ void Game::ChangeScene()
 
         // Initialize main menu actors
         LoadMainMenu();
+
+        mMusicHandle = mAudio->PlaySound("HollowKnight.wav", true);
+        mBossMusic.Reset();
     }
     else if (mNextScene == GameScene::Level1) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
@@ -329,49 +350,72 @@ void Game::LoadMainMenu() {
 
     std::string name = "CONTINUAR";
     int buttonPointSize = static_cast<int>(34 * mScale);
-    mainMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize,
+    mainMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {SetGameScene(mContinueScene, 0.5f);});
 
     name = "NOVO JOGO";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize,
+    mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-    SetGameScene(GameScene::Level4, 0.5f);
-    delete mPlayer;
-    mPlayer = nullptr;
+        SetGameScene(GameScene::Level4, 0.5f);
+        delete mPlayer;
+        mPlayer = nullptr;
+        delete mStore;
+        mStore = nullptr;
+        mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
 });
 
     name = "OPÇÕES";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize,
+    mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     nullptr);
 
     name = "SAIR";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize,
+    mainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {Quit();});
 }
 
 UIScreen* Game::LoadPauseMenu() {
-    auto pauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mPauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
     const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 6, 50 * mScale);
-    pauseMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
-    pauseMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
-    Vector2 buttonPos = Vector2((pauseMenu->GetSize().x - buttonSize.x) / 2, 0);
+    mPauseMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
+    mPauseMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
+    Vector2 buttonPos = Vector2((mPauseMenu->GetSize().x - buttonSize.x) / 2, 0);
 
     std::string name = "CONTINUAR";
     int buttonPointSize = static_cast<int>(34 * mScale);
-    pauseMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize,
-    [this]() {TogglePause();});
-
-    name = "OPÇÕES";
-    pauseMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize,
-    nullptr);
-
-    name = "VOLTAR AO MENU";
-    pauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize,
+    mPauseMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        SetGameScene(GameScene::MainMenu, 0.5f);
+        TogglePause();
+        mPauseMenu->Close();
     });
 
-    return pauseMenu;
+    name = "OPÇÕES";
+    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    nullptr);
+
+    name = "RECOMEÇAR FASE";
+    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        ResetGameScene(0.2f);
+        mPlayer->ResetHealthPoints();
+        mPlayer->ResetMana();
+        mPlayer->ResetHealCount();
+        mPauseMenu->Close();
+        if (mStore->StoreOpened()) {
+            mStore->CloseStore();
+        }
+    });
+
+    name = "VOLTAR AO MENU";
+    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        SetGameScene(GameScene::MainMenu, 0.5f);
+        mPauseMenu->Close();
+        if (mStore->StoreOpened()) {
+            mStore->CloseStore();
+        }
+    });
+
+    return mPauseMenu;
 }
 
 void Game::LoadObjects(const std::string &fileName) {
@@ -674,6 +718,18 @@ void Game::LoadObjects(const std::string &fileName) {
                 }
             }
         }
+        if (layer["name"] == "Checkpoint") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+
+                auto checkpoint = new Checkpoint(this, width, height);
+                checkpoint->SetPosition(Vector2(x + width / 2, y + height / 2));
+            }
+        }
+
         if (layer["name"] == "Player") {
             for (const auto &obj: layer["objects"]) {
                 float x = static_cast<float>(obj["x"]) * mScale;
@@ -761,7 +817,7 @@ void Game::LoadLevel(const std::string &fileName) {
         std::string numberStr = tileFileName.substr(0, dotPos);
         int index = std::stoi(numberStr); // converte para inteiro
 
-        mSTileSheetData[index] = SDL_Rect{x, y, w, h};
+        mTileSheetData[index] = SDL_Rect{x, y, w, h};
     }
 
     // Cria objetos
@@ -830,7 +886,15 @@ void Game::ProcessInput()
                 }
 
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    TogglePause();
+                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                        TogglePause();
+                        if (mIsPaused) {
+                            LoadPauseMenu();
+                        }
+                        else {
+                            mPauseMenu->Close();
+                        }
+                    }
                 }
 
                 if (event.key.keysym.sym == SDLK_8)
@@ -855,16 +919,13 @@ void Game::ProcessInput()
                 }
 
                 if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
-                    TogglePause();
-                }
-
-                if (mIsPaused) {
-                    if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
-                        if (!mUIStack.empty()) {
-                            mUIStack.back()->Close();
-                            if (mUIStack.size() == 2) {
-                                TogglePause();
-                            }
+                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                        TogglePause();
+                        if (mIsPaused) {
+                            LoadPauseMenu();
+                        }
+                        else {
+                            mPauseMenu->Close();
                         }
                     }
                 }
@@ -919,25 +980,21 @@ void Game::TogglePause() {
     if (mGameScene != GameScene::MainMenu) {
         mIsPaused = !mIsPaused;
         if (mIsPaused) {
-            if (mMusicHandle.IsValid()) {
-                mAudio->PauseSound(mMusicHandle);
-            }
-            if (mBossMusic.IsValid()) {
-                mAudio->PauseSound(mBossMusic);
-            }
-            mPauseMenu = LoadPauseMenu();
+            // if (mMusicHandle.IsValid()) {
+            //     mAudio->PauseSound(mMusicHandle);
+            // }
+            // if (mBossMusic.IsValid()) {
+            //     mAudio->PauseSound(mBossMusic);
+            // }
             mGamePlayState = GamePlayState::Paused;
         }
         else {
-            if (mMusicHandle.IsValid()) {
-                mAudio->ResumeSound(mMusicHandle);
-            }
-            if (mBossMusic.IsValid()) {
-                mAudio->ResumeSound(mBossMusic);
-            }
-            mPauseMenu->Close();
-            delete mPauseMenu;
-            mPauseMenu = nullptr;
+            // if (mMusicHandle.IsValid()) {
+            //     mAudio->ResumeSound(mMusicHandle);
+            // }
+            // if (mBossMusic.IsValid()) {
+            //     mAudio->ResumeSound(mBossMusic);
+            // }
             mGamePlayState = GamePlayState::Playing;
         }
         mPlayer->SetCanJump(false);
@@ -987,9 +1044,9 @@ void Game::UpdateGame()
         }
         else {
             UpdateActors(deltaTime);
-            if (mHUD) {
-                mHUD->Update(deltaTime);
-            }
+            // if (mHUD) {
+            //     mHUD->Update(deltaTime);
+            // }
         }
     }
 
@@ -997,11 +1054,11 @@ void Game::UpdateGame()
 
     // Reinsert UI screens
     for (auto ui : mUIStack) {
-        if (ui != mHUD) {
+        // if (ui != mHUD) {
             if (ui->GetState() == UIScreen::UIState::Active) {
                 ui->Update(deltaTime);
             }
-        }
+        // }
     }
 
     // Delete any UIElements that are closed
@@ -1010,6 +1067,7 @@ void Game::UpdateGame()
         if ((*iter)->GetState() == UIScreen::UIState::Closing) {
             delete *iter;
             iter = mUIStack.erase(iter);
+            *iter = nullptr;
         } else {
             ++iter;
         }
@@ -1145,6 +1203,15 @@ void Game::RemoveProjectile(class Projectile *p)
     auto iter = std::find(mProjectiles.begin(), mProjectiles.end(), p);
     if (iter != mProjectiles.end())
         mProjectiles.erase(iter);
+}
+
+void Game::AddMoney(class Money *m) { mMoneys.emplace_back(m); }
+
+void Game::RemoveMoney(class Money *m)
+{
+    auto iter = std::find(mMoneys.begin(), mMoneys.end(), m);
+    if (iter != mMoneys.end())
+        mMoneys.erase(iter);
 }
 
 void Game::AddEnemy(class Enemy *e) { mEnemies.emplace_back(e); }
@@ -1383,6 +1450,8 @@ void Game::Shutdown()
 {
     delete mPlayer;
     mPlayer = nullptr;
+    delete mStore;
+    mStore = nullptr;
     UnloadScene();
 
     for (auto font : mFonts) {

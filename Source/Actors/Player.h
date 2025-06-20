@@ -28,21 +28,39 @@ public:
     void SetCanWallSlide(bool canWallSlide) { mCanWallSlide = canWallSlide; }
 
     class Sword* GetSword() const { return mSword; }
-    void SetSword() { mSword = new Sword(mGame, this, mWidth * 3.6, mHeight * 1.3, 0.15f, 10.0f); }
+    void SetSword() { mSword = new Sword(mGame, this, mSwordWidth, mSwordHeight, 0.15f, mSwordDamage); }
+    void SetSwordWidth(float width) { mSwordWidth = width; }
+    void SetSwordHeight(float height) { mSwordHeight = height; }
+    void SetSwordDamage(float damage) { mSwordDamage = damage; }
 
     void ResetHealthPoints() { mHealthPoints = mMaxHealthPoints; }
     float GetHealthPoints() const { return mHealthPoints; }
+    void SetHealthPoints(float HP) { mHealthPoints = HP; }
     float GetMaxHealthPoints() const { return mMaxHealthPoints; }
+    void SetMaxHealthPoints(float maxHealthPoints) { mMaxHealthPoints = maxHealthPoints; }
 
     void ResetMana() { mMana = mMaxMana; }
     float GetMana() const { return mMana; }
     float GetMaxMana() const { return mMaxMana; }
+    void SetMaxMana(float maxMana) { mMaxMana = maxMana; }
+    float GetFireballManaCost() const { return mFireballManaCost; }
 
     void ResetHealCount() { mHealCount = mMaxHealCount; }
     int GetHealCount() const { return mHealCount; }
+    void IncreaseHealCount() { mHealCount++; }
 
     void IncreaseMoney(int value) { mMoney += value; }
+    void DecreaseMoney(int value) { mMoney -= value; }
     int GetMoney() const { return mMoney; }
+
+    void AdjustSwordAttackSpeed(float factor) { mSwordCooldownDuration /= factor; }
+
+    void SetFireballWidth(float width) { mFireballWidth = width; }
+    float GetFireballWidth() const { return mFireballWidth; }
+    void SetFireballHeight(float height) { mFireBallHeight = height; }
+    float GetFireballHeight() const { return mFireBallHeight; }
+    void SetFireballDamage(float damage) { mFireballDamage = damage; }
+    float GetFireballDamage() const { return mFireballDamage; }
 
     // Funções para sair da pausa com o controle sem pular ou atirar bola de fogo
     void SetCanJump(bool j) { mCanJump = j; }
@@ -84,7 +102,10 @@ private:
     class Sword* mSword;
     bool mPrevSwordPressed;             // Se apertou botão de espada no último frame
     float mSwordCooldownTimer;          // Timer de cooldown da espada
-    const float mSwordCooldownDuration; // Cooldown da espada
+    float mSwordCooldownDuration;       // Cooldown da espada
+    float mSwordWidth;
+    float mSwordHeight;
+    float mSwordDamage;
     float mSwordDirection;              // Director da espada(esquerda, direita, cima, baixo)
     bool mSwordHitEnemy;
     bool mSwordHitGround;
@@ -101,6 +122,7 @@ private:
     float mFireballWidth;
     float mFireBallHeight;
     float mFireballSpeed;
+    float mFireballDamage;
     float mMaxMana;
     float mMana;
     float mManaIncreaseRate;

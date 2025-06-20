@@ -16,8 +16,14 @@ public:
     };
 
     Money(class Game* game, MoneyType type = MoneyType::Small);
+    ~Money();
 
     void OnUpdate(float deltaTime) override;
+
+    MoneyType GetMoneyType() const { return mMoneyType; }
+
+    void Activate();
+    void Deactivate();
 
     void ChangeResolution(float oldScale, float newScale) override;
 
@@ -32,6 +38,7 @@ private:
     float mWidth;
     float mHeight;
     State mMoneyState;
+    MoneyType mMoneyType;
 
     float mFlySpeed;
     float mHomingSpeed;
@@ -42,7 +49,7 @@ private:
     float mHoverTimer;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawParticleComponent* mDrawParticleComponent;
+    class DrawSpriteComponent* mDrawSpriteComponent;
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
 };
