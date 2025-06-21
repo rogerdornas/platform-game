@@ -35,7 +35,15 @@ Projectile::Projectile(class Game *game, float width, float height, float speed,
     vertices.emplace_back(v4);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
-    mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth * 1.2, mHeight * 1.2);
+    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth * 1.2, mHeight * 1.2);
+
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/AcidBlob/AcidBlob.png", "../Assets/Sprites/AcidBlob/AcidBlob.json", 1001);
+
+    std::vector<int> firing = {0, 1, 2, 3, 4, 5, 6};
+    mDrawAnimatedComponent->AddAnimation("firing", firing);
+
+    mDrawAnimatedComponent->SetAnimation("firing");
+    mDrawAnimatedComponent->SetAnimFPS(8.0f);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3);
@@ -59,6 +67,16 @@ void Projectile::OnUpdate(float deltaTime) {
     }
 }
 
+void Projectile::ExplosionEffect() {
+    auto* explosion = new ParticleSystem(mGame, 12, 200.0, 0.2, 0.07f);
+    explosion->SetPosition(GetPosition() + GetForward() * (mWidth / 2));
+    explosion->SetEmitDirection(Vector2::Zero);
+    explosion->SetIsSplash(true);
+    explosion->SetParticleSpeedScale(1);
+    explosion->SetParticleColor(SDL_Color{208, 232, 92, 255});
+    explosion->SetParticleGravity(false);
+}
+
 void Projectile::Activate() {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -80,13 +98,13 @@ void Projectile::Activate() {
         mDrawPolygonComponent->SetIsVisible(true);
     }
     if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.2);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.2);
+        mDrawSpriteComponent->SetWidth(mWidth * 1.2f);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
         mDrawSpriteComponent->SetIsVisible(true);
     }
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.2);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.2);
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
         mDrawAnimatedComponent->SetIsVisible(true);
     }
     mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
@@ -97,6 +115,7 @@ void Projectile::Deactivate() {
     mRigidBodyComponent->SetVelocity(Vector2::Zero);
     mDurationTimer = 0;
     mAABBComponent->SetActive(false); // desativa colisão
+    ExplosionEffect();
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetIsVisible(false);
@@ -137,10 +156,15 @@ void Projectile::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawSpriteComponent->SetWidth(mWidth * 1.2);
-    mDrawSpriteComponent->SetHeight(mHeight * 1.2);
-    // mDrawAnimatedComponent->SetWidth(mWidth * 1.2);
-    // mDrawAnimatedComponent->SetHeight(mHeight * 1.2);
+    if (mDrawSpriteComponent) {
+        mDrawSpriteComponent->SetWidth(mWidth * 1.2f);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
+    }
+
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

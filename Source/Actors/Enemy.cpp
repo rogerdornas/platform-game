@@ -87,6 +87,39 @@ bool Enemy::Died() {
         mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
 
         std::vector<Money*> moneys = mGame->GetMoneys();
+
+        // Primeiro dropa 1 dinheiro de cada
+        if (mMoneyDrop >= 1) {
+            for (Money* m: moneys) {
+                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Small) {
+                    m->SetState(ActorState::Active);
+                    m->SetPosition(GetPosition());
+                    mMoneyDrop -= 1;
+                    break;
+                }
+            }
+        }
+        if (mMoneyDrop >= 5) {
+            for (Money* m: moneys) {
+                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Medium) {
+                    m->SetState(ActorState::Active);
+                    m->SetPosition(GetPosition());
+                    mMoneyDrop -= 5;
+                    break;
+                }
+            }
+        }
+        if (mMoneyDrop >= 10) {
+            for (Money* m: moneys) {
+                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Large) {
+                    m->SetState(ActorState::Active);
+                    m->SetPosition(GetPosition());
+                    mMoneyDrop -= 10;
+                    break;
+                }
+            }
+        }
+
         // Cria grandes
         while (mMoneyDrop >= 10) {
             for (Money* m: moneys) {

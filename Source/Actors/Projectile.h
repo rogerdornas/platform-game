@@ -29,6 +29,8 @@ private:
     void ResolveGroundCollision();
     void ResolvePlayerCollision();
 
+    void ExplosionEffect();
+
     float mWidth;
     float mHeight;
     float mSpeed;

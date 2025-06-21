@@ -25,14 +25,14 @@ Mantis::Mantis(Game *game, float width, float height, float moveSpeed, float hea
     ,mJumpForce(-700.0f * mGame->GetScale())
     ,mAttackDuration(2.0f)
     ,mAttackTimer(0.0f)
-    ,mWalkBackDuration(1.0f)
+    ,mWalkBackDuration(0.5f)
     ,mWalkBackTimer(0.0f)
     ,mWaitToAttackDuration(0.3f)
     ,mWaitToAttackTimer(0.0f)
 {
     mMoneyDrop = 10;
     mKnockBackSpeed = 700.0f * mGame->GetScale();
-    mKnockBackDuration = 0.15f;
+    mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, 1.25f * mWidth, 1.25f * mHeight, "../Assets/Sprites/Mantis/Mantis.png", "../Assets/Sprites/Mantis/Mantis.json", 999);

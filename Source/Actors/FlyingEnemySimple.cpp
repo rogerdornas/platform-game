@@ -33,6 +33,9 @@ FlyingEnemySimple::FlyingEnemySimple(Game *game, float width, float height, floa
     std::vector fly = {0, 1, 2, 3};
     mDrawAnimatedComponent->AddAnimation("fly", fly);
 
+    std::vector hit = {4};
+    mDrawAnimatedComponent->AddAnimation("hit", hit);
+
     mDrawAnimatedComponent->SetAnimation("fly");
     mDrawAnimatedComponent->SetAnimFPS(8.0f);
 }
@@ -125,19 +128,20 @@ void FlyingEnemySimple::MovementBeforePlayerSpotted() {
 }
 
 void FlyingEnemySimple::ManageAnimations() {
-    // if (mIsFlashing) {
-    //     mDrawAnimatedComponent->SetAnimation("hit");
-    // }
-    // else {
-        mDrawAnimatedComponent->SetAnimation("fly");
-        if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
-        }
+    if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
+        mDrawAnimatedComponent->UseFlip(true);
+        mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+    }
     else {
         mDrawAnimatedComponent->UseFlip(false);
     }
-    // }
+
+    if (mIsFlashing) {
+        mDrawAnimatedComponent->SetAnimation("hit");
+    }
+    else {
+        mDrawAnimatedComponent->SetAnimation("fly");
+    }
 }
 
 void FlyingEnemySimple::ChangeResolution(float oldScale, float newScale) {

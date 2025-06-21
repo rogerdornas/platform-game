@@ -7,7 +7,7 @@
 #include "Actor.h"
 #include "FlyingEnemySimple.h"
 
-class FlyingShooterEnemy : public FlyingEnemySimple
+class FlyingShooterEnemy : public Enemy
 {
 public:
     enum class State
@@ -17,14 +17,23 @@ public:
     };
 
     FlyingShooterEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void MovementAfterPlayerSpotted(float deltaTime) override;
+    void MovementAfterPlayerSpotted(float deltaTime);
+    void MovementBeforePlayerSpotted();
+
+    void ManageAnimations();
 
     void Fly(float deltaTime);
     void Shoot(float deltaTime);
+
+    float mDistToSpotPlayer;
+    float mFlyingAroundTimer;
+    float mFlyingAroundDuration;
+    float mFlyingAroundMoveSpeed;
 
     State mState;
     float mPatrolRangeX;             // largura da patrulha horizontal

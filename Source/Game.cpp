@@ -943,7 +943,9 @@ void Game::ProcessInput()
                 break;
 
             case SDL_CONTROLLERAXISMOTION:
-                mIsPlayingOnKeyboard = false;
+                if (Math::Abs(event.caxis.value) > DEAD_ZONE) {
+                    mIsPlayingOnKeyboard = false;
+                }
 
                 if (!mUIStack.empty()) {
                     if (event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY) {

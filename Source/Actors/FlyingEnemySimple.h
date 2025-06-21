@@ -14,8 +14,8 @@ public:
 
     void ChangeResolution(float oldScale, float newScale) override;
 
-protected:
-    virtual void MovementAfterPlayerSpotted(float deltaTime);
+private:
+    void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
 
     void ManageAnimations();
