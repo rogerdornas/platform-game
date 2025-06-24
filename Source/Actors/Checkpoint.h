@@ -10,7 +10,7 @@
 class Checkpoint : public Actor
 {
 public:
-    Checkpoint(class Game* game, float width, float height);
+    Checkpoint(class Game* game, float width, float height, Vector2 position);
 
     void OnProcessInput(const Uint8* keyState, SDL_GameController &controller) override;
     void OnUpdate(float deltaTime) override;

@@ -8,7 +8,7 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../UIElements/UIScreen.h"
 
-Checkpoint::Checkpoint(class Game *game, float width, float height)
+Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 position)
     :Actor(game)
     ,mWidth(width)
     ,mHeight(height)
@@ -16,6 +16,8 @@ Checkpoint::Checkpoint(class Game *game, float width, float height)
     ,mStoreMessageOpened(false)
     ,mDrawPolygonComponent(nullptr)
 {
+    SetPosition(position);
+
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
     Vector2 v3(mWidth / 2, mHeight / 2);
@@ -49,12 +51,17 @@ void Checkpoint::OnProcessInput(const Uint8 *keyState, SDL_GameController &contr
 }
 
 void Checkpoint::OnUpdate(float deltaTime) {
-    if (!mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>()) && mGame->GetStore()->StoreOpened() && mStoreOpened) {
-        mGame->GetStore()->CloseStore();
-        mStoreOpened = false;
+    if (!mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
+        if (mGame->GetStore()->StoreOpened() && mStoreOpened) {
+            mGame->GetStore()->CloseStore();
+            mStoreOpened = false;
+        }
     }
 
     if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
+        mGame->SetCheckPointPosition(GetPosition() + Vector2(-mWidth * 0.8, mHeight / 2));
+        mGame->SetCheckPointMoney(mGame->GetPlayer()->GetMoney());
+
         if (!mGame->GetStore()->StoreMessageOpened() && mGame->GetPlayer()->GetIsOnGround()) {
             mGame->GetStore()->LoadStoreMessage();
             mStoreMessageOpened = true;

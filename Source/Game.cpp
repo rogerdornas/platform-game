@@ -69,6 +69,9 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mHitstopTimer(0.0f)
     ,mIsSlowMotion(false)
     ,mIsAccelerated(false)
+    ,mCheckpointPosition(Vector2::Zero)
+    ,mCheckPointMoney(0)
+    ,mGoingToNextLevel(false)
     ,mIsPlayingOnKeyboard(true)
     ,mLeftStickYState(StickState::Neutral)
     ,mBackGroundTexture(nullptr)
@@ -378,7 +381,7 @@ void Game::LoadMainMenu() {
 
 UIScreen* Game::LoadPauseMenu() {
     mPauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 6, 50 * mScale);
+    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.22f, 50 * mScale);
     mPauseMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
     mPauseMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
     Vector2 buttonPos = Vector2((mPauseMenu->GetSize().x - buttonSize.x) / 2, 0);
@@ -395,16 +398,20 @@ UIScreen* Game::LoadPauseMenu() {
     mPauseMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     nullptr);
 
-    name = "RECOMEÇAR FASE";
+    name = "VOLTAR AO CHECKPOINT";
     mPauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         ResetGameScene(0.2f);
         mPlayer->ResetHealthPoints();
         mPlayer->ResetMana();
         mPlayer->ResetHealCount();
+        mPlayer->SetMoney(mCheckPointMoney);
         mPauseMenu->Close();
         if (mStore->StoreOpened()) {
             mStore->CloseStore();
+        }
+        if (mStore->StoreMessageOpened()) {
+            mStore->CloseStoreMessage();
         }
     });
 
@@ -733,8 +740,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float width = static_cast<float>(obj["width"]) * mScale;
                 float height = static_cast<float>(obj["height"]) * mScale;
 
-                auto checkpoint = new Checkpoint(this, width, height);
-                checkpoint->SetPosition(Vector2(x + width / 2, y + height / 2));
+                auto checkpoint = new Checkpoint(this, width, height, Vector2(x + width / 2, y + height / 2));
             }
         }
 
@@ -750,10 +756,20 @@ void Game::LoadObjects(const std::string &fileName) {
                 }
                 else {
                     mPlayer = new Player(this, 50, 85);
+                    mPlayer->SetPosition(Vector2(x, y));
+                    mPlayer->SetStartingPosition(Vector2(x, y));
+                    mCheckpointPosition = Vector2(x, y);
+                    mCheckPointMoney = mPlayer->GetMoney();
                 }
+
+                if (mGoingToNextLevel) {
+                    mCheckpointPosition = Vector2(x, y);
+                    mCheckPointMoney = mPlayer->GetMoney();
+                    mGoingToNextLevel = false;
+                }
+
                 mPlayer->SetState(ActorState::Active);
-                mPlayer->SetPosition(Vector2(x, y));
-                mPlayer->SetStartingPosition(Vector2(x, y));
+                mPlayer->SetPosition(mCheckpointPosition);
                 mPlayer->GetComponent<AABBComponent>()->SetActive(true);
             }
         }
@@ -1115,10 +1131,12 @@ void Game::UpdateGame()
     }
 
     if (mResetLevel) {
+        mStore->CloseStoreMessage();
         ResetGameScene(3.5f);
         mPlayer->ResetHealthPoints();
         mPlayer->ResetMana();
         mPlayer->ResetHealCount();
+        mPlayer->SetMoney(mCheckPointMoney);
         mResetLevel = false;
     }
 
@@ -1568,6 +1586,9 @@ void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, 
 
 void Game::ChangeResolution(float oldScale)
 {
+    mCheckpointPosition.x = mCheckpointPosition.x / oldScale * mScale;
+    mCheckpointPosition.y = mCheckpointPosition.y / oldScale * mScale;
+
     mTileSize = mOriginalTileSize * mScale;
     for (auto actor : mActors) {
         actor->ChangeResolution(oldScale, mScale);

@@ -28,8 +28,7 @@ public:
         Down
     };
 
-    enum class GameScene
-    {
+    enum class GameScene {
         MainMenu,
         Level1,
         Level2,
@@ -37,16 +36,14 @@ public:
         Level4
     };
 
-    enum class SceneManagerState
-    {
+    enum class SceneManagerState {
         None,
         Entering,
         Active,
         Exiting
     };
 
-    enum class GamePlayState
-    {
+    enum class GamePlayState {
         Playing,
         Paused,
         GameOver,
@@ -85,7 +82,7 @@ public:
     std::vector<class Ground *> &GetGrounds() { return mGrounds; }
     Ground* GetGroundById(int id);
 
-    Player* GetPlayer() const { return mPlayer; }
+    class Player* GetPlayer() const { return mPlayer; }
 
     void UpdateCamera(float deltaTime);
     class Camera* GetCamera() const { return mCamera; }
@@ -162,6 +159,12 @@ public:
 
     Store* GetStore() const { return mStore; }
 
+    void SetCheckPointPosition(Vector2 pos) { mCheckpointPosition = pos; }
+    Vector2 GetCheckPointPosition() { return mCheckpointPosition; }
+    void SetCheckPointMoney(int money) { mCheckPointMoney = money; }
+    int GetCheckPointMoney() const { return mCheckPointMoney; }
+    void SetGoingToNextLevel() { mGoingToNextLevel = true; }
+
 private:
     void ProcessInput();
     void UpdateGame();
@@ -220,6 +223,12 @@ private:
     std::vector<class Enemy *> mEnemies;
     SDL_GameController *mController;
     class HUD *mHUD;
+    std::vector<class Checkpoint*> mCheckPoints;
+
+    // Player State
+    Vector2 mCheckpointPosition;
+    int mCheckPointMoney;
+    bool mGoingToNextLevel;
 
     // Level data
     int **mLevelData;

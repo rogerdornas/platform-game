@@ -53,6 +53,8 @@ public:
     void IncreaseMoney(int value) { mMoney += value; }
     void DecreaseMoney(int value) { mMoney -= value; }
     int GetMoney() const { return mMoney; }
+    void SetMoney(int money) { mMoney = money; }
+    int GetSartingMoney() { return mStartMoney; }
 
     void AdjustSwordAttackSpeed(float factor) { mSwordCooldownDuration /= factor; }
 
@@ -160,6 +162,7 @@ private:
     float mHealAnimationTimer;
 
     int mMoney;
+    int mStartMoney;
 
     bool mIsRunning; // Atributos para animar sprites
 

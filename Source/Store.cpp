@@ -214,8 +214,8 @@ void Store::LoadStoreMessage() {
 void Store::CloseStoreMessage() {
     if (mStoreMessage != nullptr) {
         mStoreMessage->Close();
-        mStoreMessageOpened = false;
     }
+    mStoreMessageOpened = false;
 }
 
 

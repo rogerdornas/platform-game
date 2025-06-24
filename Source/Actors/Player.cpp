@@ -3,7 +3,7 @@
 //
 
 #include "Player.h"
-
+#include "Checkpoint.h"
 #include "Effect.h"
 #include "../Game.h"
 #include "../Actors/Sword.h"
@@ -99,6 +99,7 @@ Player::Player(Game* game, float width, float height)
     ,mHealAnimationTimer(0.0f)
 
     ,mMoney(500)
+    ,mStartMoney(0)
 
     ,mIsRunning(false)
     ,mRunningSoundIntervalDuration(0.3f)
@@ -916,7 +917,9 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
     }
 }
 
-bool Player::Died() { return mHealthPoints <= 0; }
+bool Player::Died() {
+    return mHealthPoints <= 0;
+}
 
 void Player::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
@@ -928,6 +931,8 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mLowGravity = mLowGravity / oldScale * newScale;
     mMediumGravity = mMediumGravity / oldScale * newScale;
     mHighGravity = mHighGravity / oldScale * newScale;
+    mSwordWidth = mSwordWidth / oldScale * newScale;
+    mSwordHeight = mSwordHeight / oldScale * newScale;
     mFireballRecoil = mFireballRecoil / oldScale * newScale;
     mFireballWidth = mFireballWidth / oldScale * newScale;
     mFireBallHeight = mFireBallHeight / oldScale * newScale;
