@@ -436,12 +436,12 @@ UIScreen* Game::LoadPauseMenu() {
 
 void Game::LoadOptionsMenu() {
     mOptionsMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.2f, 50 * mScale);
-    mOptionsMenu->SetSize(Vector2(mLogicalWindowWidth / 2, mLogicalWindowHeight / 2));
-    mOptionsMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.25f, mLogicalWindowHeight * 0.25f));
-    Vector2 buttonPos = Vector2(mOptionsMenu->GetSize().x * 0.05f, 0);
+    mOptionsMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
+    mOptionsMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    Vector2 buttonSize = Vector2(mOptionsMenu->GetSize().x * 0.8f, 50 * mScale);
+    Vector2 buttonPos = Vector2(mOptionsMenu->GetSize().x * 0.1f, 0);
 
-    mOptionsMenu->AddImage("../Assets/Sprites/Background/Store.png", Vector2::Zero, mOptionsMenu->GetSize());
+    mOptionsMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
 
     UIText* text;
     std::string name;
@@ -495,9 +495,14 @@ void Game::LoadOptionsMenu() {
     text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
     text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
 
+    name = "CONTROLES";
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 4.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+
+    }, textPos);
 
     name = "VOLTAR";
-    mOptionsMenu->AddButton(name, buttonPos + Vector2(0, mOptionsMenu->GetSize().y - buttonSize.y * 1.2f), Vector2(mOptionsMenu->GetSize().x * 0.9f, buttonSize.y), buttonPointSize, UIButton::TextPos::Center,
+    mOptionsMenu->AddButton(name, buttonPos + Vector2(0, mOptionsMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mOptionsMenu->Close();
     });
