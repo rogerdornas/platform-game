@@ -177,7 +177,7 @@ void Store::OpenStore() {
     }
 
     name = "FECHAR LOJA";
-    mStoreMenu->AddButton(name, buttonPos + Vector2(0, mStoreMenu->GetSize().y - buttonSize.y * 1.2), Vector2(mGame->GetLogicalWindowWidth() * 0.45, 75 * mGame->GetScale()), buttonPointSize, UIButton::TextPos::Center,
+    mStoreMenu->AddButton(name, buttonPos + Vector2(0, mStoreMenu->GetSize().y - buttonSize.y * 1.2f), Vector2(mGame->GetLogicalWindowWidth() * 0.45f, 75 * mGame->GetScale()), buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         CloseStore();
     });

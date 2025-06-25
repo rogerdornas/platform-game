@@ -103,7 +103,7 @@ bool Game::Initialize()
     mWindow = SDL_CreateWindow("Echoes of Elementum", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                mWindowWidth, mWindowHeight,
                                // SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-                               SDL_WINDOW_FULLSCREEN_DESKTOP);
+                               SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
     if (!mWindow) {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return false;
@@ -372,7 +372,9 @@ void Game::LoadMainMenu() {
 
     name = "OPÇÕES";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    nullptr);
+    [this]() {
+        LoadOptionsMenu();
+    });
 
     name = "SAIR";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -396,7 +398,9 @@ UIScreen* Game::LoadPauseMenu() {
 
     name = "OPÇÕES";
     mPauseMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    nullptr);
+    [this]() {
+        LoadOptionsMenu();
+    });
 
     name = "VOLTAR AO CHECKPOINT";
     mPauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -406,6 +410,7 @@ UIScreen* Game::LoadPauseMenu() {
         mPlayer->ResetMana();
         mPlayer->ResetHealCount();
         mPlayer->SetMoney(mCheckPointMoney);
+
         mPauseMenu->Close();
         if (mStore->StoreOpened()) {
             mStore->CloseStore();
@@ -426,6 +431,75 @@ UIScreen* Game::LoadPauseMenu() {
     });
 
     return mPauseMenu;
+}
+
+void Game::LoadOptionsMenu() {
+    mOptionsMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.2f, 50 * mScale);
+    mOptionsMenu->SetSize(Vector2(mLogicalWindowWidth / 2, mLogicalWindowHeight / 2));
+    mOptionsMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.25f, mLogicalWindowHeight * 0.25f));
+    Vector2 buttonPos = Vector2(mOptionsMenu->GetSize().x * 0.05f, 0);
+
+    mOptionsMenu->AddImage("../Assets/Sprites/Background/Store.png", Vector2::Zero, mOptionsMenu->GetSize());
+
+    UIText* text;
+    std::string name;
+    int buttonPointSize = static_cast<int>(34 * mScale);
+    Vector2 textPos = Vector2(buttonSize.x * 0.05f, 0);
+    std::string optionValue;
+    float optionPosX = mOptionsMenu->GetSize().x * 0.6f;
+    UIButton* button;
+
+    if (SDL_GetWindowFlags(mWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+        name = "FULL SCREEN";
+        button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 1.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]() {
+            SDL_SetWindowFullscreen(mWindow, 0);
+            mOptionsMenu->Close();
+            LoadOptionsMenu();
+        }, textPos);
+        optionValue = "ON";
+        text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
+        text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
+    }
+    else {
+        name = "FULL SCREEN";
+        button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 1.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]() {
+            SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+            mOptionsMenu->Close();
+            LoadOptionsMenu();
+        }, textPos);
+        optionValue = "OFF";
+        text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
+        text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
+    }
+
+    name = "RESOLUÇÃO";
+    Vector2 currentRes = mResolutions[mCurrentResolutionIndex];
+    optionValue = std::to_string(static_cast<int>(currentRes.x)) + "x" + std::to_string(static_cast<int>(currentRes.y));
+
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 3.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mCurrentResolutionIndex = (mCurrentResolutionIndex + 1) % mResolutions.size();
+        Vector2 res = mResolutions[mCurrentResolutionIndex];
+
+        SDL_SetWindowFullscreen(mWindow, 0);  // sai do fullscreen se estiver
+        SDL_SetWindowSize(mWindow, static_cast<int>(res.x), static_cast<int>(res.y));
+        SDL_SetWindowPosition(mWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+        mOptionsMenu->Close();
+        LoadOptionsMenu();
+    }, textPos);
+    text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
+
+
+    name = "VOLTAR";
+    mOptionsMenu->AddButton(name, buttonPos + Vector2(0, mOptionsMenu->GetSize().y - buttonSize.y * 1.2f), Vector2(mOptionsMenu->GetSize().x * 0.9f, buttonSize.y), buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mOptionsMenu->Close();
+    });
 }
 
 void Game::LoadObjects(const std::string &fileName) {
@@ -750,6 +824,9 @@ void Game::LoadObjects(const std::string &fileName) {
                 float y = static_cast<float>(obj["y"]) * mScale;
                 if (mPlayer) {
                     mPlayer->SetSword();
+                    mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
+                    mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsBlinking(false);
+
                     // Faz isso para o player ser sempre o último a ser atualizado a cada frame
                     RemoveActor(mPlayer);
                     AddActor(mPlayer);
@@ -910,14 +987,29 @@ void Game::ProcessInput()
                     mUIStack.back()->HandleKeyPress(event.key.keysym.sym, SDL_CONTROLLER_BUTTON_INVALID, 0);
                 }
 
+                // if (event.key.keysym.sym == SDLK_ESCAPE) {
+                //     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                //         TogglePause();
+                //         if (mIsPaused) {
+                //             LoadPauseMenu();
+                //         }
+                //         else {
+                //             mPauseMenu->Close();
+                //         }
+                //     }
+                // }
+
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
-                        TogglePause();
                         if (mIsPaused) {
-                            LoadPauseMenu();
+                            if (mUIStack.back() == mPauseMenu) {
+                                mPauseMenu->Close();
+                                TogglePause();
+                            }
                         }
                         else {
-                            mPauseMenu->Close();
+                            TogglePause();
+                            LoadPauseMenu();
                         }
                     }
                 }
@@ -945,14 +1037,29 @@ void Game::ProcessInput()
                     mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, event.cbutton.button, 0);
                 }
 
+                // if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
+                //     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                //         TogglePause();
+                //         if (mIsPaused) {
+                //             LoadPauseMenu();
+                //         }
+                //         else {
+                //             mPauseMenu->Close();
+                //         }
+                //     }
+                // }
+
                 if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
                     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
-                        TogglePause();
                         if (mIsPaused) {
-                            LoadPauseMenu();
+                            if (mUIStack.back() == mPauseMenu) {
+                                mPauseMenu->Close();
+                                TogglePause();
+                            }
                         }
                         else {
-                            mPauseMenu->Close();
+                            TogglePause();
+                            LoadPauseMenu();
                         }
                     }
                 }
@@ -1029,21 +1136,21 @@ void Game::TogglePause() {
     if (mGameScene != GameScene::MainMenu) {
         mIsPaused = !mIsPaused;
         if (mIsPaused) {
-            // if (mMusicHandle.IsValid()) {
-            //     mAudio->PauseSound(mMusicHandle);
-            // }
-            // if (mBossMusic.IsValid()) {
-            //     mAudio->PauseSound(mBossMusic);
-            // }
+            if (mMusicHandle.IsValid()) {
+                mAudio->PauseSound(mMusicHandle);
+            }
+            if (mBossMusic.IsValid()) {
+                mAudio->PauseSound(mBossMusic);
+            }
             mGamePlayState = GamePlayState::Paused;
         }
         else {
-            // if (mMusicHandle.IsValid()) {
-            //     mAudio->ResumeSound(mMusicHandle);
-            // }
-            // if (mBossMusic.IsValid()) {
-            //     mAudio->ResumeSound(mBossMusic);
-            // }
+            if (mMusicHandle.IsValid()) {
+                mAudio->ResumeSound(mMusicHandle);
+            }
+            if (mBossMusic.IsValid()) {
+                mAudio->ResumeSound(mBossMusic);
+            }
             mGamePlayState = GamePlayState::Playing;
         }
         mPlayer->SetCanJump(false);
@@ -1596,7 +1703,6 @@ void Game::ChangeResolution(float oldScale)
 
     if (mCamera) {
         mCamera->ChangeResolution(oldScale, mScale);
-        mCamera->SetPosition(Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2, mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
     }
 
     for (auto UIScreen : mUIStack) {

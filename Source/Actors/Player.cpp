@@ -914,6 +914,7 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
         mDrawAnimatedComponent->SetIsBlinking(true);
         mHealAnimationTimer = 0;
         mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
+        mGame->GetAudio()->PlaySound("Damage/Damage.wav");
     }
 }
 

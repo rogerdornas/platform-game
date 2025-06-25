@@ -11,12 +11,12 @@
 #include "Game.h"
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 1920;
-const int SCREEN_HEIGHT = 1000;
+// const int SCREEN_WIDTH = 1920;
+// const int SCREEN_HEIGHT = 1000;
 // const int SCREEN_WIDTH = 1776;
 // const int SCREEN_HEIGHT = 999;
-// const int SCREEN_WIDTH = 1280;
-// const int SCREEN_HEIGHT = 720;
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;
 // const int SCREEN_WIDTH = 1680;
 // const int SCREEN_HEIGHT = 720;
 // const int SCREEN_WIDTH = 640;

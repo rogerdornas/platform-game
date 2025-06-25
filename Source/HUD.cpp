@@ -9,7 +9,7 @@
 HUD::HUD(class Game* game, const std::string& fontName)
     :UIScreen(game, fontName)
     ,mSpeedHPDecrease(200.0f * mGame->GetScale())
-    ,mSpeedHPIncrease(400.0f * mGame->GetScale())
+    ,mSpeedHPIncrease(200.0f * mGame->GetScale())
     ,mNumOfSubManaBars(mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost())
     ,mWaitToDecreaseDuration(0.7f)
     ,mWaitToDecreaseTimer(0.0f)

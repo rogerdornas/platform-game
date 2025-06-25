@@ -131,6 +131,7 @@ void Money::OnUpdate(float deltaTime) {
 
     if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
         mGame->GetPlayer()->IncreaseMoney(mValue);
+        mGame->GetAudio()->PlaySound("Money/Money.wav");
         Deactivate();
     }
 }

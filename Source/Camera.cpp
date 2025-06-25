@@ -11,7 +11,7 @@ Camera::Camera(class Game* game, Vector2 startPosition)
     ,mCameraLerpSpeed(6.0f)
     ,mCameraMode(CameraMode::FollowPlayer)
     ,mFixedCameraPosition(Vector2::Zero)
-    ,mDistMove(300 * mGame->GetScale())
+    ,mDistMove(400 * mGame->GetScale())
     ,mIsShaking(false)
     ,mShakeDuration(1.0f)
     ,mShakeTimer(0.0f)
@@ -295,6 +295,8 @@ Vector2 Camera::ScrollUp(float deltaTime, float speed) {
 // }
 
 void Camera::ChangeResolution(float oldScale, float newScale) {
+    mPos.x = mPos.x / oldScale * newScale;
+    mPos.y = mPos.y / oldScale * newScale;
     mDistMove = mDistMove / oldScale * newScale;
     mShakeStrength = mShakeStrength / oldScale * newScale;
     mCameraSpeed = mCameraSpeed / oldScale * newScale;

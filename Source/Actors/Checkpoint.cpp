@@ -35,14 +35,15 @@ Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 posi
 
 
 void Checkpoint::OnProcessInput(const Uint8 *keyState, SDL_GameController &controller) {
-    if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
+    Player* player = mGame->GetPlayer();
+    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
         if (keyState[SDL_SCANCODE_SPACE] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_Y)) {
-            if (mGame->GetStore()->StoreMessageOpened() && mGame->GetPlayer()->GetIsOnGround()) {
+            if (mGame->GetStore()->StoreMessageOpened() && player->GetIsOnGround()) {
                 mGame->GetStore()->CloseStoreMessage();
                 mStoreMessageOpened = false;
             }
 
-            if (!mGame->GetStore()->StoreOpened() && mGame->GetPlayer()->GetIsOnGround()) {
+            if (!mGame->GetStore()->StoreOpened() && player->GetIsOnGround()) {
                 mGame->GetStore()->OpenStore();
                 mStoreOpened = true;
             }
@@ -51,26 +52,31 @@ void Checkpoint::OnProcessInput(const Uint8 *keyState, SDL_GameController &contr
 }
 
 void Checkpoint::OnUpdate(float deltaTime) {
-    if (!mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
+    Player* player = mGame->GetPlayer();
+    if (!mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
         if (mGame->GetStore()->StoreOpened() && mStoreOpened) {
             mGame->GetStore()->CloseStore();
             mStoreOpened = false;
         }
     }
 
-    if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
+    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
         mGame->SetCheckPointPosition(GetPosition() + Vector2(-mWidth * 0.8, mHeight / 2));
-        mGame->SetCheckPointMoney(mGame->GetPlayer()->GetMoney());
+        mGame->SetCheckPointMoney(player->GetMoney());
+        player->ResetHealthPoints();
+        player->ResetMana();
+        player->ResetHealCount();
 
-        if (!mGame->GetStore()->StoreMessageOpened() && mGame->GetPlayer()->GetIsOnGround()) {
+        if (!mGame->GetStore()->StoreMessageOpened()) {
             mGame->GetStore()->LoadStoreMessage();
             mStoreMessageOpened = true;
         }
     }
-    if (!mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>()) &&
-        mGame->GetStore()->StoreMessageOpened() && mStoreMessageOpened ||
-        mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>()) &&
-        !mGame->GetPlayer()->GetIsOnGround())
+    if ((!mAABBComponent->Intersect(*player->GetComponent<AABBComponent>()) &&
+        mGame->GetStore()->StoreMessageOpened() && mStoreMessageOpened) ||
+        (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>()) &&
+        !player->GetIsOnGround() &&
+        mGame->GetStore()->StoreMessageOpened() && mStoreMessageOpened))
     {
         mGame->GetStore()->CloseStoreMessage();
         mStoreMessageOpened = false;

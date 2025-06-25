@@ -175,6 +175,7 @@ private:
     void LoadLevel(const std::string &fileName);
     void LoadMainMenu();
     UIScreen* LoadPauseMenu();
+    void LoadOptionsMenu();
 
     void ChangeResolution(float oldScale);
 
@@ -266,6 +267,13 @@ private:
     std::vector<class UIScreen*> mUIStack;
     std::unordered_map<std::string, class UIFont*> mFonts;
     UIScreen* mPauseMenu;
+    UIScreen* mOptionsMenu;
+    std::vector<Vector2> mResolutions = {
+        Vector2(640, 360),
+        Vector2(1280, 720),
+        Vector2(1920, 1080),
+    };
+    int mCurrentResolutionIndex = 1;
 
     GamePlayState mGamePlayState;
 

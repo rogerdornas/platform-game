@@ -134,6 +134,12 @@ public:
 		y = inY;
 	}
 
+	// Vector Comparation
+	friend bool operator==(const Vector2& a, const Vector2& b)
+	{
+		return a.x == b.x && a.y == b.y;
+	}
+
 	// Vector addition (a + b)
 	friend Vector2 operator+(const Vector2& a, const Vector2& b)
 	{
