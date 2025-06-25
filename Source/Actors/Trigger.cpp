@@ -69,6 +69,10 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::FollowPlayerHorizontally;
         return;
     }
+    if (event == "FollowPlayerLimitRight") {
+        mEvent = Event::FollowPlayerLimitRight;
+        return;
+    }
     if (event == "ScrollRight") {
         mEvent = Event::ScrollRight;
         return;
@@ -174,6 +178,11 @@ void Trigger::CameraTrigger() {
         case Event::FollowPlayerHorizontally:
             camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::FollowPlayerHorizontally);
+            break;
+
+        case Event::FollowPlayerLimitRight:
+            camera->SetFixedCameraPosition(mFixedCameraPosition);
+            camera->ChangeCameraMode(CameraMode::FollowPlayerLimitRight);
             break;
 
         case Event::ScrollRight:
