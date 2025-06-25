@@ -88,7 +88,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level4)
+    ,mContinueScene(GameScene::Level2)
 {
 }
 
@@ -102,13 +102,8 @@ bool Game::Initialize()
 
     mWindow = SDL_CreateWindow("Echoes of Elementum", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                mWindowWidth, mWindowHeight,
-<<<<<<< Updated upstream
                                // SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
                                SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
-=======
-                               SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-                               //SDL_WINDOW_FULLSCREEN_DESKTOP);
->>>>>>> Stashed changes
     if (!mWindow) {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return false;
