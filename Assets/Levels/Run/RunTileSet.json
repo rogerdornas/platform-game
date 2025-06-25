@@ -18,77 +18,77 @@
       "fileName": "03.png",
       "width": 32,
       "height": 32,
-      "x": 64,
-      "y": 0
+      "x": 0,
+      "y": 32
     },
     {
       "fileName": "04.png",
       "width": 32,
       "height": 32,
-      "x": 96,
+      "x": 64,
       "y": 0
     },
     {
       "fileName": "05.png",
       "width": 32,
       "height": 32,
-      "x": 128,
-      "y": 0
+      "x": 32,
+      "y": 32
     },
     {
       "fileName": "06.png",
       "width": 32,
       "height": 32,
-      "x": 160,
-      "y": 0
+      "x": 0,
+      "y": 64
     },
     {
       "fileName": "07.png",
       "width": 32,
       "height": 32,
-      "x": 0,
-      "y": 32
+      "x": 96,
+      "y": 0
     },
     {
       "fileName": "08.png",
-      "width": 32,
-      "height": 32,
-      "x": 32,
-      "y": 32
-    },
-    {
-      "fileName": "09.png",
       "width": 32,
       "height": 32,
       "x": 64,
       "y": 32
     },
     {
+      "fileName": "09.png",
+      "width": 32,
+      "height": 32,
+      "x": 32,
+      "y": 64
+    },
+    {
       "fileName": "10.png",
       "width": 32,
       "height": 32,
-      "x": 96,
-      "y": 32
+      "x": 0,
+      "y": 96
     },
     {
       "fileName": "11.png",
       "width": 32,
       "height": 32,
       "x": 128,
-      "y": 32
+      "y": 0
     },
     {
       "fileName": "12.png",
       "width": 32,
       "height": 32,
-      "x": 160,
+      "x": 96,
       "y": 32
     },
     {
       "fileName": "13.png",
       "width": 32,
       "height": 32,
-      "x": 0,
+      "x": 64,
       "y": 64
     },
     {
@@ -96,41 +96,41 @@
       "width": 32,
       "height": 32,
       "x": 32,
-      "y": 64
+      "y": 96
     },
     {
       "fileName": "15.png",
       "width": 32,
       "height": 32,
-      "x": 64,
-      "y": 64
+      "x": 0,
+      "y": 128
     },
     {
       "fileName": "16.png",
       "width": 32,
       "height": 32,
-      "x": 96,
-      "y": 64
+      "x": 160,
+      "y": 0
     },
     {
       "fileName": "17.png",
       "width": 32,
       "height": 32,
       "x": 128,
-      "y": 64
+      "y": 32
     },
     {
       "fileName": "18.png",
       "width": 32,
       "height": 32,
-      "x": 160,
+      "x": 96,
       "y": 64
     },
     {
       "fileName": "19.png",
       "width": 32,
       "height": 32,
-      "x": 0,
+      "x": 64,
       "y": 96
     },
     {
@@ -138,168 +138,168 @@
       "width": 32,
       "height": 32,
       "x": 32,
-      "y": 96
+      "y": 128
     },
     {
       "fileName": "21.png",
       "width": 32,
       "height": 32,
-      "x": 64,
-      "y": 96
+      "x": 0,
+      "y": 160
     },
     {
       "fileName": "22.png",
+      "width": 32,
+      "height": 32,
+      "x": 192,
+      "y": 0
+    },
+    {
+      "fileName": "23.png",
+      "width": 32,
+      "height": 32,
+      "x": 160,
+      "y": 32
+    },
+    {
+      "fileName": "24.png",
+      "width": 32,
+      "height": 32,
+      "x": 128,
+      "y": 64
+    },
+    {
+      "fileName": "25.png",
       "width": 32,
       "height": 32,
       "x": 96,
       "y": 96
     },
     {
-      "fileName": "23.png",
-      "width": 32,
-      "height": 32,
-      "x": 128,
-      "y": 96
-    },
-    {
-      "fileName": "24.png",
-      "width": 32,
-      "height": 32,
-      "x": 160,
-      "y": 96
-    },
-    {
-      "fileName": "25.png",
-      "width": 32,
-      "height": 32,
-      "x": 0,
-      "y": 128
-    },
-    {
       "fileName": "26.png",
       "width": 32,
       "height": 32,
-      "x": 32,
+      "x": 64,
       "y": 128
     },
     {
       "fileName": "27.png",
       "width": 32,
       "height": 32,
-      "x": 64,
-      "y": 128
+      "x": 32,
+      "y": 160
     },
     {
       "fileName": "28.png",
       "width": 32,
       "height": 32,
-      "x": 96,
-      "y": 128
+      "x": 0,
+      "y": 192
     },
     {
       "fileName": "29.png",
       "width": 32,
       "height": 32,
-      "x": 128,
-      "y": 128
+      "x": 224,
+      "y": 0
     },
     {
       "fileName": "30.png",
       "width": 32,
       "height": 32,
-      "x": 160,
-      "y": 128
+      "x": 192,
+      "y": 32
     },
     {
       "fileName": "31.png",
       "width": 32,
       "height": 32,
-      "x": 0,
-      "y": 160
+      "x": 160,
+      "y": 64
     },
     {
       "fileName": "32.png",
       "width": 32,
       "height": 32,
-      "x": 32,
-      "y": 160
+      "x": 128,
+      "y": 96
     },
     {
       "fileName": "33.png",
       "width": 32,
       "height": 32,
-      "x": 64,
-      "y": 160
+      "x": 96,
+      "y": 128
     },
     {
       "fileName": "34.png",
       "width": 32,
       "height": 32,
-      "x": 96,
+      "x": 64,
       "y": 160
     },
     {
       "fileName": "35.png",
       "width": 32,
       "height": 32,
-      "x": 128,
-      "y": 160
+      "x": 32,
+      "y": 192
     },
     {
       "fileName": "36.png",
       "width": 32,
       "height": 32,
-      "x": 160,
-      "y": 160
+      "x": 0,
+      "y": 224
     },
     {
       "fileName": "37.png",
       "width": 32,
       "height": 32,
-      "x": 0,
-      "y": 192
+      "x": 256,
+      "y": 0
     },
     {
       "fileName": "38.png",
       "width": 32,
       "height": 32,
-      "x": 32,
-      "y": 192
+      "x": 224,
+      "y": 32
     },
     {
       "fileName": "39.png",
       "width": 32,
       "height": 32,
-      "x": 64,
-      "y": 192
+      "x": 192,
+      "y": 64
     },
     {
       "fileName": "40.png",
       "width": 32,
       "height": 32,
-      "x": 96,
-      "y": 192
+      "x": 160,
+      "y": 96
     },
     {
       "fileName": "41.png",
       "width": 32,
       "height": 32,
       "x": 128,
-      "y": 192
+      "y": 128
     },
     {
       "fileName": "42.png",
       "width": 32,
       "height": 32,
-      "x": 160,
-      "y": 192
+      "x": 96,
+      "y": 160
     },
     {
       "fileName": "43.png",
       "width": 32,
       "height": 32,
-      "x": 0,
-      "y": 224
+      "x": 64,
+      "y": 192
     },
     {
       "fileName": "44.png",
@@ -312,76 +312,41 @@
       "fileName": "45.png",
       "width": 32,
       "height": 32,
-      "x": 64,
-      "y": 224
+      "x": 0,
+      "y": 256
     },
     {
       "fileName": "46.png",
       "width": 32,
       "height": 32,
       "x": 96,
-      "y": 224
+      "y": 192
     },
     {
       "fileName": "47.png",
       "width": 32,
       "height": 32,
-      "x": 128,
+      "x": 64,
       "y": 224
     },
     {
       "fileName": "48.png",
       "width": 32,
       "height": 32,
-      "x": 160,
-      "y": 224
+      "x": 32,
+      "y": 256
     },
     {
       "fileName": "49.png",
       "width": 32,
       "height": 32,
       "x": 0,
-      "y": 256
-    },
-    {
-      "fileName": "50.png",
-      "width": 32,
-      "height": 32,
-      "x": 32,
-      "y": 256
-    },
-    {
-      "fileName": "51.png",
-      "width": 32,
-      "height": 32,
-      "x": 64,
-      "y": 256
-    },
-    {
-      "fileName": "52.png",
-      "width": 32,
-      "height": 32,
-      "x": 96,
-      "y": 256
-    },
-    {
-      "fileName": "53.png",
-      "width": 32,
-      "height": 32,
-      "x": 128,
-      "y": 256
-    },
-    {
-      "fileName": "54.png",
-      "width": 32,
-      "height": 32,
-      "x": 160,
-      "y": 256
+      "y": 288
     }
   ],
   "packMode": "grid",
   "padding": 0,
   "backgroundColor": "rgba(0, 0, 0, 0)",
-  "spriteSheetWidth": 192,
-  "spriteSheetHeight": 288
+  "spriteSheetWidth": 288,
+  "spriteSheetHeight": 320
 }
