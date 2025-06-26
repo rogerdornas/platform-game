@@ -104,6 +104,7 @@ bool Game::Initialize()
                                mWindowWidth, mWindowHeight,
                                // SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
                                SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
+
     if (!mWindow) {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return false;
