@@ -2707,6 +2707,23 @@
                  "type":"",
                  "visible":true,
                  "width":32,
+                 "x":10752,
+                 "y":6368
+                }, 
+                {
+                 "height":32,
+                 "id":169,
+                 "name":"Fox",
+                 "properties":[
+                        {
+                         "name":"UnlockGrounds",
+                         "type":"string",
+                         "value":"148"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
                  "x":10880,
                  "y":8160
                 }],
@@ -2755,7 +2772,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":169,
+ "nextobjectid":170,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

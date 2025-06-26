@@ -1148,60 +1148,6 @@
                  "y":4864
                 }, 
                 {
-                 "height":512,
-                 "id":25,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"FollowPlayerHorizontally"
-                        }, 
-                        {
-                         "name":"FixedCameraPositionY",
-                         "type":"float",
-                         "value":4768
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"Camera"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":320,
-                 "x":10688,
-                 "y":4896
-                }, 
-                {
-                 "height":512,
-                 "id":26,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"FollowPlayerHorizontally"
-                        }, 
-                        {
-                         "name":"FixedCameraPositionY",
-                         "type":"float",
-                         "value":4768
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"Camera"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":320,
-                 "x":8512,
-                 "y":4896
-                }, 
-                {
                  "height":1408,
                  "id":27,
                  "name":"",

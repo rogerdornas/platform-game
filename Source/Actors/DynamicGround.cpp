@@ -26,7 +26,7 @@ DynamicGround::DynamicGround(Game* game, float width, float height, bool isSpike
 }
 
 void DynamicGround::OnUpdate(float deltaTime) {
-    if ((mWidth == 0 || mHeight == 0) && !mIsGrowing && !mIsDecreasing) {
+    if ((mWidth == 0 || mHeight == 0)) {
         if (mDrawPolygonComponent) {
             mDrawPolygonComponent->SetIsVisible(false);
         }
@@ -65,7 +65,7 @@ void DynamicGround::OnUpdate(float deltaTime) {
         if (mIsGrowing) {
             growX = mGrowSpeed.x * deltaTime;
             growY = mGrowSpeed.y * deltaTime;
-            if (mWidth + growX >= mMaxWidth) {
+            if (mWidth + growX > mMaxWidth) {
                 growX = mMaxWidth - mWidth;
             }
             if (mHeight + growY > mMaxHeight) {
@@ -75,10 +75,10 @@ void DynamicGround::OnUpdate(float deltaTime) {
         if (mIsDecreasing) {
             growX = -mGrowSpeed.x * deltaTime;
             growY = -mGrowSpeed.y * deltaTime;
-            if (mWidth + growX <= mMinWidth) {
+            if (mWidth + growX < mMinWidth) {
                 growX = mMinWidth - mWidth;
             }
-            if (mHeight + growY <= mMinHeight) {
+            if (mHeight + growY < mMinHeight) {
                 growY = mMinHeight - mHeight;
             }
         }

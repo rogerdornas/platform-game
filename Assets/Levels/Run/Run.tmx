@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="500" height="300" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="169">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="500" height="300" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="170">
  <editorsettings>
   <export target="Run.json" format="json"/>
  </editorsettings>
@@ -997,12 +997,17 @@
   <object id="141" name="Enemy Simple" x="6656" y="7104" width="32" height="32"/>
   <object id="142" name="Flying Enemy" x="6560" y="6784" width="32" height="32"/>
   <object id="143" name="Enemy Simple" x="7360" y="5504" width="32" height="32"/>
-  <object id="154" name="Frog" x="10880" y="8160" width="32" height="32">
+  <object id="154" name="Frog" x="10752" y="6368" width="32" height="32">
    <properties>
     <property name="MaxPosX" type="float" value="11744"/>
     <property name="MaxPosY" type="float" value="8192"/>
     <property name="MinPosX" type="float" value="9472"/>
     <property name="MinPosY" type="float" value="7700"/>
+    <property name="UnlockGrounds" value="148"/>
+   </properties>
+  </object>
+  <object id="169" name="Fox" x="10880" y="8160" width="32" height="32">
+   <properties>
     <property name="UnlockGrounds" value="148"/>
    </properties>
   </object>

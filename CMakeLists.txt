@@ -103,6 +103,8 @@ add_executable(${PROJECT_NAME}
         Source/Store.h
         Source/Actors/Mantis.cpp
         Source/Actors/Mantis.h
+        Source/Actors/Moth.cpp
+        Source/Actors/Moth.h
 )
 
 
