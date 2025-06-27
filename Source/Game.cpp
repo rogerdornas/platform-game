@@ -298,7 +298,7 @@ void Game::ChangeScene()
         mAudio->CacheSound("MantisLords.wav");
     }
     else if (mNextScene == GameScene::Level2) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Run-Background.png");
 
         const std::string levelsAssets = "../Assets/Levels/";
 
