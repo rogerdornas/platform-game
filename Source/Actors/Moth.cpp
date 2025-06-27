@@ -19,6 +19,9 @@
 Moth::Moth(Game *game, float width, float height, float moveSpeed, float healthPoints)
     :Enemy(game, width, height, moveSpeed, healthPoints, 15)
     ,mMothState(State::Stop)
+    ,mIsSlowMotion(false)
+    ,mSlowMotionProbability(0.35f)
+
     ,mStopDuration(2.0f)
     ,mStopTimer(0.0f)
 
@@ -104,6 +107,25 @@ void Moth::OnUpdate(float deltaTime) {
         SetRotation(Math::Pi);
     }
 
+    // Revida bola de fogo
+    std::vector<FireBall*> fireBalls = mGame->GetFireBalls();
+    if (!fireBalls.empty()) {
+        for (FireBall* f : fireBalls) {
+            if ((GetPosition() - f->GetPosition()).Length() < 150 * mGame->GetScale()) {
+                if (Random::GetFloat() < mSlowMotionProbability) {
+                    Vector2 direction = player->GetPosition() - GetPosition();
+                    if (direction.Length() > 0) {
+                        direction.Normalize();
+                    }
+                    f->SetRotation(Math::Atan2(direction.y, direction.x));
+                    f->SetIsFromEnemy();
+                    f->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
+                    f->GetComponent<RigidBodyComponent>()->SetVelocity(f->GetForward() * f->GetSpeed());
+                }
+            }
+        }
+    }
+
     ResolveGroundCollision();
     ResolveEnemyCollision();
 
@@ -179,31 +201,72 @@ void Moth::Stop(float deltaTime) {
             }
         }
 
+        if (mHealthPoints > 0.88f * mMaxHealthPoints) {
+            if (GetRotation() == 0) {
+                mProjectilesStartDirection = 0;
+            }
+            if (GetRotation() == Math::Pi) {
+                mProjectilesStartDirection = 1;
+            }
+            if (Random::GetFloat() < mSlowMotionProbability) {
+                mIsSlowMotion = true;
+                mGame->SetIsSlowMotion(true);
+                mGame->GetAudio()->PlaySound("SlowMotion/SlowMotion.wav");
+            }
+            mMothState = State::Projectiles;
+            return;
+        }
+
         if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
+            if (Random::GetFloat() < mSlowMotionProbability) {
+                mIsSlowMotion = true;
+                mGame->SetIsSlowMotion(true);
+                mGame->GetAudio()->PlaySound("SlowMotion/SlowMotion.wav");
+            }
             mMothState = State::CircleProjectiles;
             return;
         }
-        else {
-            if (Random::GetFloat() < 0.7) {
+
+        if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.7f * mMaxHealthPoints) {
+            if (GetRotation() == 0) {
+                mProjectilesStartDirection = 0;
+            }
+            if (GetRotation() == Math::Pi) {
+                mProjectilesStartDirection = 1;
+            }
+            if (Random::GetFloat() < mSlowMotionProbability) {
+                mIsSlowMotion = true;
+                mGame->SetIsSlowMotion(true);
+                mGame->GetAudio()->PlaySound("SlowMotion/SlowMotion.wav");
+            }
+            mMothState = State::Projectiles;
+            return;
+        }
+
+        if (mHealthPoints <= 0.6f * mMaxHealthPoints) {
+            if (Random::GetFloat() < 0.5f) {
                 if (GetRotation() == 0) {
                     mProjectilesStartDirection = 0;
                 }
                 if (GetRotation() == Math::Pi) {
                     mProjectilesStartDirection = 1;
+                }
+                if (Random::GetFloat() < mSlowMotionProbability) {
+                    mIsSlowMotion = true;
+                    mGame->SetIsSlowMotion(true);
+                    mGame->GetAudio()->PlaySound("SlowMotion/SlowMotion.wav");
                 }
                 mMothState = State::Projectiles;
             }
             else {
-                if (GetRotation() == 0) {
-                    mProjectilesStartDirection = 0;
+                if (Random::GetFloat() < mSlowMotionProbability) {
+                    mIsSlowMotion = true;
+                    mGame->SetIsSlowMotion(true);
+                    mGame->GetAudio()->PlaySound("SlowMotion/SlowMotion.wav");
                 }
-                if (GetRotation() == Math::Pi) {
-                    mProjectilesStartDirection = 1;
-                }
-                mMothState = State::SlowMotionProjectiles;
+                mMothState = State::CircleProjectiles;
             }
         }
-        return;
     }
 }
 
@@ -223,6 +286,8 @@ void Moth::Projectiles(float deltaTime) {
     if (mCountProjectiles >= mMaxProjectiles) {
         mCountProjectiles = 0;
         mAttackTimer = 0;
+        mGame->SetIsSlowMotion(false);
+        mIsSlowMotion = false;
         mMothState = State::Stop;
         return;
     }
@@ -249,7 +314,12 @@ void Moth::Projectiles(float deltaTime) {
                 p->SetRotation(direction);
                 p->SetWidth(mProjectileWidth);
                 p->SetHeight(mProjectileHeight);
-                p->SetSpeed(mProjectileSpeed);
+                if (mIsSlowMotion) {
+                    p->SetSpeed(2 * mProjectileSpeed);
+                }
+                else {
+                    p->SetSpeed(mProjectileSpeed);
+                }
                 p->SetDamage(15);
                 p->SetPosition(GetPosition());
                 p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
@@ -261,6 +331,7 @@ void Moth::Projectiles(float deltaTime) {
 }
 
 void Moth::SlowMotionProjectiles(float deltaTime) {
+    mGame->SetIsSlowMotion(true);
     if (mAttackTimer == 0) {
         mDrawAnimatedComponent->ResetAnimationTimer();
     }
@@ -272,7 +343,7 @@ void Moth::SlowMotionProjectiles(float deltaTime) {
 
     mAttackAnimation = false;
 
-    mGame->SetIsSlowMotion(true);
+    // mGame->SetIsSlowMotion(true);
 
     mTimerBetweenProjectiles += deltaTime;
     if (mCountProjectiles >= mMaxProjectiles) {
@@ -321,6 +392,8 @@ void Moth::CircleProjectiles(float deltaTime) {
         mCircleProjectilesTimer = 0;
         mCountCircleProjectiles = 0;
         mAttackTimer = 0;
+        mGame->SetIsSlowMotion(false);
+        mIsSlowMotion = false;
         mMothState = State::Stop;
         return;
     }
@@ -349,7 +422,12 @@ void Moth::CircleProjectiles(float deltaTime) {
                 p->SetRotation(direction);
                 p->SetWidth(mCircleProjectileWidth);
                 p->SetHeight(mCircleProjectileHeight);
-                p->SetSpeed(mCircleProjectileSpeed);
+                if (mIsSlowMotion) {
+                    p->SetSpeed(1.5f * mCircleProjectileSpeed);
+                }
+                else {
+                    p->SetSpeed(mCircleProjectileSpeed);
+                }
                 p->SetDamage(15);
                 p->SetPosition(GetPosition());
                 p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
@@ -442,6 +520,7 @@ void Moth::ChangeGround(float deltaTime) {
 
 void Moth::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
+    mGame->SetIsSlowMotion(false);
 
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 

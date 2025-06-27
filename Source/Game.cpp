@@ -249,6 +249,8 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime)
 
 void Game::ResetGameScene(float transitionTime)
 {
+    mIsAccelerated = false;
+    mIsSlowMotion = false;
     SetGameScene(mGameScene, transitionTime);
 }
 
@@ -256,6 +258,9 @@ void Game::ChangeScene()
 {
     // Unload current Scene
     UnloadScene();
+
+    mIsSlowMotion = false;
+    mIsAccelerated = false;
 
     mAudio->StopAllSounds();
 

@@ -44,6 +44,8 @@ private:
     void ChangeGround(float deltaTime);
 
     State mMothState;
+    bool mIsSlowMotion;
+    float mSlowMotionProbability;
 
     float mStopDuration;
     float mStopTimer;

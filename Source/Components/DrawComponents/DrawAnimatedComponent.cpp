@@ -71,20 +71,26 @@ void DrawAnimatedComponent::Draw(SDL_Renderer* renderer)
         mFlip = SDL_FLIP_NONE;
     }
 
-    // Define o flip (espelhamento) baseado na escala
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
-    if (GetOwner()->GetRotation() == Math::Pi) {
-        flip = SDL_FLIP_HORIZONTAL;
-    }
+
 
     float angle = 0;
     if (mUseRotation) {
         angle = Math::ToDegrees(GetOwner()->GetRotation()) + mOffsetRotation;
     }
-
-    if (mFlip == SDL_FLIP_NONE) {
-        mFlip = flip;
+    else {
+        // Define o flip (espelhamento) baseado na escala
+        SDL_RendererFlip flip = SDL_FLIP_NONE;
+        if (GetOwner()->GetRotation() == Math::Pi) {
+            flip = SDL_FLIP_HORIZONTAL;
+        }
+        if (mFlip == SDL_FLIP_NONE) {
+            mFlip = flip;
+        }
     }
+
+    // if (mFlip == SDL_FLIP_NONE) {
+    //     mFlip = flip;
+    // }
 
     SDL_SetTextureBlendMode(mSpriteSheetSurface, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(mSpriteSheetSurface, mTransparency);
