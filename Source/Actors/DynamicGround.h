@@ -28,7 +28,7 @@ public:
     void SetIsGrowing(bool isGrowing) { mIsGrowing = isGrowing; mIsDecreasing = !isGrowing; }
     void SetIsDecreasing(bool isDecreasing) { mIsDecreasing = isDecreasing; mIsGrowing = !isDecreasing; }
     void SetIsOscillating(bool isOscillating) { mIsOscillating = isOscillating; }
-    void SetMaxWidth(float maXwidth) { mMaxWidth = maXwidth; }
+    void SetMaxWidth(float maxWidth) { mMaxWidth = maxWidth; }
     void SetMaxHeight(float maxHeight) { mMaxHeight = maxHeight; }
     void SetMinWidth(float minWidth) { mMinWidth = minWidth; }
     void SetMinHeight(float minHeight) { mMinHeight = minHeight; }

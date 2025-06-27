@@ -30,10 +30,12 @@ public:
 
     enum class GameScene {
         MainMenu,
+        LevelTeste,
         Level1,
         Level2,
         Level3,
-        Level4
+        Level4,
+        Level5
     };
 
     enum class SceneManagerState {
@@ -123,11 +125,13 @@ public:
 
     int GetFPS() const { return mFPS; }
 
-    void ActiveHitstop()
+    void ActiveHitStop()
     {
         mHitstopActive = true;
         mHitstopTimer = 0;
     }
+
+    void SetIsSlowMotion(bool slowMotion) { mIsSlowMotion = slowMotion; }
 
     // Audio functions
     class AudioSystem* GetAudio() const { return mAudio; }
