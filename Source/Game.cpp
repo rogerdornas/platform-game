@@ -79,6 +79,10 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mIsPlayingOnKeyboard(true)
     ,mLeftStickYState(StickState::Neutral)
     ,mBackGroundTexture(nullptr)
+    ,mBackGroundTextureMainMenu(nullptr)
+    ,mBackGroundTextureLevel1(nullptr)
+    ,mBackGroundTextureLevel3(nullptr)
+    ,mBackGroundTextureLevel4(nullptr)
     ,mUseParallaxBackground(false)
     ,mAudio(nullptr)
     ,mHUD(nullptr)
@@ -191,6 +195,12 @@ bool Game::Initialize()
     mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/3.png"));
     mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/2.png"));
     mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/1.png"));
+
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/1.png"));
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/2.png"));
+    // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/3.png"));
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/4.png"));
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/5.png"));
 
     mTicksCount = SDL_GetTicks();
 
@@ -374,7 +384,7 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level3) {
-        mUseParallaxBackground = false;
+        mUseParallaxBackground = true;
         mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
 
         const std::string levelsAssets = "../Assets/Levels/";
@@ -1551,6 +1561,10 @@ void Game::GenerateOutput()
                     DrawParallaxLayers(mBackgroundLayersLevel2);
                     break;
 
+                case GameScene::Level3:
+                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    break;
+
                 default:
                     break;
             }
@@ -1744,6 +1758,15 @@ void Game::Shutdown()
         }
     }
     mBackgroundLayersLevel2.clear();
+
+    for (SDL_Texture*& t : mBackgroundLayersLevel3) {
+        if (t) {
+            SDL_DestroyTexture(t);
+            t = nullptr;
+        }
+    }
+    mBackgroundLayersLevel3.clear();
+
     if (mBackGroundTextureLevel3) {
         SDL_DestroyTexture(mBackGroundTextureLevel3);
         mBackGroundTextureLevel3 = nullptr;

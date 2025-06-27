@@ -86,7 +86,7 @@ Moth::Moth(Game *game, float width, float height, float moveSpeed, float healthP
 
 void Moth::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
-        if (mFlashTimer == 0 && !mAttackAnimation) {
+        if (mFlashTimer == 0 && !mAttackAnimation && mMothState != State::BoostUp) {
             mDrawAnimatedComponent->ResetAnimationTimer();
         }
         mFlashTimer += deltaTime;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="166">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="167">
  <editorsettings>
   <export target="Musgo.json" format="json"/>
  </editorsettings>
@@ -1365,6 +1365,7 @@
   <object id="154" name="Checkpoint" x="28576" y="7264" width="224" height="224"/>
   <object id="158" name="Checkpoint" x="31232" y="7264" width="224" height="224"/>
   <object id="159" name="Checkpoint" x="17056" y="5440" width="224" height="224"/>
+  <object id="166" name="Checkpoint" x="11264" y="5440" width="224" height="224"/>
  </objectgroup>
  <objectgroup id="6" name="Enemies">
   <object id="17" name="FlyingShooterEnemy" x="9568" y="5248" width="32" height="32"/>
