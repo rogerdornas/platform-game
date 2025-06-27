@@ -291,13 +291,21 @@ private:
 
     Store* mStore;
 
-    void DrawParallaxBackground();
+    // Background images
+    void DrawParallaxBackground(SDL_Texture* background);
     void DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h);
+    void DrawParallaxLayers(std::vector<SDL_Texture*> backgroundLayers);
 
-    SDL_Texture *mBackGroundTexture;
+    bool mUseParallaxBackground;
+    SDL_Texture* mBackGroundTextureMainMenu;
+    SDL_Texture* mBackGroundTextureLevel1;
+    std::vector<SDL_Texture*> mBackgroundLayersLevel2;
+    SDL_Texture* mBackGroundTextureLevel3;
+    SDL_Texture* mBackGroundTextureLevel4;
+    SDL_Texture* mBackGroundTexture;
 
-    SDL_Texture *mSky;
-    SDL_Texture *mMountains;
-    SDL_Texture *mTreesBack;
-    SDL_Texture *mTreesFront;
+    // SDL_Texture *mSky;
+    // SDL_Texture *mMountains;
+    // SDL_Texture *mTreesBack;
+    // SDL_Texture *mTreesFront;
 };

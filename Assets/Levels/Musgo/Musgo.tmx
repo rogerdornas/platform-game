@@ -1043,10 +1043,10 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="27" x="34240" y="6080" width="1248" height="1408">
+  <object id="27" x="34304" y="6144" width="1184" height="1344">
    <properties>
     <property name="Event" value="ChangeScene"/>
-    <property name="Scene" value="Level1"/>
+    <property name="Scene" value="LevelTeste"/>
     <property name="Target" value="Game"/>
    </properties>
   </object>

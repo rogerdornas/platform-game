@@ -9,7 +9,12 @@
 class Projectile : public Actor
 {
 public:
-    Projectile(class Game *game, float width = 0, float height = 0, float speed = 0, float damage = 0);
+    enum class ProjectileType {
+        Acid,
+        OrangeBall
+    };
+
+    Projectile(class Game *game, ProjectileType type = ProjectileType::Acid, float width = 0, float height = 0, float speed = 0, float damage = 0);
     ~Projectile();
 
     void OnUpdate(float deltaTime) override;
@@ -19,6 +24,8 @@ public:
     void SetHeight(float h) { mHeight = h; }
     void SetSpeed(float s) { mSpeed = s; }
     void SetDamage(float d) { mDamage = d; }
+
+    ProjectileType GetProjectileType() const { return mProjectileType; }
 
     void Activate();
     void Deactivate();
@@ -31,6 +38,7 @@ private:
 
     void ExplosionEffect();
 
+    ProjectileType mProjectileType;
     float mWidth;
     float mHeight;
     float mSpeed;

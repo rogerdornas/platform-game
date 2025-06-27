@@ -202,7 +202,7 @@ void FlyingShooterEnemy::Shoot(float deltaTime) {
         }
         std::vector<Projectile* > projectiles = mGame->GetProjectiles();
         for (Projectile* p: projectiles) {
-            if (p->GetState() == ActorState::Paused) {
+            if (p->GetState() == ActorState::Paused && p->GetProjectileType() == Projectile::ProjectileType::Acid) {
                 p->SetState(ActorState::Active);
                 p->SetRotation(Math::Atan2(direction.y, direction.x));
                 p->SetWidth(mProjectileWidth);

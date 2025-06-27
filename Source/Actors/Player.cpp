@@ -149,11 +149,20 @@ Player::Player(Game* game, float width, float height)
                                                        "../Assets/Sprites/Esquilo/Esquilo.png",
                                                        "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    std::vector idle = {6};
+    std::vector idle = {9};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
     std::vector run = {0, 1, 2, 3, 4, 5};
     mDrawAnimatedComponent->AddAnimation("run", run);
+
+    std::vector jumpUp = {6};
+    mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
+
+    std::vector jumpApex = {7};
+    mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
+
+    std::vector falling = {8};
+    mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
     mDrawAnimatedComponent->SetAnimFPS(10.0f);
@@ -864,6 +873,19 @@ void Player::ManageAnimations() {
     if (mIsRunning && mIsOnGround) {
         mDrawAnimatedComponent->SetAnimation("run");
     }
+    else if (!mIsOnGround) {
+        if (mRigidBodyComponent->GetVelocity().y < -200 * mGame->GetScale()) {
+            mDrawAnimatedComponent->SetAnimation("jumpUp");
+        }
+        if (mRigidBodyComponent->GetVelocity().y > 200 * mGame->GetScale()) {
+            mDrawAnimatedComponent->SetAnimation("falling");
+        }
+        if (mRigidBodyComponent->GetVelocity().y > -200 * mGame->GetScale() &&
+            mRigidBodyComponent->GetVelocity().y < 200 * mGame->GetScale())
+        {
+            mDrawAnimatedComponent->SetAnimation("jumpApex");
+        }
+    }
     else {
         mDrawAnimatedComponent->SetAnimation("idle");
     }
@@ -877,6 +899,7 @@ void Player::ManageAnimations() {
 void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
     if (!mIsInvulnerable) {
         mHealthPoints -= damage;
+        mIsInvulnerable = true;
 
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         if (vel.Length() > 0) {

@@ -1148,7 +1148,7 @@
                  "y":4864
                 }, 
                 {
-                 "height":1408,
+                 "height":1344,
                  "id":27,
                  "name":"",
                  "properties":[
@@ -1160,7 +1160,7 @@
                         {
                          "name":"Scene",
                          "type":"string",
-                         "value":"Level1"
+                         "value":"LevelTeste"
                         }, 
                         {
                          "name":"Target",
@@ -1170,9 +1170,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1248,
-                 "x":34240,
-                 "y":6080
+                 "width":1184,
+                 "x":34304,
+                 "y":6144
                 }, 
                 {
                  "height":672,
