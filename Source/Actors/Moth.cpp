@@ -86,7 +86,7 @@ Moth::Moth(Game *game, float width, float height, float moveSpeed, float healthP
 
 void Moth::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
-        if (mFlashTimer == 0) {
+        if (mFlashTimer == 0 && !mAttackAnimation) {
             mDrawAnimatedComponent->ResetAnimationTimer();
         }
         mFlashTimer += deltaTime;
@@ -171,7 +171,7 @@ void Moth::Stop(float deltaTime) {
         mStopTimer = 0;
 
         if (!mAlreadyBoosted) {
-            if (mHealthPoints <= 0.7f * mMaxHealthPoints) {
+            if (mHealthPoints <= 0.6f * mMaxHealthPoints) {
                 mDrawAnimatedComponent->ResetAnimationTimer();
                 mAlreadyBoosted = true;
                 mMothState = State::BoostUp;
@@ -179,7 +179,7 @@ void Moth::Stop(float deltaTime) {
             }
         }
 
-        if (mHealthPoints > 0.8f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
+        if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
             mMothState = State::CircleProjectiles;
             return;
         }
@@ -265,8 +265,8 @@ void Moth::SlowMotionProjectiles(float deltaTime) {
         mDrawAnimatedComponent->ResetAnimationTimer();
     }
     mAttackTimer += deltaTime;
-    mAttackAnimation = true;
     if (mAttackTimer < mAttackDuration) {
+        mAttackAnimation = true;
         return;
     }
 
@@ -418,7 +418,7 @@ void Moth::ChangeGround(float deltaTime) {
         }
     }
 
-    if (mHealthPoints > 0.8f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
+    if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
         for (int id : {172}) {
             Ground *g = mGame->GetGroundById(id);
             DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
@@ -428,7 +428,7 @@ void Moth::ChangeGround(float deltaTime) {
         }
     }
 
-    if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.8f * mMaxHealthPoints) {
+    if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.7f * mMaxHealthPoints) {
         for (int id : {172, 174, 176}) {
             Ground *g = mGame->GetGroundById(id);
             DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
@@ -464,7 +464,6 @@ void Moth::TriggerBossDefeat() {
 }
 
 void Moth::ManageAnimations() {
-
     if (mAttackAnimation) {
         mDrawAnimatedComponent->SetAnimation("attack");
         mDrawAnimatedComponent->SetAnimFPS(10.0f / mAttackDuration);

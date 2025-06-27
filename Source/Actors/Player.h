@@ -164,9 +164,13 @@ private:
     int mMoney;
     int mStartMoney;
 
-    bool mIsRunning; // Atributos para animar sprites
+    // Atributos para animar sprites
+    bool mIsRunning;
     float mHurtDuration;
     float mHurtTimer;
+    bool mBlink;
+    float mBlinkDuration;
+    float mBlinkTimer;
 
     // Atributos para sounds
     float mRunningSoundIntervalTimer;

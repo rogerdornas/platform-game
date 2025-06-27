@@ -12,8 +12,7 @@ DrawAnimatedComponent::DrawAnimatedComponent(Actor* owner, float width, float he
                                              const std::string &spriteSheetPath, const std::string &spriteSheetData,
                                              int drawOrder)
     :DrawSpriteComponent(owner, spriteSheetPath, width, height, drawOrder)
-    ,mIsBlinking(false)
-    ,mTransparency(127)
+    ,mTransparency(255)
     ,mUseFlip(false)
     ,mFlip(SDL_FLIP_NONE)
     ,mUseRotation(false)
@@ -81,14 +80,6 @@ void DrawAnimatedComponent::Draw(SDL_Renderer* renderer)
     float angle = 0;
     if (mUseRotation) {
         angle = Math::ToDegrees(GetOwner()->GetRotation()) + mOffsetRotation;
-    }
-
-    if (mIsBlinking) {
-        mTransparency += 128;
-        mTransparency = mTransparency % 256;
-    }
-    else {
-        mTransparency = 255;
     }
 
     if (mFlip == SDL_FLIP_NONE) {

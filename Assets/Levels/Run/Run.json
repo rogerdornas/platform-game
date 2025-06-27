@@ -739,7 +739,7 @@
                  "y":2496
                 }, 
                 {
-                 "height":1632,
+                 "height":3392,
                  "id":13,
                  "name":"Ground",
                  "rotation":0,
@@ -922,7 +922,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":864,
+                 "width":512,
                  "x":4480,
                  "y":2400
                 }, 

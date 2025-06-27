@@ -127,7 +127,8 @@ public:
 
     void ActiveHitStop()
     {
-        mHitstopActive = true;
+        mHitstopDelayActive = true;
+        mHitstopDelayTimer = 0;
         mHitstopTimer = 0;
     }
 
@@ -250,6 +251,9 @@ private:
     bool mHitstopActive;
     float mHitstopDuration;
     float mHitstopTimer;
+    bool mHitstopDelayActive;
+    float mHitstopDelayDuration;
+    float mHitstopDelayTimer;
 
     bool mIsSlowMotion;
     bool mIsAccelerated;

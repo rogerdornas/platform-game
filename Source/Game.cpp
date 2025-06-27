@@ -68,6 +68,9 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mHitstopActive(false)
     ,mHitstopDuration(0.15f)
     ,mHitstopTimer(0.0f)
+    ,mHitstopDelayActive(false)
+    ,mHitstopDelayDuration(0.01f)
+    ,mHitstopDelayTimer(0.0f)
     ,mIsSlowMotion(false)
     ,mIsAccelerated(false)
     ,mCheckpointPosition(Vector2::Zero)
@@ -897,7 +900,6 @@ void Game::LoadObjects(const std::string &fileName) {
                 if (mPlayer) {
                     mPlayer->SetSword();
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
-                    mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsBlinking(false);
 
                     // Faz isso para o player ser sempre o último a ser atualizado a cada frame
                     RemoveActor(mPlayer);
@@ -1264,6 +1266,15 @@ void Game::UpdateGame()
     // Update all actors and pending actors
     if (mGamePlayState == GamePlayState::Playing) {
         if (!mIsPaused) {
+            if (mHitstopDelayActive) {
+                if (mHitstopDelayTimer < mHitstopDelayDuration) {
+                    mHitstopDelayTimer += deltaTime;
+                }
+                else {
+                    mHitstopDelayActive = false;
+                    mHitstopActive = true;
+                }
+            }
             if (mHitstopActive) {
                 if (mHitstopTimer < mHitstopDuration) {
                     mHitstopTimer += deltaTime;
