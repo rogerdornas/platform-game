@@ -316,18 +316,10 @@
     <property name="Target" value="Enemy"/>
    </properties>
   </object>
-  <object id="146" x="8032" y="1472" width="512" height="896">
+  <object id="146" name="Close Wall" x="8032" y="1472" width="512" height="896">
    <properties>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="125"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="147" name="Boss Battle" x="9472" y="1920" width="2272" height="1504">
-   <properties>
-    <property name="Enemies" value="154"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="148"/>
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
@@ -657,16 +649,7 @@
   <object id="141" name="Enemy Simple" x="6656" y="2336" width="32" height="32"/>
   <object id="142" name="Flying Enemy" x="6560" y="2016" width="32" height="32"/>
   <object id="143" name="Enemy Simple" x="7360" y="736" width="32" height="32"/>
-  <object id="154" name="Frog" x="10880" y="3392" width="32" height="32">
-   <properties>
-    <property name="MaxPosX" type="float" value="11744"/>
-    <property name="MaxPosY" type="float" value="8192"/>
-    <property name="MinPosX" type="float" value="9472"/>
-    <property name="MinPosY" type="float" value="7700"/>
-    <property name="UnlockGrounds" value="148"/>
-   </properties>
-  </object>
-  <object id="169" name="Fox" x="10880" y="8160" width="32" height="32">
+  <object id="169" name="Fox" x="10880" y="3392" width="32" height="32">
    <properties>
     <property name="UnlockGrounds" value="148"/>
    </properties>

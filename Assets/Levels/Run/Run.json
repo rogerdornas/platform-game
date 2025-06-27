@@ -459,7 +459,7 @@
                 {
                  "height":896,
                  "id":146,
-                 "name":"",
+                 "name":"Close Wall",
                  "properties":[
                         {
                          "name":"Event",
@@ -482,38 +482,6 @@
                  "width":512,
                  "x":8032,
                  "y":1472
-                }, 
-                {
-                 "height":1504,
-                 "id":147,
-                 "name":"Boss Battle",
-                 "properties":[
-                        {
-                         "name":"Enemies",
-                         "type":"string",
-                         "value":"154"
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"SetIsDecreasingAfterKillingEnemies"
-                        }, 
-                        {
-                         "name":"Grounds",
-                         "type":"string",
-                         "value":"148"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"DynamicGround"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":2272,
-                 "x":9472,
-                 "y":1920
                 }, 
                 {
                  "height":544,
@@ -2335,43 +2303,6 @@
                 }, 
                 {
                  "height":32,
-                 "id":154,
-                 "name":"Frog",
-                 "properties":[
-                        {
-                         "name":"MaxPosX",
-                         "type":"float",
-                         "value":11744
-                        }, 
-                        {
-                         "name":"MaxPosY",
-                         "type":"float",
-                         "value":8192
-                        }, 
-                        {
-                         "name":"MinPosX",
-                         "type":"float",
-                         "value":9472
-                        }, 
-                        {
-                         "name":"MinPosY",
-                         "type":"float",
-                         "value":7700
-                        }, 
-                        {
-                         "name":"UnlockGrounds",
-                         "type":"string",
-                         "value":"148"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":10752,
-                 "y":6368
-                }, 
-                {
-                 "height":32,
                  "id":169,
                  "name":"Fox",
                  "properties":[
@@ -2432,7 +2363,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":170,
+ "nextobjectid":169,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

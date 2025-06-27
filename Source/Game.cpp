@@ -194,7 +194,13 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime)
     // Verifica se o gerenciador de cenas está pronto para uma nova transição
     if (mSceneManagerState == SceneManagerState::None) {
         // Verifica se a cena é válida
-        if (scene == GameScene::MainMenu || scene == GameScene::LevelTeste || scene == GameScene::Level1 || scene == GameScene::Level2 || scene == GameScene::Level3 || scene == GameScene::Level4 || scene == GameScene::Level5) {
+        if (scene == GameScene::MainMenu ||
+            scene == GameScene::LevelTeste ||
+            scene == GameScene::Level1 ||
+            scene == GameScene::Level2 ||
+            scene == GameScene::Level3 ||
+            scene == GameScene::Level4 ||
+            scene == GameScene::Level5) {
             mNextScene = scene;
             mSceneManagerState = SceneManagerState::Entering;
             mSceneManagerTimer = transitionTime;
