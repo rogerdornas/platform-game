@@ -33,7 +33,7 @@ Player::Player(Game* game, float width, float height)
     ,mJumpForce(-900.0f * mGame->GetScale())
     ,mCanJump(true)
     ,mJumpCountInAir(0)
-    ,mMaxJumpsInAir(0)
+    ,mMaxJumpsInAir(1)
     ,mLowGravity(50.0f * mGame->GetScale())
     ,mMediumGravity(3000.0f * mGame->GetScale())
     ,mHighGravity(4500.0f * mGame->GetScale())
@@ -68,7 +68,7 @@ Player::Player(Game* game, float width, float height)
     ,mManaIncreaseRate(6.0f)
     ,mFireballManaCost(30.0f)
 
-    ,mCanWallSlide(false)
+    ,mCanWallSlide(true)
     ,mIsWallSliding(false)
     ,mWallSlideSide(WallSlideSide::notSliding)
     ,mWallSlideSpeed(300 * mGame->GetScale())
@@ -910,7 +910,7 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
         mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBackSpeed + vel * (mKnockBackSpeed / 3));
         mKnockBackTimer = 0;
         mInvulnerableTimer = 0;
-        mGame->ActiveHitstop();
+        mGame->ActiveHitStop();
         mDrawAnimatedComponent->SetIsBlinking(true);
         mHealAnimationTimer = 0;
         mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);

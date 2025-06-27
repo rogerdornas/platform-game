@@ -26,6 +26,7 @@
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Mantis.h"
 #include "Actors/Money.h"
+#include "Actors/Moth.h"
 #include "Actors/Projectile.h"
 #include "Components/AABBComponent.h"
 #include "Components/DrawComponents/DrawAnimatedComponent.h"
@@ -88,7 +89,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level2)
+    ,mContinueScene(GameScene::Level1)
 {
 }
 
@@ -193,7 +194,7 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime)
     // Verifica se o gerenciador de cenas está pronto para uma nova transição
     if (mSceneManagerState == SceneManagerState::None) {
         // Verifica se a cena é válida
-        if (scene == GameScene::MainMenu || scene == GameScene::Level1 || scene == GameScene::Level2 || scene == GameScene::Level3 || scene == GameScene::Level4) {
+        if (scene == GameScene::MainMenu || scene == GameScene::LevelTeste || scene == GameScene::Level1 || scene == GameScene::Level2 || scene == GameScene::Level3 || scene == GameScene::Level4 || scene == GameScene::Level5) {
             mNextScene = scene;
             mSceneManagerState = SceneManagerState::Entering;
             mSceneManagerTimer = transitionTime;
@@ -235,7 +236,7 @@ void Game::ChangeScene()
         }
 
         // Pool de Projectiles
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 60; i++) {
             new Projectile(this);
         }
 
@@ -280,7 +281,8 @@ void Game::ChangeScene()
         mMusicHandle = mAudio->PlaySound("HollowKnight.wav", true);
         mBossMusic.Reset();
     }
-    else if (mNextScene == GameScene::Level1) {
+
+    else if (mNextScene == GameScene::LevelTeste) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
 
         const std::string levelsAssets = "../Assets/Levels/";
@@ -297,6 +299,25 @@ void Game::ChangeScene()
         mAudio->CacheSound("Hornet.wav");
         mAudio->CacheSound("MantisLords.wav");
     }
+
+    else if (mNextScene == GameScene::Level1) {
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+
+        const std::string levelsAssets = "../Assets/Levels/";
+
+        LoadLevel(levelsAssets + "Level1/Level1.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
+        mAudio->CacheSound("Hornet.wav");
+        mAudio->CacheSound("MantisLords.wav");
+    }
+
     else if (mNextScene == GameScene::Level2) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "Run-Background.png");
 
@@ -312,22 +333,8 @@ void Game::ChangeScene()
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
         mBossMusic.Reset();
     }
+
     else if (mNextScene == GameScene::Level3) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
-
-        const std::string levelsAssets = "../Assets/Levels/";
-
-        LoadLevel(levelsAssets + "Pain/Pain.json");
-
-        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
-                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
-
-        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
-
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
-        mBossMusic.Reset();
-    }
-    else if (mNextScene == GameScene::Level4) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
 
         const std::string levelsAssets = "../Assets/Levels/";
@@ -343,6 +350,23 @@ void Game::ChangeScene()
         mBossMusic.Reset();
         mAudio->CacheSound("MantisLords.wav");
     }
+
+    else if (mNextScene == GameScene::Level4) {
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
+
+        const std::string levelsAssets = "../Assets/Levels/";
+
+        LoadLevel(levelsAssets + "Pain/Pain.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
+    }
+
 
     // Set new scene
     mGameScene = mNextScene;
@@ -363,7 +387,7 @@ void Game::LoadMainMenu() {
     name = "NOVO JOGO";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        SetGameScene(GameScene::Level2, 0.5f);
+        SetGameScene(GameScene::LevelTeste, 0.5f);
         delete mPlayer;
         mPlayer = nullptr;
         delete mStore;
@@ -811,6 +835,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     frog->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                     frog->SetUnlockGroundsIds(ids);
                 }
+                else if (name == "Moth") {
+                    auto* moth = new Moth(this, 400, 340, 500, 1500);
+                    moth->SetPosition(Vector2(x, y));
+                    moth->SetId(id);
+                }
             }
         }
         if (layer["name"] == "Checkpoint") {
@@ -1186,7 +1215,7 @@ void Game::UpdateGame()
         deltaTime *= 0.5;
     }
     if (mIsAccelerated) {
-        deltaTime *= 1.5;
+        deltaTime *= 1.3;
     }
 
     SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255); // Usado para deixar as bordas em preto

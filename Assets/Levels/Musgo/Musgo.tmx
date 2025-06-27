@@ -1043,20 +1043,6 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="25" x="10688" y="4896" width="320" height="512">
-   <properties>
-    <property name="Event" value="FollowPlayerHorizontally"/>
-    <property name="FixedCameraPositionY" type="float" value="4768"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="26" x="8512" y="4896" width="320" height="512">
-   <properties>
-    <property name="Event" value="FollowPlayerHorizontally"/>
-    <property name="FixedCameraPositionY" type="float" value="4768"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
   <object id="27" x="34240" y="6080" width="1248" height="1408">
    <properties>
     <property name="Event" value="ChangeScene"/>
