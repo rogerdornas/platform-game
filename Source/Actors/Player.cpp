@@ -102,6 +102,8 @@ Player::Player(Game* game, float width, float height)
     ,mStartMoney(0)
 
     ,mIsRunning(false)
+    ,mHurtDuration(0.2f)
+    ,mHurtTimer(0.0f)
     ,mRunningSoundIntervalDuration(0.3f)
     ,mRunningSoundIntervalTimer(0.0f)
     ,mWasOnGround(false)
@@ -149,19 +151,22 @@ Player::Player(Game* game, float width, float height)
                                                        "../Assets/Sprites/Esquilo/Esquilo.png",
                                                        "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    std::vector idle = {9};
+    std::vector idle = {0};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector run = {0, 1, 2, 3, 4, 5};
+    std::vector run = {1, 2, 3, 4, 5, 6};
     mDrawAnimatedComponent->AddAnimation("run", run);
 
-    std::vector jumpUp = {6};
+    std::vector hurt = {7, 8};
+    mDrawAnimatedComponent->AddAnimation("hurt", hurt);
+
+    std::vector jumpUp = {9};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {7};
+    std::vector jumpApex = {10};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {8};
+    std::vector falling = {11};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -505,6 +510,10 @@ void Player::OnUpdate(float deltaTime) {
     mTimerToLeaveWallSlidingRight += mTryingLeavingWallSlideRight * deltaTime;
 
     mWallJumpTimer += deltaTime;
+
+    if (mHurtTimer < mHurtDuration) {
+        mHurtTimer += deltaTime;
+    }
 
     mIsOnGround = false;
     mIsOnMovingGround = false;
@@ -870,10 +879,13 @@ void Player::ResolveEnemyCollision() {
 }
 
 void Player::ManageAnimations() {
-    if (mIsRunning && mIsOnGround) {
+    if (mHurtTimer < mHurtDuration) {
+        mDrawAnimatedComponent->SetAnimation("hurt");
+    }
+    else if (mIsRunning && mIsOnGround) {
         mDrawAnimatedComponent->SetAnimation("run");
     }
-    else if (!mIsOnGround) {
+    else if (!mIsOnGround && !mIsWallSliding) {
         if (mRigidBodyComponent->GetVelocity().y < -200 * mGame->GetScale()) {
             mDrawAnimatedComponent->SetAnimation("jumpUp");
         }
@@ -900,6 +912,7 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
     if (!mIsInvulnerable) {
         mHealthPoints -= damage;
         mIsInvulnerable = true;
+        mHurtTimer = 0;
 
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         if (vel.Length() > 0) {

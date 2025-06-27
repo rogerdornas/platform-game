@@ -1,11 +1,11 @@
 {
   "frames": [
     {
-      "filename": "Run0.png",
+      "filename": "Idle.png",
       "frame": {
         "x": 1,
         "y": 1,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -13,11 +13,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -28,9 +28,9 @@
     {
       "filename": "Run1.png",
       "frame": {
-        "x": 1,
-        "y": 47,
-        "w": 43,
+        "x": 47,
+        "y": 1,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -38,11 +38,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -53,9 +53,9 @@
     {
       "filename": "Run2.png",
       "frame": {
-        "x": 46,
-        "y": 1,
-        "w": 43,
+        "x": 1,
+        "y": 47,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -63,11 +63,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -78,9 +78,9 @@
     {
       "filename": "Run3.png",
       "frame": {
-        "x": 1,
-        "y": 93,
-        "w": 43,
+        "x": 47,
+        "y": 47,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -88,11 +88,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -103,9 +103,9 @@
     {
       "filename": "Run4.png",
       "frame": {
-        "x": 46,
-        "y": 47,
-        "w": 43,
+        "x": 93,
+        "y": 1,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -113,11 +113,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -128,9 +128,9 @@
     {
       "filename": "Run5.png",
       "frame": {
-        "x": 91,
-        "y": 1,
-        "w": 43,
+        "x": 93,
+        "y": 47,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -138,11 +138,86 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Run6.png",
+      "frame": {
+        "x": 1,
+        "y": 93,
+        "w": 44,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "hurt1.png",
+      "frame": {
+        "x": 47,
+        "y": 93,
+        "w": 44,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 44
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "hurt2.png",
+      "frame": {
+        "x": 93,
+        "y": 93,
+        "w": 44,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -153,9 +228,9 @@
     {
       "filename": "jump1.png",
       "frame": {
-        "x": 1,
-        "y": 139,
-        "w": 43,
+        "x": 139,
+        "y": 1,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -163,11 +238,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -178,9 +253,9 @@
     {
       "filename": "jump2.png",
       "frame": {
-        "x": 46,
-        "y": 93,
-        "w": 43,
+        "x": 139,
+        "y": 47,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -188,11 +263,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -203,9 +278,9 @@
     {
       "filename": "jump3.png",
       "frame": {
-        "x": 91,
-        "y": 47,
-        "w": 43,
+        "x": 139,
+        "y": 93,
+        "w": 44,
         "h": 44
       },
       "rotated": false,
@@ -213,36 +288,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "sourceSize": {
-        "w": 43,
-        "h": 44
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "zenzen.png",
-      "frame": {
-        "x": 136,
-        "y": 1,
-        "w": 43,
-        "h": 44
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 43,
-        "h": 44
-      },
-      "sourceSize": {
-        "w": 43,
+        "w": 44,
         "h": 44
       },
       "pivot": {
@@ -257,8 +307,8 @@
     "image": "Esquilo.png",
     "format": "RGBA8888",
     "size": {
-      "w": 180,
-      "h": 184
+      "w": 184,
+      "h": 138
     },
     "scale": 1
   }
