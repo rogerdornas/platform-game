@@ -2734,6 +2734,13 @@
   <object id="163" name="Mantis" x="14528" y="16672" width="32" height="32"/>
   <object id="164" name="Mantis" x="18688" y="16352" width="32" height="32"/>
   <object id="181" name="Moth" x="19264" y="13120" width="32" height="32"/>
-  <object id="211" name="Golem" x="21536" y="19168" width="32" height="32"/>
+  <object id="211" name="Golem" x="21536" y="19168" width="32" height="32">
+   <properties>
+    <property name="MaxPosX" type="float" value="22400"/>
+    <property name="MaxPosY" type="float" value="19168"/>
+    <property name="MinPosX" type="float" value="20736"/>
+    <property name="MinPosY" type="float" value="18432"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

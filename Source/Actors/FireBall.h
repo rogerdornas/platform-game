@@ -28,7 +28,9 @@ public:
     void SetSpeed(float s) { mSpeed = s; }
     float GetSpeed() const { return mSpeed; }
     void SetDamage(float damage) { mDamage = damage; }
+    float GetDamage() const { return mDamage; }
     void SetIsFromEnemy() { mIsFromEnemy = true; }
+    bool GetIsFromEnemy() const { return mIsFromEnemy; }
     void ExplodeFireball() { mDurationTimer = mDuration; }
 
     void Activate();

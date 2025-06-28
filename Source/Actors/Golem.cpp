@@ -4,6 +4,7 @@
 
 #include "Golem.h"
 #include "Effect.h"
+#include "Lever.h"
 #include "ParticleSystem.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
@@ -20,7 +21,10 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
 
     ,mIsRunning(false)
     ,mGravity(3000 * mGame->GetScale())
-    ,mIsInvulnerable(true)
+    ,mIsInvulnerable(false)
+    ,mAlreadySpawnedCrystal(false)
+    ,mCrystalWidth(64)
+    ,mCrystalHeight(64)
 
     ,mStopDuration(0.8f)
     ,mStopTimer(0.0f)
@@ -33,18 +37,19 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
 
     ,mPunchDuration(0.4f)
     ,mPunchTimer(0.0f)
-    ,mPunchAnimation(false)
     ,mDistToPunch(200 * mGame->GetScale())
     ,mIdleWidth(mWidth)
     ,mPunchSpriteWidth(mWidth * 1.5f)
     ,mPunchOffsetHitBox(mWidth * 0.8f)
+    ,mPunchDirectionRight(true)
 
-    ,mFireballDuration(1.5f)
+    ,mFireballDuration(1.0f)
     ,mFireballTimer(0.0f)
     ,mAlreadyFireBalled(false)
     ,mFireballWidth(100 * mGame->GetScale())
     ,mFireBallHeight(100 * mGame->GetScale())
     ,mFireballSpeed(1400 * mGame->GetScale())
+    ,mFireballDamage(20)
 {
     mMoneyDrop = 200;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
@@ -113,7 +118,11 @@ void Golem::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
+    ControlSpawCrystal();
+
     ManageAnimations();
+
+    SDL_Log("%f", mHealthPoints);
 }
 
 void Golem::MovementBeforePlayerSpotted() {
@@ -149,7 +158,7 @@ void Golem::Stop(float deltaTime) {
     mStopTimer += deltaTime;
     if (mStopTimer >= mStopDuration) {
         mStopTimer = 0;
-        if (Random::GetFloat() < 0.99) {
+        if (Random::GetFloat() < 0.6) {
             mGolemState = State::RunForward;
         }
         else {
@@ -181,13 +190,19 @@ void Golem::RunAway(float deltaTime) {
 
 void Golem::RunForward(float deltaTime) {
     mIsRunning = true;
-    mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 4, mRigidBodyComponent->GetVelocity().y));
+    mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3.5, mRigidBodyComponent->GetVelocity().y));
 
     Player* player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
 
     if (Math::Abs(dist) < mDistToPunch) {
         mDrawAnimatedComponent->ResetAnimationTimer();
+        if (GetRotation() == 0) {
+            mPunchDirectionRight = true;
+        }
+        else {
+            mPunchDirectionRight = false;
+        }
         mGolemState = State::Punch;
         return;
     }
@@ -197,6 +212,13 @@ void Golem::RunForward(float deltaTime) {
 void Golem::Punch(float deltaTime) {
     mPunchTimer += deltaTime;
     mRigidBodyComponent->SetVelocity(Vector2(0, 0));
+    if (mPunchDirectionRight) {
+        SetRotation(0);
+    }
+    else {
+        SetRotation(Math::Pi);
+    }
+
     if (mPunchTimer >= mPunchDuration) {
         mPunchTimer = 0;
         mGolemState = State::Stop;
@@ -236,10 +258,6 @@ void Golem::Punch(float deltaTime) {
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
     }
-
-    // mDrawAnimatedComponent->SetWidth(mHeight * 2.0f * 1.875f);
-    // mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
-
 }
 
 
@@ -248,7 +266,7 @@ void Golem::Fireball(float deltaTime) {
     if (mFireballTimer >= mFireballDuration) {
         mFireballTimer = 0;
         mAlreadyFireBalled = false;
-        if (Random::GetFloat() < 0.4) {
+        if (Random::GetFloat() < 0.0) {
             mGolemState = State::Fireball;
         }
         else {
@@ -265,6 +283,7 @@ void Golem::Fireball(float deltaTime) {
                 f->SetWidth(mFireballWidth);
                 f->SetHeight(mFireBallHeight);
                 f->SetSpeed(mFireballSpeed);
+                f->SetDamage(mFireballDamage);
                 f->SetIsFromEnemy();
                 f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                 break;
@@ -274,6 +293,58 @@ void Golem::Fireball(float deltaTime) {
     }
 
 }
+
+void Golem::ControlSpawCrystal() {
+    if (!mAlreadySpawnedCrystal) {
+        if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.8f * mMaxHealthPoints) {
+            Vector2 position(Random::GetFloatRange(mArenaMinPos.x, mArenaMaxPos.x),
+                            mArenaMaxPos.y);
+            SpawCrystal(position);
+            mAlreadySpawnedCrystal = true;
+        }
+    }
+
+    if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.7f * mMaxHealthPoints) {
+        mAlreadySpawnedCrystal = false;
+    }
+
+    if (!mAlreadySpawnedCrystal) {
+        if (mHealthPoints > 0.5f * mMaxHealthPoints && mHealthPoints <= 0.6f * mMaxHealthPoints) {
+            Vector2 position(Random::GetFloatRange(mArenaMinPos.x, mArenaMaxPos.x),
+                            mArenaMaxPos.y);
+            SpawCrystal(position);
+            mAlreadySpawnedCrystal = true;
+        }
+    }
+
+    if (mHealthPoints > 0.4f * mMaxHealthPoints && mHealthPoints <= 0.5f * mMaxHealthPoints) {
+        mAlreadySpawnedCrystal = false;
+    }
+
+    if (!mAlreadySpawnedCrystal) {
+        if (mHealthPoints > 0.3f * mMaxHealthPoints && mHealthPoints <= 0.4f * mMaxHealthPoints) {
+            Vector2 position(Random::GetFloatRange(mArenaMinPos.x, mArenaMaxPos.x),
+                            mArenaMaxPos.y);
+            SpawCrystal(position);
+            mAlreadySpawnedCrystal = true;
+        }
+    }
+
+    if (mHealthPoints > 0.2f * mMaxHealthPoints && mHealthPoints <= 0.3f * mMaxHealthPoints) {
+        mAlreadySpawnedCrystal = false;
+    }
+}
+
+
+void Golem::SpawCrystal(Vector2 position) {
+    mIsInvulnerable = true;
+    auto* crystal = new Lever(mGame, mCrystalWidth, mCrystalHeight, Lever::LeverType::Crystal);
+    crystal->SetPosition(position);
+    crystal->SetTarget("Enemy");
+    crystal->SetEvent("GolemVulnerable");
+    crystal->SetEnemiesIds(std::vector<int>{mId});
+}
+
 
 void Golem::TriggerBossDefeat() {
     SetState(ActorState::Destroy);

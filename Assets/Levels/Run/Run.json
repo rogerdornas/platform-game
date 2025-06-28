@@ -491,7 +491,7 @@
                         {
                          "name":"Enemies",
                          "type":"string",
-                         "value":"154"
+                         "value":"171"
                         }, 
                         {
                          "name":"Event",
@@ -2429,6 +2429,27 @@
                  "height":32,
                  "id":171,
                  "name":"Golem",
+                 "properties":[
+                        {
+                         "name":"MaxPosX",
+                         "type":"float",
+                         "value":11712
+                        }, 
+                        {
+                         "name":"MaxPosY",
+                         "type":"float",
+                         "value":3392
+                        }, 
+                        {
+                         "name":"MinPosX",
+                         "type":"float",
+                         "value":9504
+                        }, 
+                        {
+                         "name":"MinPosY",
+                         "type":"float",
+                         "value":1952
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

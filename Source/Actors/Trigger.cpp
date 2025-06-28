@@ -109,6 +109,10 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::SpotPlayer;
         return;
     }
+    if (event == "GolemVulnerable") {
+        mEvent = Event::GolemVulnerable;
+        return;
+    }
 }
 
 void Trigger::SetScene(std::string scene) {

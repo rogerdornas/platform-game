@@ -20,6 +20,10 @@ public:
 
     Golem(Game* game, float width, float height, float moveSpeed, float healthPoints);
     void OnUpdate(float deltaTime) override;
+    void SetArenaMinPos(Vector2 pos) { mArenaMinPos = pos; }
+    void SetArenaMaxPos(Vector2 pos) { mArenaMaxPos = pos; }
+
+    void SetIsVulnerable() { mIsInvulnerable = false; }
 
     void ReceiveHit(float damage, Vector2 knockBackDirection) override;
 
@@ -39,11 +43,20 @@ private:
     void Punch(float deltaTime);
     void Fireball(float deltaTime);
 
+    void ControlSpawCrystal();
+    void SpawCrystal(Vector2 position);
+
     State mGolemState;
 
     bool mIsRunning;
     float mGravity;
+
     bool mIsInvulnerable;
+    bool mAlreadySpawnedCrystal;
+    Vector2 mArenaMinPos;
+    Vector2 mArenaMaxPos;
+    float mCrystalWidth;
+    float mCrystalHeight;
 
     float mStopDuration;
     float mStopTimer;
@@ -56,11 +69,11 @@ private:
 
     float mPunchDuration;
     float mPunchTimer;
-    bool mPunchAnimation;
     float mDistToPunch;
     float mIdleWidth;
     float mPunchSpriteWidth;
     float mPunchOffsetHitBox;
+    bool mPunchDirectionRight;
 
     float mFireballDuration;
     float mFireballTimer;
@@ -68,9 +81,7 @@ private:
     float mFireballWidth;
     float mFireBallHeight;
     float mFireballSpeed;
-
-
-
+    float mFireballDamage;
 };
 
 

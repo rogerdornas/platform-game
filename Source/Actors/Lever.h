@@ -10,7 +10,12 @@
 class Lever : public Trigger
 {
 public:
-    Lever(class Game *game);
+    enum class LeverType {
+        Lever,
+        Crystal
+    };
+
+    Lever(class Game *game, float width = 64, float height = 64.0f, LeverType leverType = LeverType::Lever);
 
     void OnUpdate(float deltaTime) override;
 
@@ -18,7 +23,11 @@ public:
 
 private:
     void DynamicGroundTrigger() override;
+    void EnemyTrigger() override;
 
+    LeverType mLeverType;
+    float mHealthPoints;
+    bool mSwordHit;
     bool mActivate;
     float mActivatingDuration;
     float mActivatingTimer;

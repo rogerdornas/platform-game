@@ -898,9 +898,31 @@ void Game::LoadObjects(const std::string &fileName) {
                     moth->SetId(id);
                 }
                 else if (name == "Golem") {
-                    auto* golem = new Golem(this, 144, 200, 300, 1500);
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "MinPosX") {
+                                MinPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosX") {
+                                MaxPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MinPosY") {
+                                MinPosY =static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosY") {
+                                MaxPosY = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "UnlockGrounds") {
+                                grounds = prop["value"];
+                            }
+                        }
+                    }
+                    auto* golem = new Golem(this, 144, 200, 300, 400);
                     golem->SetPosition(Vector2(x, y));
                     golem->SetId(id);
+                    golem->SetArenaMinPos(Vector2(MinPosX, MinPosY));
+                    golem->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                 }
             }
         }
