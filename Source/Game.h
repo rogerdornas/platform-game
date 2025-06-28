@@ -152,6 +152,7 @@ public:
     void SetGameScene(GameScene scene, float transitionTime = .0f);
     void ResetGameScene(float transitionTime = .0f);
     void UnloadScene();
+    GameScene GetGameScene() const { return mGameScene; }
 
     void TogglePause();
 

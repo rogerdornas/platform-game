@@ -24,6 +24,7 @@
 #include "Actors/Trigger.h"
 #include "Actors/Fairy.h"
 #include "Actors/FlyingShooterEnemy.h"
+#include "Actors/Golem.h"
 #include "Actors/Mantis.h"
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
@@ -330,6 +331,7 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::LevelTeste) {
         mUseParallaxBackground = false;
+        mUseParallaxBackground = true;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
 
         const std::string levelsAssets = "../Assets/Levels/";
@@ -894,6 +896,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     auto* moth = new Moth(this, 200, 200, 500, 1500);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
+                }
+                else if (name == "Golem") {
+                    auto* golem = new Golem(this, 144, 200, 300, 1500);
+                    golem->SetPosition(Vector2(x, y));
+                    golem->SetId(id);
                 }
             }
         }
@@ -1562,6 +1569,10 @@ void Game::GenerateOutput()
     if (mCamera) {
         if (mUseParallaxBackground) {
             switch (mGameScene) {
+                case GameScene::LevelTeste:
+                    DrawParallaxLayers(mBackgroundLayersLevel2);
+                break;
+
                 case GameScene::Level2:
                     DrawParallaxLayers(mBackgroundLayersLevel2);
                     break;

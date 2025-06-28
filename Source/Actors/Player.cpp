@@ -746,7 +746,32 @@ void Player::ResolveGroundCollision() {
                             grass->SetEmitDirection(mSword->GetForward() * -1);
                             grass->SetIsSplash(true);
                             grass->SetParticleSpeedScale(0.5);
-                            grass->SetParticleColor(SDL_Color{80, 148, 45, 255});
+                            SDL_Color color;
+                            switch (mGame->GetGameScene()) {
+                                case Game::GameScene::LevelTeste:
+                                    color = {80, 148, 45, 255};
+                                    break;
+
+                                case Game::GameScene::Level1:
+                                    color = {80, 148, 45, 255};
+                                    break;
+
+                                case Game::GameScene::Level2:
+                                    color = {102, 114, 145, 255};
+                                    break;
+
+                                case Game::GameScene::Level3:
+                                    color = {80, 148, 45, 255};
+                                    break;
+
+                                case Game::GameScene::Level4:
+                                    color = {80, 148, 45, 255};
+                                    break;
+                                default:
+                                    color = {80, 148, 45, 255};
+                                    break;
+                            }
+                            grass->SetParticleColor(color);
                             grass->SetParticleGravity(true);
                             mSwordHitGround = true;
                         }

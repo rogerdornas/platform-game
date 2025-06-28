@@ -165,7 +165,7 @@ void Frog::OnUpdate(float deltaTime) {
 
     if (mPlayerSpotted) {
         if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav"));
+            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
         }
         MovementAfterPlayerSpotted(deltaTime);
     }
