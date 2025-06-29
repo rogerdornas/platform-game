@@ -182,6 +182,8 @@ private:
     void LoadMainMenu();
     UIScreen* LoadPauseMenu();
     void LoadOptionsMenu();
+    void LoadControlMenu();
+    void LoadKeyBoardMenu();
 
     void ChangeResolution(float oldScale);
 
@@ -277,6 +279,9 @@ private:
     std::unordered_map<std::string, class UIFont*> mFonts;
     UIScreen* mPauseMenu;
     UIScreen* mOptionsMenu;
+    UIScreen* mControlMenu;
+    UIScreen* mKeyboardMenu;
+
     std::vector<Vector2> mResolutions = {
         Vector2(640, 360),
         Vector2(1280, 720),

@@ -450,7 +450,7 @@ void Game::LoadMainMenu() {
         delete mStore;
         mStore = nullptr;
         mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
-});
+    });
 
     name = "OPÇÕES";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -576,10 +576,16 @@ void Game::LoadOptionsMenu() {
     text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
     text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
 
-    name = "CONTROLES";
+    name = "TECLADO";
     button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 4.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
+        LoadKeyBoardMenu();
+    }, textPos);
 
+    name = "CONTROLE";
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 6.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        LoadControlMenu();
     }, textPos);
 
     name = "VOLTAR";
@@ -588,6 +594,48 @@ void Game::LoadOptionsMenu() {
         mOptionsMenu->Close();
     });
 }
+
+void Game::LoadControlMenu() {
+    mControlMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mControlMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
+    mControlMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    Vector2 buttonSize = Vector2(mControlMenu->GetSize().x * 0.8f, 50 * mScale);
+    Vector2 buttonPos = Vector2(mControlMenu->GetSize().x * 0.1f, 0);
+
+    mControlMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
+    mControlMenu->AddImage("../Assets/Sprites/Menus/Controles.png", Vector2::Zero, mOptionsMenu->GetSize());
+
+    std::string name;
+    int buttonPointSize = static_cast<int>(34 * mScale);
+
+    name = "VOLTAR";
+    mControlMenu->AddButton(name, buttonPos + Vector2(0, mControlMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mControlMenu->Close();
+    });
+}
+
+void Game::LoadKeyBoardMenu() {
+    mKeyboardMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mKeyboardMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
+    mKeyboardMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    Vector2 buttonSize = Vector2(mKeyboardMenu->GetSize().x * 0.8f, 50 * mScale);
+    Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0);
+
+    mKeyboardMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
+
+    std::string name;
+    int buttonPointSize = static_cast<int>(34 * mScale);
+
+
+    name = "VOLTAR";
+    mKeyboardMenu->AddButton(name, buttonPos + Vector2(0, mKeyboardMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mKeyboardMenu->Close();
+    });
+}
+
+
 
 void Game::LoadObjects(const std::string &fileName) {
     std::ifstream file(fileName);
@@ -918,7 +966,7 @@ void Game::LoadObjects(const std::string &fileName) {
                             }
                         }
                     }
-                    auto* golem = new Golem(this, 144, 200, 600, 400);
+                    auto* golem = new Golem(this, 144, 190, 600, 400);
                     golem->SetPosition(Vector2(x, y));
                     golem->SetId(id);
                     golem->SetArenaMinPos(Vector2(MinPosX, MinPosY));

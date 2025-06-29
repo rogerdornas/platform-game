@@ -41,7 +41,7 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mDistToPunch(200 * mGame->GetScale())
     ,mIdleWidth(mWidth)
     ,mPunchSpriteWidth(mWidth * 1.5f)
-    ,mPunchOffsetHitBox(mWidth * 0.8f)
+    ,mPunchOffsetHitBox(mWidth * 0.9f)
     ,mPunchDirectionRight(true)
 
     ,mFireballDuration(1.0f)
@@ -57,17 +57,26 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.7f * 1.875f, mWidth * 1.7f, "../Assets/Sprites/Golem/Golem.png", "../Assets/Sprites/Golem/Golem.json", 999);
-    std::vector idle = {14, 15, 16, 17, 18, 19, 20, 21};
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f * 1.875f, mWidth * 1.8f, "../Assets/Sprites/Golem2/Golem.png", "../Assets/Sprites/Golem2/Golem.json", 999);
+    std::vector idle = {54, 22, 23, 24, 55, 25, 58, 26};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector walk = {22, 23, 24, 25, 26, 27 ,28, 29, 30, 31};
+    std::vector idleInvulnerable = {56, 27, 28, 29, 57, 30, 59, 31};
+    mDrawAnimatedComponent->AddAnimation("idleInvulnerable", idleInvulnerable);
+
+    std::vector walk = {32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
     mDrawAnimatedComponent->AddAnimation("walk", walk);
+
+    std::vector walkInvulnerable = {42, 43, 44, 45, 46, 47, 48, 49, 50, 51};
+    mDrawAnimatedComponent->AddAnimation("walkInvulnerable", walkInvulnerable);
 
     std::vector punch = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     mDrawAnimatedComponent->AddAnimation("punch", punch);
 
-    std::vector hit = {10, 11, 12, 13};
+    std::vector punchInvulnerable = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+    mDrawAnimatedComponent->AddAnimation("punchInvulnerable", punchInvulnerable);
+
+    std::vector hit = {52, 20, 21, 53};
     mDrawAnimatedComponent->AddAnimation("hit", hit);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -453,12 +462,22 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
 
 void Golem::ManageAnimations() {
     if (mGolemState == State::Punch) {
-        mDrawAnimatedComponent->SetAnimation("punch");
+        if (mIsInvulnerable) {
+            mDrawAnimatedComponent->SetAnimation("punchInvulnerable");
+        }
+        else {
+            mDrawAnimatedComponent->SetAnimation("punch");
+        }
         mDrawAnimatedComponent->SetAnimFPS(10.0f / mPunchDuration);
     }
     else if (mGolemState == State::RunForward ||
              mGolemState == State::RunAway) {
-        mDrawAnimatedComponent->SetAnimation("walk");
+        if (mIsInvulnerable) {
+            mDrawAnimatedComponent->SetAnimation("walkInvulnerable");
+        }
+        else {
+            mDrawAnimatedComponent->SetAnimation("walk");
+        }
         mDrawAnimatedComponent->SetAnimFPS(mMoveSpeed / 40);
     }
     else if (mIsFlashing) {
@@ -466,7 +485,12 @@ void Golem::ManageAnimations() {
         mDrawAnimatedComponent->SetAnimFPS(4.0f / mHitDuration);
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        if (mIsInvulnerable) {
+            mDrawAnimatedComponent->SetAnimation("idleInvulnerable");
+        }
+        else {
+            mDrawAnimatedComponent->SetAnimation("idle");
+        }
         mDrawAnimatedComponent->SetAnimFPS(10.0f);
     }
 }
@@ -491,12 +515,12 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
     if (mWidth == mPunchSpriteWidth) {
-        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 1.875f);
-        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
+        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.875f);
+        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
     }
     else {
-        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 1.875f);
-        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
+        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.875f);
+        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
     }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
