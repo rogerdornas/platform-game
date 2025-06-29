@@ -316,7 +316,7 @@
     <property name="Target" value="Enemy"/>
    </properties>
   </object>
-  <object id="146" x="8032" y="1472" width="512" height="896">
+  <object id="146" name="Close Wall" x="8032" y="1472" width="512" height="896">
    <properties>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="125"/>
