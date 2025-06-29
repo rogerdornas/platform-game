@@ -155,25 +155,28 @@ Player::Player(Game* game, float width, float height)
                                                        "../Assets/Sprites/Esquilo/Esquilo.png",
                                                        "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    std::vector idle = {0};
+    std::vector idle = {3};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector run = {1, 2, 3, 4, 5, 6};
+    std::vector dash = {0, 1, 1, 1, 2};
+    mDrawAnimatedComponent->AddAnimation("dash", dash);
+
+    std::vector run = {4, 5, 6, 7, 8, 9};
     mDrawAnimatedComponent->AddAnimation("run", run);
 
-    std::vector flash = {7};
+    std::vector flash = {10};
     mDrawAnimatedComponent->AddAnimation("flash", flash);
 
-    std::vector hurt = {8, 9};
+    std::vector hurt = {11, 12};
     mDrawAnimatedComponent->AddAnimation("hurt", hurt);
 
-    std::vector jumpUp = {10};
+    std::vector jumpUp = {13};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {11};
+    std::vector jumpApex = {14};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {12};
+    std::vector falling = {15};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -922,6 +925,9 @@ void Player::ResolveEnemyCollision() {
 void Player::ManageAnimations() {
     if (mHurtTimer < mHurtDuration) {
         mDrawAnimatedComponent->SetAnimation("hurt");
+    }
+    else if (mDashComponent->GetIsDashing()) {
+        mDrawAnimatedComponent->SetAnimation("dash");
     }
     else if (mIsRunning && mIsOnGround) {
         mDrawAnimatedComponent->SetAnimation("run");

@@ -66,6 +66,7 @@ private:
 
     float mRunAwayDuration;
     float mRunAwayTimer;
+    float mMoveSpeedIncrease;
 
     float mPunchDuration;
     float mPunchTimer;

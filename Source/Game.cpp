@@ -918,7 +918,7 @@ void Game::LoadObjects(const std::string &fileName) {
                             }
                         }
                     }
-                    auto* golem = new Golem(this, 144, 200, 300, 400);
+                    auto* golem = new Golem(this, 144, 200, 600, 400);
                     golem->SetPosition(Vector2(x, y));
                     golem->SetId(id);
                     golem->SetArenaMinPos(Vector2(MinPosX, MinPosY));

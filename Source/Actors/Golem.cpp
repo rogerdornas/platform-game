@@ -23,10 +23,10 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mGravity(3000 * mGame->GetScale())
     ,mIsInvulnerable(false)
     ,mAlreadySpawnedCrystal(false)
-    ,mCrystalWidth(64)
-    ,mCrystalHeight(64)
+    ,mCrystalWidth(108)
+    ,mCrystalHeight(72)
 
-    ,mStopDuration(0.8f)
+    ,mStopDuration(1.2f)
     ,mStopTimer(0.0f)
 
     ,mHitDuration(0.3f)
@@ -34,6 +34,7 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
 
     ,mRunAwayDuration(0.8f)
     ,mRunAwayTimer(0.0f)
+    ,mMoveSpeedIncrease(1.0f)
 
     ,mPunchDuration(0.4f)
     ,mPunchTimer(0.0f)
@@ -49,7 +50,7 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mFireballWidth(100 * mGame->GetScale())
     ,mFireBallHeight(100 * mGame->GetScale())
     ,mFireballSpeed(1400 * mGame->GetScale())
-    ,mFireballDamage(20)
+    ,mFireballDamage(15)
 {
     mMoneyDrop = 200;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
@@ -122,7 +123,11 @@ void Golem::OnUpdate(float deltaTime) {
 
     ManageAnimations();
 
-    SDL_Log("%f", mHealthPoints);
+    if (mHealthPoints <= 0.65f * mMaxHealthPoints) {
+        mStopDuration = 1.0f;
+        mFireballDuration = 0.7f;
+        mMoveSpeedIncrease = 2;
+    }
 }
 
 void Golem::MovementBeforePlayerSpotted() {
@@ -185,12 +190,12 @@ void Golem::RunAway(float deltaTime) {
     else {
         SetRotation(Math::Pi);
     }
-    mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3, mRigidBodyComponent->GetVelocity().y));
+    mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
 }
 
 void Golem::RunForward(float deltaTime) {
     mIsRunning = true;
-    mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3.5, mRigidBodyComponent->GetVelocity().y));
+    mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * mMoveSpeedIncrease, mRigidBodyComponent->GetVelocity().y));
 
     Player* player = GetGame()->GetPlayer();
     float dist = GetPosition().x - player->GetPosition().x;
@@ -454,7 +459,7 @@ void Golem::ManageAnimations() {
     else if (mGolemState == State::RunForward ||
              mGolemState == State::RunAway) {
         mDrawAnimatedComponent->SetAnimation("walk");
-        mDrawAnimatedComponent->SetAnimFPS(30.0f);
+        mDrawAnimatedComponent->SetAnimFPS(mMoveSpeed / 40);
     }
     else if (mIsFlashing) {
         mDrawAnimatedComponent->SetAnimation("hit");
@@ -467,5 +472,48 @@ void Golem::ManageAnimations() {
 }
 
 void Golem::ChangeResolution(float oldScale, float newScale) {
+    mWidth = mWidth / oldScale * newScale;
+    mHeight = mHeight / oldScale * newScale;
+    mMoveSpeed = mMoveSpeed / oldScale * newScale;
+    SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
+    mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
+    mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
+    mDistToPunch = mDistToPunch / oldScale * newScale;
+    mIdleWidth = mIdleWidth / oldScale * newScale;
+    mPunchSpriteWidth = mPunchSpriteWidth / oldScale * newScale;
+    mPunchOffsetHitBox = mPunchOffsetHitBox / oldScale * newScale;
 
+    mFireballWidth = mFireballWidth / oldScale * newScale;
+    mFireBallHeight = mFireBallHeight / oldScale * newScale;
+    mFireballSpeed = mFireballSpeed / oldScale * newScale;
+    mGravity = mGravity / oldScale * newScale;
+
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
+    if (mWidth == mPunchSpriteWidth) {
+        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 1.875f);
+        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
+    }
+    else {
+        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 1.875f);
+        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
+    }
+
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
+    if (mDrawPolygonComponent) {
+        mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

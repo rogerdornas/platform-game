@@ -48,8 +48,8 @@ Lever::Lever(class Game* game, float width, float height, LeverType leverType)
         mDrawAnimatedComponent->SetAnimFPS(fps);
     }
     else if (mLeverType == LeverType::Crystal) {
-        mHealthPoints = 30;
-        mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Crystal/Crystal.png", mWidth, mHeight);
+        mHealthPoints = 50;
+        mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Crystal/Crystal2.png", mWidth, mHeight);
     }
 }
 
