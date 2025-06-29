@@ -127,7 +127,8 @@ public:
 
     void ActiveHitStop()
     {
-        mHitstopActive = true;
+        mHitstopDelayActive = true;
+        mHitstopDelayTimer = 0;
         mHitstopTimer = 0;
     }
 
@@ -151,6 +152,7 @@ public:
     void SetGameScene(GameScene scene, float transitionTime = .0f);
     void ResetGameScene(float transitionTime = .0f);
     void UnloadScene();
+    GameScene GetGameScene() const { return mGameScene; }
 
     void TogglePause();
 
@@ -180,6 +182,8 @@ private:
     void LoadMainMenu();
     UIScreen* LoadPauseMenu();
     void LoadOptionsMenu();
+    void LoadControlMenu();
+    void LoadKeyBoardMenu();
 
     void ChangeResolution(float oldScale);
 
@@ -250,6 +254,9 @@ private:
     bool mHitstopActive;
     float mHitstopDuration;
     float mHitstopTimer;
+    bool mHitstopDelayActive;
+    float mHitstopDelayDuration;
+    float mHitstopDelayTimer;
 
     bool mIsSlowMotion;
     bool mIsAccelerated;
@@ -272,6 +279,9 @@ private:
     std::unordered_map<std::string, class UIFont*> mFonts;
     UIScreen* mPauseMenu;
     UIScreen* mOptionsMenu;
+    UIScreen* mControlMenu;
+    UIScreen* mKeyboardMenu;
+
     std::vector<Vector2> mResolutions = {
         Vector2(640, 360),
         Vector2(1280, 720),
@@ -291,13 +301,22 @@ private:
 
     Store* mStore;
 
-    void DrawParallaxBackground();
+    // Background images
+    void DrawParallaxBackground(SDL_Texture* background);
     void DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h);
+    void DrawParallaxLayers(std::vector<SDL_Texture*> backgroundLayers);
 
-    SDL_Texture *mBackGroundTexture;
+    bool mUseParallaxBackground;
+    SDL_Texture* mBackGroundTextureMainMenu;
+    SDL_Texture* mBackGroundTextureLevel1;
+    std::vector<SDL_Texture*> mBackgroundLayersLevel2;
+    std::vector<SDL_Texture*> mBackgroundLayersLevel3;
+    SDL_Texture* mBackGroundTextureLevel3;
+    SDL_Texture* mBackGroundTextureLevel4;
+    SDL_Texture* mBackGroundTexture;
 
-    SDL_Texture *mSky;
-    SDL_Texture *mMountains;
-    SDL_Texture *mTreesBack;
-    SDL_Texture *mTreesFront;
+    // SDL_Texture *mSky;
+    // SDL_Texture *mMountains;
+    // SDL_Texture *mTreesBack;
+    // SDL_Texture *mTreesFront;
 };

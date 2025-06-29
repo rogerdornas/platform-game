@@ -109,9 +109,17 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::SpotPlayer;
         return;
     }
+    if (event == "GolemVulnerable") {
+        mEvent = Event::GolemVulnerable;
+        return;
+    }
 }
 
 void Trigger::SetScene(std::string scene) {
+    if (scene == "LevelTeste") {
+        mScene = Game::GameScene::LevelTeste;
+        return;
+    }
     if (scene == "Level1") {
         mScene = Game::GameScene::Level1;
         return;
@@ -272,6 +280,7 @@ void Trigger::GameTrigger() {
         case Event::ChangeScene:
             mGame->GetAudio()->StopAllSounds();
             mGame->SetGameScene(mScene, 2.0f);
+            mGame->SetGamePlayState(Game::GamePlayState::LevelComplete);
             mGame->SetGoingToNextLevel();
             SetState(ActorState::Destroy);
             break;

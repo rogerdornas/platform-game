@@ -36,7 +36,7 @@ public:
     // Add an animation of the corresponding name to the animation map
     void AddAnimation(const std::string &name, const std::vector<int> &images);
 
-    void SetIsBlinking(bool b) { mIsBlinking = b; }
+    void SetTransparency(int transparency) { mTransparency = transparency; }
 
 private:
     void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath);
@@ -64,6 +64,5 @@ private:
     bool mUseRotation;
     float mOffsetRotation;
 
-    bool mIsBlinking;
     int mTransparency;
 };

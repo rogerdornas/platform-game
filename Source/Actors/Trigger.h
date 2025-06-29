@@ -32,11 +32,12 @@ public:
         SetIsDecreasing,
         SetIsDecreasingAfterKillingEnemies,
 
+        SetIsMoving,
+
         ChangeScene,
 
         SpotPlayer,
-
-        SetIsMoving
+        GolemVulnerable
     };
 
     Trigger(class Game *game, float width, float height);
@@ -56,7 +57,7 @@ protected:
     virtual void DynamicGroundTrigger();
     void GroundTrigger();
     void GameTrigger();
-    void EnemyTrigger();
+    virtual void EnemyTrigger();
 
     float mWidth;
     float mHeight;
