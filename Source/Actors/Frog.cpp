@@ -7,6 +7,7 @@
 #include "Effect.h"
 #include "FrogTongue.h"
 #include "ParticleSystem.h"
+#include "Skill.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
@@ -209,7 +210,14 @@ void Frog::TriggerBossDefeat() {
 
     mTongue->SetState(ActorState::Destroy);
 
-    mGame->GetPlayer()->SetCanWallSlide(true);
+    // mGame->GetPlayer()->SetCanWallSlide(true);
+
+    // Player ganha wall slide
+    auto* skill = new Skill(mGame, Skill::SkillType::WallSlide);
+    skill->SetPosition(GetPosition());
+    if (skill->GetPosition().y < mArenaMaxPos.y - 320 * mGame->GetScale()) {
+        skill->SetPosition(Vector2(GetPosition().x, mArenaMaxPos.y - 320 * mGame->GetScale()));
+    }
 
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 

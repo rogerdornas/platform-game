@@ -6,6 +6,7 @@
 #include "Actor.h"
 #include "Effect.h"
 #include "ParticleSystem.h"
+#include "Skill.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
@@ -154,8 +155,10 @@ void Fox::TriggerBossDefeat() {
         }
     }
 
-    // Player ganha poder
-    mGame->GetPlayer()->SetCanFireBall(true);
+    // Player ganha pulo duplo
+    auto* skill = new Skill(mGame, Skill::SkillType::DoubleJump);
+    skill->SetPosition(GetPosition());
+    // mGame->GetPlayer()->SetCanFireBall(true);
 
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
