@@ -360,7 +360,17 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level2) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Run-Background.png");
+        mBackGroundTexture = LoadTexture(backgroundAssets + "FogoEspichado.png");
+
+        mUseParallaxBackground = true;
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/7.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/6.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/5.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/4.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/3.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/2.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/1.png"));
+
         LoadLevel(levelsAssets + "Run/Run.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -387,16 +397,16 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level4) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "FogoEspichado.png");
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Pain-Background.png");
 
         mUseParallaxBackground = true;
-        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/7.png"));
-        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/6.png"));
-        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/5.png"));
-        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/4.png"));
-        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/3.png"));
-        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/2.png"));
-        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/1.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/7.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/6.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/5.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/4.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/3.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/2.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
 
         LoadLevel(levelsAssets + "Pain/Pain.json");
 
