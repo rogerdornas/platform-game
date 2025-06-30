@@ -109,6 +109,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Golem.h
         Source/Actors/Skill.cpp
         Source/Actors/Skill.h
+        Source/Actors/Fairy.cpp
+        Source/Actors/Fairy.h
 )
 
 

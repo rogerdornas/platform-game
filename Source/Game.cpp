@@ -297,6 +297,9 @@ void Game::ChangeScene()
             new Money(this, Money::MoneyType::Large);
         }
 
+        // Companheiro
+        auto* fairy = new Fairy(this, 40, 40);
+
         // Volta player
         if (mPlayer) {
             mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(true);
