@@ -776,6 +776,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float fixedCameraPositionX = 0;
                 float fixedCameraPositionY = 0;
                 std::string scene;
+                std::string dialoguePath;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
@@ -800,6 +801,9 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "Scene") {
                             scene = prop["value"];
                         }
+                        else if (propName == "FilePath") {
+                            dialoguePath = prop["value"];
+                        }
                     }
                 }
                 groundsIds = ParseIntList(grounds);
@@ -813,6 +817,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetEnemiesIds(enemiesIds);
                 trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
                 trigger->SetScene(scene);
+                trigger->SetDialoguePath(dialoguePath);
             }
         }
         if (layer["name"] == "Levers") {

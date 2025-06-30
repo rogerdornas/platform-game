@@ -111,6 +111,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Skill.h
         Source/Actors/Fairy.cpp
         Source/Actors/Fairy.h
+        Source/DialogueSystem.cpp
+        Source/DialogueSystem.h
 )
 
 

@@ -4,6 +4,7 @@
 
 #include "Trigger.h"
 #include "../Camera.h"
+#include "../DialogueSystem.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
@@ -52,6 +53,10 @@ void Trigger::SetTarget(std::string target) {
     }
     if (target == "Enemy") {
         mTarget = Target::Enemy;
+        return;
+    }
+    if (target == "Dialogue") {
+        mTarget = Target::Dialogue;
         return;
     }
 }
@@ -113,6 +118,11 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::GolemVulnerable;
         return;
     }
+
+    if (event == "StartDialogue") {
+        mEvent = Event::StartDialogue;
+        return;
+    }
 }
 
 void Trigger::SetScene(std::string scene) {
@@ -162,6 +172,10 @@ void Trigger::OnUpdate(float deltaTime) {
 
             case Target::Enemy:
                 EnemyTrigger();
+                break;
+
+            case Target::Dialogue:
+                DialogueTrigger();
                 break;
 
             default:
@@ -308,6 +322,10 @@ void Trigger::EnemyTrigger() {
     }
 }
 
+void Trigger::DialogueTrigger() {
+    auto* dialogue = new DialogueSystem(mGame, "../Assets/Fonts/K2D-Bold.ttf", mDialoguePath);
+    SetState(ActorState::Destroy);
+}
 
 
 void Trigger::ChangeResolution(float oldScale, float newScale) {

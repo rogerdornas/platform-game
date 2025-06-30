@@ -8,6 +8,7 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/AABBComponent.h"
 
 
 Fairy::Fairy(Game *game, float width, float height)
@@ -44,15 +45,13 @@ Fairy::Fairy(Game *game, float width, float height)
     mDrawAnimatedComponent->SetAnimFPS(10.0f);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 1600 * mGame->GetScale());
-
+    mAABBComponent = new AABBComponent(this, v1, v3);
 }
 
 void Fairy::OnUpdate(float deltaTime) {
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
     Vector2 targetPos(playerPos + mOffsetPosition);
     mRigidBodyComponent->SetVelocity((targetPos - GetPosition()) * mLerpSpeed);
-    // SetPosition(Vector2(GetPosition().x + (targetPos.x - GetPosition().x) * mLerpSpeed * deltaTime,
-    //            GetPosition().y + (targetPos.y - GetPosition().y) * mLerpSpeed * deltaTime));
 
     if (mRigidBodyComponent->GetVelocity().x >= 0) {
         SetRotation(0);
@@ -70,4 +69,27 @@ void Fairy::ChangeResolution(float oldScale, float newScale) {
     mLerpSpeed = mLerpSpeed / oldScale * newScale;
     mOffsetPosition.x = mOffsetPosition.x / oldScale * newScale;
     mOffsetPosition.y = mOffsetPosition.y / oldScale * newScale;
+
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    }
+
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    mAABBComponent->SetMin(v1);
+    mAABBComponent->SetMax(v3);
+
+    if (mDrawPolygonComponent) {
+        mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

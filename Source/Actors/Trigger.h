@@ -17,6 +17,7 @@ public:
         Ground,
         Game,
         Enemy,
+        Dialogue,
         Nothing
     };
 
@@ -37,7 +38,9 @@ public:
         ChangeScene,
 
         SpotPlayer,
-        GolemVulnerable
+        GolemVulnerable,
+
+        StartDialogue
     };
 
     Trigger(class Game *game, float width, float height);
@@ -48,6 +51,7 @@ public:
     void SetEnemiesIds(const std::vector<int>& ids) { mEnemiesIds = ids; }
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
     void SetScene(std::string scene);
+    void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
 
     void OnUpdate(float deltaTime) override;
     void ChangeResolution(float oldScale, float newScale) override;
@@ -58,6 +62,7 @@ protected:
     void GroundTrigger();
     void GameTrigger();
     virtual void EnemyTrigger();
+    void DialogueTrigger();
 
     float mWidth;
     float mHeight;
@@ -68,6 +73,8 @@ protected:
     Vector2 mFixedCameraPosition;
 
     Game::GameScene mScene;
+
+    std::string mDialoguePath;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class AABBComponent *mAABBComponent;
