@@ -444,7 +444,7 @@ void Game::LoadMainMenu() {
     name = "NOVO JOGO";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        SetGameScene(GameScene::Level4, 0.5f);
+        SetGameScene(GameScene::LevelTeste, 0.5f);
         delete mPlayer;
         mPlayer = nullptr;
         delete mStore;

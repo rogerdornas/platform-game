@@ -2749,48 +2749,48 @@
          "name":"Checkpoint",
          "objects":[
                 {
-                 "height":224,
-                 "id":154,
+                 "height":192,
+                 "id":167,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":28576,
-                 "y":7264
+                 "width":416,
+                 "x":11168,
+                 "y":5472
                 }, 
                 {
-                 "height":224,
-                 "id":158,
+                 "height":192,
+                 "id":168,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":31232,
-                 "y":7264
+                 "width":416,
+                 "x":16992,
+                 "y":5472
                 }, 
                 {
-                 "height":224,
-                 "id":159,
+                 "height":192,
+                 "id":169,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":17056,
-                 "y":5440
+                 "width":416,
+                 "x":28544,
+                 "y":7296
                 }, 
                 {
-                 "height":224,
-                 "id":166,
+                 "height":192,
+                 "id":170,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":11264,
-                 "y":5440
+                 "width":416,
+                 "x":31968,
+                 "y":7296
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3250,8 +3250,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":167,
+ "nextlayerid":10,
+ "nextobjectid":171,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

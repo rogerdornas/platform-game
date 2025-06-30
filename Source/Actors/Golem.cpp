@@ -506,6 +506,10 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
     mIdleWidth = mIdleWidth / oldScale * newScale;
     mPunchSpriteWidth = mPunchSpriteWidth / oldScale * newScale;
     mPunchOffsetHitBox = mPunchOffsetHitBox / oldScale * newScale;
+    mArenaMinPos.x = mArenaMinPos.x / oldScale * newScale;
+    mArenaMinPos.y = mArenaMinPos.y / oldScale * newScale;
+    mArenaMaxPos.x = mArenaMaxPos.x / oldScale * newScale;
+    mArenaMaxPos.y = mArenaMaxPos.y / oldScale * newScale;
 
     mFireballWidth = mFireballWidth / oldScale * newScale;
     mFireBallHeight = mFireBallHeight / oldScale * newScale;

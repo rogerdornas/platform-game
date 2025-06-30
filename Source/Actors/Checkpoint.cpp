@@ -6,6 +6,7 @@
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../UIElements/UIScreen.h"
 
 Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 position)
@@ -15,6 +16,7 @@ Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 posi
     ,mStoreOpened(false)
     ,mStoreMessageOpened(false)
     ,mDrawPolygonComponent(nullptr)
+    ,mDrawAnimatedComponent(nullptr)
 {
     SetPosition(position);
 
@@ -29,8 +31,17 @@ Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 posi
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
+    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
     mAABBComponent = new AABBComponent(this, v1, v3);
+
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.1f, mHeight * 1.1f,
+                                            "../Assets/Sprites/CheckPoint/CheckPoint.png", "../Assets/Sprites/CheckPoint/CheckPoint.json", 1);
+
+    std::vector<int> idle = {0, 1, 2, 3, 4, 5};
+    mDrawAnimatedComponent->AddAnimation("idle", idle);
+
+    mDrawAnimatedComponent->SetAnimation("idle");
+    mDrawAnimatedComponent->SetAnimFPS(10.0f);
 }
 
 
@@ -61,7 +72,8 @@ void Checkpoint::OnUpdate(float deltaTime) {
     }
 
     if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
-        mGame->SetCheckPointPosition(GetPosition() + Vector2(-mWidth * 0.8, mHeight / 2));
+        // mGame->SetCheckPointPosition(GetPosition() + Vector2(-mWidth * 0.8, mHeight / 2));
+        mGame->SetCheckPointPosition(GetPosition());
         mGame->SetCheckPointMoney(player->GetMoney());
         player->ResetHealthPoints();
         player->ResetMana();
@@ -88,6 +100,11 @@ void Checkpoint::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
+
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.1f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.1f);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="450" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="179">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="450" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="184">
  <editorsettings>
   <export target="Run.json" format="json"/>
  </editorsettings>
@@ -649,15 +649,12 @@
   <object id="161" name="Ground" x="7712" y="3296" width="128" height="32"/>
   <object id="175" x="13472" y="2848" width="160" height="1312"/>
  </objectgroup>
- <objectgroup id="3" name="Player">
-  <object id="18" name="Player" x="8832" y="3392" width="32" height="32"/>
- </objectgroup>
  <objectgroup id="7" name="Checkpoint">
-  <object id="56" name="Checkpoint" x="800" y="2976" width="224" height="224"/>
-  <object id="69" name="Checkpoint" x="4576" y="2176" width="224" height="224"/>
-  <object id="115" name="Checkpoint" x="8256" y="2144" width="224" height="224"/>
-  <object id="118" name="Checkpoint" x="8928" y="3200" width="224" height="224"/>
-  <object id="174" name="Checkpoint" x="11936" y="3200" width="224" height="224"/>
+  <object id="56" name="Checkpoint" x="608" y="3008" width="416" height="192"/>
+  <object id="179" name="Checkpoint" x="4544" y="2208" width="416" height="192"/>
+  <object id="180" name="Checkpoint" x="8128" y="2176" width="416" height="192"/>
+  <object id="181" name="Checkpoint" x="8800" y="3232" width="416" height="192"/>
+  <object id="182" name="Checkpoint" x="11968" y="3232" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="4" name="Enemies">
   <object id="61" name="Enemy Simple" x="2144" y="2880" width="32" height="32"/>
@@ -696,5 +693,8 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="3" name="Player">
+  <object id="18" name="Player" x="1184" y="3168" width="32" height="32"/>
  </objectgroup>
 </map>

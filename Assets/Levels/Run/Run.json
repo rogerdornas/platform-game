@@ -2125,85 +2125,63 @@
         }, 
         {
          "draworder":"topdown",
-         "id":3,
-         "name":"Player",
-         "objects":[
-                {
-                 "height":32,
-                 "id":18,
-                 "name":"Player",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":8832,
-                 "y":3392
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":7,
          "name":"Checkpoint",
          "objects":[
                 {
-                 "height":224,
+                 "height":192,
                  "id":56,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":800,
-                 "y":2976
+                 "width":416,
+                 "x":608,
+                 "y":3008
                 }, 
                 {
-                 "height":224,
-                 "id":69,
+                 "height":192,
+                 "id":179,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":4576,
+                 "width":416,
+                 "x":4544,
+                 "y":2208
+                }, 
+                {
+                 "height":192,
+                 "id":180,
+                 "name":"Checkpoint",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":416,
+                 "x":8128,
                  "y":2176
                 }, 
                 {
-                 "height":224,
-                 "id":115,
+                 "height":192,
+                 "id":181,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":8256,
-                 "y":2144
+                 "width":416,
+                 "x":8800,
+                 "y":3232
                 }, 
                 {
-                 "height":224,
-                 "id":118,
+                 "height":192,
+                 "id":182,
                  "name":"Checkpoint",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":224,
-                 "x":8928,
-                 "y":3200
-                }, 
-                {
-                 "height":224,
-                 "id":174,
-                 "name":"Checkpoint",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":224,
-                 "x":11936,
-                 "y":3200
+                 "width":416,
+                 "x":11968,
+                 "y":3232
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2500,9 +2478,31 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Player",
+         "objects":[
+                {
+                 "height":32,
+                 "id":18,
+                 "name":"Player",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1184,
+                 "y":3168
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":179,
+ "nextobjectid":184,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
