@@ -229,6 +229,7 @@ void Game::ChangeScene()
     mAudio->StopAllSounds();
 
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
+    const std::string levelsAssets = "../Assets/Levels/";
 
     if (mNextScene != GameScene::MainMenu) {
         // Pool de Fireballs
@@ -290,9 +291,6 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::LevelTeste) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
-
-        const std::string levelsAssets = "../Assets/Levels/";
-
         LoadLevel(levelsAssets + "Forest/Forest.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -308,9 +306,6 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level1) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
-
-        const std::string levelsAssets = "../Assets/Levels/";
-
         LoadLevel(levelsAssets + "Level1/Level1.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -326,9 +321,6 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level2) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "Run-Background.png");
-
-        const std::string levelsAssets = "../Assets/Levels/";
-
         LoadLevel(levelsAssets + "Run/Run.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -342,9 +334,6 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level3) {
         mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
-
-        const std::string levelsAssets = "../Assets/Levels/";
-
         LoadLevel(levelsAssets + "Musgo/Musgo.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -358,10 +347,7 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level4) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
-
-        const std::string levelsAssets = "../Assets/Levels/";
-
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Pain-Background.png");
         LoadLevel(levelsAssets + "Pain/Pain.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -372,7 +358,6 @@ void Game::ChangeScene()
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
         mBossMusic.Reset();
     }
-
 
     // Set new scene
     mGameScene = mNextScene;
