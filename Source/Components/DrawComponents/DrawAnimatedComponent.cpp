@@ -12,8 +12,7 @@ DrawAnimatedComponent::DrawAnimatedComponent(Actor* owner, float width, float he
                                              const std::string &spriteSheetPath, const std::string &spriteSheetData,
                                              int drawOrder)
     :DrawSpriteComponent(owner, spriteSheetPath, width, height, drawOrder)
-    ,mIsBlinking(false)
-    ,mTransparency(127)
+    ,mTransparency(255)
     ,mUseFlip(false)
     ,mFlip(SDL_FLIP_NONE)
     ,mUseRotation(false)
@@ -72,28 +71,26 @@ void DrawAnimatedComponent::Draw(SDL_Renderer* renderer)
         mFlip = SDL_FLIP_NONE;
     }
 
-    // Define o flip (espelhamento) baseado na escala
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
-    if (GetOwner()->GetRotation() == Math::Pi) {
-        flip = SDL_FLIP_HORIZONTAL;
-    }
+
 
     float angle = 0;
     if (mUseRotation) {
         angle = Math::ToDegrees(GetOwner()->GetRotation()) + mOffsetRotation;
     }
-
-    if (mIsBlinking) {
-        mTransparency += 128;
-        mTransparency = mTransparency % 256;
-    }
     else {
-        mTransparency = 255;
+        // Define o flip (espelhamento) baseado na escala
+        SDL_RendererFlip flip = SDL_FLIP_NONE;
+        if (GetOwner()->GetRotation() == Math::Pi) {
+            flip = SDL_FLIP_HORIZONTAL;
+        }
+        if (mFlip == SDL_FLIP_NONE) {
+            mFlip = flip;
+        }
     }
 
-    if (mFlip == SDL_FLIP_NONE) {
-        mFlip = flip;
-    }
+    // if (mFlip == SDL_FLIP_NONE) {
+    //     mFlip = flip;
+    // }
 
     SDL_SetTextureBlendMode(mSpriteSheetSurface, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(mSpriteSheetSurface, mTransparency);

@@ -117,7 +117,7 @@ void Fox::OnUpdate(float deltaTime) {
 
     if (mPlayerSpotted) {
         if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav"));
+            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav", true));
         }
         MovementAfterPlayerSpotted(deltaTime);
     }

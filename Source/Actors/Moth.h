@@ -15,7 +15,9 @@ public:
         Projectiles,
         SlowMotionProjectiles,
         CircleProjectiles,
-        FlyUp
+        BoostUp,
+        FlyUp,
+        Dying
     };
 
     Moth(Game* game, float width, float height, float moveSpeed, float healthPoints);
@@ -35,14 +37,32 @@ private:
     void Projectiles(float deltaTime);
     void SlowMotionProjectiles(float deltaTime);
     void CircleProjectiles(float deltaTime);
+    void BoostUp(float deltaTime);
     void FlyUp(float deltaTime);
+    void Dying(float deltaTime);
 
     void ChangeGround(float deltaTime);
 
     State mMothState;
+    bool mIsSlowMotion;
+    float mSlowMotionProbability;
 
     float mStopDuration;
     float mStopTimer;
+
+    float mHitDuration;
+    float mHitTimer;
+
+    float mDyingDuration;
+    float mDyingTimer;
+
+    float mBoostUpDuration;
+    float mBoostUpTimer;
+    bool mAlreadyBoosted;
+
+    float mAttackDuration;
+    float mAttackTimer;
+    bool mAttackAnimation;
 
     float mProjectileWidth;
     float mProjectileHeight;
@@ -51,6 +71,8 @@ private:
     int mCountProjectiles;
     float mDurationBetweenProjectiles;
     float mTimerBetweenProjectiles;
+
+    int mProjectilesStartDirection;
 
     float mCircleProjectileWidth;
     float mCircleProjectileHeight;

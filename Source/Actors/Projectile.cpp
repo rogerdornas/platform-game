@@ -11,8 +11,9 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-Projectile::Projectile(class Game *game, float width, float height, float speed, float damage)
+Projectile::Projectile(class Game *game, ProjectileType type, float width, float height, float speed, float damage)
     :Actor(game)
+    ,mProjectileType(type)
     ,mWidth(width)
     ,mHeight(height)
     ,mSpeed(speed)
@@ -23,6 +24,29 @@ Projectile::Projectile(class Game *game, float width, float height, float speed,
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
 {
+    std::vector<int> firing;
+    switch (mProjectileType) {
+        case ProjectileType::Acid:
+            mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/AcidBlob/AcidBlob.png", "../Assets/Sprites/AcidBlob/AcidBlob.json", 1001);
+
+            firing = {0, 1, 2, 3, 4, 5, 6};
+            mDrawAnimatedComponent->AddAnimation("firing", firing);
+
+            mDrawAnimatedComponent->SetAnimation("firing");
+            mDrawAnimatedComponent->SetAnimFPS(8.0f);
+            break;
+
+        case ProjectileType::OrangeBall:
+            mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.2f, mHeight * 2.2f, "../Assets/Sprites/FinalBossProjectile2/Projectile.png", "../Assets/Sprites/FinalBossProjectile2/Projectile.json", 1001);
+
+            firing = {0, 1, 2, 3, 4, 5};
+            mDrawAnimatedComponent->AddAnimation("firing", firing);
+
+            mDrawAnimatedComponent->SetAnimation("firing");
+            mDrawAnimatedComponent->SetAnimFPS(8.0f);
+            break;
+    }
+
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
     Vector2 v3(mWidth/2, mHeight/2);
@@ -36,14 +60,6 @@ Projectile::Projectile(class Game *game, float width, float height, float speed,
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
     // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth * 1.2, mHeight * 1.2);
-
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/AcidBlob/AcidBlob.png", "../Assets/Sprites/AcidBlob/AcidBlob.json", 1001);
-
-    std::vector<int> firing = {0, 1, 2, 3, 4, 5, 6};
-    mDrawAnimatedComponent->AddAnimation("firing", firing);
-
-    mDrawAnimatedComponent->SetAnimation("firing");
-    mDrawAnimatedComponent->SetAnimFPS(8.0f);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3);
@@ -73,7 +89,12 @@ void Projectile::ExplosionEffect() {
     explosion->SetEmitDirection(Vector2::Zero);
     explosion->SetIsSplash(true);
     explosion->SetParticleSpeedScale(1);
-    explosion->SetParticleColor(SDL_Color{208, 232, 92, 255});
+    if (mProjectileType == ProjectileType::Acid) {
+        explosion->SetParticleColor(SDL_Color{208, 232, 92, 255});
+    }
+    if (mProjectileType == ProjectileType::OrangeBall) {
+        explosion->SetParticleColor(SDL_Color{218, 147, 16, 255});
+    }
     explosion->SetParticleGravity(false);
 }
 

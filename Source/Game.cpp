@@ -24,6 +24,7 @@
 #include "Actors/Trigger.h"
 #include "Actors/Fairy.h"
 #include "Actors/FlyingShooterEnemy.h"
+#include "Actors/Golem.h"
 #include "Actors/Mantis.h"
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
@@ -68,6 +69,9 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mHitstopActive(false)
     ,mHitstopDuration(0.15f)
     ,mHitstopTimer(0.0f)
+    ,mHitstopDelayActive(false)
+    ,mHitstopDelayDuration(0.01f)
+    ,mHitstopDelayTimer(0.0f)
     ,mIsSlowMotion(false)
     ,mIsAccelerated(false)
     ,mCheckpointPosition(Vector2::Zero)
@@ -76,10 +80,11 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mIsPlayingOnKeyboard(true)
     ,mLeftStickYState(StickState::Neutral)
     ,mBackGroundTexture(nullptr)
-    ,mSky(nullptr)
-    ,mMountains(nullptr)
-    ,mTreesBack(nullptr)
-    ,mTreesFront(nullptr)
+    ,mBackGroundTextureMainMenu(nullptr)
+    ,mBackGroundTextureLevel1(nullptr)
+    ,mBackGroundTextureLevel3(nullptr)
+    ,mBackGroundTextureLevel4(nullptr)
+    ,mUseParallaxBackground(false)
     ,mAudio(nullptr)
     ,mHUD(nullptr)
     ,mPauseMenu(nullptr)
@@ -89,7 +94,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level1)
+    ,mContinueScene(GameScene::Level2)
 {
 }
 
@@ -169,7 +174,34 @@ bool Game::Initialize()
 
     Random::Init();
 
+    // Load Audios
     mAudio = new AudioSystem(16);
+    mAudio->CacheSound("Hornet.wav");
+    mAudio->CacheSound("MantisLords.wav");
+    mAudio->CacheSound("HollowKnight.wav");
+
+    // Load Background Images
+    const std::string backgroundAssets = "../Assets/Sprites/Background/";
+
+    // mBackGroundTextureMainMenu = LoadTexture(backgroundAssets + "Menu6.png");
+    //
+    // mBackGroundTextureLevel1 = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+    // mBackGroundTextureLevel3 = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+    // mBackGroundTextureLevel4 = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
+
+    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/7.png"));
+    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/6.png"));
+    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/5.png"));
+    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/4.png"));
+    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/3.png"));
+    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/2.png"));
+    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/1.png"));
+
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/1.png"));
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/2.png"));
+    // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/3.png"));
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/4.png"));
+    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/5.png"));
 
     mTicksCount = SDL_GetTicks();
 
@@ -218,6 +250,8 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime)
 
 void Game::ResetGameScene(float transitionTime)
 {
+    mIsAccelerated = false;
+    mIsSlowMotion = false;
     SetGameScene(mGameScene, transitionTime);
 }
 
@@ -225,6 +259,9 @@ void Game::ChangeScene()
 {
     // Unload current Scene
     UnloadScene();
+
+    mIsSlowMotion = false;
+    mIsAccelerated = false;
 
     mAudio->StopAllSounds();
 
@@ -243,8 +280,11 @@ void Game::ChangeScene()
         }
 
         // Pool de Projectiles
-        for (int i = 0; i < 60; i++) {
-            new Projectile(this);
+        for (int i = 0; i < 50; i++) {
+            new Projectile(this, Projectile::ProjectileType::Acid);
+        }
+        for (int i = 0; i < 50; i++) {
+            new Projectile(this, Projectile::ProjectileType::OrangeBall);
         }
 
         // Pool de Moneys
@@ -279,6 +319,7 @@ void Game::ChangeScene()
 
     // Scene Manager FSM: using if/else instead of switch
     if (mNextScene == GameScene::MainMenu) {
+        mUseParallaxBackground = false;
         mGamePlayState = GamePlayState::Menu;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Menu6.png");
 
@@ -290,6 +331,8 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::LevelTeste) {
+        mUseParallaxBackground = false;
+        mUseParallaxBackground = true;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
         LoadLevel(levelsAssets + "Forest/Forest.json");
 
@@ -300,11 +343,10 @@ void Game::ChangeScene()
 
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
         mBossMusic.Reset();
-        mAudio->CacheSound("Hornet.wav");
-        mAudio->CacheSound("MantisLords.wav");
     }
 
     else if (mNextScene == GameScene::Level1) {
+        mUseParallaxBackground = false;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
         LoadLevel(levelsAssets + "Level1/Level1.json");
 
@@ -315,8 +357,6 @@ void Game::ChangeScene()
 
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
         mBossMusic.Reset();
-        mAudio->CacheSound("Hornet.wav");
-        mAudio->CacheSound("MantisLords.wav");
     }
 
     else if (mNextScene == GameScene::Level2) {
@@ -333,6 +373,7 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level3) {
+        mUseParallaxBackground = true;
         mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
         LoadLevel(levelsAssets + "Musgo/Musgo.json");
 
@@ -343,7 +384,6 @@ void Game::ChangeScene()
 
         mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
         mBossMusic.Reset();
-        mAudio->CacheSound("MantisLords.wav");
     }
 
     else if (mNextScene == GameScene::Level4) {
@@ -384,7 +424,7 @@ void Game::LoadMainMenu() {
         delete mStore;
         mStore = nullptr;
         mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
-});
+    });
 
     name = "OPÇÕES";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -510,10 +550,16 @@ void Game::LoadOptionsMenu() {
     text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
     text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
 
-    name = "CONTROLES";
+    name = "TECLADO";
     button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 4.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
+        LoadKeyBoardMenu();
+    }, textPos);
 
+    name = "CONTROLE";
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 6.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        LoadControlMenu();
     }, textPos);
 
     name = "VOLTAR";
@@ -522,6 +568,48 @@ void Game::LoadOptionsMenu() {
         mOptionsMenu->Close();
     });
 }
+
+void Game::LoadControlMenu() {
+    mControlMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mControlMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
+    mControlMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    Vector2 buttonSize = Vector2(mControlMenu->GetSize().x * 0.8f, 50 * mScale);
+    Vector2 buttonPos = Vector2(mControlMenu->GetSize().x * 0.1f, 0);
+
+    mControlMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
+    mControlMenu->AddImage("../Assets/Sprites/Menus/Controles.png", Vector2::Zero, mOptionsMenu->GetSize());
+
+    std::string name;
+    int buttonPointSize = static_cast<int>(34 * mScale);
+
+    name = "VOLTAR";
+    mControlMenu->AddButton(name, buttonPos + Vector2(0, mControlMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mControlMenu->Close();
+    });
+}
+
+void Game::LoadKeyBoardMenu() {
+    mKeyboardMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mKeyboardMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
+    mKeyboardMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    Vector2 buttonSize = Vector2(mKeyboardMenu->GetSize().x * 0.8f, 50 * mScale);
+    Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0);
+
+    mKeyboardMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
+
+    std::string name;
+    int buttonPointSize = static_cast<int>(34 * mScale);
+
+
+    name = "VOLTAR";
+    mKeyboardMenu->AddButton(name, buttonPos + Vector2(0, mKeyboardMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mKeyboardMenu->Close();
+    });
+}
+
+
 
 void Game::LoadObjects(const std::string &fileName) {
     std::ifstream file(fileName);
@@ -827,9 +915,36 @@ void Game::LoadObjects(const std::string &fileName) {
                     frog->SetUnlockGroundsIds(ids);
                 }
                 else if (name == "Moth") {
-                    auto* moth = new Moth(this, 400, 340, 500, 1500);
+                    auto* moth = new Moth(this, 200, 200, 500, 1500);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
+                }
+                else if (name == "Golem") {
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "MinPosX") {
+                                MinPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosX") {
+                                MaxPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MinPosY") {
+                                MinPosY =static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosY") {
+                                MaxPosY = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "UnlockGrounds") {
+                                grounds = prop["value"];
+                            }
+                        }
+                    }
+                    auto* golem = new Golem(this, 144, 190, 600, 400);
+                    golem->SetPosition(Vector2(x, y));
+                    golem->SetId(id);
+                    golem->SetArenaMinPos(Vector2(MinPosX, MinPosY));
+                    golem->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                 }
             }
         }
@@ -851,7 +966,6 @@ void Game::LoadObjects(const std::string &fileName) {
                 if (mPlayer) {
                     mPlayer->SetSword();
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
-                    mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsBlinking(false);
 
                     // Faz isso para o player ser sempre o último a ser atualizado a cada frame
                     RemoveActor(mPlayer);
@@ -1149,12 +1263,15 @@ void Game::ProcessInput()
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    if (!mIsPaused)
-    {
-        if (mHitstopActive) {}
-        else
-            for (auto actor: mActors)
-                actor->ProcessInput(state, *mController);
+    if (mGamePlayState == GamePlayState::Playing) {
+        if (!mIsPaused) {
+            if (mHitstopActive) {}
+            else {
+                for (auto actor: mActors) {
+                    actor->ProcessInput(state, *mController);
+                }
+            }
+        }
     }
 }
 
@@ -1206,29 +1323,38 @@ void Game::UpdateGame()
         deltaTime *= 0.5;
     }
     if (mIsAccelerated) {
-        deltaTime *= 1.3;
+        deltaTime *= 1.5;
     }
 
     SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255); // Usado para deixar as bordas em preto
     SDL_RenderClear(mRenderer);
 
     // Update all actors and pending actors
-    if (!mIsPaused)
-    {
-        if (mHitstopActive)
-        {
-            if (mHitstopTimer < mHitstopDuration) {
-                mHitstopTimer += deltaTime;
+    if (mGamePlayState == GamePlayState::Playing) {
+        if (!mIsPaused) {
+            if (mHitstopDelayActive) {
+                if (mHitstopDelayTimer < mHitstopDelayDuration) {
+                    mHitstopDelayTimer += deltaTime;
+                }
+                else {
+                    mHitstopDelayActive = false;
+                    mHitstopActive = true;
+                }
+            }
+            if (mHitstopActive) {
+                if (mHitstopTimer < mHitstopDuration) {
+                    mHitstopTimer += deltaTime;
+                }
+                else {
+                    mHitstopActive = false;
+                }
             }
             else {
-                mHitstopActive = false;
+                UpdateActors(deltaTime);
+                // if (mHUD) {
+                //     mHUD->Update(deltaTime);
+                // }
             }
-        }
-        else {
-            UpdateActors(deltaTime);
-            // if (mHUD) {
-            //     mHUD->Update(deltaTime);
-            // }
         }
     }
 
@@ -1255,7 +1381,7 @@ void Game::UpdateGame()
         }
     }
 
-    if (mGamePlayState == GamePlayState::Playing) {
+    if (mGamePlayState == GamePlayState::Playing || mGamePlayState == GamePlayState::LevelComplete) {
         // Esconde o cursor
         SDL_ShowCursor(SDL_DISABLE);
     }
@@ -1485,7 +1611,27 @@ void Game::GenerateOutput()
     SDL_RenderClear(mRenderer);
 
     if (mCamera) {
-        DrawParallaxBackground(); // desenha o fundo com repetição horizontal
+        if (mUseParallaxBackground) {
+            switch (mGameScene) {
+                case GameScene::LevelTeste:
+                    DrawParallaxLayers(mBackgroundLayersLevel2);
+                break;
+
+                case GameScene::Level2:
+                    DrawParallaxLayers(mBackgroundLayersLevel2);
+                    break;
+
+                case GameScene::Level3:
+                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        else {
+            DrawParallaxBackground(mBackGroundTexture); // desenha o fundo com repetição horizontal
+        }
         // Ordem de desenho: mais distantes primeiro
         // DrawParallaxLayer(mSky,        0.1f, 0, mWindowHeight / 2);  // camada mais distante
         // DrawParallaxLayer(mMountains,  0.3f, mWindowHeight / 4, mWindowHeight / 3);  // montanhas ao fundo
@@ -1656,6 +1802,41 @@ void Game::Shutdown()
 
     mFonts.clear();
 
+    // Destroi textures
+    if (mBackGroundTextureMainMenu) {
+        SDL_DestroyTexture(mBackGroundTextureMainMenu);
+        mBackGroundTextureMainMenu = nullptr;
+    }
+    if (mBackGroundTextureLevel1) {
+        SDL_DestroyTexture(mBackGroundTextureLevel1);
+        mBackGroundTextureLevel1 = nullptr;
+    }
+    for (SDL_Texture*& t : mBackgroundLayersLevel2) {
+        if (t) {
+            SDL_DestroyTexture(t);
+            t = nullptr;
+        }
+    }
+    mBackgroundLayersLevel2.clear();
+
+    for (SDL_Texture*& t : mBackgroundLayersLevel3) {
+        if (t) {
+            SDL_DestroyTexture(t);
+            t = nullptr;
+        }
+    }
+    mBackgroundLayersLevel3.clear();
+
+    if (mBackGroundTextureLevel3) {
+        SDL_DestroyTexture(mBackGroundTextureLevel3);
+        mBackGroundTextureLevel3 = nullptr;
+    }
+    if (mBackGroundTextureLevel4) {
+        SDL_DestroyTexture(mBackGroundTextureLevel4);
+        mBackGroundTextureLevel4 = nullptr;
+    }
+
+    // Destroi audio
     delete mAudio;
     mAudio = nullptr;
 
@@ -1670,12 +1851,12 @@ void Game::Shutdown()
     SDL_Quit();
 }
 
-void Game::DrawParallaxBackground()
+void Game::DrawParallaxBackground(SDL_Texture* background)
 {
     float parallaxFactor = 0.55f; // fundo se move mais devagar que a câmera
 
     int bgWidth, bgHeight;
-    SDL_QueryTexture(mBackGroundTexture, nullptr, nullptr, &bgWidth, &bgHeight);
+    SDL_QueryTexture(background, nullptr, nullptr, &bgWidth, &bgHeight);
     bgWidth *= mScale;
     bgHeight *= mScale;
     // Calcula o offset horizontal com base na câmera
@@ -1692,7 +1873,7 @@ void Game::DrawParallaxBackground()
             static_cast<int>(mLogicalWindowHeight)
         };
 
-        SDL_RenderCopy(mRenderer, mBackGroundTexture, nullptr, &dest);
+        SDL_RenderCopy(mRenderer, background, nullptr, &dest);
     }
 }
 
@@ -1700,6 +1881,8 @@ void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, 
 {
     int texW, texH;
     SDL_QueryTexture(texture, nullptr, nullptr, &texW, &texH);
+    texW *= mScale;
+    texH *= mScale;
 
     int offsetX = static_cast<int>(mCamera->GetPosCamera().x * parallaxFactor) % texW;
     if (offsetX < 0) offsetX += texW;
@@ -1711,9 +1894,37 @@ void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, 
             y,
             texW,
             h
+            // static_cast<int>(mLogicalWindowHeight)
         };
 
         SDL_RenderCopy(mRenderer, texture, nullptr, &dest);
+    }
+}
+
+void Game::DrawParallaxLayers(std::vector<SDL_Texture*> backgroundLayers)
+{
+    const int numLayers = static_cast<int>(backgroundLayers.size());
+    if (numLayers == 0) {
+        return;
+    }
+
+    // Parallax fator mínimo e máximo (fundo mais lento, frente mais rápido)
+    const float minFactor = 0.2f;  // fundo mais lento
+    const float maxFactor = 1.0f;  // frente acompanha totalmente a câmera
+
+    for (int i = 0; i < numLayers; ++i) {
+        // Fator de parallaxe crescente do fundo (min) até frente (max)
+        float t = static_cast<float>(i) / (numLayers - 1); // varia de 0 a 1
+        float parallaxFactor = minFactor + t * (maxFactor - minFactor);
+
+        SDL_Texture* texture = backgroundLayers[i];
+
+        // Defina altura Y e altura H conforme necessário
+        // Exemplo: tela inteira vertical
+        int y = 0;
+        int h = mLogicalWindowHeight;
+
+        DrawParallaxLayer(texture, parallaxFactor, y, h);
     }
 }
 

@@ -89,7 +89,7 @@ Player::Player(Game* game, float width, float height)
     ,mMaxHealthPoints(70.0f)
     ,mHealthPoints(mMaxHealthPoints)
     ,mIsInvulnerable(false)
-    ,mInvulnerableDuration(0.7f)
+    ,mInvulnerableDuration(0.8f)
     ,mInvulnerableTimer(mInvulnerableDuration)
     ,mMaxHealCount(3)
     ,mHealCount(mMaxHealCount)
@@ -102,6 +102,12 @@ Player::Player(Game* game, float width, float height)
     ,mStartMoney(0)
 
     ,mIsRunning(false)
+    ,mHurtDuration(0.2f)
+    ,mHurtTimer(mHurtDuration)
+    ,mBlink(false)
+    ,mBlinkDuration(0.03f)
+    ,mBlinkTimer(mBlinkDuration)
+
     ,mRunningSoundIntervalDuration(0.3f)
     ,mRunningSoundIntervalTimer(0.0f)
     ,mWasOnGround(false)
@@ -149,11 +155,29 @@ Player::Player(Game* game, float width, float height)
                                                        "../Assets/Sprites/Esquilo/Esquilo.png",
                                                        "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    std::vector idle = {6};
+    std::vector idle = {3};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector run = {0, 1, 2, 3, 4, 5};
+    std::vector dash = {0, 1, 1, 1, 2};
+    mDrawAnimatedComponent->AddAnimation("dash", dash);
+
+    std::vector run = {4, 5, 6, 7, 8, 9};
     mDrawAnimatedComponent->AddAnimation("run", run);
+
+    std::vector flash = {10};
+    mDrawAnimatedComponent->AddAnimation("flash", flash);
+
+    std::vector hurt = {11, 12};
+    mDrawAnimatedComponent->AddAnimation("hurt", hurt);
+
+    std::vector jumpUp = {13};
+    mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
+
+    std::vector jumpApex = {14};
+    mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
+
+    std::vector falling = {15};
+    mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
     mDrawAnimatedComponent->SetAnimFPS(10.0f);
@@ -478,7 +502,6 @@ void Player::OnUpdate(float deltaTime) {
     }
     else {
         mIsInvulnerable = false;
-        mDrawAnimatedComponent->SetIsBlinking(false);
     }
 
     if (mMana < mMaxMana) {
@@ -496,6 +519,20 @@ void Player::OnUpdate(float deltaTime) {
     mTimerToLeaveWallSlidingRight += mTryingLeavingWallSlideRight * deltaTime;
 
     mWallJumpTimer += deltaTime;
+
+    // Controla animação de levar dano
+    if (mHurtTimer < mHurtDuration) {
+        mHurtTimer += deltaTime;
+    }
+    else {
+        if (mIsInvulnerable) {
+            mBlinkTimer += deltaTime;
+            if (mBlinkTimer >= mBlinkDuration) {
+                mBlink = !mBlink;
+                mBlinkTimer -= mBlinkDuration;
+            }
+        }
+    }
 
     mIsOnGround = false;
     mIsOnMovingGround = false;
@@ -567,7 +604,7 @@ void Player::OnUpdate(float deltaTime) {
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
         mKnockBackTimer = mKnockBackDuration;
         mInvulnerableTimer = mInvulnerableDuration;
-        mDrawAnimatedComponent->SetIsBlinking(false);
+        mHurtTimer = mHurtDuration * 0.9f;
         mAABBComponent->SetActive(false);
         mGame->SetResetLevel();
         mGame->GetAudio()->StopAllSounds();
@@ -712,7 +749,32 @@ void Player::ResolveGroundCollision() {
                             grass->SetEmitDirection(mSword->GetForward() * -1);
                             grass->SetIsSplash(true);
                             grass->SetParticleSpeedScale(0.5);
-                            grass->SetParticleColor(SDL_Color{80, 148, 45, 255});
+                            SDL_Color color;
+                            switch (mGame->GetGameScene()) {
+                                case Game::GameScene::LevelTeste:
+                                    color = {80, 148, 45, 255};
+                                    break;
+
+                                case Game::GameScene::Level1:
+                                    color = {80, 148, 45, 255};
+                                    break;
+
+                                case Game::GameScene::Level2:
+                                    color = {102, 114, 145, 255};
+                                    break;
+
+                                case Game::GameScene::Level3:
+                                    color = {80, 148, 45, 255};
+                                    break;
+
+                                case Game::GameScene::Level4:
+                                    color = {80, 148, 45, 255};
+                                    break;
+                                default:
+                                    color = {80, 148, 45, 255};
+                                    break;
+                            }
+                            grass->SetParticleColor(color);
                             grass->SetParticleGravity(true);
                             mSwordHitGround = true;
                         }
@@ -861,22 +923,52 @@ void Player::ResolveEnemyCollision() {
 }
 
 void Player::ManageAnimations() {
-    if (mIsRunning && mIsOnGround) {
+    if (mHurtTimer < mHurtDuration) {
+        mDrawAnimatedComponent->SetAnimation("hurt");
+    }
+    else if (mDashComponent->GetIsDashing()) {
+        mDrawAnimatedComponent->SetAnimation("dash");
+    }
+    else if (mIsRunning && mIsOnGround) {
         mDrawAnimatedComponent->SetAnimation("run");
+    }
+    else if (!mIsOnGround && !mIsWallSliding) {
+        if (mRigidBodyComponent->GetVelocity().y < -200 * mGame->GetScale()) {
+            mDrawAnimatedComponent->SetAnimation("jumpUp");
+        }
+        if (mRigidBodyComponent->GetVelocity().y > 200 * mGame->GetScale()) {
+            mDrawAnimatedComponent->SetAnimation("falling");
+        }
+        if (mRigidBodyComponent->GetVelocity().y > -200 * mGame->GetScale() &&
+            mRigidBodyComponent->GetVelocity().y < 200 * mGame->GetScale())
+        {
+            mDrawAnimatedComponent->SetAnimation("jumpApex");
+        }
     }
     else {
         mDrawAnimatedComponent->SetAnimation("idle");
     }
 
-    // if (mDashComponent->GetIsDashing()) {
-    //     mDrawAnimatedComponent->SetAnimation("dash");
-    // }
+    if (mIsInvulnerable && mHurtTimer > mHurtDuration) {
+        if (mBlink) {
+            mDrawAnimatedComponent->SetTransparency(100);
+        }
+        else {
+            mDrawAnimatedComponent->SetTransparency(255);
+        }
+    }
+    else {
+        mDrawAnimatedComponent->SetTransparency(255);
+    }
 }
 
 
 void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
     if (!mIsInvulnerable) {
         mHealthPoints -= damage;
+        mIsInvulnerable = true;
+        mHurtTimer = 0;
+        mDrawAnimatedComponent->ResetAnimationTimer();
 
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         if (vel.Length() > 0) {
@@ -911,7 +1003,6 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
         mKnockBackTimer = 0;
         mInvulnerableTimer = 0;
         mGame->ActiveHitStop();
-        mDrawAnimatedComponent->SetIsBlinking(true);
         mHealAnimationTimer = 0;
         mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
         mGame->GetAudio()->PlaySound("Damage/Damage.wav");
