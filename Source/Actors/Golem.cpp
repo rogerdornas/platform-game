@@ -6,6 +6,7 @@
 #include "Effect.h"
 #include "Lever.h"
 #include "ParticleSystem.h"
+#include "Skill.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
@@ -364,6 +365,10 @@ void Golem::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
+    // Player ganha bola de fogo
+    auto* skill = new Skill(mGame, Skill::SkillType::FireBall);
+    skill->SetPosition(GetPosition());
+
     auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());
     blood->SetEmitDirection(Vector2::UnitY);
@@ -506,6 +511,10 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
     mIdleWidth = mIdleWidth / oldScale * newScale;
     mPunchSpriteWidth = mPunchSpriteWidth / oldScale * newScale;
     mPunchOffsetHitBox = mPunchOffsetHitBox / oldScale * newScale;
+    mArenaMinPos.x = mArenaMinPos.x / oldScale * newScale;
+    mArenaMinPos.y = mArenaMinPos.y / oldScale * newScale;
+    mArenaMaxPos.x = mArenaMaxPos.x / oldScale * newScale;
+    mArenaMaxPos.y = mArenaMaxPos.y / oldScale * newScale;
 
     mFireballWidth = mFireballWidth / oldScale * newScale;
     mFireBallHeight = mFireBallHeight / oldScale * newScale;

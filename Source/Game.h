@@ -31,6 +31,7 @@ public:
     enum class GameScene {
         MainMenu,
         LevelTeste,
+        Prologue,
         Level1,
         Level2,
         Level3,

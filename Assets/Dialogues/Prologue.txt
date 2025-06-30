@@ -1,0 +1,4 @@
+
+Esquilo: Oi, eu sou o esquilo!
+Esquilo: Quem é você?
+Bicho: Oi, eu sou o bicho!

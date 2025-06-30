@@ -19,6 +19,7 @@ public:
     void OnUpdate(float deltaTime) override;
 
     bool GetIsOnGround() const { return mIsOnGround; }
+    void SetMaxJumpsInAir(int jumps) { mMaxJumpsInAir = jumps; }
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
     Vector2 GetStartingPosition() const { return mStartingPosition; }
@@ -33,6 +34,8 @@ public:
     void SetSwordWidth(float width) { mSwordWidth = width; }
     void SetSwordHeight(float height) { mSwordHeight = height; }
     void SetSwordDamage(float damage) { mSwordDamage = damage; }
+
+    void SetCanDash(bool canDash) { mCanDash = canDash; }
 
     void ResetHealthPoints() { mHealthPoints = mMaxHealthPoints; }
     float GetHealthPoints() const { return mHealthPoints; }

@@ -17,9 +17,13 @@ public:
 private:
     float mHeight;
     float mWidth;
+    float mSpeed;
+    float mLerpSpeed;
+    Vector2 mOffsetPosition;
 
+    class RigidBodyComponent* mRigidBodyComponent;
+    class AABBComponent* mAABBComponent;
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;
     class DrawAnimatedComponent *mDrawAnimatedComponent;
-
 };

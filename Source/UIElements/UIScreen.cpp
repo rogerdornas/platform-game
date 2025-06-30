@@ -131,9 +131,9 @@ void UIScreen::Close()
 	mState = UIState::Closing;
 }
 
-UIText* UIScreen::AddText(const std::string &name, const Vector2 &pos, const Vector2 &dims, const int pointSize, const int unsigned wrapLength)
+UIText* UIScreen::AddText(const std::string &name, const Vector2 &pos, const Vector2 &dims, const int pointSize, Vector3 color, const int unsigned wrapLength)
 {
-    UIText* t = new UIText(name, mFont, pointSize, wrapLength, pos, dims, Color::White);
+    UIText* t = new UIText(name, mFont, pointSize, wrapLength, pos, dims, color);
 
     mTexts.emplace_back(t);
 
