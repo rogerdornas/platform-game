@@ -203,6 +203,14 @@ bool Game::Initialize()
     mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/4.png"));
     mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/5.png"));
 
+    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
+    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/2.png"));
+    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/3.png"));
+    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/4.png"));
+    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/5.png"));
+    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/6.png"));
+    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/7.png"));
+
     mTicksCount = SDL_GetTicks();
 
     SetGameScene(GameScene::MainMenu);
@@ -412,6 +420,29 @@ void Game::ChangeScene()
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
 
         LoadLevel(levelsAssets + "Pain/Pain.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
+    }
+
+    else if (mNextScene == GameScene::Level5) {
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Pain-Background.png");
+
+        mUseParallaxBackground = true;
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/7.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/6.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/5.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/4.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/3.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/2.png"));
+        // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
+
+        LoadLevel(levelsAssets + "Level5/Level5.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -943,7 +974,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     frog->SetUnlockGroundsIds(ids);
                 }
                 else if (name == "Moth") {
-                    auto* moth = new Moth(this, 200, 200, 500, 1500);
+                    auto* moth = new Moth(this, 200, 200, 500, 1200);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
                 }
@@ -1000,7 +1031,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     AddActor(mPlayer);
                 }
                 else {
-                    mPlayer = new Player(this, 50, 85);
+                    mPlayer = new Player(this, 60, 85);
                     mPlayer->SetPosition(Vector2(x, y));
                     mPlayer->SetStartingPosition(Vector2(x, y));
                     mCheckpointPosition = Vector2(x, y);
@@ -1651,6 +1682,14 @@ void Game::GenerateOutput()
 
                 case GameScene::Level3:
                     DrawParallaxLayers(mBackgroundLayersLevel3);
+                    break;
+
+                case GameScene::Level4:
+                    DrawParallaxLayers(mBackgroundLayersLevel4);
+                    break;
+
+                case GameScene::Level5:
+                    DrawParallaxLayers(mBackgroundLayersLevel4);
                     break;
 
                 default:

@@ -444,7 +444,8 @@ void Moth::BoostUp(float deltaTime) {
         mMothState = State::FlyUp;
         return;
     }
-    for (int id : {187}) {
+    // for (int id : {187}) {
+    for (int id : {20, 32, 33}) {
         Ground *g = mGame->GetGroundById(id);
         DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
         if (dynamicGround) {
@@ -463,7 +464,8 @@ void Moth::FlyUp(float deltaTime) {
         return;
     }
 
-    for (int id : {174, 176, 183, 184, 192, 193, 194}) {
+    // for (int id : {174, 176, 183, 184, 192, 193, 194}) {
+    for (int id : {16, 17, 18, 19, 22, 23, 24, }) {
         Ground *g = mGame->GetGroundById(id);
         DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
         if (dynamicGround) {
@@ -487,7 +489,8 @@ void Moth::ChangeGround(float deltaTime) {
     std::vector<Ground *> grounds = mGame->GetGrounds();
 
     if (mHealthPoints > 0.88f * mMaxHealthPoints && mHealthPoints <= 0.9f * mMaxHealthPoints) {
-        for (int id : {174, 176}) {
+        // for (int id : {174, 176}) {
+        for (int id : {16, 17}) {
             Ground *g = mGame->GetGroundById(id);
             DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
             if (dynamicGround) {
@@ -497,7 +500,8 @@ void Moth::ChangeGround(float deltaTime) {
     }
 
     if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
-        for (int id : {172}) {
+        // for (int id : {172}) {
+        for (int id : {15}) {
             Ground *g = mGame->GetGroundById(id);
             DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
             if (dynamicGround) {
@@ -507,7 +511,8 @@ void Moth::ChangeGround(float deltaTime) {
     }
 
     if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.7f * mMaxHealthPoints) {
-        for (int id : {172, 174, 176}) {
+        // for (int id : {172, 174, 176}) {
+        for (int id : {15, 16, 17}) {
             Ground *g = mGame->GetGroundById(id);
             DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
             if (dynamicGround) {

@@ -43,7 +43,7 @@ Player::Player(Game* game, float width, float height)
     ,mPrevSwordPressed(false)
     ,mSwordCooldownTimer(0.0f)
     ,mSwordCooldownDuration(0.4f)
-    ,mSwordWidth(mWidth * 3.6f)
+    ,mSwordWidth(mWidth * 3.0f)
     ,mSwordHeight(mHeight * 1.3f)
     ,mSwordDamage(10.0f)
     ,mSwordDirection(0)
@@ -151,32 +151,42 @@ Player::Player(Game* game, float width, float height)
 
     // Esquilo animado
     // mDrawAnimatedComponent = new DrawAnimatedComponent(this, 120, 120, "../Assets/Sprites/Esquilo/Esquilo.png", "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.5, mWidth * 2.5,
-                                                       "../Assets/Sprites/Esquilo/Esquilo.png",
-                                                       "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
+    // mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.5, mWidth * 2.5,
+    //                                                    "../Assets/Sprites/Esquilo/Esquilo.png",
+    //                                                    "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    std::vector idle = {3};
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.6f, mWidth * 3.6f / 1.8f,
+                                                   "../Assets/Sprites/Esquilo2/Esquilo.png",
+                                                   "../Assets/Sprites/Esquilo2/Esquilo.json", 1000);
+
+    std::vector idle = {10};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector dash = {0, 1, 1, 1, 2};
+    std::vector attackFront = {10, 0, 1};
+    mDrawAnimatedComponent->AddAnimation("attackFront", attackFront);
+
+    std::vector attackUp = {2, 3};
+    mDrawAnimatedComponent->AddAnimation("attackUp", attackUp);
+
+    std::vector dash = {4, 5, 5, 5, 6};
     mDrawAnimatedComponent->AddAnimation("dash", dash);
 
-    std::vector run = {4, 5, 6, 7, 8, 9};
+    std::vector run = {14, 15, 16, 17, 18, 19};
     mDrawAnimatedComponent->AddAnimation("run", run);
 
     std::vector flash = {10};
     mDrawAnimatedComponent->AddAnimation("flash", flash);
 
-    std::vector hurt = {11, 12};
+    std::vector hurt = {8, 9};
     mDrawAnimatedComponent->AddAnimation("hurt", hurt);
 
-    std::vector jumpUp = {13};
+    std::vector jumpUp = {11};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {14};
+    std::vector jumpApex = {12};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {15};
+    std::vector falling = {13};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -410,6 +420,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     // Sword
     // Detecta borda de descida da tecla K e cooldown pronto
     if (sword && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration) {
+        mDrawAnimatedComponent->ResetAnimationTimer();
         mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         // Ativa a espada
         mSword->SetState(ActorState::Active);
@@ -923,11 +934,24 @@ void Player::ResolveEnemyCollision() {
 }
 
 void Player::ManageAnimations() {
+    mDrawAnimatedComponent->SetAnimFPS(10.0f);
     if (mHurtTimer < mHurtDuration) {
         mDrawAnimatedComponent->SetAnimation("hurt");
     }
     else if (mDashComponent->GetIsDashing()) {
         mDrawAnimatedComponent->SetAnimation("dash");
+    }
+    else if (mSword->GetState() == ActorState::Active) {
+        if (mSwordDirection == 3 * Math::Pi / 2) {
+            mDrawAnimatedComponent->SetAnimation("attackUp");
+        }
+        if (mSwordDirection == Math::Pi / 2) {
+            mDrawAnimatedComponent->SetAnimation("attackFront");
+        }
+        if (mSwordDirection == 0 || mSwordDirection == Math::Pi) {
+            mDrawAnimatedComponent->SetAnimation("attackFront");
+        }
+        mDrawAnimatedComponent->SetAnimFPS(3.0f / 0.15f);
     }
     else if (mIsRunning && mIsOnGround) {
         mDrawAnimatedComponent->SetAnimation("run");
@@ -1038,8 +1062,8 @@ void Player::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 2.5f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 2.5f);
+    mDrawAnimatedComponent->SetWidth(mWidth * 3.6f);
+    mDrawAnimatedComponent->SetHeight(mWidth * 3.6f / 1.8f);
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

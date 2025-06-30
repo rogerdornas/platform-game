@@ -101,7 +101,7 @@ void Sword::OnUpdate(float deltaTime) {
                 mDrawAnimatedComponent->SetHeight(mHeight);
                 mDrawAnimatedComponent->UseRotation(false);
             }
-            offset = mWidth / 2;
+            offset = mWidth * 0.35;
         }
         else {
             Vector2 v1(-mHeight / 2, -mWidth / 2);
@@ -130,7 +130,7 @@ void Sword::OnUpdate(float deltaTime) {
                 mDrawAnimatedComponent->SetHeight(mHeight);
                 mDrawAnimatedComponent->UseRotation(true);
             }
-            offset = mWidth / 2;
+            offset = mWidth * 0.35;
         }
         SetPosition(Vector2(mOwner->GetPosition() + GetForward() * offset));
     }

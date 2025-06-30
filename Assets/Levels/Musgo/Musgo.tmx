@@ -1046,7 +1046,7 @@
   <object id="27" x="34304" y="6144" width="1184" height="1344">
    <properties>
     <property name="Event" value="ChangeScene"/>
-    <property name="Scene" value="LevelTeste"/>
+    <property name="Scene" value="Level4"/>
     <property name="Target" value="Game"/>
    </properties>
   </object>

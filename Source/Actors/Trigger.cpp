@@ -146,6 +146,10 @@ void Trigger::SetScene(std::string scene) {
         mScene = Game::GameScene::Level4;
         return;
     }
+    if (scene == "Level5") {
+        mScene = Game::GameScene::Level5;
+        return;
+    }
 }
 
 

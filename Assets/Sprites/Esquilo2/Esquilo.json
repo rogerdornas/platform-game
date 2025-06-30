@@ -1,0 +1,515 @@
+{
+  "frames": [
+    {
+      "filename": "AttackFront1.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "AttackFront2.png",
+      "frame": {
+        "x": 1,
+        "y": 53,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "AttackUp1.png",
+      "frame": {
+        "x": 93,
+        "y": 1,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "AttackUp2.png",
+      "frame": {
+        "x": 1,
+        "y": 105,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Dash1.png",
+      "frame": {
+        "x": 93,
+        "y": 53,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Dash2.png",
+      "frame": {
+        "x": 185,
+        "y": 1,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Dash3.png",
+      "frame": {
+        "x": 1,
+        "y": 157,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Flash.png",
+      "frame": {
+        "x": 93,
+        "y": 105,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Hurt1.png",
+      "frame": {
+        "x": 185,
+        "y": 53,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Hurt2.png",
+      "frame": {
+        "x": 277,
+        "y": 1,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle.png",
+      "frame": {
+        "x": 1,
+        "y": 209,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Jump1.png",
+      "frame": {
+        "x": 93,
+        "y": 157,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Jump2.png",
+      "frame": {
+        "x": 185,
+        "y": 105,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Jump3.png",
+      "frame": {
+        "x": 277,
+        "y": 53,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk1.png",
+      "frame": {
+        "x": 369,
+        "y": 1,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk2.png",
+      "frame": {
+        "x": 1,
+        "y": 261,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk3.png",
+      "frame": {
+        "x": 93,
+        "y": 209,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk4.png",
+      "frame": {
+        "x": 185,
+        "y": 157,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk5.png",
+      "frame": {
+        "x": 277,
+        "y": 105,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk6.png",
+      "frame": {
+        "x": 369,
+        "y": 53,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Esquilo.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 460,
+      "h": 312
+    },
+    "scale": 1
+  }
+}
