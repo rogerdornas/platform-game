@@ -3,26 +3,14 @@ Projeto final da disciplina **Desenvolvimento de Jogos Digitais**.
 
 ![image](https://github.com/user-attachments/assets/dff62205-1cec-4784-9bd3-ee78b1b385f0)
 ![image](https://github.com/user-attachments/assets/6958ade8-0e5b-4eb6-a9f4-da944d87f34f)
-![image](https://github.com/user-attachments/assets/0fbbc67a-036e-47d8-97cd-a27e8d55912a)
+![image](https://github.com/user-attachments/assets/a6f23b68-294b-4620-a0ae-981558644a18)
+
 
 Echoes of Elementum é um platformer 2D com foco em combate e elementos de metroidvania, inspirado por outros jogos de gênero similar como Hollow Knight, Dead Cells e Mega Man. O jogador percorre fases baseadas em diferentes biomas elementais, enfrentando inimigos, obstáculos de plataforma e bosses no final de cada fase. A cada vitória, o jogador desbloqueia uma nova habilidade que irá lhe permitir progredir pela próxima fase, até o fim do jogo.
 
 A cada fase vencida, o jogador desbloqueia novas habilidades (como ataque à distância, dash e pulo duplo), que se somam ao seu arsenal e passam a ser exigidas em desafios futuros. A movimentação rápida e o combate dinâmico são essenciais para progredir, com mecânicas como wall slide, ataques com espada e reinício de fases após a derrota.
 
 O jogo busca oferecer uma experiência desafiadora porém justa, voltada para jogadores intermediários de platformers. A vitória é alcançada ao derrotar todos os bosses e enfrentar o confronto final. Já a derrota ocorre caso o jogador seja eliminado em combate sem sucesso em retomar a fase.
-
-## Controles
-
-| Ação                     | Teclado                     | Controle
-|--------------------------|-----------------------------|------------------------------|
-| Mover para esquerda      | ← (Seta para esquerda)      | Left Stick ← ou D-Pad Left
-| Mover para direita       | → (Seta para direita)       | Left Stick → ou D-Pad Right
-| Olhar para cima          | ↑ (Seta para cima)          | Right Stick ↑ ou D-Pad Up
-| Olhar para baixo         | ↓ (Seta para baixo)         | Right Stick ↓ ou D-Pad Down
-| Pular                    | **Z**                       | **A**
-| Atacar                   | **X**                       | **X**
-| Dash (avanço rápido)     | **C**                       | **RB**
-| Ataque à distância       | **A**                       | **B**
 
 ## Funcionalidades a serem testadas
 
