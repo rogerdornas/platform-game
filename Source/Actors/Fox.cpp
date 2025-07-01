@@ -23,7 +23,7 @@
 Fox::Fox(Game* game, float width, float height, float moveSpeed, float healthPoints)
     :Enemy(game, width, height, moveSpeed, healthPoints, 10)
 {
-    mMoneyDrop = 50;
+    mMoneyDrop = 150;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;

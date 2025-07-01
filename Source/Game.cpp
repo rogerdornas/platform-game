@@ -307,7 +307,10 @@ void Game::ChangeScene()
         }
 
         // Companheiro
-        auto* fairy = new Fairy(this, 40, 40);
+        if (mGameScene != GameScene::Level5) {
+            SDL_Log("aqui");
+            auto* fairy = new Fairy(this, 40, 40);
+        }
 
         // Volta player
         if (mPlayer) {

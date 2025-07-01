@@ -98,7 +98,7 @@ Player::Player(Game* game, float width, float height)
     ,mHealAnimationDuration(1.0f)
     ,mHealAnimationTimer(0.0f)
 
-    ,mMoney(500)
+    ,mMoney(100)
     ,mStartMoney(0)
 
     ,mIsRunning(false)
@@ -779,8 +779,13 @@ void Player::ResolveGroundCollision() {
                                     break;
 
                                 case Game::GameScene::Level4:
-                                    color = {80, 148, 45, 255};
+                                    color = {98, 171, 212, 255};
                                     break;
+
+                                case Game::GameScene::Level5:
+                                    color = {98, 171, 212, 255};
+                                    break;
+
                                 default:
                                     color = {80, 148, 45, 255};
                                     break;

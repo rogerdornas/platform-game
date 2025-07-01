@@ -1074,7 +1074,7 @@
          "name":"Triggers",
          "objects":[
                 {
-                 "height":224,
+                 "height":288,
                  "id":1,
                  "name":"",
                  "properties":[
@@ -1096,9 +1096,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1504,
-                 "x":2656,
-                 "y":10432
+                 "width":1696,
+                 "x":2464,
+                 "y":10368
                 }, 
                 {
                  "height":192,

@@ -53,7 +53,7 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mFireballSpeed(1400 * mGame->GetScale())
     ,mFireballDamage(15)
 {
-    mMoneyDrop = 200;
+    mMoneyDrop = 50;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
