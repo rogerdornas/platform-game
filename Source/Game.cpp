@@ -94,7 +94,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level2)
+    ,mContinueScene(GameScene::Level5)
 {
 }
 
@@ -585,33 +585,33 @@ void Game::LoadOptionsMenu() {
         text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
     }
 
-    name = "RESOLUÇÃO";
-    Vector2 currentRes = mResolutions[mCurrentResolutionIndex];
-    optionValue = std::to_string(static_cast<int>(currentRes.x)) + "x" + std::to_string(static_cast<int>(currentRes.y));
-
-    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 3.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
-    [this]() {
-        mCurrentResolutionIndex = (mCurrentResolutionIndex + 1) % mResolutions.size();
-        Vector2 res = mResolutions[mCurrentResolutionIndex];
-
-        SDL_SetWindowFullscreen(mWindow, 0);  // sai do fullscreen se estiver
-        SDL_SetWindowSize(mWindow, static_cast<int>(res.x), static_cast<int>(res.y));
-        SDL_SetWindowPosition(mWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-
-        mOptionsMenu->Close();
-        LoadOptionsMenu();
-    }, textPos);
-    text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
+    // name = "RESOLUÇÃO";
+    // Vector2 currentRes = mResolutions[mCurrentResolutionIndex];
+    // optionValue = std::to_string(static_cast<int>(currentRes.x)) + "x" + std::to_string(static_cast<int>(currentRes.y));
+    //
+    // button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 3.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    // [this]() {
+    //     mCurrentResolutionIndex = (mCurrentResolutionIndex + 1) % mResolutions.size();
+    //     Vector2 res = mResolutions[mCurrentResolutionIndex];
+    //
+    //     SDL_SetWindowFullscreen(mWindow, 0);  // sai do fullscreen se estiver
+    //     SDL_SetWindowSize(mWindow, static_cast<int>(res.x), static_cast<int>(res.y));
+    //     SDL_SetWindowPosition(mWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    //
+    //     mOptionsMenu->Close();
+    //     LoadOptionsMenu();
+    // }, textPos);
+    // text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    // text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
 
     name = "TECLADO";
-    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 4.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 3.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         LoadKeyBoardMenu();
     }, textPos);
 
     name = "CONTROLE";
-    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 6.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 4.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         LoadControlMenu();
     }, textPos);
@@ -630,8 +630,8 @@ void Game::LoadControlMenu() {
     Vector2 buttonSize = Vector2(mControlMenu->GetSize().x * 0.8f, 50 * mScale);
     Vector2 buttonPos = Vector2(mControlMenu->GetSize().x * 0.1f, 0);
 
-    mControlMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
-    mControlMenu->AddImage("../Assets/Sprites/Menus/Controles.png", Vector2::Zero, mOptionsMenu->GetSize());
+    mControlMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mControlMenu->GetSize());
+    mControlMenu->AddImage("../Assets/Sprites/Menus/Control2.png", Vector2::Zero, Vector2(mControlMenu->GetSize().x, mControlMenu->GetSize().x / 1.9f));
 
     std::string name;
     int buttonPointSize = static_cast<int>(34 * mScale);
@@ -650,7 +650,8 @@ void Game::LoadKeyBoardMenu() {
     Vector2 buttonSize = Vector2(mKeyboardMenu->GetSize().x * 0.8f, 50 * mScale);
     Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0);
 
-    mKeyboardMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
+    mKeyboardMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mKeyboardMenu->GetSize());
+    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Keyboard2.png", Vector2(mKeyboardMenu->GetSize().x * 0.125f, 0), Vector2(mKeyboardMenu->GetSize().y * 1.4f, mKeyboardMenu->GetSize().y * 1.4f / 1.52f));
 
     std::string name;
     int buttonPointSize = static_cast<int>(34 * mScale);
@@ -910,17 +911,17 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::string grounds;
                 std::vector<int> ids;
                 if (name == "Enemy Simple") {
-                    auto* enemySimple = new EnemySimple(this, 53, 45, 200, 50);
+                    auto* enemySimple = new EnemySimple(this, 53, 45, 200, 30);
                     enemySimple->SetPosition(Vector2(x, y));
                     enemySimple->SetId(id);
                 }
                 else if (name == "Flying Enemy") {
-                    auto* flyingEnemySimple = new FlyingEnemySimple(this, 70, 70, 250, 70);
+                    auto* flyingEnemySimple = new FlyingEnemySimple(this, 70, 70, 250, 60);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                     flyingEnemySimple->SetId(id);
                 }
                 else if (name == "FlyingShooterEnemy") {
-                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 50);
+                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 70);
                     flyingShooterEnemy->SetPosition(Vector2(x, y));
                     flyingShooterEnemy->SetId(id);
                 }
@@ -939,7 +940,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto* fox = new Fox(this, 100, 170, 300, 200);
+                    auto* fox = new Fox(this, 100, 170, 300, 300);
                     fox->SetPosition(Vector2(x, y));
                     fox->SetId(id);
                     fox->SetUnlockGroundsIds(ids);
@@ -966,7 +967,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto* frog = new Frog(this, 165, 137, 300, 200);
+                    auto* frog = new Frog(this, 165, 137, 300, 350);
                     frog->SetPosition(Vector2(x, y));
                     frog->SetId(id);
                     frog->SetArenaMinPos(Vector2(MinPosX, MinPosY));
@@ -974,7 +975,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     frog->SetUnlockGroundsIds(ids);
                 }
                 else if (name == "Moth") {
-                    auto* moth = new Moth(this, 200, 200, 500, 1200);
+                    auto* moth = new Moth(this, 200, 200, 500, 1100);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
                 }

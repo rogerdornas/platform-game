@@ -193,7 +193,7 @@ void Moth::Stop(float deltaTime) {
         mStopTimer = 0;
 
         if (!mAlreadyBoosted) {
-            if (mHealthPoints <= 0.6f * mMaxHealthPoints) {
+            if (mHealthPoints <= 0.5f * mMaxHealthPoints) {
                 mDrawAnimatedComponent->ResetAnimationTimer();
                 mAlreadyBoosted = true;
                 mMothState = State::BoostUp;
@@ -217,7 +217,7 @@ void Moth::Stop(float deltaTime) {
             return;
         }
 
-        if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
+        if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
             if (Random::GetFloat() < mSlowMotionProbability) {
                 mIsSlowMotion = true;
                 mGame->SetIsSlowMotion(true);
@@ -227,7 +227,7 @@ void Moth::Stop(float deltaTime) {
             return;
         }
 
-        if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.7f * mMaxHealthPoints) {
+        if (mHealthPoints > 0.5f * mMaxHealthPoints && mHealthPoints <= 0.6f * mMaxHealthPoints) {
             if (GetRotation() == 0) {
                 mProjectilesStartDirection = 0;
             }
@@ -243,7 +243,7 @@ void Moth::Stop(float deltaTime) {
             return;
         }
 
-        if (mHealthPoints <= 0.6f * mMaxHealthPoints) {
+        if (mHealthPoints <= 0.5f * mMaxHealthPoints) {
             if (Random::GetFloat() < 0.5f) {
                 if (GetRotation() == 0) {
                     mProjectilesStartDirection = 0;
@@ -499,7 +499,7 @@ void Moth::ChangeGround(float deltaTime) {
         }
     }
 
-    if (mHealthPoints > 0.7f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
+    if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
         // for (int id : {172}) {
         for (int id : {15}) {
             Ground *g = mGame->GetGroundById(id);
@@ -510,7 +510,7 @@ void Moth::ChangeGround(float deltaTime) {
         }
     }
 
-    if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.7f * mMaxHealthPoints) {
+    if (mHealthPoints > 0.5f * mMaxHealthPoints && mHealthPoints <= 0.6f * mMaxHealthPoints) {
         // for (int id : {172, 174, 176}) {
         for (int id : {15, 16, 17}) {
             Ground *g = mGame->GetGroundById(id);

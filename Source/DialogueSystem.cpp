@@ -17,7 +17,7 @@ DialogueSystem::DialogueSystem(class Game *game, const std::string &fontName, st
     SetSize(Vector2(mGame->GetLogicalWindowWidth() * 0.9f, mGame->GetLogicalWindowHeight() * 0.2f));
     SetPosition(Vector2(mGame->GetLogicalWindowWidth() * 0.05f, mGame->GetLogicalWindowHeight() * 0.75f));
 
-    AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, GetSize());
+    AddImage("../Assets/Sprites/Background/Store.png", Vector2::Zero, GetSize());
 
     if (!mLines.empty()) {
         int textPointSize = static_cast<int>(34 * mGame->GetScale());
