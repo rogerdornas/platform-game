@@ -48,6 +48,10 @@ void Camera::Update(float deltaTime) {
             targetPosition = FollowPlayerLimitRight();
             break;
 
+        case CameraMode::FollowPlayerLimitLeft:
+            targetPosition = FollowPlayerLimitLeft();
+            break;
+
         case CameraMode::ScrollRight:
             targetPosition = ScrollRight(deltaTime, mCameraSpeed);
             break;
@@ -68,7 +72,8 @@ void Camera::Update(float deltaTime) {
     // Interpola camera se estiver seguindo o player
     if (mCameraMode == CameraMode::FollowPlayer ||
         mCameraMode == CameraMode::FollowPlayerHorizontally ||
-        mCameraMode == CameraMode::FollowPlayerLimitRight)
+        mCameraMode == CameraMode::FollowPlayerLimitRight ||
+        mCameraMode == CameraMode::FollowPlayerLimitLeft )
     {
         mPos = Vector2(int(mPos.x + (targetPosition.x - mPos.x) * mCameraLerpSpeed * deltaTime),
                        int(mPos.y + (targetPosition.y - mPos.y) * mCameraLerpSpeed * deltaTime));
@@ -142,6 +147,16 @@ Vector2 Camera::FollowPlayerLimitRight() {
     return targetPos;
 }
 
+Vector2 Camera::FollowPlayerLimitLeft() {
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    Vector2 targetPos(playerPos.x - mGame->GetLogicalWindowWidth() / 2,
+                      playerPos.y - mGame->GetLogicalWindowHeight() / 2);
+
+    if (targetPos.x < mFixedCameraPosition.x) {
+        targetPos.x = mFixedCameraPosition.x;
+    }
+    return targetPos;
+}
 
 Vector2 Camera::ScrollRight(float deltaTime, float speed) {
     Vector2 targetPos = GetPosCamera();

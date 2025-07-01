@@ -1093,15 +1093,8 @@
    <properties>
     <property name="Enemies" value="31"/>
     <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="14,30"/>
+    <property name="Grounds" value="14,30,41,42"/>
     <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="44" x="1824" y="10464" width="192" height="192">
-   <properties>
-    <property name="Event" value="StartDialogue"/>
-    <property name="FilePath" value="../Assets/Dialogues/BossFinalInicio.txt"/>
-    <property name="Target" value="Dialogue"/>
    </properties>
   </object>
  </objectgroup>

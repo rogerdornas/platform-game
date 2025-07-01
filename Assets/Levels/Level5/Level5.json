@@ -1361,7 +1361,7 @@
                         {
                          "name":"Grounds",
                          "type":"string",
-                         "value":"14,30"
+                         "value":"14,30,41,42"
                         }, 
                         {
                          "name":"Target",
@@ -1374,33 +1374,6 @@
                  "width":1600,
                  "x":2528,
                  "y":6400
-                }, 
-                {
-                 "height":192,
-                 "id":44,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"StartDialogue"
-                        }, 
-                        {
-                         "name":"FilePath",
-                         "type":"string",
-                         "value":"..\/Assets\/Dialogues\/BossFinalInicio.txt"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"Dialogue"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":192,
-                 "x":1824,
-                 "y":10464
                 }],
          "opacity":1,
          "type":"objectgroup",

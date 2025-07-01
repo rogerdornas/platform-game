@@ -94,7 +94,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level5)
+    ,mContinueScene(GameScene::Level2)
 {
 }
 
@@ -348,6 +348,21 @@ void Game::ChangeScene()
         mUseParallaxBackground = true;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
         LoadLevel(levelsAssets + "Forest/Forest.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        mBossMusic.Reset();
+    }
+
+    else if (mNextScene == GameScene::Prologue) {
+        mUseParallaxBackground = false;
+        // mUseParallaxBackground = true;
+        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+        LoadLevel(levelsAssets + "Prologue/Prologue.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -942,7 +957,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto* fox = new Fox(this, 100, 170, 300, 300);
+                    auto* fox = new Fox(this, 100, 170, 300, 700);
                     fox->SetPosition(Vector2(x, y));
                     fox->SetId(id);
                     fox->SetUnlockGroundsIds(ids);
@@ -969,7 +984,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto* frog = new Frog(this, 165, 137, 300, 350);
+                    auto* frog = new Frog(this, 165, 137, 300, 500);
                     frog->SetPosition(Vector2(x, y));
                     frog->SetId(id);
                     frog->SetArenaMinPos(Vector2(MinPosX, MinPosY));
@@ -1392,31 +1407,29 @@ void Game::UpdateGame()
     SDL_RenderClear(mRenderer);
 
     // Update all actors and pending actors
-    if (mGamePlayState == GamePlayState::Playing) {
-        if (!mIsPaused) {
-            if (mHitstopDelayActive) {
-                if (mHitstopDelayTimer < mHitstopDelayDuration) {
-                    mHitstopDelayTimer += deltaTime;
-                }
-                else {
-                    mHitstopDelayActive = false;
-                    mHitstopActive = true;
-                }
-            }
-            if (mHitstopActive) {
-                if (mHitstopTimer < mHitstopDuration) {
-                    mHitstopTimer += deltaTime;
-                }
-                else {
-                    mHitstopActive = false;
-                }
+    if (!mIsPaused) {
+        if (mHitstopDelayActive) {
+            if (mHitstopDelayTimer < mHitstopDelayDuration) {
+                mHitstopDelayTimer += deltaTime;
             }
             else {
-                UpdateActors(deltaTime);
-                // if (mHUD) {
-                //     mHUD->Update(deltaTime);
-                // }
+                mHitstopDelayActive = false;
+                mHitstopActive = true;
             }
+        }
+        if (mHitstopActive) {
+            if (mHitstopTimer < mHitstopDuration) {
+                mHitstopTimer += deltaTime;
+            }
+            else {
+                mHitstopActive = false;
+            }
+        }
+        else {
+            UpdateActors(deltaTime);
+            // if (mHUD) {
+            //     mHUD->Update(deltaTime);
+            // }
         }
     }
 

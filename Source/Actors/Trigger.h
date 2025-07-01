@@ -26,6 +26,7 @@ public:
         FollowPlayer,
         FollowPlayerHorizontally,
         FollowPlayerLimitRight,
+        FollowPlayerLimitLeft,
         ScrollRight,
         ScrollUp,
 

@@ -1189,7 +1189,7 @@
                         {
                          "name":"MovingDuration",
                          "type":"float",
-                         "value":10
+                         "value":12
                         }, 
                         {
                          "name":"SpeedX",

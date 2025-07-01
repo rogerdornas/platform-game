@@ -458,7 +458,7 @@
   <object id="88" name="Moving Ground" x="4384" y="2112" width="192" height="32">
    <properties>
     <property name="Moving" type="bool" value="false"/>
-    <property name="MovingDuration" type="float" value="10"/>
+    <property name="MovingDuration" type="float" value="12"/>
     <property name="SpeedX" type="float" value="0"/>
     <property name="SpeedY" type="float" value="-128"/>
    </properties>
