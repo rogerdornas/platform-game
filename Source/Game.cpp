@@ -94,7 +94,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level5)
+    ,mContinueScene(GameScene::Level2)
 {
 }
 
@@ -307,8 +307,7 @@ void Game::ChangeScene()
         }
 
         // Companheiro
-        if (mGameScene != GameScene::Level5) {
-            SDL_Log("aqui");
+        if (mNextScene != GameScene::Level5) {
             auto* fairy = new Fairy(this, 40, 40);
         }
 
@@ -475,7 +474,7 @@ void Game::LoadMainMenu() {
     name = "NOVO JOGO";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        SetGameScene(GameScene::LevelTeste, 0.5f);
+        SetGameScene(GameScene::Level2, 0.5f);
         delete mPlayer;
         mPlayer = nullptr;
         delete mStore;
@@ -1217,18 +1216,18 @@ void Game::ProcessInput()
                     }
                 }
 
-                if (event.key.keysym.sym == SDLK_8)
-                    Quit();
-
-                if (event.key.keysym.sym == SDLK_5) {
-                    mIsSlowMotion = !mIsSlowMotion;
-                    mIsAccelerated = false;
-                }
-
-                if (event.key.keysym.sym == SDLK_6) {
-                    mIsAccelerated = !mIsAccelerated;
-                    mIsSlowMotion = false;
-                }
+                // if (event.key.keysym.sym == SDLK_8)
+                //     Quit();
+                //
+                // if (event.key.keysym.sym == SDLK_5) {
+                //     mIsSlowMotion = !mIsSlowMotion;
+                //     mIsAccelerated = false;
+                // }
+                //
+                // if (event.key.keysym.sym == SDLK_6) {
+                //     mIsAccelerated = !mIsAccelerated;
+                //     mIsSlowMotion = false;
+                // }
 
                 break;
 
