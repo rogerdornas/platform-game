@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="44">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="45">
  <editorsettings>
   <export target="Level5.json" format="json"/>
  </editorsettings>
@@ -1095,6 +1095,13 @@
     <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
     <property name="Grounds" value="14,30"/>
     <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="44" x="1824" y="10464" width="192" height="192">
+   <properties>
+    <property name="Event" value="StartDialogue"/>
+    <property name="FilePath" value="../Assets/Dialogues/BossFinalInicio.txt"/>
+    <property name="Target" value="Dialogue"/>
    </properties>
   </object>
  </objectgroup>

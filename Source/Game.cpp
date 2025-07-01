@@ -94,7 +94,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level2)
+    ,mContinueScene(GameScene::Level5)
 {
 }
 
@@ -229,13 +229,13 @@ bool Game::Initialize()
     return true;
 }
 
-void Game::SetGameScene(Game::GameScene scene, float transitionTime)
-{
+void Game::SetGameScene(Game::GameScene scene, float transitionTime) {
     // Verifica se o gerenciador de cenas está pronto para uma nova transição
     if (mSceneManagerState == SceneManagerState::None) {
         // Verifica se a cena é válida
         if (scene == GameScene::MainMenu ||
             scene == GameScene::LevelTeste ||
+            scene == GameScene::Prologue ||
             scene == GameScene::Level1 ||
             scene == GameScene::Level2 ||
             scene == GameScene::Level3 ||

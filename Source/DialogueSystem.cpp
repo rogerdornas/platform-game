@@ -74,7 +74,8 @@ void DialogueSystem::LoadDialogueFile(const std::string &dialogueFilePath) {
             color = Vector3(0.65, 0.37, 0.33);
         }
         if (speaker == "Bicho") {
-            color = Vector3(0.25, 0.55, 0.14);
+            // color = Vector3(0.25, 0.55, 0.14);
+            color = Vector3(0, 1.0, 0);
         }
 
         mLines.push_back(DialogueLine{ speaker, text, color });
