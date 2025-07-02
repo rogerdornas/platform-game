@@ -32,6 +32,7 @@ public:
 
     // Set the name of the button
     void SetText(const std::string& text);
+    UIText* GetText() const { return mText; }
     void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
 
     void SetHighlighted(bool sel) { mHighlighted = sel; }
@@ -46,7 +47,7 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    // Callback funtion
+    // Callback function
     std::function<void()> mOnClick;
 
     // Button name
