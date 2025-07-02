@@ -1109,7 +1109,7 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="135" x="29184" y="6144" width="2304" height="1344">
+  <object id="135" x="29184" y="6144" width="1536" height="1344">
    <properties>
     <property name="Event" value="FollowPlayer"/>
     <property name="Target" value="Camera"/>
@@ -1137,10 +1137,11 @@
     <property name="Target" value="Enemy"/>
    </properties>
   </object>
-  <object id="163" x="31520" y="6144" width="2688" height="1344">
+  <object id="163" x="30784" y="6144" width="3424" height="1344">
    <properties>
-    <property name="Event" value="FollowPlayerLimitRight"/>
+    <property name="Event" value="FollowPlayerLimitRightHorizontally"/>
     <property name="FixedCameraPositionX" type="float" value="34208"/>
+    <property name="FixedCameraPositionY" type="float" value="6592"/>
     <property name="Target" value="Camera"/>
    </properties>
   </object>

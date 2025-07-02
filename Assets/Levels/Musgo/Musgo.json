@@ -1415,7 +1415,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":2304,
+                 "width":1536,
                  "x":29184,
                  "y":6144
                 }, 
@@ -1513,12 +1513,17 @@
                         {
                          "name":"Event",
                          "type":"string",
-                         "value":"FollowPlayerLimitRight"
+                         "value":"FollowPlayerLimitRightHorizontally"
                         }, 
                         {
                          "name":"FixedCameraPositionX",
                          "type":"float",
                          "value":34208
+                        }, 
+                        {
+                         "name":"FixedCameraPositionY",
+                         "type":"float",
+                         "value":6592
                         }, 
                         {
                          "name":"Target",
@@ -1528,8 +1533,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":2688,
-                 "x":31520,
+                 "width":3424,
+                 "x":30784,
                  "y":6144
                 }],
          "opacity":1,

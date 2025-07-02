@@ -68,6 +68,9 @@ public:
     void SetFireballDamage(float damage) { mFireballDamage = damage; }
     float GetFireballDamage() const { return mFireballDamage; }
 
+    // funções para gerenciar a animação em cutscenes
+    void SetIsRunning(bool isRunning) {mIsRunning = isRunning; }
+
     // Funções para sair da pausa com o controle sem pular ou atirar bola de fogo
     void SetCanJump(bool j) { mCanJump = j; }
     void SetPrevFireBallPressed(bool f) { mPrevFireBallPressed = f; }

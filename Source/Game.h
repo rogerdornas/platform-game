@@ -13,6 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include "AudioSystem.h"
+#include "Cutscene.h"
 #include "Store.h"
 
 class Game
@@ -52,6 +53,7 @@ public:
         GameOver,
         LevelComplete,
         Leaving,
+        Cutscene,
         Menu
     };
 
@@ -171,6 +173,7 @@ public:
     void SetCheckPointMoney(int money) { mCheckPointMoney = money; }
     int GetCheckPointMoney() const { return mCheckPointMoney; }
     void SetGoingToNextLevel() { mGoingToNextLevel = true; }
+    void SetCurrentCutscene(Cutscene* cutscene) { mCurrentCutscene = cutscene; }
 
 private:
     void ProcessInput();
@@ -299,6 +302,8 @@ private:
     GameScene mGameScene;
     GameScene mNextScene;
     GameScene mContinueScene;
+
+    Cutscene* mCurrentCutscene;
 
     Store* mStore;
 

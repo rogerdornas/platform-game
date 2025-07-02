@@ -79,6 +79,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mGoingToNextLevel(false)
     ,mIsPlayingOnKeyboard(true)
     ,mLeftStickYState(StickState::Neutral)
+    ,mCurrentCutscene(nullptr)
     ,mBackGroundTexture(nullptr)
     ,mBackGroundTextureMainMenu(nullptr)
     ,mBackGroundTextureLevel1(nullptr)
@@ -94,7 +95,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level2)
+    ,mContinueScene(GameScene::Level5)
 {
 }
 
@@ -489,7 +490,7 @@ void Game::LoadMainMenu() {
     name = "NOVO JOGO";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        SetGameScene(GameScene::Level2, 0.5f);
+        SetGameScene(GameScene::Prologue, 0.5f);
         delete mPlayer;
         mPlayer = nullptr;
         delete mStore;
@@ -820,6 +821,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float fixedCameraPositionY = 0;
                 std::string scene;
                 std::string dialoguePath;
+                std::string cutsceneId;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
@@ -847,6 +849,9 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "FilePath") {
                             dialoguePath = prop["value"];
                         }
+                        else if (propName == "CutsceneId") {
+                            cutsceneId = prop["value"];
+                        }
                     }
                 }
                 groundsIds = ParseIntList(grounds);
@@ -861,6 +866,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
                 trigger->SetScene(scene);
                 trigger->SetDialoguePath(dialoguePath);
+                trigger->SetCutsceneId(cutsceneId);
             }
         }
         if (layer["name"] == "Levers") {
@@ -1217,7 +1223,9 @@ void Game::ProcessInput()
                 // }
 
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
+                        mGamePlayState != GamePlayState::Cutscene)
+                    {
                         if (mIsPaused) {
                             if (mUIStack.back() == mPauseMenu) {
                                 mPauseMenu->Close();
@@ -1267,7 +1275,9 @@ void Game::ProcessInput()
                 // }
 
                 if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
-                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
+                        mGamePlayState != GamePlayState::Cutscene)
+                    {
                         if (mIsPaused) {
                             if (mUIStack.back() == mPauseMenu) {
                                 mPauseMenu->Close();
@@ -1353,7 +1363,9 @@ void Game::ProcessInput()
 }
 
 void Game::TogglePause() {
-    if (mGameScene != GameScene::MainMenu) {
+    if (mGameScene != GameScene::MainMenu &&
+        mGamePlayState != GamePlayState::Cutscene)
+    {
         mIsPaused = !mIsPaused;
         if (mIsPaused) {
             if (mMusicHandle.IsValid()) {
@@ -1433,6 +1445,16 @@ void Game::UpdateGame()
         }
     }
 
+    // Update cutscene
+    if (mCurrentCutscene) {
+        mCurrentCutscene->Update(deltaTime);
+        if (mCurrentCutscene->IsComplete()) {
+            delete mCurrentCutscene;          // libera memória manualmente
+            mCurrentCutscene = nullptr;       // evita dangling pointer
+            SetGamePlayState(Game::GamePlayState::Playing);
+        }
+    }
+
     mAudio->Update(deltaTime);
 
     // Reinsert UI screens
@@ -1456,7 +1478,10 @@ void Game::UpdateGame()
         }
     }
 
-    if (mGamePlayState == GamePlayState::Playing || mGamePlayState == GamePlayState::LevelComplete) {
+    if (mGamePlayState == GamePlayState::Playing ||
+        mGamePlayState == GamePlayState::LevelComplete ||
+        mGamePlayState == GamePlayState::Cutscene)
+    {
         // Esconde o cursor
         SDL_ShowCursor(SDL_DISABLE);
     }

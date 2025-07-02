@@ -18,6 +18,7 @@ public:
         Game,
         Enemy,
         Dialogue,
+        Cutscene,
         Nothing
     };
 
@@ -27,6 +28,7 @@ public:
         FollowPlayerHorizontally,
         FollowPlayerLimitRight,
         FollowPlayerLimitLeft,
+        FollowPlayerLimitRightHorizontally,
         ScrollRight,
         ScrollUp,
 
@@ -41,7 +43,9 @@ public:
         SpotPlayer,
         GolemVulnerable,
 
-        StartDialogue
+        StartDialogue,
+
+        StarCutscene
     };
 
     Trigger(class Game *game, float width, float height);
@@ -53,6 +57,7 @@ public:
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
     void SetScene(std::string scene);
     void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
+    void SetCutsceneId(const std::string &cutsceneId) { mCutsceneId = cutsceneId; }
 
     void OnUpdate(float deltaTime) override;
     void ChangeResolution(float oldScale, float newScale) override;
@@ -64,6 +69,7 @@ protected:
     void GameTrigger();
     virtual void EnemyTrigger();
     void DialogueTrigger();
+    void CutsceneTrigger();
 
     float mWidth;
     float mHeight;
@@ -76,6 +82,7 @@ protected:
     Game::GameScene mScene;
 
     std::string mDialoguePath;
+    std::string mCutsceneId;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class AABBComponent *mAABBComponent;

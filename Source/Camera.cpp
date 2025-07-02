@@ -52,6 +52,10 @@ void Camera::Update(float deltaTime) {
             targetPosition = FollowPlayerLimitLeft();
             break;
 
+        case CameraMode::FollowPlayerLimitRightHorizontally:
+            targetPosition = FollowPlayerLimitRightHorizontally();
+            break;
+
         case CameraMode::ScrollRight:
             targetPosition = ScrollRight(deltaTime, mCameraSpeed);
             break;
@@ -73,7 +77,8 @@ void Camera::Update(float deltaTime) {
     if (mCameraMode == CameraMode::FollowPlayer ||
         mCameraMode == CameraMode::FollowPlayerHorizontally ||
         mCameraMode == CameraMode::FollowPlayerLimitRight ||
-        mCameraMode == CameraMode::FollowPlayerLimitLeft )
+        mCameraMode == CameraMode::FollowPlayerLimitLeft ||
+        mCameraMode == CameraMode::FollowPlayerLimitRightHorizontally )
     {
         mPos = Vector2(int(mPos.x + (targetPosition.x - mPos.x) * mCameraLerpSpeed * deltaTime),
                        int(mPos.y + (targetPosition.y - mPos.y) * mCameraLerpSpeed * deltaTime));
@@ -154,6 +159,17 @@ Vector2 Camera::FollowPlayerLimitLeft() {
 
     if (targetPos.x < mFixedCameraPosition.x) {
         targetPos.x = mFixedCameraPosition.x;
+    }
+    return targetPos;
+}
+
+Vector2 Camera::FollowPlayerLimitRightHorizontally() {
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    Vector2 targetPos(playerPos.x - mGame->GetLogicalWindowWidth() / 2,
+                      mFixedCameraPosition.y);
+
+    if (targetPos.x + mGame->GetLogicalWindowWidth() > mFixedCameraPosition.x) {
+        targetPos.x = mFixedCameraPosition.x - mGame->GetLogicalWindowWidth();
     }
     return targetPos;
 }

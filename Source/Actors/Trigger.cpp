@@ -59,6 +59,10 @@ void Trigger::SetTarget(std::string target) {
         mTarget = Target::Dialogue;
         return;
     }
+    if (target == "Cutscene") {
+        mTarget = Target::Cutscene;
+        return;
+    }
 }
 
 void Trigger::SetEvent(std::string event) {
@@ -80,6 +84,10 @@ void Trigger::SetEvent(std::string event) {
     }
     if (event == "FollowPlayerLimitLeft") {
         mEvent = Event::FollowPlayerLimitLeft;
+        return;
+    }
+    if (event == "FollowPlayerLimitRightHorizontally") {
+        mEvent = Event::FollowPlayerLimitRightHorizontally;
         return;
     }
     if (event == "ScrollRight") {
@@ -125,6 +133,11 @@ void Trigger::SetEvent(std::string event) {
 
     if (event == "StartDialogue") {
         mEvent = Event::StartDialogue;
+        return;
+    }
+
+    if (event == "StartCutscene") {
+        mEvent = Event::StarCutscene;
         return;
     }
 }
@@ -186,6 +199,10 @@ void Trigger::OnUpdate(float deltaTime) {
                 DialogueTrigger();
                 break;
 
+            case Target::Cutscene:
+                CutsceneTrigger();
+                break;
+
             default:
                 break;
         }
@@ -218,6 +235,11 @@ void Trigger::CameraTrigger() {
         case Event::FollowPlayerLimitLeft:
             camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::FollowPlayerLimitLeft);
+            break;
+
+        case Event::FollowPlayerLimitRightHorizontally:
+            camera->SetFixedCameraPosition(mFixedCameraPosition);
+            camera->ChangeCameraMode(CameraMode::FollowPlayerLimitRightHorizontally);
             break;
 
         case Event::ScrollRight:
@@ -337,6 +359,14 @@ void Trigger::EnemyTrigger() {
 
 void Trigger::DialogueTrigger() {
     auto* dialogue = new DialogueSystem(mGame, "../Assets/Fonts/K2D-Bold.ttf", mDialoguePath);
+    SetState(ActorState::Destroy);
+}
+
+void Trigger::CutsceneTrigger() {
+    auto* cutscene = new Cutscene(mGame, mCutsceneId, "../Assets/Cutscenes/Cutscenes.json");
+    cutscene->Start();
+    mGame->SetCurrentCutscene(cutscene);
+    mGame->SetGamePlayState(Game::GamePlayState::Cutscene);
     SetState(ActorState::Destroy);
 }
 
