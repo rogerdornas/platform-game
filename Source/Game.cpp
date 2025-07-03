@@ -15,6 +15,7 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include "HUD.h"
+#include "Actors/BushMonster.h"
 #include "Actors/Checkpoint.h"
 #include "UIElements/UIScreen.h"
 #include "Actors/DynamicGround.h"
@@ -95,7 +96,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level5)
+    ,mContinueScene(GameScene::Level2)
 {
 }
 
@@ -990,7 +991,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto* frog = new Frog(this, 165, 137, 300, 500);
+                    auto* frog = new Frog(this, 165, 165, 300, 500);
                     frog->SetPosition(Vector2(x, y));
                     frog->SetId(id);
                     frog->SetArenaMinPos(Vector2(MinPosX, MinPosY));
@@ -1001,6 +1002,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     auto* moth = new Moth(this, 200, 200, 500, 1100);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
+                }
+                else if (name == "BushMonster") {
+                    auto* bushMonster = new BushMonster(this, 220, 140, 300, 1100);
+                    bushMonster->SetPosition(Vector2(x, y));
+                    bushMonster->SetId(id);
                 }
                 else if (name == "Golem") {
                     if (obj.contains("properties")) {
@@ -1204,142 +1210,149 @@ void Game::ProcessInput()
                 break;
 
             case SDL_KEYDOWN:
-                mIsPlayingOnKeyboard = true;
-                // Handle key press for UI screens
-                if (!mUIStack.empty()) {
-                    mUIStack.back()->HandleKeyPress(event.key.keysym.sym, SDL_CONTROLLER_BUTTON_INVALID, 0);
-                }
+                if (mGamePlayState != GamePlayState::GameOver) {
+                    mIsPlayingOnKeyboard = true;
+                    // Handle key press for UI screens
+                    if (!mUIStack.empty()) {
+                        mUIStack.back()->HandleKeyPress(event.key.keysym.sym, SDL_CONTROLLER_BUTTON_INVALID, 0);
+                    }
 
-                // if (event.key.keysym.sym == SDLK_ESCAPE) {
-                //     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
-                //         TogglePause();
-                //         if (mIsPaused) {
-                //             LoadPauseMenu();
-                //         }
-                //         else {
-                //             mPauseMenu->Close();
-                //         }
-                //     }
-                // }
+                    // if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    //     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                    //         TogglePause();
+                    //         if (mIsPaused) {
+                    //             LoadPauseMenu();
+                    //         }
+                    //         else {
+                    //             mPauseMenu->Close();
+                    //         }
+                    //     }
+                    // }
 
-                if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
-                        mGamePlayState != GamePlayState::Cutscene)
-                    {
-                        if (mIsPaused) {
-                            if (mUIStack.back() == mPauseMenu) {
-                                mPauseMenu->Close();
+                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                        if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
+                            mGamePlayState != GamePlayState::Cutscene)
+                        {
+                            if (mIsPaused) {
+                                if (mUIStack.back() == mPauseMenu) {
+                                    mPauseMenu->Close();
+                                    TogglePause();
+                                }
+                            }
+                            else {
                                 TogglePause();
+                                LoadPauseMenu();
                             }
                         }
-                        else {
-                            TogglePause();
-                            LoadPauseMenu();
-                        }
                     }
+
+                    // if (event.key.keysym.sym == SDLK_8)
+                    //     Quit();
+                    //
+                    // if (event.key.keysym.sym == SDLK_5) {
+                    //     mIsSlowMotion = !mIsSlowMotion;
+                    //     mIsAccelerated = false;
+                    // }
+                    //
+                    // if (event.key.keysym.sym == SDLK_6) {
+                    //     mIsAccelerated = !mIsAccelerated;
+                    //     mIsSlowMotion = false;
+                    // }
                 }
-
-                // if (event.key.keysym.sym == SDLK_8)
-                //     Quit();
-                //
-                // if (event.key.keysym.sym == SDLK_5) {
-                //     mIsSlowMotion = !mIsSlowMotion;
-                //     mIsAccelerated = false;
-                // }
-                //
-                // if (event.key.keysym.sym == SDLK_6) {
-                //     mIsAccelerated = !mIsAccelerated;
-                //     mIsSlowMotion = false;
-                // }
-
                 break;
 
             case SDL_CONTROLLERBUTTONDOWN:
-                mIsPlayingOnKeyboard = false;
+                if (mGamePlayState != GamePlayState::GameOver) {
+                    mIsPlayingOnKeyboard = false;
 
-                // Handle key press for UI screens
-                if (!mUIStack.empty()) {
-                    mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, event.cbutton.button, 0);
-                }
+                    // Handle key press for UI screens
+                    if (!mUIStack.empty()) {
+                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, event.cbutton.button, 0);
+                    }
 
-                // if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
-                //     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
-                //         TogglePause();
-                //         if (mIsPaused) {
-                //             LoadPauseMenu();
-                //         }
-                //         else {
-                //             mPauseMenu->Close();
-                //         }
-                //     }
-                // }
+                    // if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
+                    //     if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu) {
+                    //         TogglePause();
+                    //         if (mIsPaused) {
+                    //             LoadPauseMenu();
+                    //         }
+                    //         else {
+                    //             mPauseMenu->Close();
+                    //         }
+                    //     }
+                    // }
 
-                if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
-                    if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
-                        mGamePlayState != GamePlayState::Cutscene)
-                    {
-                        if (mIsPaused) {
-                            if (mUIStack.back() == mPauseMenu) {
-                                mPauseMenu->Close();
-                                TogglePause();
+                    if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
+                        if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
+                            mGamePlayState != GamePlayState::Cutscene)
+                        {
+                            if (mIsPaused) {
+                                if (mUIStack.back() == mPauseMenu) {
+                                    mPauseMenu->Close();
+                                    TogglePause();
+                                }
                             }
-                        }
-                        else {
-                            TogglePause();
-                            LoadPauseMenu();
+                            else {
+                                TogglePause();
+                                LoadPauseMenu();
+                            }
                         }
                     }
                 }
                 break;
 
             case SDL_CONTROLLERAXISMOTION:
-                if (Math::Abs(event.caxis.value) > DEAD_ZONE) {
-                    mIsPlayingOnKeyboard = false;
-                }
+                if (mGamePlayState != GamePlayState::GameOver) {
+                    if (Math::Abs(event.caxis.value) > DEAD_ZONE) {
+                        mIsPlayingOnKeyboard = false;
+                    }
 
-                if (!mUIStack.empty()) {
-                    if (event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY) {
-                        int value = event.caxis.value;
+                    if (!mUIStack.empty()) {
+                        if (event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY) {
+                            int value = event.caxis.value;
 
-                        if (value < -DEAD_ZONE) {
-                            if (mLeftStickYState != StickState::Up) {
-                                mLeftStickYState = StickState::Up;
-                                if (!mUIStack.empty()) {
-                                    mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, value);
+                            if (value < -DEAD_ZONE) {
+                                if (mLeftStickYState != StickState::Up) {
+                                    mLeftStickYState = StickState::Up;
+                                    if (!mUIStack.empty()) {
+                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, value);
+                                    }
                                 }
                             }
-                        }
-                        else if (value > DEAD_ZONE) {
-                            if (mLeftStickYState != StickState::Down) {
-                                mLeftStickYState = StickState::Down;
-                                if (!mUIStack.empty()) {
-                                    mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, value);
+                            else if (value > DEAD_ZONE) {
+                                if (mLeftStickYState != StickState::Down) {
+                                    mLeftStickYState = StickState::Down;
+                                    if (!mUIStack.empty()) {
+                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, value);
+                                    }
                                 }
                             }
-                        }
-                        else {
-                            // Voltou à zona morta
-                            mLeftStickYState = StickState::Neutral;
+                            else {
+                                // Voltou à zona morta
+                                mLeftStickYState = StickState::Neutral;
+                            }
                         }
                     }
                 }
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                mIsPlayingOnKeyboard = true;
+                if (mGamePlayState != GamePlayState::GameOver) {
+                    mIsPlayingOnKeyboard = true;
 
-                // Handle mouse for UI screens
-                if (!mUIStack.empty()) {
-                    mUIStack.back()->HandleMouse(event);
-                }
-                break;
+                    // Handle mouse for UI screens
+                    if (!mUIStack.empty()) {
+                        mUIStack.back()->HandleMouse(event);
+                    }
+                    break;
 
-            case SDL_MOUSEMOTION:
-                mIsPlayingOnKeyboard = true;
+                    case SDL_MOUSEMOTION:
+                        mIsPlayingOnKeyboard = true;
 
-                // Handle mouse for UI screens
-                if (!mUIStack.empty()) {
-                    mUIStack.back()->HandleMouse(event);
+                    // Handle mouse for UI screens
+                    if (!mUIStack.empty()) {
+                        mUIStack.back()->HandleMouse(event);
+                    }
                 }
                 break;
 
@@ -1836,6 +1849,7 @@ UIFont* Game::LoadFont(const std::string& fileName)
 
 void Game::UnloadScene()
 {
+    mGamePlayState = GamePlayState::GameOver;
     if (mPlayer) {
         mPlayer->SetState(ActorState::Paused);
     }
