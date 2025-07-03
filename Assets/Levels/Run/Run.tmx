@@ -352,14 +352,14 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="169" x="5344" y="3200" width="6400" height="224">
+  <object id="169" name="Camera Horizontal" x="5344" y="3200" width="6400" height="224">
    <properties>
     <property name="Event" value="FollowPlayerHorizontally"/>
     <property name="FixedCameraPositionY" type="float" value="2528"/>
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="178" x="9472" y="2848" width="2272" height="576">
+  <object id="178" name="Spot Player" x="9472" y="2848" width="2272" height="576">
    <properties>
     <property name="Enemies" value="171"/>
     <property name="Event" value="SpotPlayer"/>
@@ -373,7 +373,7 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="193" x="11904" y="3136" width="2880" height="288">
+  <object id="193" name="Camera Horizontal" x="11904" y="3136" width="2880" height="288">
    <properties>
     <property name="Event" value="FollowPlayerLimitRightHorizontally"/>
     <property name="FixedCameraPositionX" type="float" value="14784"/>
@@ -381,7 +381,7 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="194" x="5344" y="2720" width="512" height="224">
+  <object id="194" name="Camera" x="5344" y="2720" width="512" height="224">
    <properties>
     <property name="Event" value="FollowPlayer"/>
     <property name="Target" value="Camera"/>
@@ -652,7 +652,7 @@
   <object id="168" name="Ground" x="8160" y="3424" width="7040" height="32"/>
   <object id="159" name="Ground" x="6944" y="3296" width="128" height="32"/>
   <object id="161" name="Ground" x="7712" y="3296" width="128" height="32"/>
-  <object id="175" x="15200" y="2432" width="160" height="1728"/>
+  <object id="175" name="Ground" x="15200" y="2432" width="160" height="1728"/>
   <object id="184" name="DynamicGround" x="13408" y="2912" width="128" height="576">
    <properties>
     <property name="GrowSpeedX" type="float" value="0"/>
@@ -662,16 +662,16 @@
     <property name="MinWidth" type="float" value="160"/>
    </properties>
   </object>
-  <object id="187" x="14048" y="2432" width="1152" height="768"/>
-  <object id="190" x="13408" y="2912" width="640" height="288"/>
-  <object id="192" x="12352" y="3104" width="128" height="32"/>
+  <object id="187" name="Ground" x="14048" y="2432" width="1152" height="768"/>
+  <object id="190" name="Ground" x="13408" y="2912" width="640" height="288"/>
+  <object id="192" name="Ground" x="12352" y="3104" width="128" height="32"/>
  </objectgroup>
  <objectgroup id="7" name="Checkpoint">
-  <object id="56" name="Checkpoint" x="608" y="3008" width="416" height="192"/>
-  <object id="179" name="Checkpoint" x="4544" y="2208" width="416" height="192"/>
-  <object id="180" name="Checkpoint" x="8000" y="2176" width="416" height="192"/>
-  <object id="181" name="Checkpoint" x="8800" y="3232" width="416" height="192"/>
-  <object id="182" name="Checkpoint" x="12576" y="3232" width="416" height="192"/>
+  <object id="56" name="Checkpoint1" x="608" y="3008" width="416" height="192"/>
+  <object id="179" name="Checkpoint2" x="4544" y="2208" width="416" height="192"/>
+  <object id="180" name="Checkpoint3" x="8000" y="2176" width="416" height="192"/>
+  <object id="181" name="Checkpoint4" x="8800" y="3232" width="416" height="192"/>
+  <object id="182" name="Checkpoint5" x="12576" y="3232" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="4" name="Enemies">
   <object id="61" name="Enemy Simple" x="2144" y="2880" width="32" height="32"/>

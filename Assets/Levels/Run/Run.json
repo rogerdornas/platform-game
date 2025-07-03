@@ -599,7 +599,7 @@
                 {
                  "height":224,
                  "id":169,
-                 "name":"",
+                 "name":"Camera Horizontal",
                  "properties":[
                         {
                          "name":"Event",
@@ -626,7 +626,7 @@
                 {
                  "height":576,
                  "id":178,
-                 "name":"",
+                 "name":"Spot Player",
                  "properties":[
                         {
                          "name":"Enemies",
@@ -680,7 +680,7 @@
                 {
                  "height":288,
                  "id":193,
-                 "name":"",
+                 "name":"Camera Horizontal",
                  "properties":[
                         {
                          "name":"Event",
@@ -712,7 +712,7 @@
                 {
                  "height":224,
                  "id":194,
-                 "name":"",
+                 "name":"Camera",
                  "properties":[
                         {
                          "name":"Event",
@@ -2126,7 +2126,7 @@
                 {
                  "height":1728,
                  "id":175,
-                 "name":"",
+                 "name":"Ground",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2174,7 +2174,7 @@
                 {
                  "height":768,
                  "id":187,
-                 "name":"",
+                 "name":"Ground",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2185,7 +2185,7 @@
                 {
                  "height":288,
                  "id":190,
-                 "name":"",
+                 "name":"Ground",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2196,7 +2196,7 @@
                 {
                  "height":32,
                  "id":192,
-                 "name":"",
+                 "name":"Ground",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2218,7 +2218,7 @@
                 {
                  "height":192,
                  "id":56,
-                 "name":"Checkpoint",
+                 "name":"Checkpoint1",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2229,7 +2229,7 @@
                 {
                  "height":192,
                  "id":179,
-                 "name":"Checkpoint",
+                 "name":"Checkpoint2",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2240,7 +2240,7 @@
                 {
                  "height":192,
                  "id":180,
-                 "name":"Checkpoint",
+                 "name":"Checkpoint3",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2251,7 +2251,7 @@
                 {
                  "height":192,
                  "id":181,
-                 "name":"Checkpoint",
+                 "name":"Checkpoint4",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -2262,7 +2262,7 @@
                 {
                  "height":192,
                  "id":182,
-                 "name":"Checkpoint",
+                 "name":"Checkpoint5",
                  "rotation":0,
                  "type":"",
                  "visible":true,
