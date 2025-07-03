@@ -28,6 +28,7 @@ private:
     std::string mFontName;
     UIScreen* mStoreMenu;
     UIScreen* mStoreMessage;
+    Vector3 mTextColor;
 
     bool mStoreOpened;
     bool mStoreMessageOpened;

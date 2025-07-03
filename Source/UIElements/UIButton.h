@@ -25,8 +25,8 @@ public:
              int pointSize = 72, const unsigned wrapLength = 1024,
              const Vector2& textPos = Vector2::Zero,
              const TextPos textAlign = TextPos::Center,
-             const Vector2& textSize = Vector2(140.f, 20.0f),
-             const Vector3& textColor = Color::White);
+             const Vector3& textColor = Color::White,
+             const Vector2& textSize = Vector2(140.f, 20.0f));
 
     ~UIButton();
 

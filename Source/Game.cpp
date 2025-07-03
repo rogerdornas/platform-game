@@ -98,7 +98,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level5)
+    ,mContinueScene(GameScene::Level2)
 {
 }
 
@@ -1409,20 +1409,20 @@ void Game::TogglePause() {
     {
         mIsPaused = !mIsPaused;
         if (mIsPaused) {
-            if (mMusicHandle.IsValid()) {
+            if (mAudio->GetSoundState(mMusicHandle) == SoundState::Playing) {
                 mAudio->PauseSound(mMusicHandle);
             }
-            if (mBossMusic.IsValid()) {
+            if (mAudio->GetSoundState(mBossMusic) == SoundState::Playing) {
                 mAudio->PauseSound(mBossMusic);
             }
             mGamePlayState = GamePlayState::Paused;
         }
         else {
-            if (mMusicHandle.IsValid()) {
-                mAudio->ResumeSound(mMusicHandle);
-            }
-            if (mBossMusic.IsValid()) {
+            if (mAudio->GetSoundState(mBossMusic) == SoundState::Paused) {
                 mAudio->ResumeSound(mBossMusic);
+            }
+            else if (mAudio->GetSoundState(mMusicHandle) == SoundState::Paused) {
+                mAudio->ResumeSound(mMusicHandle);
             }
             mGamePlayState = GamePlayState::Playing;
         }

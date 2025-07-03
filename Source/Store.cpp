@@ -12,6 +12,7 @@ Store::Store(class Game *game, const std::string &fontName)
     ,mFontName(fontName)
     ,mStoreMenu(nullptr)
     ,mStoreMessage(nullptr)
+    ,mTextColor(Vector3(0.74, 0.09, 0.11))
     ,mStoreOpened(false)
     ,mStoreMessageOpened(false)
     ,mSwordRangeUpgrade(false)
@@ -64,6 +65,12 @@ void Store::OpenStore() {
     int buttonPointSize = static_cast<int>(34 * mGame->GetScale());
     Vector2 textPos = Vector2(buttonSize.x / 20, buttonSize.y / 5);
 
+    if (mSwordRangeUpgrade) {
+        mTextColor = Color::Red;
+    }
+    else {
+        mTextColor = Color::White;
+    }
     std::string name = "AUMENTAR ALCANCE DA ESPADA";
     UIButton* button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
@@ -77,13 +84,21 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mSwordRangeUpgradeCost);
             mSwordRangeUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
+            CloseStore();
+            OpenStore();
         }
-    }, textPos);
+    }, textPos, mTextColor);
     std::string cost = std::to_string(mSwordRangeUpgradeCost);
-    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
     text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
     mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
 
+    if (mManaUpgrade) {
+        mTextColor = Color::Red;
+    }
+    else {
+        mTextColor = Color::White;
+    }
     name = "AUMENTAR MANA MÁXIMO";
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 2 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
@@ -93,13 +108,21 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mManaUpgradeCost);
             mManaUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
+            CloseStore();
+            OpenStore();
         }
-    }, textPos);
+    }, textPos, mTextColor);
     cost = std::to_string(mManaUpgradeCost);
-    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
     text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
     mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
 
+    if (mHealthPointsUpgrade) {
+        mTextColor = Color::Red;
+    }
+    else {
+        mTextColor = Color::White;
+    }
     name = "AUMENTAR VIDA MÁXIMA";
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 3 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
@@ -111,13 +134,21 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mHealthPointsUpgradeCost);
             mHealthPointsUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
+            CloseStore();
+            OpenStore();
         }
-    }, textPos);
+    }, textPos, mTextColor);
     cost = std::to_string(mHealthPointsUpgradeCost);
-    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
     text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
     mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
 
+    if (mHealCountUpgrade) {
+        mTextColor = Color::Red;
+    }
+    else {
+        mTextColor = Color::White;
+    }
     name = "AUMENTAR NÚMERO DE CURAS";
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 4 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
@@ -126,13 +157,21 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mHealCountUpgradeCost);
             mHealCountUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
+            CloseStore();
+            OpenStore();
         }
-    }, textPos);
+    }, textPos, mTextColor);
     cost = std::to_string(mHealCountUpgradeCost);
-    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
     text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
     mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
 
+    if (mSwordSpeedUpgrade) {
+        mTextColor = Color::Red;
+    }
+    else {
+        mTextColor = Color::White;
+    }
     name = "AUMENTAR VELOCIDADE DA ESPADA";
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 5 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
@@ -141,13 +180,21 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mSwordSpeedUpgradeCost);
             mSwordSpeedUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
+            CloseStore();
+            OpenStore();
         }
-    }, textPos);
+    }, textPos, mTextColor);
     cost = std::to_string(mSwordSpeedUpgradeCost);
-    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
     text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
     mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
 
+    if (mSwordDamageUpgrade) {
+        mTextColor = Color::Red;
+    }
+    else {
+        mTextColor = Color::White;
+    }
     name = "AUMENTAR DANO DA ESPADA";
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 6 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
@@ -157,13 +204,21 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mSwordDamageUpgradeCost);
             mSwordDamageUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
+            CloseStore();
+            OpenStore();
         }
-    }, textPos);
+    }, textPos, mTextColor);
     cost = std::to_string(mSwordDamageUpgradeCost);
-    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
     text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
     mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
 
+    if (mFireballUpgrade) {
+        mTextColor = Color::Red;
+    }
+    else {
+        mTextColor = Color::White;
+    }
     if (mGame->GetPlayer()->GetCanFireBall()) {
         name = "MELHORAR BOLA DE FOGO";
         button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 7 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
@@ -175,10 +230,12 @@ void Store::OpenStore() {
                 mGame->GetPlayer()->DecreaseMoney(mFireballUpgradeCost);
                 mFireballUpgrade = true;
                 mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
+                CloseStore();
+                OpenStore();
             }
-        }, textPos);
+        }, textPos, mTextColor);
         cost = std::to_string(mFireballUpgradeCost);
-        text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize);
+        text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
         text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
         mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
     }
