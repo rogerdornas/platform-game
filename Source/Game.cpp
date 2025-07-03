@@ -75,6 +75,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mHitstopDelayTimer(0.0f)
     ,mIsSlowMotion(false)
     ,mIsAccelerated(false)
+    ,mPlayerDeathCounter(0)
     ,mCheckpointPosition(Vector2::Zero)
     ,mCheckPointMoney(0)
     ,mGoingToNextLevel(false)
@@ -96,7 +97,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level2)
+    ,mContinueScene(GameScene::LevelTeste)
 {
 }
 
@@ -308,7 +309,7 @@ void Game::ChangeScene()
             new Money(this, Money::MoneyType::Large);
         }
 
-        // Companheiro
+        // não carrega companheiro na última fase
         if (mNextScene != GameScene::Level5) {
             auto* fairy = new Fairy(this, 40, 40);
         }
@@ -472,6 +473,25 @@ void Game::ChangeScene()
         mBossMusic.Reset();
     }
 
+    // Verifica as 2 primeiras mortes do player para tocar cutscene
+    if (mPlayerDeathCounter < 3 && mPlayer) {
+        if (mPlayerDeathCounter < mPlayer->GetDeathCounter() && mGamePlayState == GamePlayState::Playing) {
+            mPlayerDeathCounter = mPlayer->GetDeathCounter();
+            if (mPlayerDeathCounter == 1) {
+                mCurrentCutscene = new Cutscene(this, "primeiraMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
+                mCurrentCutscene->Start();
+                SetCurrentCutscene(mCurrentCutscene);
+                SetGamePlayState(Game::GamePlayState::Cutscene);
+            }
+            if (mPlayerDeathCounter == 2) {
+                mCurrentCutscene = new Cutscene(this, "segundaMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
+                mCurrentCutscene->Start();
+                SetCurrentCutscene(mCurrentCutscene);
+                SetGamePlayState(Game::GamePlayState::Cutscene);
+            }
+        }
+    }
+
     // Set new scene
     mGameScene = mNextScene;
 }
@@ -494,6 +514,7 @@ void Game::LoadMainMenu() {
         SetGameScene(GameScene::Prologue, 0.5f);
         delete mPlayer;
         mPlayer = nullptr;
+        mPlayerDeathCounter = 0;
         delete mStore;
         mStore = nullptr;
         mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
@@ -1431,6 +1452,25 @@ void Game::UpdateGame()
     SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255); // Usado para deixar as bordas em preto
     SDL_RenderClear(mRenderer);
 
+    // // Verifica as 2 primeiras mortes do player para tocar cutscene
+    // if (mPlayerDeathCounter < 3 && mPlayer) {
+    //     if (mPlayerDeathCounter < mPlayer->GetDeathCounter() && mGamePlayState == GamePlayState::Playing) {
+    //         mPlayerDeathCounter = mPlayer->GetDeathCounter();
+    //         if (mPlayerDeathCounter == 1) {
+    //             auto* cutscene = new Cutscene(this, "primeiraMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
+    //             cutscene->Start();
+    //             SetCurrentCutscene(cutscene);
+    //             SetGamePlayState(Game::GamePlayState::Cutscene);
+    //         }
+    //         if (mPlayerDeathCounter == 2) {
+    //             auto* cutscene = new Cutscene(this, "segundaMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
+    //             cutscene->Start();
+    //             SetCurrentCutscene(cutscene);
+    //             SetGamePlayState(Game::GamePlayState::Cutscene);
+    //         }
+    //     }
+    // }
+
     // Update all actors and pending actors
     if (!mIsPaused) {
         if (mHitstopDelayActive) {
@@ -1948,6 +1988,14 @@ void Game::Shutdown()
         }
     }
     mBackgroundLayersLevel3.clear();
+
+    for (SDL_Texture*& t : mBackgroundLayersLevel4) {
+        if (t) {
+            SDL_DestroyTexture(t);
+            t = nullptr;
+        }
+    }
+    mBackgroundLayersLevel4.clear();
 
     if (mBackGroundTextureLevel3) {
         SDL_DestroyTexture(mBackGroundTextureLevel3);

@@ -40,7 +40,7 @@
           "params": {
 			"direction": "right",
 			"speed": 500.0,
-            "duration": 3.5
+            "duration": 5.0
           }
         }
       ]
@@ -74,6 +74,57 @@
 			"direction": "right",
 			"speed": 500.0,
             "duration": 1.0
+          }
+        }
+      ]
+    },
+	{
+      "id": "primeiraMortePlayer",
+      "actions": [
+        {
+          "type": "playerStop",
+          "params": {
+            "duration": 1.0
+          }
+        },
+        {
+          "type": "show_dialogue",
+          "params": {
+			"dialoguePath": "../Assets/Dialogues/PrimeiraMorte.txt"
+          }
+        }
+      ]
+    },
+	{
+      "id": "segundaMortePlayer",
+      "actions": [
+        {
+          "type": "playerStop",
+          "params": {
+            "duration": 1.0
+          }
+        },
+        {
+          "type": "show_dialogue",
+          "params": {
+			"dialoguePath": "../Assets/Dialogues/SegundaMorte.txt"
+          }
+        }
+      ]
+    },
+	{
+      "id": "fimPrimeiroBoss",
+      "actions": [
+        {
+          "type": "playerStop",
+          "params": {
+            "duration": 1.0
+          }
+        },
+        {
+          "type": "show_dialogue",
+          "params": {
+			"dialoguePath": "../Assets/Dialogues/PrimeiroBoss.txt"
           }
         }
       ]

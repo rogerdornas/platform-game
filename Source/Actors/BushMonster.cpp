@@ -14,7 +14,7 @@ BushMonster::BushMonster(Game* game, float width, float height, float moveSpeed,
     ,mIdleTimer(0.0f)
     ,mDashDuration(5.6f)
     ,mDashTimer(0.0f)
-    ,mDashSpeed(1200.0f * mGame->GetScale())
+    ,mDashSpeed(1400.0f * mGame->GetScale())
     ,mHitDuration(0.3f)
     ,mHitTimer(0.0f)
 {
@@ -91,7 +91,7 @@ void BushMonster::ResolveGroundCollision() {
     std::vector<Ground*> grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
-            if (!g->GetIsSpike()) { // Colosão com ground
+            if (!g->GetIsSpike()) { // Colisão com ground
                 if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
                     collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
                 }
@@ -99,16 +99,14 @@ void BushMonster::ResolveGroundCollision() {
                     collisionSide = {false, false, false, false};
                 }
                 if (collisionSide[2]) {
-                    if (mBushMonsterState == State::Dashing && GetRotation() == Math::Pi) {
-                        SDL_Log("bateu na parede 1");
+                    if (mBushMonsterState == State::Dashing && GetRotation() == 0) {
                         mDashTimer = 0;
                         mBushMonsterState = State::Idle;
                     }
                 }
                 if (collisionSide[3]) {
                     // SDL_Log("colidiu parede");
-                    if (mBushMonsterState == State::Dashing && GetRotation() == 0) {
-                        SDL_Log("bateu na parede 2");
+                    if (mBushMonsterState == State::Dashing && GetRotation() == Math::Pi) {
                         mDashTimer = 0;
                         mBushMonsterState = State::Idle;
                     }
@@ -175,11 +173,9 @@ void BushMonster::HandleIdle(float deltaTime) {
     if (mIdleTimer >= mIdleDuration) {
         mIdleTimer = 0.0f;
         if (GetRotation() == 0) {
-            SDL_Log("dashando direita");
             mIsDashingRight = true;
         }
         else {
-            SDL_Log("dashando esquerda");
             mIsDashingRight = false;
         }
         mBushMonsterState = State::Dashing;

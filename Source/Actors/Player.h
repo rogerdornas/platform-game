@@ -68,6 +68,8 @@ public:
     void SetFireballDamage(float damage) { mFireballDamage = damage; }
     float GetFireballDamage() const { return mFireballDamage; }
 
+    int GetDeathCounter() const { return mDeathCounter; }
+
     // funções para gerenciar a animação em cutscenes
     void SetIsRunning(bool isRunning) {mIsRunning = isRunning; }
 
@@ -181,6 +183,8 @@ private:
     // Atributos para sounds
     float mRunningSoundIntervalDuration;
     float mRunningSoundIntervalTimer;
+
+    int mDeathCounter;
 
     bool mWasOnGround;
 

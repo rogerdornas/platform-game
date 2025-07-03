@@ -121,6 +121,29 @@ void Skill::LoadSkillMessage() {
     [this]() {
         mSkillMessage->Close();
         mGame->TogglePause();
+        // CutScene
+        std::string cutsceneId;
+        switch (mSkill) {
+            case SkillType::Dash:
+                cutsceneId = "fimPrimeiroBoss";
+                break;
+
+            case SkillType::FireBall:
+                cutsceneId = "fimPrimeiroBoss";
+                break;
+
+            case SkillType::WallSlide:
+                cutsceneId = "fimTerceiroBoss";
+                break;
+
+            case SkillType::DoubleJump:
+                cutsceneId = "fimQuartoBoss";
+                break;
+        }
+        auto* cutscene = new Cutscene(mGame, cutsceneId, "../Assets/Cutscenes/Cutscenes.json");
+        cutscene->Start();
+        mGame->SetCurrentCutscene(cutscene);
+        mGame->SetGamePlayState(Game::GamePlayState::Cutscene);
         SetState(ActorState::Destroy);
     });
 

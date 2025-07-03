@@ -149,7 +149,7 @@ void Golem::OnUpdate(float deltaTime) {
         mStopDuration = 1.0f;
         mFireballDuration = 0.7f;
         mMoveSpeedIncrease = 2;
-        mRunningSoundIntervalDuration = 0.15;
+        mRunningSoundIntervalDuration = 0.2;
     }
 }
 
