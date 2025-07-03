@@ -1452,25 +1452,6 @@ void Game::UpdateGame()
     SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255); // Usado para deixar as bordas em preto
     SDL_RenderClear(mRenderer);
 
-    // // Verifica as 2 primeiras mortes do player para tocar cutscene
-    // if (mPlayerDeathCounter < 3 && mPlayer) {
-    //     if (mPlayerDeathCounter < mPlayer->GetDeathCounter() && mGamePlayState == GamePlayState::Playing) {
-    //         mPlayerDeathCounter = mPlayer->GetDeathCounter();
-    //         if (mPlayerDeathCounter == 1) {
-    //             auto* cutscene = new Cutscene(this, "primeiraMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
-    //             cutscene->Start();
-    //             SetCurrentCutscene(cutscene);
-    //             SetGamePlayState(Game::GamePlayState::Cutscene);
-    //         }
-    //         if (mPlayerDeathCounter == 2) {
-    //             auto* cutscene = new Cutscene(this, "segundaMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
-    //             cutscene->Start();
-    //             SetCurrentCutscene(cutscene);
-    //             SetGamePlayState(Game::GamePlayState::Cutscene);
-    //         }
-    //     }
-    // }
-
     // Update all actors and pending actors
     if (!mIsPaused) {
         if (mHitstopDelayActive) {
