@@ -1481,7 +1481,7 @@
     <property name="GrowSpeedY" type="float" value="1000"/>
     <property name="GrowthDirection" type="int" value="0"/>
     <property name="MinHeight" type="float" value="0"/>
-    <property name="MinWidth" type="float" value="1312"/>
+    <property name="MinWidth" type="float" value="96"/>
    </properties>
   </object>
   <object id="329" name="DynamicGround" x="10016" y="1216" width="736" height="480">
@@ -1566,14 +1566,14 @@
   <object id="405" name="Close Wall" x="10112" y="1696" width="128" height="512">
    <properties>
     <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="284"/>
+    <property name="Grounds" value="284,436,440"/>
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
   <object id="406" name="Close Wall" x="9888" y="352" width="128" height="864">
    <properties>
     <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="329,436"/>
+    <property name="Grounds" value="329"/>
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>

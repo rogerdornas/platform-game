@@ -95,7 +95,7 @@ Player::Player(Game* game, float width, float height)
     ,mHealCount(mMaxHealCount)
     ,mHealAmount(30.0f)
     ,mIsHealing(false)
-    ,mHealAnimationDuration(1.0f)
+    ,mHealAnimationDuration(0.4f)
     ,mHealAnimationTimer(0.0f)
 
     ,mMoney(100)
