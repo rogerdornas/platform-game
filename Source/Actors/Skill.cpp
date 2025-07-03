@@ -29,10 +29,10 @@ Skill::Skill(class Game *game, SkillType skill)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 5000);
+    mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 5000);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f,
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.5f, mHeight * 2.5f,
                                             "../Assets/Sprites/Skill/Skill.png", "../Assets/Sprites/Skill/Skill.json");
 
     std::vector idle = {0, 1, 2, 3, 4, 5, 6, 7};
@@ -133,8 +133,8 @@ void Skill::ChangeResolution(float oldScale, float newScale) {
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+        mDrawAnimatedComponent->SetWidth(mWidth * 2.5f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 2.5f);
     }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
