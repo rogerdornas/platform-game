@@ -81,6 +81,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mGoingToNextLevel(false)
     ,mIsPlayingOnKeyboard(true)
     ,mLeftStickYState(StickState::Neutral)
+    ,mIsPlayingFinalCutscene(false)
     ,mCurrentCutscene(nullptr)
     ,mBackGroundTexture(nullptr)
     ,mBackGroundTextureMainMenu(nullptr)
@@ -97,7 +98,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level3)
+    ,mContinueScene(GameScene::Level5)
 {
 }
 
@@ -182,6 +183,12 @@ bool Game::Initialize()
     mAudio->CacheSound("Hornet.wav");
     mAudio->CacheSound("MantisLords.wav");
     mAudio->CacheSound("HollowKnight.wav");
+
+    // Load Final cutscenes
+    mGoodCutscenes = {"ShowLevel2", "ShowLevel3", "ShowLevel4"};
+    mGoodCutsceneScenes = {GameScene::Level2, GameScene::Level3, GameScene::Level4};
+    mEvilCutscenes = {};
+    mCutsceneIndex = 0;
 
     // Load Background Images
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
@@ -1020,7 +1027,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     frog->SetUnlockGroundsIds(ids);
                 }
                 else if (name == "Moth") {
-                    auto* moth = new Moth(this, 200, 200, 500, 1100);
+                    auto* moth = new Moth(this, 200, 200, 500, 1000);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
                 }
@@ -1479,6 +1486,10 @@ void Game::UpdateGame()
         }
     }
 
+    if (mIsPlayingFinalCutscene) {
+        PlayFinalGoodCutscene();
+    }
+
     // Update cutscene
     if (mCurrentCutscene) {
         mCurrentCutscene->Update(deltaTime);
@@ -1738,6 +1749,34 @@ void Game::StopBossMusic() {
     mBossMusic.Reset();
     mAudio->ResumeSound(mMusicHandle);
 }
+
+void Game::PlayFinalGoodCutscene() {
+    if (mCutsceneIndex < mGoodCutscenes.size()) {
+        mGamePlayState = GamePlayState::Cutscene;
+        if (mCurrentCutscene == nullptr) {
+            if (mGameScene != mGoodCutsceneScenes[mCutsceneIndex]) {
+                SetGameScene(mGoodCutsceneScenes[mCutsceneIndex], 1.5f);
+            }
+            else {
+                mCurrentCutscene = new Cutscene(this, mGoodCutscenes[mCutsceneIndex], "../Assets/Cutscenes/Cutscenes.json");
+                mCutsceneIndex++;
+            }
+        }
+    }
+    else {
+        if (mCurrentCutscene == nullptr) {
+            SetGameScene(GameScene::MainMenu, 1.5f);
+            mContinueScene = GameScene::Prologue;
+            mGoingToNextLevel = true;
+            mIsPlayingFinalCutscene = false;
+        }
+    }
+}
+
+void Game::PlayFinalEvilCutscene() {
+
+}
+
 
 void Game::GenerateOutput()
 {

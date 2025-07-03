@@ -130,7 +130,67 @@
       ]
     },
 	{
-      "id": "ShowMap",
+      "id": "ShowLevel1",
+      "actions": [
+        {
+          "type": "panCamera",
+          "params": {
+            "duration": 6.0,
+			"speedX": 300,
+			"speedY": 0,
+			"posStartX": 18272,
+			"posStartY": 3520
+          }
+        }
+      ]
+    },
+	{
+      "id": "ShowLevel2",
+      "actions": [
+        {
+          "type": "panCamera",
+          "params": {
+            "duration": 10.0,
+			"speedX": 300,
+			"speedY": 0,
+			"posStartX": 7360,
+			"posStartY": 2528
+          }
+        }
+      ]
+    },
+	{
+      "id": "ShowLevel3",
+      "actions": [
+        {
+          "type": "panCamera",
+          "params": {
+            "duration": 10.0,
+			"speedX": 300,
+			"speedY": 0,
+			"posStartX": 18272,
+			"posStartY": 3520
+          }
+        }
+      ]
+    },
+	{
+      "id": "ShowLevel4",
+      "actions": [
+        {
+          "type": "panCamera",
+          "params": {
+            "duration": 10.0,
+			"speedX": 300,
+			"speedY": 0,
+			"posStartX": 6560,
+			"posStartY": 1440
+          }
+        }
+      ]
+    },
+	{
+      "id": "ShowLevel5",
       "actions": [
         {
           "type": "panCamera",

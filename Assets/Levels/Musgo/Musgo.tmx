@@ -1443,6 +1443,6 @@
   </object>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="1" x="6880" y="5632" width="32" height="32"/>
+  <object id="1" x="6912" y="5632" width="32" height="32"/>
  </objectgroup>
 </map>

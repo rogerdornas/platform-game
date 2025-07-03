@@ -168,6 +168,14 @@ public:
 
     Store* GetStore() const { return mStore; }
 
+    void PlayFinalGoodCutscene();
+    void PlayFinalEvilCutscene();
+    void SetIsPlayingFinalCutscene() { mIsPlayingFinalCutscene = true; }
+    std::vector<std::string> mGoodCutscenes;
+    std::vector<GameScene> mGoodCutsceneScenes;
+    std::vector<std::string> mEvilCutscenes;
+    int mCutsceneIndex;
+
     void SetCheckPointPosition(Vector2 pos) { mCheckpointPosition = pos; }
     Vector2 GetCheckPointPosition() { return mCheckpointPosition; }
     void SetCheckPointMoney(int money) { mCheckPointMoney = money; }
@@ -306,6 +314,7 @@ private:
     GameScene mContinueScene;
 
     Cutscene* mCurrentCutscene;
+    bool mIsPlayingFinalCutscene;
 
     Store* mStore;
 

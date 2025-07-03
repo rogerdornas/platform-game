@@ -14,7 +14,8 @@ public:
         Dash,
         FireBall,
         WallSlide,
-        DoubleJump
+        DoubleJump,
+        TimeControl
     };
 
     Skill(class Game* game, SkillType skill);

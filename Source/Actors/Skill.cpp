@@ -29,7 +29,7 @@ Skill::Skill(class Game *game, SkillType skill)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 5000);
+    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 5000);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.5f, mHeight * 2.5f,
@@ -69,6 +69,9 @@ void Skill::SetPlayerSkill() {
 
         case SkillType::DoubleJump:
             player->SetMaxJumpsInAir(1);
+            break;
+
+        case SkillType::TimeControl:
             break;
     }
 }
@@ -112,40 +115,69 @@ void Skill::LoadSkillMessage() {
             skillText = mSkillMessage->AddText("GANHOU UM PULO EXTRA NO AR", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
             skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
             break;
+
+        case SkillType::TimeControl:
+            skillText = mSkillMessage->AddText("GANHOU CONTROLE SOBRE O TEMPO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
+            skillText = mSkillMessage->AddText("DESEJA VOLTAR NO TEMPO PARA RESTAURAR O EQUILÍBRIO DOS BIOMAS?", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale(), Color::White, mSkillMessage->GetSize().x * 0.8f);
+            skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 2.4f));
+            break;
     }
 
-    Vector2 buttonSize = Vector2(mSkillMessage->GetSize().x * 0.5f, 50 * mScale);
-    Vector2 buttonPos = Vector2(mSkillMessage->GetSize().x * 0.25f, mSkillMessage->GetSize().y - buttonSize.y * 1.2f);
-    int buttonPointSize = static_cast<int>(34 * mScale);
-    mSkillMessage->AddButton("VOLTAR", buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    [this]() {
-        mSkillMessage->Close();
-        mGame->TogglePause();
-        // CutScene
-        std::string cutsceneId;
-        switch (mSkill) {
-            case SkillType::Dash:
-                cutsceneId = "fimPrimeiroBoss";
-                break;
+    if (mSkill == SkillType::TimeControl) {
+        Vector2 buttonSize = Vector2(mSkillMessage->GetSize().x * 0.5f, 50 * mScale);
+        Vector2 buttonPos = Vector2(mSkillMessage->GetSize().x * 0.25f, mSkillMessage->GetSize().y - buttonSize.y * 2.4f);
+        int buttonPointSize = static_cast<int>(34 * mScale);
+        mSkillMessage->AddButton("VOLTAR", buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+            [this]() {
+                mGame->SetIsPlayingFinalCutscene();
+                mSkillMessage->Close();
+                mGame->TogglePause();
+                SetState(ActorState::Destroy);
+            });
+        mSkillMessage->AddButton("NÃO VOLTAR", buttonPos + Vector2(0, buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]() {
+            // mGame->SetIsPlayingFinalCutscene();
+                mSkillMessage->Close();
+                mGame->TogglePause();
+                SetState(ActorState::Destroy);
+            });
+    }
 
-            case SkillType::FireBall:
-                cutsceneId = "fimPrimeiroBoss";
-                break;
+    if (mSkill != SkillType::TimeControl) {
+        Vector2 buttonSize = Vector2(mSkillMessage->GetSize().x * 0.5f, 50 * mScale);
+        Vector2 buttonPos = Vector2(mSkillMessage->GetSize().x * 0.25f, mSkillMessage->GetSize().y - buttonSize.y * 1.2f);
+        int buttonPointSize = static_cast<int>(34 * mScale);
+        mSkillMessage->AddButton("VOLTAR", buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]() {
+            mSkillMessage->Close();
+            mGame->TogglePause();
+            // CutScene
+            std::string cutsceneId;
+            switch (mSkill) {
+                case SkillType::Dash:
+                    cutsceneId = "fimPrimeiroBoss";
+                    break;
 
-            case SkillType::WallSlide:
-                cutsceneId = "fimTerceiroBoss";
-                break;
+                case SkillType::FireBall:
+                    cutsceneId = "fimPrimeiroBoss";
+                    break;
 
-            case SkillType::DoubleJump:
-                cutsceneId = "fimQuartoBoss";
-                break;
-        }
-        auto* cutscene = new Cutscene(mGame, cutsceneId, "../Assets/Cutscenes/Cutscenes.json");
-        cutscene->Start();
-        mGame->SetCurrentCutscene(cutscene);
-        mGame->SetGamePlayState(Game::GamePlayState::Cutscene);
-        SetState(ActorState::Destroy);
-    });
+                case SkillType::WallSlide:
+                    cutsceneId = "fimTerceiroBoss";
+                    break;
+
+                case SkillType::DoubleJump:
+                    cutsceneId = "fimQuartoBoss";
+                    break;
+            }
+            auto* cutscene = new Cutscene(mGame, cutsceneId, "../Assets/Cutscenes/Cutscenes.json");
+            cutscene->Start();
+            mGame->SetCurrentCutscene(cutscene);
+            mGame->SetGamePlayState(Game::GamePlayState::Cutscene);
+            SetState(ActorState::Destroy);
+        });
+    }
 
     mGame->TogglePause();
 }

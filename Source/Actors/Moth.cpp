@@ -7,6 +7,7 @@
 #include "Effect.h"
 #include "ParticleSystem.h"
 #include "Projectile.h"
+#include "Skill.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
@@ -528,6 +529,10 @@ void Moth::TriggerBossDefeat() {
     mGame->SetIsSlowMotion(false);
 
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
+
+    // Player ganha controle sobre o tempo
+    auto* skill = new Skill(mGame, Skill::SkillType::TimeControl);
+    skill->SetPosition(GetPosition());
 
     auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());
