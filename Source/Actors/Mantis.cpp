@@ -167,6 +167,7 @@ void Mantis::WalkForward(float deltaTime) {
             }
             mMantisState = State::Attack;
             mDrawAnimatedComponent->ResetAnimationTimer();
+            mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
         }
     }
     else {

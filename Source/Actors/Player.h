@@ -179,8 +179,8 @@ private:
     float mBlinkTimer;
 
     // Atributos para sounds
-    float mRunningSoundIntervalTimer;
     float mRunningSoundIntervalDuration;
+    float mRunningSoundIntervalTimer;
 
     bool mWasOnGround;
 

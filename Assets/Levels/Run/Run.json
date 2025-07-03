@@ -2181,6 +2181,28 @@
                  "width":2880,
                  "x":11904,
                  "y":3136
+                }, 
+                {
+                 "height":224,
+                 "id":194,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":512,
+                 "x":5344,
+                 "y":2720
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2594,7 +2616,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":194,
+ "nextobjectid":195,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

@@ -83,6 +83,10 @@ private:
     float mFireBallHeight;
     float mFireballSpeed;
     float mFireballDamage;
+
+    // Atributos para sounds
+    float mRunningSoundIntervalDuration;
+    float mRunningSoundIntervalTimer;
 };
 
 
