@@ -15,7 +15,8 @@ enum class CameraMode {
     FollowPlayerLimitLeft,
     FollowPlayerLimitRightHorizontally,
     ScrollRight,
-    ScrollUp
+    ScrollUp,
+    PanoramicCamera,
 };
 
 class Camera
@@ -32,6 +33,8 @@ public:
     void SetLookUp() { mLookUp = true; }
     void SetLookDown() { mLookDown = true; }
 
+    void SetCameraVelocity(Vector2 velocity) { mCameraVelocity = velocity; }
+
     void StartCameraShake(float duration = 1.0f, float strength = 5.0f);
     void ChangeCameraMode(CameraMode cameraMode) { mCameraMode = cameraMode; }
     void ChangeResolution(float oldScale, float newScale);
@@ -45,6 +48,7 @@ private:
     Vector2 FollowPlayerLimitRightHorizontally();
     Vector2 ScrollRight(float deltaTime, float speed);
     Vector2 ScrollUp(float deltaTime, float speed);
+    Vector2 PanoramicCamera(float deltaTime);
 
     Vector2 mPos;
     class Game *mGame;
@@ -60,6 +64,7 @@ private:
     float mShakeStrength;
 
     float mCameraSpeed;
+    Vector2 mCameraVelocity;
 
     bool mLookUp;
     bool mLookDown;

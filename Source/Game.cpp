@@ -97,7 +97,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::LevelTeste)
+    ,mContinueScene(GameScene::Level3)
 {
 }
 

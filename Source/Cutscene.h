@@ -28,6 +28,9 @@ private:
     float mDuration;
     float mTimer;
 
+    Vector2 mCameraVelocity;
+    Vector2 mPosCameraStart;
+
     Vector2 mMoveDirection;
     float mMoveSpeed;
     float mMoveElapsed;

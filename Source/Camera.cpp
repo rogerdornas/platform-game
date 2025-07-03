@@ -17,6 +17,7 @@ Camera::Camera(class Game* game, Vector2 startPosition)
     ,mShakeTimer(0.0f)
     ,mShakeStrength(5.0f * mGame->GetScale())
     ,mCameraSpeed(500.0f * mGame->GetScale())
+    ,mCameraVelocity(Vector2::Zero)
     ,mLookUp(false)
     ,mLookDown(false)
 {
@@ -63,6 +64,10 @@ void Camera::Update(float deltaTime) {
         case CameraMode::ScrollUp:
             targetPosition = ScrollUp(deltaTime, -mCameraSpeed / 2);
             break;
+
+        case CameraMode::PanoramicCamera:
+            targetPosition = PanoramicCamera(deltaTime);
+            break;
     }
 
     // Aplica deslocamento vertical se estiver olhando para cima ou para baixo
@@ -95,6 +100,9 @@ void Camera::Update(float deltaTime) {
         // mPos = targetPosition;
         mPos = Vector2(int(mPos.x + (targetPosition.x - mPos.x) * mCameraLerpSpeed * deltaTime),
                int(mPos.y + (targetPosition.y - mPos.y) * mCameraLerpSpeed * deltaTime));
+    }
+    else if (mCameraMode == CameraMode::PanoramicCamera) {
+        mPos = targetPosition;
     }
 
     // Camera Shake
@@ -211,7 +219,12 @@ Vector2 Camera::ScrollUp(float deltaTime, float speed) {
     return targetPos;
 }
 
-
+Vector2 Camera::PanoramicCamera(float deltaTime) {
+    Vector2 targetPos = GetPosCamera();
+    targetPos.x = mPos.x + mCameraVelocity.x * deltaTime;
+    targetPos.y = mPos.y + mCameraVelocity.y * deltaTime;
+    return targetPos;
+}
 
 
 // void Camera::Update(float deltaTime) {

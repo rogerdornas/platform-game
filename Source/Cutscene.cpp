@@ -19,6 +19,11 @@ Action::Action(Game* game, const nlohmann::json& actionJson)
     ,mIsComplete(false)
     ,mDuration(0.0f)
     ,mTimer(0.0f)
+
+    ,mCameraVelocity(Vector2::Zero)
+    ,mPosCameraStart(Vector2::Zero)
+
+    ,mMoveDirection(Vector2::Zero)
     ,mMoveSpeed(0.0f)
     ,mMoveElapsed(0.0f)
     ,mDialogue(nullptr)
@@ -79,6 +84,22 @@ void Action::Start() {
             mDialogue = new DialogueSystem(mGame, "../Assets/Fonts/K2D-Bold.ttf", mDialoguePath);
         }
     }
+
+    else if (mType == "panCamera") {
+        mDuration = mParams["duration"];
+        mTimer = 0.0f;
+        mCameraVelocity.x = mParams["speedX"];
+        mCameraVelocity.x *= mGame->GetScale();
+        mCameraVelocity.y = mParams["speedY"];
+        mCameraVelocity.y *= mGame->GetScale();
+        mPosCameraStart.x = mParams["posStartX"];
+        mPosCameraStart.x *= mGame->GetScale();
+        mPosCameraStart.y = mParams["posStartY"];
+        mPosCameraStart.y *= mGame->GetScale();
+        mGame->GetCamera()->ChangeCameraMode(CameraMode::PanoramicCamera);
+        mGame->GetCamera()->SetCameraVelocity(mCameraVelocity);
+        mGame->GetCamera()->SetPosition(mPosCameraStart);
+    }
 }
 
 void Action::Update(float deltaTime) {
@@ -121,6 +142,13 @@ void Action::Update(float deltaTime) {
 
     else if (mType == "show_dialogue") {
         if (mDialogue->GetState() == UIScreen::UIState::Closing) {
+            mIsComplete = true;
+        }
+    }
+
+    else if (mType == "panCamera") {
+        mTimer += deltaTime;
+        if (mTimer >= mDuration) {
             mIsComplete = true;
         }
     }

@@ -128,6 +128,21 @@
           }
         }
       ]
+    },
+	{
+      "id": "ShowMap",
+      "actions": [
+        {
+          "type": "panCamera",
+          "params": {
+            "duration": 6.0,
+			"speedX": 300,
+			"speedY": 0,
+			"posStartX": 18272,
+			"posStartY": 3520
+          }
+        }
+      ]
     }
   ]
 }

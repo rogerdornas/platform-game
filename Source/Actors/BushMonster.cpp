@@ -235,27 +235,6 @@ void BushMonster::ManageAnimations() {
         mDrawAnimatedComponent->SetAnimation("idle");
         mDrawAnimatedComponent->SetAnimFPS(10);
     }
-    //
-    // if (!mDrawAnimatedComponent) return;
-    //
-    // if (mIsFlashing) {
-    //     if (mDrawAnimatedComponent->GetCurrentAnimName() != "hit") {
-    //         mDrawAnimatedComponent->SetAnimation("hit");
-    //         mDrawAnimatedComponent->SetAnimFPS(10.0f);
-    //     }
-    // }
-    // else if (mState == State::Dashing) {
-    //     if (mDrawAnimatedComponent->GetCurrentAnimName() != "attack") {
-    //         mDrawAnimatedComponent->SetAnimation("attack");
-    //         mDrawAnimatedComponent->SetAnimFPS(18.0f / mDashDuration);
-    //     }
-    // }
-    // else {
-    //     if (mDrawAnimatedComponent->GetCurrentAnimName() != "idle") {
-    //         mDrawAnimatedComponent->SetAnimation("idle");
-    //         mDrawAnimatedComponent->SetAnimFPS(10.0f);
-    //     }
-    // }
 }
 
 void BushMonster::TriggerBossDefeat() {
