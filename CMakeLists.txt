@@ -115,6 +115,8 @@ add_executable(${PROJECT_NAME}
         Source/DialogueSystem.h
         Source/Cutscene.cpp
         Source/Cutscene.h
+        Source/Actors/BushMonster.cpp
+        Source/Actors/BushMonster.h
 )
 
 

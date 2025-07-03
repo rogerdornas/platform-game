@@ -52,6 +52,9 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mFireBallHeight(100 * mGame->GetScale())
     ,mFireballSpeed(1400 * mGame->GetScale())
     ,mFireballDamage(15)
+
+    ,mRunningSoundIntervalDuration(0.3f)
+    ,mRunningSoundIntervalTimer(0.0f)
 {
     mMoneyDrop = 50;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
@@ -131,12 +134,22 @@ void Golem::OnUpdate(float deltaTime) {
 
     ControlSpawCrystal();
 
+    // Controla sons de passos
+    if (mGolemState == State::RunForward) {
+        mRunningSoundIntervalTimer += deltaTime;
+        if (mRunningSoundIntervalTimer >= mRunningSoundIntervalDuration) {
+            mRunningSoundIntervalTimer -= mRunningSoundIntervalDuration;
+            mGame->GetAudio()->PlaySound("GolemSteps/GolemSteps.wav");
+        }
+    }
+
     ManageAnimations();
 
     if (mHealthPoints <= 0.65f * mMaxHealthPoints) {
         mStopDuration = 1.0f;
         mFireballDuration = 0.7f;
         mMoveSpeedIncrease = 2;
+        mRunningSoundIntervalDuration = 0.2;
     }
 }
 

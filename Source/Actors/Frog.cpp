@@ -58,7 +58,7 @@ Frog::Frog(Game* game, float width, float height, float moveSpeed, float healthP
 
     std::string frogAssets = "../Assets/Sprites/Frog/";
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.3f, mHeight * 1.3f,
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f / 1.2f,
                                                        frogAssets + "Frog.png",
                                                        frogAssets + "Frog.json", 999);
 
@@ -156,12 +156,12 @@ void Frog::OnUpdate(float deltaTime) {
     }
 
     if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.3f);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.3f);
+        mDrawSpriteComponent->SetWidth(mWidth * 1.5f);
+        mDrawSpriteComponent->SetHeight(mHeight * 1.5f);
     }
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.3f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.3f);
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f / 1.2f);
     }
 
     if (mPlayerSpotted) {
@@ -617,8 +617,8 @@ void Frog::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 1.3f);
-    mDrawAnimatedComponent->SetHeight(mHeight * 1.3f);
+    mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+    mDrawAnimatedComponent->SetHeight(mHeight * 1.5f / 1.2f);
 
     Vector2 v1(-mHeight / 2, -mHeight / 2);
     Vector2 v2(mHeight / 2, -mHeight / 2);

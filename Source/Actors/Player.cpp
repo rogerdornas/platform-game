@@ -111,6 +111,7 @@ Player::Player(Game* game, float width, float height)
     ,mRunningSoundIntervalDuration(0.3f)
     ,mRunningSoundIntervalTimer(0.0f)
     ,mWasOnGround(false)
+    ,mDeathCounter(0)
 
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
@@ -612,6 +613,7 @@ void Player::OnUpdate(float deltaTime) {
     }
 
     if (Died()) {
+        mDeathCounter++;
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
         mKnockBackTimer = mKnockBackDuration;
         mInvulnerableTimer = mInvulnerableDuration;

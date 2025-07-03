@@ -76,6 +76,7 @@ void Store::OpenStore() {
 
             mGame->GetPlayer()->DecreaseMoney(mSwordRangeUpgradeCost);
             mSwordRangeUpgrade = true;
+            mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
         }
     }, textPos);
     std::string cost = std::to_string(mSwordRangeUpgradeCost);
@@ -91,6 +92,7 @@ void Store::OpenStore() {
             mGame->GetHUD()->IncreaseManaBar();
             mGame->GetPlayer()->DecreaseMoney(mManaUpgradeCost);
             mManaUpgrade = true;
+            mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
         }
     }, textPos);
     cost = std::to_string(mManaUpgradeCost);
@@ -108,6 +110,7 @@ void Store::OpenStore() {
             mGame->GetHUD()->IncreaseHPBar();
             mGame->GetPlayer()->DecreaseMoney(mHealthPointsUpgradeCost);
             mHealthPointsUpgrade = true;
+            mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
         }
     }, textPos);
     cost = std::to_string(mHealthPointsUpgradeCost);
@@ -122,6 +125,7 @@ void Store::OpenStore() {
             mGame->GetPlayer()->IncreaseHealCount();
             mGame->GetPlayer()->DecreaseMoney(mHealCountUpgradeCost);
             mHealCountUpgrade = true;
+            mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
         }
     }, textPos);
     cost = std::to_string(mHealCountUpgradeCost);
@@ -136,6 +140,7 @@ void Store::OpenStore() {
             mGame->GetPlayer()->AdjustSwordAttackSpeed(mSwordSpeedIncrease);
             mGame->GetPlayer()->DecreaseMoney(mSwordSpeedUpgradeCost);
             mSwordSpeedUpgrade = true;
+            mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
         }
     }, textPos);
     cost = std::to_string(mSwordSpeedUpgradeCost);
@@ -151,6 +156,7 @@ void Store::OpenStore() {
             mGame->GetPlayer()->GetSword()->SetDamage(mGame->GetPlayer()->GetSword()->GetDamage() * mSwordDamageIncrease);
             mGame->GetPlayer()->DecreaseMoney(mSwordDamageUpgradeCost);
             mSwordDamageUpgrade = true;
+            mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
         }
     }, textPos);
     cost = std::to_string(mSwordDamageUpgradeCost);
@@ -168,6 +174,7 @@ void Store::OpenStore() {
                 mGame->GetPlayer()->SetFireballHeight(mGame->GetPlayer()->GetFireballHeight() * mFireballSizeIncrease);
                 mGame->GetPlayer()->DecreaseMoney(mFireballUpgradeCost);
                 mFireballUpgrade = true;
+                mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
             }
         }, textPos);
         cost = std::to_string(mFireballUpgradeCost);

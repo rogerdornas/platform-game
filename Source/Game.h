@@ -238,6 +238,8 @@ private:
     class HUD *mHUD;
     std::vector<class Checkpoint*> mCheckPoints;
 
+    int mPlayerDeathCounter;
+
     // Player State
     Vector2 mCheckpointPosition;
     int mCheckPointMoney;

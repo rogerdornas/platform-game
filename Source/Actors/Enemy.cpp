@@ -178,7 +178,7 @@ void Enemy::ResolveGroundCollision() {
     std::vector<Ground*> grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
-            if (!g->GetIsSpike()) { // Colosão com ground
+            if (!g->GetIsSpike()) { // Colisão com ground
                 if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
                     mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
                 }
