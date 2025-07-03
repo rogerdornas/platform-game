@@ -101,7 +101,7 @@
         {
           "type": "playerStop",
           "params": {
-            "duration": 1.0
+            "duration": 0.5
           }
         },
         {
@@ -118,7 +118,7 @@
         {
           "type": "playerStop",
           "params": {
-            "duration": 1.0
+            "duration": 0.5
           }
         },
         {

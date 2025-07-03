@@ -1,20 +1,26 @@
 #include "BushMonster.h"
+
+#include "Effect.h"
+#include "ParticleSystem.h"
+#include "Skill.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Math.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Random.h"
 
 BushMonster::BushMonster(Game* game, float width, float height, float moveSpeed, float healthPoints)
     :Enemy(game, width, height, moveSpeed, healthPoints, 5)
     ,mBushMonsterState(State::Idle)
     ,mGravity(3000 * mGame->GetScale())
-    ,mIdleDuration(1.5f)
+    ,mIdleDuration(1.0f)
     ,mIdleTimer(0.0f)
     ,mDashDuration(5.6f)
     ,mDashTimer(0.0f)
     ,mDashSpeed(1400.0f * mGame->GetScale())
+    ,mIsDashingRight(true)
     ,mHitDuration(0.3f)
     ,mHitTimer(0.0f)
 {
@@ -83,6 +89,11 @@ void BushMonster::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
+    if (mHealthPoints <= 0.5f * mMaxHealthPoints) {
+        mIdleDuration = 0.8f;
+        mDashSpeed = 2000 * mGame->GetScale();
+    }
+
     ManageAnimations();
 }
 
@@ -101,14 +112,26 @@ void BushMonster::ResolveGroundCollision() {
                 if (collisionSide[2]) {
                     if (mBushMonsterState == State::Dashing && GetRotation() == 0) {
                         mDashTimer = 0;
-                        mBushMonsterState = State::Idle;
+                        // Pode entrar em idle ou continuar dashando
+                        if (Random::GetFloat() < 0.5) {
+                            mIsDashingRight = false;
+                        }
+                        else {
+                            mBushMonsterState = State::Idle;
+                        }
                     }
                 }
                 if (collisionSide[3]) {
                     // SDL_Log("colidiu parede");
                     if (mBushMonsterState == State::Dashing && GetRotation() == Math::Pi) {
                         mDashTimer = 0;
-                        mBushMonsterState = State::Idle;
+                        // Pode entrar em idle ou continuar dashando
+                        if (Random::GetFloat() < 0.5) {
+                            mIsDashingRight = true;
+                        }
+                        else {
+                            mBushMonsterState = State::Idle;
+                        }
                     }
                 }
             }
@@ -236,7 +259,29 @@ void BushMonster::ManageAnimations() {
 }
 
 void BushMonster::TriggerBossDefeat() {
+    SetState(ActorState::Destroy);
+    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
+    // Player ganha bola de fogo
+    auto* skill = new Skill(mGame, Skill::SkillType::Dash);
+    skill->SetPosition(GetPosition());
+
+    auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
+    blood->SetPosition(GetPosition());
+    blood->SetEmitDirection(Vector2::UnitY);
+    blood->SetParticleSpeedScale(1.4);
+    blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
+    blood->SetParticleGravity(true);
+
+    auto* circleBlur = new Effect(mGame);
+    circleBlur->SetDuration(1.0);
+    circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
+    circleBlur->SetEnemy(*this);
+    circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
+    circleBlur->SetEffect(TargetEffect::Circle);
+    circleBlur->EnemyDestroyed();
+
+    mGame->StopBossMusic();
 }
 
 
