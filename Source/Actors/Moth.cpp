@@ -21,7 +21,7 @@ Moth::Moth(Game *game, float width, float height, float moveSpeed, float healthP
     :Enemy(game, width, height, moveSpeed, healthPoints, 15)
     ,mMothState(State::Stop)
     ,mIsSlowMotion(false)
-    ,mSlowMotionProbability(0.35f)
+    ,mSlowMotionProbability(0.45f)
 
     ,mStopDuration(2.0f)
     ,mStopTimer(0.0f)
@@ -466,7 +466,7 @@ void Moth::FlyUp(float deltaTime) {
     }
 
     // for (int id : {174, 176, 183, 184, 192, 193, 194}) {
-    for (int id : {16, 17, 18, 19, 22, 23, 24, }) {
+    for (int id : {16, 17, 18, 19, 22, 23, 24, 43}) {
         Ground *g = mGame->GetGroundById(id);
         DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
         if (dynamicGround) {
