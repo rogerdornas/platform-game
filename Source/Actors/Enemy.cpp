@@ -31,6 +31,7 @@ Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heath
     ,mFlashDuration(0.07f)
     ,mFlashTimer(mFlashDuration)
     ,mPlayerSpotted(false)
+    ,mOffscreenLimit(0.2f)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
@@ -79,12 +80,16 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
     circleBlur->SetEffect(TargetEffect::Circle);
 
-    mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
+    if (IsOnScreen()) {
+        mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
+    }
 }
 
 bool Enemy::Died() {
     if (mHealthPoints <= 0) {
-        mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
+        if (IsOnScreen()) {
+            mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
+        }
 
         std::vector<Money*> moneys = mGame->GetMoneys();
 
@@ -209,4 +214,11 @@ void Enemy::ResolveGroundCollision() {
             }
         }
     }
+}
+
+bool Enemy::IsOnScreen() {
+    return (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth()  + mGame->GetLogicalWindowWidth() * mOffscreenLimit &&
+            GetPosition().x > mGame->GetCamera()->GetPosCamera().x  - mGame->GetLogicalWindowWidth() * mOffscreenLimit &&
+            GetPosition().y > mGame->GetCamera()->GetPosCamera().y - mGame->GetLogicalWindowHeight() * mOffscreenLimit &&
+            GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight() + mGame->GetLogicalWindowHeight() * mOffscreenLimit);
 }

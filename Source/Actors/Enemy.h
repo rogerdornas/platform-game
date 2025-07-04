@@ -28,6 +28,7 @@ protected:
     bool Died();
     void ResolveEnemyCollision() const;
     virtual void ResolveGroundCollision();
+    bool IsOnScreen();
 
     int mId;
     float mWidth;
@@ -51,6 +52,8 @@ protected:
     float mFlashTimer;
 
     bool mPlayerSpotted;
+
+    float mOffscreenLimit;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;

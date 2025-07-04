@@ -139,7 +139,9 @@ void Golem::OnUpdate(float deltaTime) {
         mRunningSoundIntervalTimer += deltaTime;
         if (mRunningSoundIntervalTimer >= mRunningSoundIntervalDuration) {
             mRunningSoundIntervalTimer -= mRunningSoundIntervalDuration;
-            mGame->GetAudio()->PlaySound("GolemSteps/GolemSteps.wav");
+            if (IsOnScreen()) {
+                mGame->GetAudio()->PlaySound("GolemSteps/GolemSteps.wav");
+            }
         }
     }
 
@@ -402,7 +404,9 @@ void Golem::TriggerBossDefeat() {
 
 void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
     if (knockBackDirection.y == 1) {
-        mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+        if (IsOnScreen()) {
+            mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+        }
         for (int i = 0; i < 3; i++) {
             auto* sparkEffect = new Effect(mGame);
             sparkEffect->SetDuration(0.1f);
@@ -414,7 +418,9 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
 
     if (mIsInvulnerable) {
         if (knockBackDirection.y == -1) {
-            mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+            if (IsOnScreen()) {
+                mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+            }
             for (int i = 0; i < 3; i++) {
                 auto* sparkEffect = new Effect(mGame);
                 sparkEffect->SetDuration(0.1f);
@@ -424,7 +430,9 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
             return;
         }
         if (knockBackDirection.x == 1) {
-            mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+            if (IsOnScreen()) {
+                mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+            }
             for (int i = 0; i < 3; i++) {
                 auto* sparkEffect = new Effect(mGame);
                 sparkEffect->SetDuration(0.1f);
@@ -438,7 +446,9 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
             return;
         }
         if (knockBackDirection.x == -1) {
-            mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+            if (IsOnScreen()) {
+                mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
+            }
             for (int i = 0; i < 3; i++) {
                 auto* sparkEffect = new Effect(mGame);
                 sparkEffect->SetDuration(0.1f);
@@ -474,7 +484,9 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
     circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
     circleBlur->SetEffect(TargetEffect::Circle);
 
-    mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
+    if (IsOnScreen()) {
+        mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
+    }
 }
 
 
