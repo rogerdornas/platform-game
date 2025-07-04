@@ -50,6 +50,7 @@ private:
 
     bool mIsRunning;
     float mGravity;
+    float mPunchProbability;
 
     bool mIsInvulnerable;
     bool mAlreadySpawnedCrystal;
