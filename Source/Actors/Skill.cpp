@@ -97,13 +97,23 @@ void Skill::LoadSkillMessage() {
 
     switch (mSkill) {
         case SkillType::Dash:
-            skillText = mSkillMessage->AddText("PRESSIONE C PARA USAR DASH", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            if (mGame->GetIsPlayingOnKeyboard()) {
+                skillText = mSkillMessage->AddText("PRESSIONE C PARA USAR DASH", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            }
+            else {
+                skillText = mSkillMessage->AddText("PRESSIONE RB PARA USAR DASH", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            }
             skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
             break;
 
         case SkillType::FireBall:
-            skillText = mSkillMessage->AddText("PRESSIONE A PARA ATIRAR UMA BOLA DE FOGO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
-            skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
+            if (mGame->GetIsPlayingOnKeyboard()) {
+                skillText = mSkillMessage->AddText("PRESSIONE A PARA ATIRAR UMA BOLA DE FOGO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            }
+            else {
+                skillText = mSkillMessage->AddText("PRESSIONE B PARA ATIRAR UMA BOLA DE FOGO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            }
+                skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
             break;
 
         case SkillType::WallSlide:
@@ -128,14 +138,14 @@ void Skill::LoadSkillMessage() {
         Vector2 buttonSize = Vector2(mSkillMessage->GetSize().x * 0.5f, 50 * mScale);
         Vector2 buttonPos = Vector2(mSkillMessage->GetSize().x * 0.25f, mSkillMessage->GetSize().y - buttonSize.y * 2.4f);
         int buttonPointSize = static_cast<int>(34 * mScale);
-        mSkillMessage->AddButton("VOLTAR", buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        mSkillMessage->AddButton("SIM", buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
             [this]() {
                 mGame->SetIsPlayingFinalCutscene();
                 mSkillMessage->Close();
                 mGame->TogglePause();
                 SetState(ActorState::Destroy);
             });
-        mSkillMessage->AddButton("NÃO VOLTAR", buttonPos + Vector2(0, buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        mSkillMessage->AddButton("NÃO", buttonPos + Vector2(0, buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
         [this]() {
             // mGame->SetIsPlayingFinalCutscene();
                 mSkillMessage->Close();

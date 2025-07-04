@@ -22,6 +22,8 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
 
     ,mIsRunning(false)
     ,mGravity(3000 * mGame->GetScale())
+    ,mPunchProbability(0.5f)
+
     ,mIsInvulnerable(false)
     ,mAlreadySpawnedCrystal(false)
     ,mCrystalWidth(108)
@@ -188,11 +190,19 @@ void Golem::Stop(float deltaTime) {
     mStopTimer += deltaTime;
     if (mStopTimer >= mStopDuration) {
         mStopTimer = 0;
-        if (Random::GetFloat() < 0.6) {
+        if (Random::GetFloat() < mPunchProbability) {
             mGolemState = State::RunForward;
         }
         else {
             mGolemState = State::Fireball;
+        }
+
+        // Controla probabilidade de soco para não ficar spamando
+        if (mGolemState == State::RunForward) {
+            mPunchProbability -= 0.1;
+        }
+        else {
+            mPunchProbability += 0.1;
         }
     }
 }

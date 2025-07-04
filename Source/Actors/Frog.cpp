@@ -54,7 +54,7 @@ Frog::Frog(Game* game, float width, float height, float moveSpeed, float healthP
     mTongueDuration = 1.4f;
     mTongueTimer = 0.0f;
     mIsLicking = false;
-    mJumpComboProbability = 0.5f;
+    mJumpComboProbability = 0.6f;
 
     std::string frogAssets = "../Assets/Sprites/Frog/";
 
@@ -433,7 +433,7 @@ void Frog::Stop(float deltaTime) {
         mJumpComboProbability -= 0.1;
     }
     else {
-        mJumpComboProbability = 0.5;
+        mJumpComboProbability = 0.6;
     }
 }
 
