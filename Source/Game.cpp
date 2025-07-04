@@ -98,7 +98,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level2)
+    ,mContinueScene(GameScene::Level1)
 {
 }
 
@@ -354,9 +354,7 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::LevelTeste) {
-        mUseParallaxBackground = false;
         mUseParallaxBackground = true;
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
         LoadLevel(levelsAssets + "Forest/Forest.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -385,7 +383,6 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level1) {
         mUseParallaxBackground = true;
-        mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
         LoadLevel(levelsAssets + "Musgo/Musgo.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -398,8 +395,6 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level2) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "FogoEspichado.png");
-
         mUseParallaxBackground = true;
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/7.png"));
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/6.png"));
@@ -422,7 +417,6 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level3) {
         mUseParallaxBackground = true;
-        mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
         LoadLevel(levelsAssets + "Swamp/Swamp.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -435,8 +429,6 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level4) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Pain-Background.png");
-
         mUseParallaxBackground = true;
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/7.png"));
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/6.png"));
@@ -458,8 +450,6 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level5) {
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Pain-Background.png");
-
         mUseParallaxBackground = true;
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/7.png"));
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/6.png"));
@@ -1790,6 +1780,10 @@ void Game::GenerateOutput()
                 case GameScene::LevelTeste:
                     DrawParallaxLayers(mBackgroundLayersLevel2);
                 break;
+
+                case GameScene::Level1:
+                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    break;
 
                 case GameScene::Level2:
                     DrawParallaxLayers(mBackgroundLayersLevel2);
