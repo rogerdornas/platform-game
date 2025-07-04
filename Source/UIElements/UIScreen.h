@@ -43,6 +43,12 @@ public:
     // Game getter
     class Game* GetGame() const { return mGame; }
 
+	// Buttons getter
+	std::vector<UIButton *> GetButtons() { return mButtons; }
+
+	// Texts getter
+	std::vector<UIText *> GetTexts() { return mTexts; }
+
     // Add a button to this screen
 	UIButton* AddButton(const std::string& name, const Vector2& pos, const Vector2& dims, const int pointSize, UIButton::TextPos alignText, std::function<void()> onClick, Vector2 textPos = Vector2::Zero, Vector3 textColor = Color::White);
     UIText* AddText(const std::string& name, const Vector2& pos = Vector2::Zero, const Vector2& dims = Vector2::Zero, const int pointSize = 40, Vector3 color = Color::White, const int unsigned wrapLength = 1024);

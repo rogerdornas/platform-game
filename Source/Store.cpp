@@ -84,8 +84,12 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mSwordRangeUpgradeCost);
             mSwordRangeUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
-            CloseStore();
-            OpenStore();
+            mStoreMenu->GetButtons()[0]->GetText()->SetColor(Color::Red);
+            mStoreMenu->GetButtons()[0]->GetText()->SetText("AUMENTAR ALCANCE DA ESPADA");
+            mStoreMenu->GetTexts()[1]->SetColor(Color::Red);
+            mStoreMenu->GetTexts()[1]->SetText(std::to_string(mSwordRangeUpgradeCost));
+            // CloseStore();
+            // OpenStore();
         }
     }, textPos, mTextColor);
     std::string cost = std::to_string(mSwordRangeUpgradeCost);
@@ -108,8 +112,12 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mManaUpgradeCost);
             mManaUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
-            CloseStore();
-            OpenStore();
+            mStoreMenu->GetButtons()[1]->GetText()->SetColor(Color::Red);
+            mStoreMenu->GetButtons()[1]->GetText()->SetText("AUMENTAR MANA MÁXIMO");
+            mStoreMenu->GetTexts()[2]->SetColor(Color::Red);
+            mStoreMenu->GetTexts()[2]->SetText(std::to_string(mManaUpgradeCost));
+            // CloseStore();
+            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mManaUpgradeCost);
@@ -134,8 +142,12 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mHealthPointsUpgradeCost);
             mHealthPointsUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
-            CloseStore();
-            OpenStore();
+            mStoreMenu->GetButtons()[2]->GetText()->SetColor(Color::Red);
+            mStoreMenu->GetButtons()[2]->GetText()->SetText("AUMENTAR VIDA MÁXIMA");
+            mStoreMenu->GetTexts()[3]->SetColor(Color::Red);
+            mStoreMenu->GetTexts()[3]->SetText(std::to_string(mHealthPointsUpgradeCost));
+            // CloseStore();
+            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mHealthPointsUpgradeCost);
@@ -157,8 +169,12 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mHealCountUpgradeCost);
             mHealCountUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
-            CloseStore();
-            OpenStore();
+            mStoreMenu->GetButtons()[3]->GetText()->SetColor(Color::Red);
+            mStoreMenu->GetButtons()[3]->GetText()->SetText("AUMENTAR NÚMERO DE CURAS");
+            mStoreMenu->GetTexts()[4]->SetColor(Color::Red);
+            mStoreMenu->GetTexts()[4]->SetText(std::to_string(mHealCountUpgradeCost));
+            // CloseStore();
+            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mHealCountUpgradeCost);
@@ -180,8 +196,12 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mSwordSpeedUpgradeCost);
             mSwordSpeedUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
-            CloseStore();
-            OpenStore();
+            mStoreMenu->GetButtons()[4]->GetText()->SetColor(Color::Red);
+            mStoreMenu->GetButtons()[4]->GetText()->SetText("AUMENTAR VELOCIDADE DA ESPADA");
+            mStoreMenu->GetTexts()[5]->SetColor(Color::Red);
+            mStoreMenu->GetTexts()[5]->SetText(std::to_string(mSwordSpeedUpgradeCost));
+            // CloseStore();
+            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mSwordSpeedUpgradeCost);
@@ -204,8 +224,12 @@ void Store::OpenStore() {
             mGame->GetPlayer()->DecreaseMoney(mSwordDamageUpgradeCost);
             mSwordDamageUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
-            CloseStore();
-            OpenStore();
+            mStoreMenu->GetButtons()[5]->GetText()->SetColor(Color::Red);
+            mStoreMenu->GetButtons()[5]->GetText()->SetText("AUMENTAR DANO DA ESPADA");
+            mStoreMenu->GetTexts()[6]->SetColor(Color::Red);
+            mStoreMenu->GetTexts()[6]->SetText(std::to_string(mSwordDamageUpgradeCost));
+            // CloseStore();
+            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mSwordDamageUpgradeCost);
@@ -230,8 +254,12 @@ void Store::OpenStore() {
                 mGame->GetPlayer()->DecreaseMoney(mFireballUpgradeCost);
                 mFireballUpgrade = true;
                 mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
-                CloseStore();
-                OpenStore();
+                mStoreMenu->GetButtons()[6]->GetText()->SetColor(Color::Red);
+                mStoreMenu->GetButtons()[6]->GetText()->SetText("MELHORAR BOLA DE FOGO");
+                mStoreMenu->GetTexts()[7]->SetColor(Color::Red);
+                mStoreMenu->GetTexts()[7]->SetText(std::to_string(mFireballUpgradeCost));
+                // CloseStore();
+                // OpenStore();
             }
         }, textPos, mTextColor);
         cost = std::to_string(mFireballUpgradeCost);
