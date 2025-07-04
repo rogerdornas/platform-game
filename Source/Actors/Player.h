@@ -69,6 +69,7 @@ public:
     float GetFireballDamage() const { return mFireballDamage; }
 
     int GetDeathCounter() const { return mDeathCounter; }
+    void SetIsDead(bool isDead) { mIsDead = isDead; }
 
     // funções para gerenciar a animação em cutscenes
     void SetIsRunning(bool isRunning) {mIsRunning = isRunning; }
@@ -185,6 +186,10 @@ private:
     float mRunningSoundIntervalTimer;
 
     int mDeathCounter;
+
+    float mDeathAnimationDuration;
+    float mDeathAnimationTimer;
+    bool mIsDead;
 
     bool mWasOnGround;
 

@@ -112,6 +112,9 @@ Player::Player(Game* game, float width, float height)
     ,mRunningSoundIntervalTimer(0.0f)
     ,mWasOnGround(false)
     ,mDeathCounter(0)
+    ,mDeathAnimationDuration(1.0f)
+    ,mDeathAnimationTimer(0.0f)
+    ,mIsDead(false)
 
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
@@ -160,10 +163,10 @@ Player::Player(Game* game, float width, float height)
                                                    "../Assets/Sprites/Esquilo2/Esquilo.png",
                                                    "../Assets/Sprites/Esquilo2/Esquilo.json", 1000);
 
-    std::vector idle = {10};
+    std::vector idle = {13};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector attackFront = {10, 0, 1};
+    std::vector attackFront = {13, 0, 1};
     mDrawAnimatedComponent->AddAnimation("attackFront", attackFront);
 
     std::vector attackUp = {2, 3};
@@ -172,22 +175,25 @@ Player::Player(Game* game, float width, float height)
     std::vector dash = {4, 5, 5, 5, 6};
     mDrawAnimatedComponent->AddAnimation("dash", dash);
 
-    std::vector run = {14, 15, 16, 17, 18, 19};
+    std::vector run = {17, 18, 19, 20, 21, 22};
     mDrawAnimatedComponent->AddAnimation("run", run);
 
     std::vector flash = {10};
     mDrawAnimatedComponent->AddAnimation("flash", flash);
 
-    std::vector hurt = {8, 9};
+    std::vector hurt = {11, 12};
     mDrawAnimatedComponent->AddAnimation("hurt", hurt);
 
-    std::vector jumpUp = {11};
+    std::vector die = {11, 7, 8, 9, 9, 9};
+    mDrawAnimatedComponent->AddAnimation("die", die);
+
+    std::vector jumpUp = {14};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {12};
+    std::vector jumpApex = {15};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {13};
+    std::vector falling = {16};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -501,6 +507,10 @@ void Player::OnUpdate(float deltaTime) {
         mKnockBackTimer += deltaTime;
     }
 
+    if (mIsDead) {
+        mDeathAnimationTimer += deltaTime;
+    }
+
     if (mStopInAirFireBallTimer < mStopInAirFireBallMaxDuration) {
         mStopInAirFireBallTimer += deltaTime;
     }
@@ -613,15 +623,18 @@ void Player::OnUpdate(float deltaTime) {
     }
 
     if (Died()) {
-        mDeathCounter++;
+        mGame->SetGamePlayState(Game::GamePlayState::GameOver);
+        mAABBComponent->SetActive(false);
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
         mKnockBackTimer = mKnockBackDuration;
         mInvulnerableTimer = mInvulnerableDuration;
-        mHurtTimer = mHurtDuration * 0.9f;
-        mAABBComponent->SetActive(false);
-        mGame->SetResetLevel();
         mGame->GetAudio()->StopAllSounds();
-        SetState(ActorState::Paused);
+        if (mDeathAnimationTimer >= mDeathAnimationDuration) {
+            mDeathCounter++;
+            mDeathAnimationTimer = 0;
+            mGame->SetResetLevel();
+            SetState(ActorState::Paused);
+        }
     }
 
     if (mDrawAnimatedComponent) {
@@ -942,7 +955,11 @@ void Player::ResolveEnemyCollision() {
 
 void Player::ManageAnimations() {
     mDrawAnimatedComponent->SetAnimFPS(10.0f);
-    if (mHurtTimer < mHurtDuration) {
+    if (mIsDead) {
+        mDrawAnimatedComponent->SetAnimation("die");
+        mDrawAnimatedComponent->SetAnimFPS(4.0f / mDeathAnimationDuration);
+    }
+    else if (mHurtTimer < mHurtDuration) {
         mDrawAnimatedComponent->SetAnimation("hurt");
     }
     else if (mDashComponent->GetIsDashing()) {
@@ -1041,7 +1058,14 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
 }
 
 bool Player::Died() {
-    return mHealthPoints <= 0;
+    if (mHealthPoints <= 0) {
+        if (mIsDead == false) {
+            mIsDead = true;
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
+        return true;
+    }
+    return false;
 }
 
 void Player::ChangeResolution(float oldScale, float newScale) {

@@ -489,7 +489,7 @@ void Moth::Dying(float deltaTime) {
 void Moth::ChangeGround(float deltaTime) {
     std::vector<Ground *> grounds = mGame->GetGrounds();
 
-    if (mHealthPoints > 0.88f * mMaxHealthPoints && mHealthPoints <= 0.9f * mMaxHealthPoints) {
+    if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.9f * mMaxHealthPoints) {
         // for (int id : {174, 176}) {
         for (int id : {16, 17}) {
             Ground *g = mGame->GetGroundById(id);
@@ -500,7 +500,7 @@ void Moth::ChangeGround(float deltaTime) {
         }
     }
 
-    if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.88f * mMaxHealthPoints) {
+    if (mHealthPoints > 0.6f * mMaxHealthPoints && mHealthPoints <= 0.86f * mMaxHealthPoints) {
         // for (int id : {172}) {
         for (int id : {15}) {
             Ground *g = mGame->GetGroundById(id);

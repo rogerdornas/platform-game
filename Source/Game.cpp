@@ -1083,6 +1083,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 if (mPlayer) {
                     mPlayer->SetSword();
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
+                    mPlayer->SetIsDead(false);
 
                     // Faz isso para o player ser sempre o último a ser atualizado a cada frame
                     RemoveActor(mPlayer);
@@ -1536,7 +1537,7 @@ void Game::UpdateGame()
 
     if (mResetLevel) {
         mStore->CloseStoreMessage();
-        ResetGameScene(3.5f);
+        ResetGameScene(1.5f);
         mPlayer->ResetHealthPoints();
         mPlayer->ResetMana();
         mPlayer->ResetHealCount();

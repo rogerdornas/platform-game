@@ -176,7 +176,7 @@
       }
     },
     {
-      "filename": "Flash.png",
+      "filename": "Die1.png",
       "frame": {
         "x": 93,
         "y": 105,
@@ -201,7 +201,7 @@
       }
     },
     {
-      "filename": "Hurt1.png",
+      "filename": "Die2.png",
       "frame": {
         "x": 185,
         "y": 53,
@@ -226,7 +226,7 @@
       }
     },
     {
-      "filename": "Hurt2.png",
+      "filename": "Die3.png",
       "frame": {
         "x": 277,
         "y": 1,
@@ -251,7 +251,7 @@
       }
     },
     {
-      "filename": "Idle.png",
+      "filename": "Flash.png",
       "frame": {
         "x": 1,
         "y": 209,
@@ -276,7 +276,7 @@
       }
     },
     {
-      "filename": "Jump1.png",
+      "filename": "Hurt1.png",
       "frame": {
         "x": 93,
         "y": 157,
@@ -301,7 +301,7 @@
       }
     },
     {
-      "filename": "Jump2.png",
+      "filename": "Hurt2.png",
       "frame": {
         "x": 185,
         "y": 105,
@@ -326,7 +326,7 @@
       }
     },
     {
-      "filename": "Jump3.png",
+      "filename": "Idle.png",
       "frame": {
         "x": 277,
         "y": 53,
@@ -351,32 +351,7 @@
       }
     },
     {
-      "filename": "Walk1.png",
-      "frame": {
-        "x": 369,
-        "y": 1,
-        "w": 90,
-        "h": 50
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 90,
-        "h": 50
-      },
-      "sourceSize": {
-        "w": 90,
-        "h": 50
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Walk2.png",
+      "filename": "Jump1.png",
       "frame": {
         "x": 1,
         "y": 261,
@@ -401,7 +376,7 @@
       }
     },
     {
-      "filename": "Walk3.png",
+      "filename": "Jump2.png",
       "frame": {
         "x": 93,
         "y": 209,
@@ -426,7 +401,7 @@
       }
     },
     {
-      "filename": "Walk4.png",
+      "filename": "Jump3.png",
       "frame": {
         "x": 185,
         "y": 157,
@@ -451,7 +426,7 @@
       }
     },
     {
-      "filename": "Walk5.png",
+      "filename": "Walk1.png",
       "frame": {
         "x": 277,
         "y": 105,
@@ -476,10 +451,110 @@
       }
     },
     {
+      "filename": "Walk2.png",
+      "frame": {
+        "x": 1,
+        "y": 313,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk3.png",
+      "frame": {
+        "x": 93,
+        "y": 261,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk4.png",
+      "frame": {
+        "x": 185,
+        "y": 209,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk5.png",
+      "frame": {
+        "x": 277,
+        "y": 157,
+        "w": 90,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 50
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
       "filename": "Walk6.png",
       "frame": {
-        "x": 369,
-        "y": 53,
+        "x": 93,
+        "y": 313,
         "w": 90,
         "h": 50
       },
@@ -507,8 +582,8 @@
     "image": "Esquilo.png",
     "format": "RGBA8888",
     "size": {
-      "w": 460,
-      "h": 312
+      "w": 368,
+      "h": 364
     },
     "scale": 1
   }
