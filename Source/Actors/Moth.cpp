@@ -130,8 +130,6 @@ void Moth::OnUpdate(float deltaTime) {
     ResolveGroundCollision();
     ResolveEnemyCollision();
 
-    ChangeGround(deltaTime);
-
     if (mPlayerSpotted) {
         if (!mGame->GetBossMusicHandle().IsValid()) {
             mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
@@ -147,6 +145,8 @@ void Moth::OnUpdate(float deltaTime) {
         // mMothState = State::Dying;
         TriggerBossDefeat();
     }
+
+    ChangeGround(deltaTime);
 
     ManageAnimations();
 }
@@ -525,6 +525,14 @@ void Moth::ChangeGround(float deltaTime) {
 
 
 void Moth::TriggerBossDefeat() {
+    for (int id : {51}) {
+        Ground *g = mGame->GetGroundById(id);
+        DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
+        if (dynamicGround) {
+            dynamicGround->SetIsGrowing(true);
+        }
+    }
+
     SetState(ActorState::Destroy);
     mGame->SetIsSlowMotion(false);
 

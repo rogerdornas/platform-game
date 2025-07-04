@@ -1275,7 +1275,7 @@
    <properties>
     <property name="Moving" type="bool" value="false"/>
     <property name="MovingDuration" type="float" value="35"/>
-    <property name="SpeedX" type="float" value="130"/>
+    <property name="SpeedX" type="float" value="-130"/>
     <property name="SpeedY" type="float" value="0"/>
    </properties>
   </object>

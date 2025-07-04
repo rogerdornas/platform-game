@@ -318,6 +318,7 @@ void Trigger::GroundTrigger() {
                     g->SetIsMoving(true);
                 }
             }
+            SetState(ActorState::Destroy);
             break;
         default:
             break;

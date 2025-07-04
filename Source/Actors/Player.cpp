@@ -81,7 +81,7 @@ Player::Player(Game* game, float width, float height)
     ,mWallJumpTimer(0.15f)
     ,mWallJumpMaxTime(0.15f)
 
-    ,mKnockBackSpeed(1200.0f * mGame->GetScale())
+    ,mKnockBackSpeed(1000.0f * mGame->GetScale())
     ,mKnockBackTimer(0.0f)
     ,mKnockBackDuration(0.2f)
     ,mCameraShakeStrength(70.0f * mGame->GetScale())

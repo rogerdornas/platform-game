@@ -2248,7 +2248,7 @@
                         {
                          "name":"SpeedX",
                          "type":"float",
-                         "value":130
+                         "value":-130
                         }, 
                         {
                          "name":"SpeedY",
