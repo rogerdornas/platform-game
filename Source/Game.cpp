@@ -384,9 +384,9 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level1) {
-        mUseParallaxBackground = false;
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
-        LoadLevel(levelsAssets + "Level1/Level1.json");
+        mUseParallaxBackground = true;
+        mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
+        LoadLevel(levelsAssets + "Musgo/Musgo.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -423,7 +423,7 @@ void Game::ChangeScene()
     else if (mNextScene == GameScene::Level3) {
         mUseParallaxBackground = true;
         mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
-        LoadLevel(levelsAssets + "Musgo/Musgo.json");
+        LoadLevel(levelsAssets + "Swamp/Swamp.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
