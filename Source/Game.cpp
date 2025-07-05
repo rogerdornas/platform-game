@@ -811,7 +811,7 @@ void Game::LoadKeyBoardMenu() {
     Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0);
 
     mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mKeyboardMenu->GetSize());
-    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Keyboard2.png", Vector2(mKeyboardMenu->GetSize().x * 0.125f, 0), Vector2(mKeyboardMenu->GetSize().y * 1.4f, mKeyboardMenu->GetSize().y * 1.4f / 1.52f));
+    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Keyboard4.png", Vector2(mKeyboardMenu->GetSize().x * 0.125f, 0), Vector2(mKeyboardMenu->GetSize().y * 1.4f, mKeyboardMenu->GetSize().y * 1.4f / 1.52f));
 
     std::string name;
     int buttonPointSize = static_cast<int>(34 * mScale);

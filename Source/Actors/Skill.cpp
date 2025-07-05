@@ -98,20 +98,20 @@ void Skill::LoadSkillMessage() {
     switch (mSkill) {
         case SkillType::Dash:
             if (mGame->GetIsPlayingOnKeyboard()) {
-                skillText = mSkillMessage->AddText("PRESSIONE C PARA USAR DASH", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+                skillText = mSkillMessage->AddText("PRESSIONE [C] PARA USAR DASH", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
             }
             else {
-                skillText = mSkillMessage->AddText("PRESSIONE RB PARA USAR DASH", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+                skillText = mSkillMessage->AddText("PRESSIONE [RB] PARA USAR DASH", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
             }
             skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
             break;
 
         case SkillType::FireBall:
             if (mGame->GetIsPlayingOnKeyboard()) {
-                skillText = mSkillMessage->AddText("PRESSIONE A PARA ATIRAR UMA BOLA DE FOGO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+                skillText = mSkillMessage->AddText("PRESSIONE [A] PARA ATIRAR UMA BOLA DE FOGO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
             }
             else {
-                skillText = mSkillMessage->AddText("PRESSIONE B PARA ATIRAR UMA BOLA DE FOGO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+                skillText = mSkillMessage->AddText("PRESSIONE [B] PARA ATIRAR UMA BOLA DE FOGO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
             }
                 skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
             break;

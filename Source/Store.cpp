@@ -274,6 +274,15 @@ void Store::OpenStore() {
         CloseStore();
     });
 
+    if (mGame->GetIsPlayingOnKeyboard()) {
+        text = mStoreMenu->AddText("PRESSIONE [ENTER] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+        text->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 12, 17 * mGame->GetLogicalWindowHeight() / 24));
+    }
+    else {
+        mStoreMenu->AddText("PRESSIONE [A] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+        text->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 12, 17 * mGame->GetLogicalWindowHeight() / 24));
+    }
+
     mStoreOpened = true;
     mGame->TogglePause();
 }
@@ -290,15 +299,20 @@ void Store::LoadStoreMessage() {
     if (mStoreMessageOpened) {
         return;
     }
+
+    if (mGame->GetGamePlayState() == Game::GamePlayState::Cutscene) {
+        return;
+    }
+
     mStoreMessage = new UIScreen(mGame, "../Assets/Fonts/K2D-Bold.ttf");
     mStoreMessage->SetSize(Vector2(mGame->GetLogicalWindowWidth() / 3, 2 * mGame->GetLogicalWindowHeight() / 6));
     mStoreMessage->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 3, 7 * mGame->GetLogicalWindowHeight() / 8));
 
     if (mGame->GetIsPlayingOnKeyboard()) {
-        mStoreMessage->AddText("PRESSIONE ESPAÇO PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+        mStoreMessage->AddText("PRESSIONE [ESPAÇO] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
     }
     else {
-        mStoreMessage->AddText("PRESSIONE Y PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+        mStoreMessage->AddText("PRESSIONE [Y] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
     }
     mStoreMessageOpened = true;
 }
