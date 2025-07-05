@@ -405,6 +405,17 @@
                  "width":416,
                  "x":7776,
                  "y":1312
+                }, 
+                {
+                 "height":192,
+                 "id":292,
+                 "name":"Checkpoint4",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":416,
+                 "x":10688,
+                 "y":1088
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2447,7 +2458,7 @@
                         {
                          "name":"UnlockGrounds",
                          "type":"string",
-                         "value":"280,281"
+                         "value":"281"
                         }],
                  "rotation":0,
                  "type":"",
@@ -2518,7 +2529,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":292,
+ "nextobjectid":293,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
