@@ -279,7 +279,7 @@ void Store::OpenStore() {
         text->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 12, 17 * mGame->GetLogicalWindowHeight() / 24));
     }
     else {
-        mStoreMenu->AddText("PRESSIONE [A] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+        text = mStoreMenu->AddText("PRESSIONE [A] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
         text->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 12, 17 * mGame->GetLogicalWindowHeight() / 24));
     }
 

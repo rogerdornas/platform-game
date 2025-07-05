@@ -43,6 +43,15 @@ DialogueSystem::DialogueSystem(class Game *game, const std::string &fontName, st
             Advance();
         });
 
+    if (mGame->GetIsPlayingOnKeyboard()) {
+        UIText* text = AddText("[ENTER]", Vector2::Zero, Vector2::Zero, static_cast<int>(20 * mGame->GetScale()));
+        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.735f));
+    }
+    else {
+        UIText* text = AddText("[A]", Vector2::Zero, Vector2::Zero, static_cast<int>(20 * mGame->GetScale()));
+        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.735f));
+    }
+
 }
 
 void DialogueSystem::LoadDialogueFile(const std::string &dialogueFilePath) {

@@ -290,7 +290,7 @@
   <object id="121" name="Level3" x="14880" y="3200" width="320" height="224">
    <properties>
     <property name="Event" value="ChangeScene"/>
-    <property name="Scene" value="Level1"/>
+    <property name="Scene" value="Level3"/>
     <property name="Target" value="Game"/>
    </properties>
   </object>
