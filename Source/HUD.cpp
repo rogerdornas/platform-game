@@ -15,8 +15,7 @@ HUD::HUD(class Game* game, const std::string& fontName)
     ,mWaitToDecreaseTimer(0.0f)
     ,mWaitToDecreaseManaDuration(0.7f)
     ,mWaitToDecreaseManaTimer(0.0f)
-    ,mPlayerDie(false)
-{
+    ,mPlayerDie(false) {
     float HPBarX = 50 * mGame->GetScale();
     float HPBarY = 50 * mGame->GetScale();
     float HPBarWidth = mGame->GetPlayer()->GetMaxHealthPoints() * 5 * mGame->GetScale();
@@ -41,6 +40,18 @@ HUD::HUD(class Game* game, const std::string& fontName)
                                Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(),
                                 POINT_SIZE * mGame->GetScale());
 
+    if (mGame->GetPlayer()->GetHealCount() == 0) {
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/empty.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+    }
+    else if (mGame->GetPlayer()->GetHealCount() == 1) {
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/bemVazia.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+    }
+    else if (mGame->GetPlayer()->GetHealCount() == 2) {
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/meioVazia.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+    }
+    else if (mGame->GetPlayer()->GetHealCount() == 3 || mGame->GetPlayer()->GetHealCount() == 4) {
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/cheia.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+    }
 
     AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(1765, 52) * mGame->GetScale(), Vector2(20, 35) * mGame->GetScale());
 
@@ -81,6 +92,19 @@ void HUD::Update(float deltaTime) {
 
         std::string playerHealCount = std::to_string(mGame->GetPlayer()->GetHealCount());
         mPlayerHealCount->SetText(playerHealCount);
+
+        if (mGame->GetPlayer()->GetHealCount() == 0) {
+            mPotion->SetImage("../Assets/Sprites/Healingpotions/empty.png");
+        }
+        else if (mGame->GetPlayer()->GetHealCount() == 1) {
+            mPotion->SetImage("../Assets/Sprites/Healingpotions/bemVazia.png");
+        }
+        else if (mGame->GetPlayer()->GetHealCount() == 2) {
+            mPotion->SetImage("../Assets/Sprites/Healingpotions/meioVazia.png");
+        }
+        else if (mGame->GetPlayer()->GetHealCount() == 3 || mGame->GetPlayer()->GetHealCount() == 4) {
+            mPotion->SetImage("../Assets/Sprites/Healingpotions/cheia.png");
+        }
 
         std::string playerMoney = std::to_string(mGame->GetPlayer()->GetMoney());
         mPlayerMoney->SetText(playerMoney);

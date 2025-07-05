@@ -11,15 +11,17 @@
 class UIImage : public UIElement
 {
 public:
-    UIImage(const std::string &imagePath, const Vector2 &pos = Vector2::Zero,
+    UIImage(const std::string& imagePath, const Vector2 &pos = Vector2::Zero,
             const Vector2 &size = Vector2(100.f, 100.f), const Vector3 &color = Color::White, SDL_Renderer* renderer = nullptr);
 
     ~UIImage();
 
+    void SetImage(const std::string& imagePath);
     void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
     SDL_Texture* mTexture; // Texture for the image
+    SDL_Renderer* mRenderer;
 };

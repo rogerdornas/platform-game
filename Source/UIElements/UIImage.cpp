@@ -5,15 +5,16 @@
 #include "UIImage.h"
 
 UIImage::UIImage(const std::string &imagePath, const Vector2 &pos, const Vector2 &size, const Vector3 &color, SDL_Renderer* renderer)
-    : UIElement(pos, size, color),
-    mTexture(nullptr)
+    :UIElement(pos, size, color)
+    ,mTexture(nullptr)
+    ,mRenderer(renderer)
 {
     SDL_Surface* surface = IMG_Load(imagePath.c_str());
 
     if (!surface) {
         SDL_Log("Failed to load image: %s", IMG_GetError());
     }
-    mTexture = SDL_CreateTextureFromSurface(renderer, surface);
+    mTexture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface);
 }
 
@@ -23,6 +24,23 @@ UIImage::~UIImage()
         SDL_DestroyTexture(mTexture);
         mTexture = nullptr;
     }
+}
+
+void UIImage::SetImage(const std::string& imagePath)
+{
+    if (mTexture != nullptr) {
+        SDL_DestroyTexture(mTexture);
+        mTexture = nullptr;
+    }
+
+    SDL_Surface* surface = IMG_Load(imagePath.c_str());
+
+    if (!surface) {
+        SDL_Log("Failed to load image: %s", IMG_GetError());
+    }
+
+    mTexture = SDL_CreateTextureFromSurface(mRenderer, surface);
+    SDL_FreeSurface(surface);
 }
 
 void UIImage::Draw(SDL_Renderer* renderer, const Vector2 &screenPos)

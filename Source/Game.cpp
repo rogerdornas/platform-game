@@ -98,7 +98,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Level5)
+    ,mContinueScene(GameScene::Prologue)
 {
 }
 
@@ -2064,10 +2064,8 @@ void Game::UnloadScene()
     mHUD = nullptr;
 
     // Delete level data
-    if (mLevelData != nullptr)
-    {
-        for (int i = 0; i < mLevelHeight; ++i)
-        {
+    if (mLevelData != nullptr) {
+        for (int i = 0; i < mLevelHeight; ++i) {
             if (mLevelData[i] != nullptr)
                 delete[] mLevelData[i];
         }
@@ -2076,10 +2074,8 @@ void Game::UnloadScene()
     mLevelData = nullptr;
 
     // Delete level data Dynamic Grounds
-    if (mLevelDataDynamicGrounds != nullptr)
-    {
-        for (int i = 0; i < mLevelHeight; ++i)
-        {
+    if (mLevelDataDynamicGrounds != nullptr) {
+        for (int i = 0; i < mLevelHeight; ++i) {
             if (mLevelDataDynamicGrounds[i] != nullptr)
                 delete[] mLevelDataDynamicGrounds[i];
         }
@@ -2112,8 +2108,9 @@ void Game::Shutdown()
         delete font.second;
     }
 
-    if (mController)
+    if (mController) {
         SDL_GameControllerClose(mController);
+    }
 
     mFonts.clear();
 

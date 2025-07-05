@@ -1014,7 +1014,7 @@ void Player::ManageAnimations() {
 
 
 void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
-    if (!mIsInvulnerable && mGame->GetGamePlayState() != Game::GamePlayState::Cutscene) {
+    if (!mIsInvulnerable && mGame->GetGamePlayState() == Game::GamePlayState::Playing) {
         mHealthPoints -= damage;
         mIsInvulnerable = true;
         mHurtTimer = 0;
