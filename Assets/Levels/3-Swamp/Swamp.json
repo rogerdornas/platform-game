@@ -876,7 +876,7 @@
                         {
                          "name":"FixedCameraPositionX",
                          "type":"float",
-                         "value":10528
+                         "value":10016
                         }, 
                         {
                          "name":"Target",
@@ -889,6 +889,60 @@
                  "width":864,
                  "x":10304,
                  "y":992
+                }, 
+                {
+                 "height":192,
+                 "id":288,
+                 "name":"Fixed Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"Fixed"
+                        }, 
+                        {
+                         "name":"FixedCameraPositionX",
+                         "type":"float",
+                         "value":8256
+                        }, 
+                        {
+                         "name":"FixedCameraPositionY",
+                         "type":"float",
+                         "value":1568
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":2016,
+                 "x":8192,
+                 "y":2368
+                }, 
+                {
+                 "height":256,
+                 "id":289,
+                 "name":"Follow Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":320,
+                 "x":10176,
+                 "y":2336
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2350,7 +2404,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":10016,
+                 "x":9920,
                  "y":2528
                 }, 
                 {
@@ -2415,7 +2469,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":288,
+ "nextobjectid":290,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
