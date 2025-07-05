@@ -171,6 +171,7 @@ public:
     void PlayFinalGoodCutscene();
     void PlayFinalEvilCutscene();
     void SetIsPlayingFinalCutscene() { mIsPlayingFinalCutscene = true; }
+
     std::vector<std::string> mGoodCutscenes;
     std::vector<GameScene> mGoodCutsceneScenes;
     std::vector<std::string> mEvilCutscenes;
@@ -193,6 +194,7 @@ private:
     void LoadLevel(const std::string &fileName);
     void LoadMainMenu();
     UIScreen* LoadPauseMenu();
+    void LoadLevelSelectMenu();
     void LoadOptionsMenu();
     void LoadControlMenu();
     void LoadKeyBoardMenu();
@@ -293,6 +295,7 @@ private:
     std::unordered_map<std::string, class UIFont*> mFonts;
     UIScreen* mPauseMenu;
     UIScreen* mOptionsMenu;
+    UIScreen* mLevelSelectMenu;
     UIScreen* mControlMenu;
     UIScreen* mKeyboardMenu;
 

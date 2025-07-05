@@ -495,7 +495,7 @@ void Game::ChangeScene()
 
 void Game::LoadMainMenu() {
     auto mainMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 8, 50 * mScale);
+    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 5, 50 * mScale);
     mainMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
     mainMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
     Vector2 buttonPos = Vector2((mainMenu->GetSize().x - buttonSize.x) / 2, 0);
@@ -503,7 +503,7 @@ void Game::LoadMainMenu() {
     std::string name = "CONTINUAR";
     int buttonPointSize = static_cast<int>(34 * mScale);
     mainMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    [this]() {SetGameScene(mContinueScene, 0.5f);});
+    [this]() { SetGameScene(mContinueScene, 0.5f); });
 
     name = "NOVO JOGO";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -517,15 +517,17 @@ void Game::LoadMainMenu() {
         mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
     });
 
-    name = "OPÇÕES";
+    name = "SELECIONAR FASE";
     mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    [this]() {
-        LoadOptionsMenu();
-    });
+        [this]() { LoadLevelSelectMenu(); });
+
+    name = "OPÇÕES";
+    mainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() { LoadOptionsMenu(); });
 
     name = "SAIR";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    [this]() {Quit();});
+    mainMenu->AddButton(name, buttonPos + Vector2(0, 8 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() { Quit(); });
 }
 
 UIScreen* Game::LoadPauseMenu() {
@@ -578,6 +580,107 @@ UIScreen* Game::LoadPauseMenu() {
     });
 
     return mPauseMenu;
+}
+
+void Game::LoadLevelSelectMenu() {
+    mLevelSelectMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mLevelSelectMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
+    mLevelSelectMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+
+    const auto buttonSize = Vector2(mLevelSelectMenu->GetSize().x * 0.8f, 50 * mScale);
+    const auto buttonPointSize = static_cast<int>(34 * mScale);
+    const auto buttonPos = Vector2(mLevelSelectMenu->GetSize().x * 0.1f, 0);
+
+    mLevelSelectMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mLevelSelectMenu->GetSize());
+
+    std::string name = "   PRÓLOGO";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Prologue, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "   1 - FLORESTA";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Level1, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "   2 - FOGO";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Level2, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "   3 - PÂNTANO";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 8 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Level3, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "   4 - NEVE";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 10 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Level4, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "   5 - FINAL";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 12 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Level5, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "VOLTAR";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, mLevelSelectMenu->GetSize().y - buttonSize.y * 1.2f),
+        buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]() { mLevelSelectMenu->Close(); });
 }
 
 void Game::LoadOptionsMenu() {
