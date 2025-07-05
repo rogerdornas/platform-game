@@ -330,7 +330,6 @@ void Trigger::GameTrigger() {
         case Event::ChangeScene:
             mGame->GetAudio()->StopAllSounds();
             mGame->SetGameScene(mScene, 2.0f);
-            mGame->SetGamePlayState(Game::GamePlayState::LevelComplete);
             mGame->SetGoingToNextLevel();
             SetState(ActorState::Destroy);
             break;

@@ -163,10 +163,10 @@ Player::Player(Game* game, float width, float height)
                                                    "../Assets/Sprites/Esquilo2/Esquilo.png",
                                                    "../Assets/Sprites/Esquilo2/Esquilo.json", 1000);
 
-    std::vector idle = {13};
+    std::vector idle = {18};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector attackFront = {13, 0, 1};
+    std::vector attackFront = {18, 0, 1};
     mDrawAnimatedComponent->AddAnimation("attackFront", attackFront);
 
     std::vector attackUp = {2, 3};
@@ -175,25 +175,31 @@ Player::Player(Game* game, float width, float height)
     std::vector dash = {4, 5, 5, 5, 6};
     mDrawAnimatedComponent->AddAnimation("dash", dash);
 
-    std::vector run = {17, 18, 19, 20, 21, 22};
+    std::vector run = {22, 23, 24, 25, 26, 27};
     mDrawAnimatedComponent->AddAnimation("run", run);
+
+    std::vector heal = {11, 12, 13, 14, 15, 15, 14, 13, 12, 11};
+    mDrawAnimatedComponent->AddAnimation("heal", heal);
+
+    std::vector wallSlide = {28};
+    mDrawAnimatedComponent->AddAnimation("wallSlide", wallSlide);
 
     std::vector flash = {10};
     mDrawAnimatedComponent->AddAnimation("flash", flash);
 
-    std::vector hurt = {11, 12};
+    std::vector hurt = {16, 17};
     mDrawAnimatedComponent->AddAnimation("hurt", hurt);
 
-    std::vector die = {11, 7, 8, 9, 9, 9};
+    std::vector die = {16, 7, 8, 9, 9, 9};
     mDrawAnimatedComponent->AddAnimation("die", die);
 
-    std::vector jumpUp = {14};
+    std::vector jumpUp = {19};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {15};
+    std::vector jumpApex = {20};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {16};
+    std::vector falling = {21};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -388,9 +394,11 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             if (mIsWallSliding && !mIsJumping && mCanJump) {
                 if (mWallSlideSide == WallSlideSide::left) {
                     mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
+                    SetRotation(Math::Pi);
                 }
                 else {
                     mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
+                    SetRotation(0);
                 }
 
                 mIsJumping = true;
@@ -536,6 +544,9 @@ void Player::OnUpdate(float deltaTime) {
     }
 
     if (mIsHealing) {
+        if (mHealAnimationTimer == 0) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         mHealAnimationTimer += deltaTime;
     }
 
@@ -957,6 +968,7 @@ void Player::ResolveEnemyCollision() {
 
 void Player::ManageAnimations() {
     mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawAnimatedComponent->UseFlip(false);
     if (mIsDead) {
         mDrawAnimatedComponent->SetAnimation("die");
         mDrawAnimatedComponent->SetAnimFPS(4.0f / mDeathAnimationDuration);
@@ -979,10 +991,20 @@ void Player::ManageAnimations() {
         }
         mDrawAnimatedComponent->SetAnimFPS(3.0f / 0.15f);
     }
+    else if (mIsWallSliding && !mIsOnGround && mRigidBodyComponent->GetVelocity().y > 0) {
+        mDrawAnimatedComponent->UseFlip(true);
+        if (mWallSlideSide == WallSlideSide::left) {
+            mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
+        }
+        else if (mWallSlideSide == WallSlideSide::right) {
+            mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+        }
+        mDrawAnimatedComponent->SetAnimation("wallSlide");
+    }
     else if (mIsRunning && mIsOnGround) {
         mDrawAnimatedComponent->SetAnimation("run");
     }
-    else if (!mIsOnGround && !mIsWallSliding) {
+    else if (!mIsOnGround) {
         if (mRigidBodyComponent->GetVelocity().y < -200 * mGame->GetScale()) {
             mDrawAnimatedComponent->SetAnimation("jumpUp");
         }
@@ -994,6 +1016,10 @@ void Player::ManageAnimations() {
         {
             mDrawAnimatedComponent->SetAnimation("jumpApex");
         }
+    }
+    else if (mIsHealing) {
+        mDrawAnimatedComponent->SetAnimation("heal");
+        mDrawAnimatedComponent->SetAnimFPS(10.0f / (mHealAnimationDuration));
     }
     else {
         mDrawAnimatedComponent->SetAnimation("idle");

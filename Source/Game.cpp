@@ -728,7 +728,7 @@ void Game::LoadOptionsMenu() {
             mOptionsMenu->Close();
             LoadOptionsMenu();
         }, textPos);
-        optionValue = "ON";
+        optionValue = "< ON >";
         text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
         text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
     }
@@ -740,7 +740,7 @@ void Game::LoadOptionsMenu() {
             mOptionsMenu->Close();
             LoadOptionsMenu();
         }, textPos);
-        optionValue = "OFF";
+        optionValue = "< OFF >";
         text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
         text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
     }
@@ -1086,12 +1086,12 @@ void Game::LoadObjects(const std::string &fileName) {
                     flyingEnemySimple->SetId(id);
                 }
                 else if (name == "FlyingShooterEnemy") {
-                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 70);
+                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 60);
                     flyingShooterEnemy->SetPosition(Vector2(x, y));
                     flyingShooterEnemy->SetId(id);
                 }
                 else if (name == "Mantis") {
-                    auto* mantis = new Mantis(this, 120, 120, 250, 100);
+                    auto* mantis = new Mantis(this, 120, 120, 250, 90);
                     mantis->SetPosition(Vector2(x, y));
                     mantis->SetId(id);
                 }
@@ -1614,7 +1614,7 @@ void Game::UpdateGame()
         }
     }
 
-    if (mGamePlayState == GamePlayState::Cutscene) {
+    if (mGamePlayState == GamePlayState::Cutscene || mGamePlayState == GamePlayState::GameOver) {
         if (mHUD) {
             mHUD->SetIsVisible(false);
         }

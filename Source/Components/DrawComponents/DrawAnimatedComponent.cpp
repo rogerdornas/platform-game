@@ -77,7 +77,7 @@ void DrawAnimatedComponent::Draw(SDL_Renderer* renderer)
     if (mUseRotation) {
         angle = Math::ToDegrees(GetOwner()->GetRotation()) + mOffsetRotation;
     }
-    else {
+    else if (!mUseFlip) {
         // Define o flip (espelhamento) baseado na escala
         SDL_RendererFlip flip = SDL_FLIP_NONE;
         if (GetOwner()->GetRotation() == Math::Pi) {
