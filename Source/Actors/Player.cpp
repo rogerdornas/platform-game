@@ -523,7 +523,9 @@ void Player::OnUpdate(float deltaTime) {
         mIsInvulnerable = true;
     }
     else {
-        mIsInvulnerable = false;
+        if (mGame->GetGamePlayState() != Game::GamePlayState::Cutscene) {
+            mIsInvulnerable = false;
+        }
     }
 
     if (mMana < mMaxMana) {
@@ -1012,7 +1014,7 @@ void Player::ManageAnimations() {
 
 
 void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
-    if (!mIsInvulnerable) {
+    if (!mIsInvulnerable && mGame->GetGamePlayState() != Game::GamePlayState::Cutscene) {
         mHealthPoints -= damage;
         mIsInvulnerable = true;
         mHurtTimer = 0;

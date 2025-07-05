@@ -1,9 +1,9 @@
 
-Esquilo: ??
+Esquilo: ???
 Bicho: Ei… você está bem?
-Bicho: Você… morreu agora há pouco.
-Bicho: Mas eu consegui voltar um pouquinho no tempo pra te salvar.
-Bicho: Eu não contei antes, mas eu tenho controle sobre o tempo.
-Bicho: Vou fazer isso sempre que precisar, então não se preocupe.
+Bicho: Você morreu agora há pouco.
+Bicho: Mas eu voltei no tempo e te trouxe de volta.
+Bicho: Eu tenho a habilidade de controlar o tempo.
+Bicho: Vou fazer isso sempre que necessário para te salvar.
 Esquilo: …
-Bicho: Agora vamos, os monstros não vão esperar.
+Bicho: Agora vamos! Temos que derrotar os monstros.

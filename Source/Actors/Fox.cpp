@@ -279,22 +279,22 @@ void Fox::MovementAfterPlayerSpotted(float deltaTime) {
 }
 
 void Fox::MovementBeforePlayerSpotted() {
-    mIsRunning = true;
-    Player* player = GetGame()->GetPlayer();
-    if (mWalkingAroundTimer > mWalkingAroundDuration) {
-        SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
-        mWalkingAroundTimer = 0;
-    }
-    if (mKnockBackTimer >= mKnockBackDuration) {
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mWalkingAroundMoveSpeed,
-                                                 mRigidBodyComponent->GetVelocity().y));
-    }
-
-    // Testa se spotted player
-    Vector2 dist = GetPosition() - player->GetPosition();
-    if (dist.Length() < mDistToSpotPlayer) {
-        mPlayerSpotted = true;
-    }
+    // mIsRunning = true;
+    // Player* player = GetGame()->GetPlayer();
+    // if (mWalkingAroundTimer > mWalkingAroundDuration) {
+    //     SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+    //     mWalkingAroundTimer = 0;
+    // }
+    // if (mKnockBackTimer >= mKnockBackDuration) {
+    //     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mWalkingAroundMoveSpeed,
+    //                                              mRigidBodyComponent->GetVelocity().y));
+    // }
+    //
+    // // Testa se spotted player
+    // Vector2 dist = GetPosition() - player->GetPosition();
+    // if (dist.Length() < mDistToSpotPlayer) {
+    //     mPlayerSpotted = true;
+    // }
 }
 
 void Fox::ManageAnimations() {

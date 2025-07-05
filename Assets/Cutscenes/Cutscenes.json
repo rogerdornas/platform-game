@@ -88,6 +88,12 @@
           }
         },
         {
+          "type": "playerLookLeft",
+          "params": {
+            "duration": 0.1
+          }
+        },
+        {
           "type": "show_dialogue",
           "params": {
 			"dialoguePath": "../Assets/Dialogues/PrimeiraMorte.txt"
@@ -102,6 +108,12 @@
           "type": "playerStop",
           "params": {
             "duration": 0.5
+          }
+        },
+        {
+          "type": "playerLookLeft",
+          "params": {
+            "duration": 0.1
           }
         },
         {
@@ -165,11 +177,11 @@
         {
           "type": "panCamera",
           "params": {
-            "duration": 10.0,
+            "duration": 6.0,
 			"speedX": 300,
 			"speedY": 0,
-			"posStartX": 18272,
-			"posStartY": 3520
+			"posStartX": 4320,
+			"posStartY": 1664
           }
         }
       ]
@@ -180,11 +192,11 @@
         {
           "type": "panCamera",
           "params": {
-            "duration": 10.0,
+            "duration": 8.5,
 			"speedX": 300,
-			"speedY": 0,
-			"posStartX": 6560,
-			"posStartY": 1440
+			"speedY": -300,
+			"posStartX": 4704,
+			"posStartY": 3488
           }
         }
       ]

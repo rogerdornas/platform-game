@@ -40,6 +40,8 @@ public:
     // Get state of UI screen
 	UIState GetState() const { return mState; }
 
+	void SetIsVisible(bool isVisible) { mIsVisible = isVisible; }
+
     // Game getter
     class Game* GetGame() const { return mGame; }
 
@@ -66,6 +68,8 @@ protected:
 
 	// State
 	UIState mState;
+
+	bool mIsVisible;
 
 	// List of buttons, texts, and images
     int mSelectedButtonIndex;

@@ -7,6 +7,7 @@ UIScreen::UIScreen(Game* game, const std::string& fontName)
 	,mPos(0.f, 0.f)
 	,mSize(0.f, 0.f)
 	,mState(UIState::Active)
+    ,mIsVisible(true)
     ,mSelectedButtonIndex(-1)
 {
     mGame->PushUI(this);

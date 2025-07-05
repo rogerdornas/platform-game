@@ -281,7 +281,9 @@ void Game::ChangeScene()
     mIsSlowMotion = false;
     mIsAccelerated = false;
 
-    mAudio->StopAllSounds();
+    if (mGamePlayState != GamePlayState::Cutscene) {
+        mAudio->StopAllSounds();
+    }
 
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
     const std::string levelsAssets = "../Assets/Levels/";
@@ -338,7 +340,9 @@ void Game::ChangeScene()
     }
 
     // Reset gameplay state
-    mGamePlayState = GamePlayState::Playing;
+    if (!mIsPlayingFinalCutscene) {
+        mGamePlayState = GamePlayState::Playing;
+    }
 
     // Scene Manager FSM: using if/else instead of switch
     if (mNextScene == GameScene::MainMenu) {
@@ -349,7 +353,9 @@ void Game::ChangeScene()
         // Initialize main menu actors
         LoadMainMenu();
 
-        mMusicHandle = mAudio->PlaySound("HollowKnight.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("HollowKnight.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -362,7 +368,9 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -377,7 +385,9 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -390,7 +400,9 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -411,7 +423,9 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -424,7 +438,9 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -445,7 +461,9 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -466,7 +484,9 @@ void Game::ChangeScene()
 
         mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
 
-        mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
         mBossMusic.Reset();
     }
 
@@ -584,14 +604,14 @@ UIScreen* Game::LoadPauseMenu() {
 
 void Game::LoadLevelSelectMenu() {
     mLevelSelectMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mLevelSelectMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
-    mLevelSelectMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    mLevelSelectMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
+    mLevelSelectMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
 
     const auto buttonSize = Vector2(mLevelSelectMenu->GetSize().x * 0.8f, 50 * mScale);
     const auto buttonPointSize = static_cast<int>(34 * mScale);
     const auto buttonPos = Vector2(mLevelSelectMenu->GetSize().x * 0.1f, 0);
 
-    mLevelSelectMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mLevelSelectMenu->GetSize());
+    mLevelSelectMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mLevelSelectMenu->GetSize());
 
     std::string name = "   PRÓLOGO";
     mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale,
@@ -685,12 +705,12 @@ void Game::LoadLevelSelectMenu() {
 
 void Game::LoadOptionsMenu() {
     mOptionsMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mOptionsMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
-    mOptionsMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    mOptionsMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
+    mOptionsMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
     Vector2 buttonSize = Vector2(mOptionsMenu->GetSize().x * 0.8f, 50 * mScale);
     Vector2 buttonPos = Vector2(mOptionsMenu->GetSize().x * 0.1f, 0);
 
-    mOptionsMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mOptionsMenu->GetSize());
+    mOptionsMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mOptionsMenu->GetSize());
 
     UIText* text;
     std::string name;
@@ -765,12 +785,12 @@ void Game::LoadOptionsMenu() {
 
 void Game::LoadControlMenu() {
     mControlMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mControlMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
-    mControlMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    mControlMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
+    mControlMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
     Vector2 buttonSize = Vector2(mControlMenu->GetSize().x * 0.8f, 50 * mScale);
     Vector2 buttonPos = Vector2(mControlMenu->GetSize().x * 0.1f, 0);
 
-    mControlMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mControlMenu->GetSize());
+    mControlMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mControlMenu->GetSize());
     mControlMenu->AddImage("../Assets/Sprites/Menus/Control2.png", Vector2::Zero, Vector2(mControlMenu->GetSize().x, mControlMenu->GetSize().x / 1.9f));
 
     std::string name;
@@ -785,12 +805,12 @@ void Game::LoadControlMenu() {
 
 void Game::LoadKeyBoardMenu() {
     mKeyboardMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mKeyboardMenu->SetSize(Vector2(mLogicalWindowWidth * 0.7f, mLogicalWindowHeight * 0.7f));
-    mKeyboardMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.15f, mLogicalWindowHeight * 0.15f));
+    mKeyboardMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
+    mKeyboardMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
     Vector2 buttonSize = Vector2(mKeyboardMenu->GetSize().x * 0.8f, 50 * mScale);
     Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0);
 
-    mKeyboardMenu->AddImage("../Assets/Sprites/Background/FundoMenu.png", Vector2::Zero, mKeyboardMenu->GetSize());
+    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mKeyboardMenu->GetSize());
     mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Keyboard2.png", Vector2(mKeyboardMenu->GetSize().x * 0.125f, 0), Vector2(mKeyboardMenu->GetSize().y * 1.4f, mKeyboardMenu->GetSize().y * 1.4f / 1.52f));
 
     std::string name;
@@ -1594,6 +1614,17 @@ void Game::UpdateGame()
         }
     }
 
+    if (mGamePlayState == GamePlayState::Cutscene) {
+        if (mHUD) {
+            mHUD->SetIsVisible(false);
+        }
+    }
+    else {
+        if (mHUD) {
+            mHUD->SetIsVisible(true);
+        }
+    }
+
     mAudio->Update(deltaTime);
 
     // Reinsert UI screens
@@ -2007,7 +2038,10 @@ UIFont* Game::LoadFont(const std::string& fileName)
 
 void Game::UnloadScene()
 {
-    mGamePlayState = GamePlayState::GameOver;
+    if (mGamePlayState != GamePlayState::Cutscene) {
+        mGamePlayState = GamePlayState::GameOver;
+    }
+
     if (mPlayer) {
         mPlayer->SetState(ActorState::Paused);
     }
@@ -2027,6 +2061,7 @@ void Game::UnloadScene()
         delete ui;
     }
     mUIStack.clear();
+    mHUD = nullptr;
 
     // Delete level data
     if (mLevelData != nullptr)

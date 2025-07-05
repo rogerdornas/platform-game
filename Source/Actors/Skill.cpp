@@ -219,6 +219,4 @@ void Skill::ChangeResolution(float oldScale, float newScale) {
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
     }
-
-    mSkillMessage->ChangeResolution(oldScale, newScale);
 }

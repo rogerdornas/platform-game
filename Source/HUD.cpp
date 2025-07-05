@@ -123,6 +123,9 @@ void HUD::IncreaseManaBar() {
 }
 
 void HUD::Draw(class SDL_Renderer *renderer) {
+    if (!mIsVisible) {
+        return;
+    }
     for (UIImage* image : mImages) {
         image->Draw(renderer, mPos);
     }

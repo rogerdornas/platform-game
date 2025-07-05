@@ -89,7 +89,7 @@ void BushMonster::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mHealthPoints <= 0.5f * mMaxHealthPoints) {
+    if (mHealthPoints <= 0.0f * mMaxHealthPoints) {
         mIdleDuration = 0.8f;
         mDashSpeed = 2000 * mGame->GetScale();
     }
@@ -241,7 +241,7 @@ void BushMonster::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
-    // Player ganha bola de fogo
+    // Player ganha dash
     auto* skill = new Skill(mGame, Skill::SkillType::Dash);
     skill->SetPosition(GetPosition());
 

@@ -1,5 +1,5 @@
 ﻿
-Bicho: Ei. Ei você, aventureiro!
+Bicho: Ei… Ei você, aventureiro!
 Bicho: A floresta em que você vive corre perigo.
 Bicho: Há monstros à solta, causando o caos. Eu preciso da sua ajuda para impedi-los. Vamos, eu serei o seu guia!
 Esquilo: …
