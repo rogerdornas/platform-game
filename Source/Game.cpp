@@ -370,7 +370,7 @@ void Game::ChangeScene()
         mUseParallaxBackground = false;
         // mUseParallaxBackground = true;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
-        LoadLevel(levelsAssets + "Prologue/Prologue.json");
+        LoadLevel(levelsAssets + "0-Prologue/Prologue.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -383,7 +383,7 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level1) {
         mUseParallaxBackground = true;
-        LoadLevel(levelsAssets + "Musgo/Musgo.json");
+        LoadLevel(levelsAssets + "1-Musgo/Musgo.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -404,7 +404,7 @@ void Game::ChangeScene()
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/2.png"));
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level2/1.png"));
 
-        LoadLevel(levelsAssets + "Run/Run.json");
+        LoadLevel(levelsAssets + "2-Run/Run.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -417,7 +417,7 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level3) {
         mUseParallaxBackground = true;
-        LoadLevel(levelsAssets + "Swamp/Swamp.json");
+        LoadLevel(levelsAssets + "3-Swamp/Swamp.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -438,7 +438,7 @@ void Game::ChangeScene()
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/2.png"));
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
 
-        LoadLevel(levelsAssets + "Pain/Pain.json");
+        LoadLevel(levelsAssets + "4-Pain/Pain.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -459,7 +459,7 @@ void Game::ChangeScene()
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/2.png"));
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
 
-        LoadLevel(levelsAssets + "Level5/Level5.json");
+        LoadLevel(levelsAssets + "5-FinalLevel/Level5.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
