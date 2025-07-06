@@ -1015,9 +1015,6 @@
  <objectgroup id="2" name="Enemies">
   <object id="31" name="Moth" x="3264" y="9920" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="3" name="Player">
-  <object id="35" x="608" y="10624" width="32" height="32"/>
- </objectgroup>
  <objectgroup id="5" name="Triggers">
   <object id="1" x="2464" y="10368" width="1696" height="288">
    <properties>
@@ -1384,4 +1381,7 @@
   <object id="36" name="Checkpoint" x="704" y="10464" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="7" name="Levers"/>
+ <objectgroup id="3" name="Player">
+  <object id="35" x="576" y="10624" width="32" height="32"/>
+ </objectgroup>
 </map>

@@ -598,7 +598,7 @@
   </object>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="193" name="Player" x="1408" y="1792" width="32" height="32"/>
+  <object id="193" name="Player" x="1376" y="1792" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="5" name="Triggers">
   <object id="202" name="Kill Enemies" x="3584" y="2528" width="928" height="256">

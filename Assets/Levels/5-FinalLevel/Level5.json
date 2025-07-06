@@ -1048,28 +1048,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":3,
-         "name":"Player",
-         "objects":[
-                {
-                 "height":32,
-                 "id":35,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":608,
-                 "y":10624
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":5,
          "name":"Triggers",
          "objects":[
@@ -2629,6 +2607,28 @@
          "id":7,
          "name":"Levers",
          "objects":[],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Player",
+         "objects":[
+                {
+                 "height":32,
+                 "id":35,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":576,
+                 "y":10624
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,

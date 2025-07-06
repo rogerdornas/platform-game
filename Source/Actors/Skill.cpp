@@ -92,8 +92,12 @@ void Skill::LoadSkillMessage() {
     int textPointSize = 34;
 
     text = mSkillMessage->AddText("NOVA HABILIDADE ADQUIRIDA!", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
-    text->SetPosition(Vector2((mSkillMessage->GetSize().x - text->GetSize().x) / 2, (mSkillMessage->GetSize().y - text->GetSize().y) / 3));
-
+    if (mSkill == SkillType::TimeControl) {
+        text->SetPosition(Vector2((mSkillMessage->GetSize().x - text->GetSize().x) / 2, (mSkillMessage->GetSize().y - text->GetSize().y) * 0.1));
+    }
+    else {
+        text->SetPosition(Vector2((mSkillMessage->GetSize().x - text->GetSize().x) / 2, (mSkillMessage->GetSize().y - text->GetSize().y) / 3));
+    }
 
     switch (mSkill) {
         case SkillType::Dash:
@@ -128,9 +132,9 @@ void Skill::LoadSkillMessage() {
 
         case SkillType::TimeControl:
             skillText = mSkillMessage->AddText("GANHOU CONTROLE SOBRE O TEMPO", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
-            skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
-            skillText = mSkillMessage->AddText("DESEJA VOLTAR NO TEMPO PARA RESTAURAR O EQUILÍBRIO DOS BIOMAS?", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale(), Color::White, mSkillMessage->GetSize().x * 0.8f);
             skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 2.4f));
+            skillText = mSkillMessage->AddText("DESEJA VOLTAR NO TEMPO PARA RESTAURAR O EQUILÍBRIO DOS BIOMAS?", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale(), Color::White, mSkillMessage->GetSize().x * 0.8f);
+            skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 4.2f));
             break;
     }
 

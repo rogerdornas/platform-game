@@ -348,6 +348,7 @@ void Game::ChangeScene()
     if (mNextScene == GameScene::MainMenu) {
         mUseParallaxBackground = false;
         mGamePlayState = GamePlayState::Menu;
+        mCutsceneIndex = 0;
         mBackGroundTexture = LoadTexture(backgroundAssets + "Menu6.png");
 
         // Initialize main menu actors
@@ -431,6 +432,7 @@ void Game::ChangeScene()
 
     else if (mNextScene == GameScene::Level3) {
         mUseParallaxBackground = true;
+
         LoadLevel(levelsAssets + "3-Swamp/Swamp.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,

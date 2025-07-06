@@ -732,6 +732,6 @@
   </object>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="18" name="Player" x="1184" y="3168" width="32" height="32"/>
+  <object id="18" name="Player" x="1120" y="3168" width="32" height="32"/>
  </objectgroup>
 </map>
