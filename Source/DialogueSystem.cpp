@@ -45,11 +45,11 @@ DialogueSystem::DialogueSystem(class Game *game, const std::string &fontName, st
 
     if (mGame->GetIsPlayingOnKeyboard()) {
         UIText* text = AddText("[ENTER]", Vector2::Zero, Vector2::Zero, static_cast<int>(20 * mGame->GetScale()));
-        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.74f));
+        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.80f));
     }
     else {
         UIText* text = AddText("[A]", Vector2::Zero, Vector2::Zero, static_cast<int>(20 * mGame->GetScale()));
-        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.74f));
+        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.80f));
     }
 
 }

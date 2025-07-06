@@ -1878,6 +1878,9 @@ void Game::StopBossMusic() {
 }
 
 void Game::PlayFinalGoodCutscene() {
+    if (mCutsceneIndex > 0) {
+        mPlayer->SetPosition(Vector2(-100, -100));
+    }
     if (mCutsceneIndex < mGoodCutscenes.size()) {
         mGamePlayState = GamePlayState::Cutscene;
         if (mCurrentCutscene == nullptr) {
