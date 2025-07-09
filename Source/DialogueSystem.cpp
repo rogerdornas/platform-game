@@ -20,7 +20,7 @@ DialogueSystem::DialogueSystem(class Game *game, const std::string &fontName, st
     AddImage("../Assets/Sprites/Background/Store.png", Vector2::Zero, GetSize());
 
     if (!mLines.empty()) {
-        int textPointSize = static_cast<int>(34 * mGame->GetScale());
+        int textPointSize = static_cast<int>(40 * mGame->GetScale());
         // std::string text = mLines[mCurrentLine].speakerName + ": " + mLines[mCurrentLine].text;
         std::string text = mLines[mCurrentLine].text;
         Vector3 color = mLines[mCurrentLine].color;

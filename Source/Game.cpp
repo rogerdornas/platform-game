@@ -32,6 +32,7 @@
 #include "Actors/Projectile.h"
 #include "Components/AABBComponent.h"
 #include "Components/DrawComponents/DrawAnimatedComponent.h"
+#include "Components/DrawComponents/DrawPolygonComponent.h"
 
 
 std::vector<int> ParseIntList(const std::string& str) {
@@ -326,6 +327,9 @@ void Game::ChangeScene()
         // Volta player
         if (mPlayer) {
             mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(true);
+            if (mPlayer->GetComponent<DrawPolygonComponent>()) {
+                mPlayer->GetComponent<DrawPolygonComponent>()->SetIsVisible(true);
+            }
         }
 
         // Guarda último level que o player estava
@@ -336,6 +340,9 @@ void Game::ChangeScene()
         // Se está no menu, pausa draw de player
         if (mPlayer) {
             mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(false);
+            if (mPlayer->GetComponent<DrawPolygonComponent>()) {
+                mPlayer->GetComponent<DrawPolygonComponent>()->SetIsVisible(false);
+            }
         }
     }
 
@@ -1507,7 +1514,8 @@ void Game::ProcessInput()
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    if (mGamePlayState == GamePlayState::Playing) {
+    if (mGamePlayState == GamePlayState::Playing &&
+        !mGoingToNextLevel) {
         if (!mIsPaused) {
             if (mHitstopActive) {}
             else {

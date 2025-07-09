@@ -33,12 +33,12 @@ Player::Player(Game* game, float width, float height)
     ,mJumpForce(-900.0f * mGame->GetScale())
     ,mCanJump(true)
     ,mJumpCountInAir(0)
-    ,mMaxJumpsInAir(0)
+    ,mMaxJumpsInAir(1)
     ,mLowGravity(50.0f * mGame->GetScale())
     ,mMediumGravity(3000.0f * mGame->GetScale())
     ,mHighGravity(4500.0f * mGame->GetScale())
 
-    ,mCanDash(false)
+    ,mCanDash(true)
 
     ,mPrevSwordPressed(false)
     ,mSwordCooldownTimer(0.0f)
@@ -51,7 +51,7 @@ Player::Player(Game* game, float width, float height)
     ,mSwordHitGround(false)
     ,mSwordHitSpike(false)
 
-    ,mCanFireBall(false)
+    ,mCanFireBall(true)
     ,mPrevFireBallPressed(false)
     ,mFireBallCooldownDuration(0.1f)
     ,mFireBallCooldownTimer(0.0f)
@@ -68,7 +68,7 @@ Player::Player(Game* game, float width, float height)
     ,mManaIncreaseRate(6.0f)
     ,mFireballManaCost(30.0f)
 
-    ,mCanWallSlide(false)
+    ,mCanWallSlide(true)
     ,mIsWallSliding(false)
     ,mWallSlideSide(WallSlideSide::notSliding)
     ,mWallSlideSpeed(300 * mGame->GetScale())
@@ -159,47 +159,47 @@ Player::Player(Game* game, float width, float height)
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.png",
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.6f, mWidth * 3.6f / 1.8f,
-                                                   "../Assets/Sprites/Esquilo2/Esquilo.png",
-                                                   "../Assets/Sprites/Esquilo2/Esquilo.json", 1000);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.6f, mWidth * 3.6f,
+                                                   "../Assets/Sprites/Esquilo3/Esquilo.png",
+                                                   "../Assets/Sprites/Esquilo3/Esquilo.json", 1000);
 
-    std::vector idle = {18};
+    std::vector idle = {19};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector attackFront = {18, 0, 1};
+    std::vector attackFront = {19, 2, 3};
     mDrawAnimatedComponent->AddAnimation("attackFront", attackFront);
 
-    std::vector attackUp = {2, 3};
+    std::vector attackUp = {19, 4, 5};
     mDrawAnimatedComponent->AddAnimation("attackUp", attackUp);
 
-    std::vector dash = {4, 5, 5, 5, 6};
+    std::vector attackDown = {19, 0, 1};
+    mDrawAnimatedComponent->AddAnimation("attackDown", attackDown);
+
+    std::vector dash = {6, 7, 7, 7, 8};
     mDrawAnimatedComponent->AddAnimation("dash", dash);
 
-    std::vector run = {22, 23, 24, 25, 26, 27};
+    std::vector run = {23, 24, 25, 26, 27, 28};
     mDrawAnimatedComponent->AddAnimation("run", run);
 
-    std::vector heal = {11, 12, 13, 14, 15, 15, 14, 13, 12, 11};
+    std::vector heal = {12, 13, 14, 15, 16, 16, 15, 14, 13, 12};
     mDrawAnimatedComponent->AddAnimation("heal", heal);
 
-    std::vector wallSlide = {28};
+    std::vector wallSlide = {29};
     mDrawAnimatedComponent->AddAnimation("wallSlide", wallSlide);
 
-    std::vector flash = {10};
-    mDrawAnimatedComponent->AddAnimation("flash", flash);
-
-    std::vector hurt = {16, 17};
+    std::vector hurt = {17, 18};
     mDrawAnimatedComponent->AddAnimation("hurt", hurt);
 
-    std::vector die = {16, 7, 8, 9, 9, 9};
+    std::vector die = {17, 9, 10, 11, 11, 11};
     mDrawAnimatedComponent->AddAnimation("die", die);
 
-    std::vector jumpUp = {19};
+    std::vector jumpUp = {20};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {20};
+    std::vector jumpApex = {21};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {21};
+    std::vector falling = {22};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -984,7 +984,7 @@ void Player::ManageAnimations() {
             mDrawAnimatedComponent->SetAnimation("attackUp");
         }
         if (mSwordDirection == Math::Pi / 2) {
-            mDrawAnimatedComponent->SetAnimation("attackFront");
+            mDrawAnimatedComponent->SetAnimation("attackDown");
         }
         if (mSwordDirection == 0 || mSwordDirection == Math::Pi) {
             mDrawAnimatedComponent->SetAnimation("attackFront");
@@ -1122,7 +1122,7 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
     mDrawAnimatedComponent->SetWidth(mWidth * 3.6f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 3.6f / 1.8f);
+    mDrawAnimatedComponent->SetHeight(mWidth * 3.6f);
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
