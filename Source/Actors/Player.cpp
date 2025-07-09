@@ -980,13 +980,14 @@ void Player::ManageAnimations() {
         mDrawAnimatedComponent->SetAnimation("dash");
     }
     else if (mSword->GetState() == ActorState::Active) {
-        if (mSwordDirection == 3 * Math::Pi / 2) {
+        if (mSword->GetRotation() == 3 * Math::Pi / 2) {
             mDrawAnimatedComponent->SetAnimation("attackUp");
         }
-        if (mSwordDirection == Math::Pi / 2) {
+        if (mSword->GetRotation() == Math::Pi / 2) {
             mDrawAnimatedComponent->SetAnimation("attackDown");
         }
-        if (mSwordDirection == 0 || mSwordDirection == Math::Pi) {
+        if (mSword->GetRotation() == 0 || mSword->GetRotation() == Math::Pi) {
+            SetRotation(mSword->GetRotation());
             mDrawAnimatedComponent->SetAnimation("attackFront");
         }
         mDrawAnimatedComponent->SetAnimFPS(3.0f / 0.15f);
