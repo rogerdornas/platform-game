@@ -1154,7 +1154,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     moth->SetId(id);
                 }
                 else if (name == "BushMonster") {
-                    auto* bushMonster = new BushMonster(this, 220, 140, 300, 300);
+                    auto* bushMonster = new BushMonster(this, 220, 140, 300, 150);
                     bushMonster->SetPosition(Vector2(x, y));
                     bushMonster->SetId(id);
                 }
