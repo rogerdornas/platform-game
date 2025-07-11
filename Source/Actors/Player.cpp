@@ -858,8 +858,6 @@ void Player::ResolveGroundCollision() {
                     if (collisionSide[3]) {
                         ReceiveHit(10, Vector2::UnitX);
                     }
-
-                    mKnockBackTimer = 0;
                 }
                 else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) { // Colisão da sword com spikes
                     if (!mSwordHitSpike) {

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.26)
 set(CMAKE_CXX_STANDARD 17)
 
 # Configurando o nome e executável do projeto
-set(PROJECT_NAME "game-v0")
+set(PROJECT_NAME "Echoes_of_Elementum")
 project(${PROJECT_NAME})
 
 find_package(SDL2 2.32.2 EXACT REQUIRED)
