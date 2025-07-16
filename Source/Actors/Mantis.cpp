@@ -158,13 +158,11 @@ void Mantis::WalkForward(float deltaTime) {
     if (Math::Abs(dist) < mDistToAttack) {
         mWaitToAttackTimer += deltaTime;
         if (mKnockBackTimer >= mKnockBackDuration) {
-            mRigidBodyComponent->SetVelocity(Vector2::Zero);
+            mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
         }
         if (mWaitToAttackTimer >= mWaitToAttackDuration) {
             mWaitToAttackTimer = 0;
-            if (mKnockBackTimer >= mKnockBackDuration) {
-                mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 4, mJumpForce));
-            }
+            mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 4, mJumpForce));
             mMantisState = State::Attack;
             mDrawAnimatedComponent->ResetAnimationTimer();
             mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
