@@ -68,7 +68,7 @@ Moth::Moth(Game *game, float width, float height, float moveSpeed, float healthP
 
     // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Moth/Moth2.png", mWidth * 1.3f, mHeight * 1.3f, 999);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/FinalBoss/FinalBoss.png", "../Assets/Sprites/FinalBoss/FinalBoss.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/FinalBoss/FinalBoss.png", "../Assets/Sprites/FinalBoss/FinalBoss.json", 998);
     std::vector idle = {53, 54, 55, 56, 57, 58, 59, 60};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 

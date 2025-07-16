@@ -28,7 +28,7 @@ EnemySimple::EnemySimple(Game* game, float width, float height, float moveSpeed,
     mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
     mGravity = 3000 * mGame->GetScale();
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/Slime/Slime.png", "../Assets/Sprites/Slime/Slime.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/Slime/Slime.png", "../Assets/Sprites/Slime/Slime.json", 998);
     std::vector walk = {0, 1, 2, 3, 4, 6};
     mDrawAnimatedComponent->AddAnimation("walk", walk);
 

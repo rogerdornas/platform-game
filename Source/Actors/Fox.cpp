@@ -70,7 +70,7 @@ Fox::Fox(Game* game, float width, float height, float moveSpeed, float healthPoi
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.3f, 0.91f * mWidth * 2.3f,
                                                        foxAssets + "Raposa.png",
-                                                       foxAssets + "Raposa.json", 1000);
+                                                       foxAssets + "Raposa.json", 998);
 
     std::vector idle = {2};
     mDrawAnimatedComponent->AddAnimation("idle", idle);

@@ -63,7 +63,7 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f * 1.875f, mWidth * 1.8f, "../Assets/Sprites/Golem2/Golem.png", "../Assets/Sprites/Golem2/Golem.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f * 1.875f, mWidth * 1.8f, "../Assets/Sprites/Golem2/Golem.png", "../Assets/Sprites/Golem2/Golem.json", 998);
     std::vector idle = {54, 22, 23, 24, 55, 25, 58, 26};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 

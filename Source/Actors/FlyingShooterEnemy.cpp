@@ -43,7 +43,7 @@ FlyingShooterEnemy::FlyingShooterEnemy(Game* game, float width, float height, fl
     mFlyingAroundTimer = mFlyingAroundDuration;
     mFlyingAroundMoveSpeed = 100.0f * mGame->GetScale();
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/Beetle/Beetle.png", "../Assets/Sprites/Beetle/Beetle.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/Beetle/Beetle.png", "../Assets/Sprites/Beetle/Beetle.json", 998);
     std::vector fly = {0, 1, 2, 3};
     mDrawAnimatedComponent->AddAnimation("fly", fly);
 

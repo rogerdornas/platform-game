@@ -35,7 +35,7 @@ Mantis::Mantis(Game *game, float width, float height, float moveSpeed, float hea
     mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, 1.25f * mWidth, 1.25f * mHeight, "../Assets/Sprites/Mantis/Mantis.png", "../Assets/Sprites/Mantis/Mantis.json", 999);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, 1.25f * mWidth, 1.25f * mHeight, "../Assets/Sprites/Mantis/Mantis.png", "../Assets/Sprites/Mantis/Mantis.json", 998);
     std::vector walk = {8, 9, 10, 11};
     mDrawAnimatedComponent->AddAnimation("walk", walk);
 

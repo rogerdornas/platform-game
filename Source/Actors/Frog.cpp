@@ -60,7 +60,7 @@ Frog::Frog(Game* game, float width, float height, float moveSpeed, float healthP
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f / 1.2f,
                                                        frogAssets + "Frog.png",
-                                                       frogAssets + "Frog.json", 999);
+                                                       frogAssets + "Frog.json", 998);
 
     std::vector hitIdle = {0};
     mDrawAnimatedComponent->AddAnimation("hitIdle", hitIdle);
