@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Actor.h"
+#include "HookPoint.h"
 #include "../Actors/Sword.h"
 #include "../AudioSystem.h"
 
@@ -173,6 +174,23 @@ private:
     int mMoney;
     int mStartMoney;
 
+    bool mIsHooking;
+    bool mPrevHookPressed;
+    Vector2 mHookDirection;
+    float mHookSpeed;
+    float mHookCooldownDuration;
+    float mHookCooldownTimer;
+    float mHookingDuration;
+    float mHookingTimer;
+    Vector2 mHookEnd;
+    float mHookAnimProgress;
+    bool mIsHookAnimating;
+    HookPoint* mHookPoint;
+    float mHookAnimationDuration; // duração do efeito visual
+    int mHookSegments;
+    float mHookAmplitude;
+    float mHookSegmentHeight;
+
     // Atributos para animar sprites
     bool mIsRunning;
     float mHurtDuration;
@@ -196,6 +214,7 @@ private:
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;
     class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class DrawRopeComponent* mDrawRopeComponent;
 
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;

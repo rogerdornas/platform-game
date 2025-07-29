@@ -26,6 +26,7 @@
 #include "Actors/Fairy.h"
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Golem.h"
+#include "Actors/HookPoint.h"
 #include "Actors/Mantis.h"
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
@@ -33,6 +34,7 @@
 #include "Components/AABBComponent.h"
 #include "Components/DrawComponents/DrawAnimatedComponent.h"
 #include "Components/DrawComponents/DrawPolygonComponent.h"
+#include "Components/DrawComponents/DrawRopeComponent.h"
 
 
 std::vector<int> ParseIntList(const std::string& str) {
@@ -342,6 +344,9 @@ void Game::ChangeScene()
             mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(false);
             if (mPlayer->GetComponent<DrawPolygonComponent>()) {
                 mPlayer->GetComponent<DrawPolygonComponent>()->SetIsVisible(false);
+            }
+            if (mPlayer->GetComponent<DrawRopeComponent>()) {
+                mPlayer->GetComponent<DrawRopeComponent>()->SetIsVisible(false);
             }
         }
     }
@@ -698,6 +703,20 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level5, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "   TESTE";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 14 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::LevelTeste, 0.5f);
             delete mPlayer;
             mPlayer = nullptr;
             mPlayerDeathCounter = 0;
@@ -1072,6 +1091,17 @@ void Game::LoadObjects(const std::string &fileName) {
                 lever->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
             }
         }
+
+        if (layer["name"] == "HookPoints") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+
+                auto* hookPoint = new HookPoint(this);
+                hookPoint->SetPosition(Vector2(x, y));
+            }
+        }
+
         if (layer["name"] == "Enemies") {
             for (const auto &obj: layer["objects"]) {
                 std::string name = obj["name"];
@@ -1760,11 +1790,11 @@ void Game::UpdateCamera(float deltaTime) {
 
 void Game::AddGround(class Ground* g) { mGrounds.emplace_back(g); }
 
-void Game::RemoveGround(class Ground* g)
-{
+void Game::RemoveGround(class Ground* g) {
     auto iter = std::find(mGrounds.begin(), mGrounds.end(), g);
-    if (iter != mGrounds.end())
+    if (iter != mGrounds.end()) {
         mGrounds.erase(iter);
+    }
 }
 
 Ground* Game::GetGroundById(int id) {
@@ -1778,47 +1808,56 @@ Ground* Game::GetGroundById(int id) {
 
 void Game::AddFireBall(class FireBall* f) { mFireBalls.emplace_back(f); }
 
-void Game::RemoveFireball(class FireBall* f)
-{
+void Game::RemoveFireball(class FireBall* f) {
     auto iter = std::find(mFireBalls.begin(), mFireBalls.end(), f);
-    if (iter != mFireBalls.end())
+    if (iter != mFireBalls.end()) {
         mFireBalls.erase(iter);
+    }
 }
 
 void Game::AddParticle(class Particle* p) { mParticles.emplace_back(p); }
 
-void Game::RemoveParticle(class Particle* p)
-{
+void Game::RemoveParticle(class Particle* p) {
     auto iter = std::find(mParticles.begin(), mParticles.end(), p);
-    if (iter != mParticles.end())
+    if (iter != mParticles.end()) {
         mParticles.erase(iter);
+    }
 }
 
 void Game::AddProjectile(class Projectile* p) { mProjectiles.emplace_back(p); }
 
-void Game::RemoveProjectile(class Projectile* p)
-{
+void Game::RemoveProjectile(class Projectile* p) {
     auto iter = std::find(mProjectiles.begin(), mProjectiles.end(), p);
-    if (iter != mProjectiles.end())
+    if (iter != mProjectiles.end()) {
         mProjectiles.erase(iter);
+    }
 }
 
 void Game::AddMoney(class Money* m) { mMoneys.emplace_back(m); }
 
-void Game::RemoveMoney(class Money* m)
-{
+void Game::RemoveMoney(class Money* m) {
     auto iter = std::find(mMoneys.begin(), mMoneys.end(), m);
-    if (iter != mMoneys.end())
+    if (iter != mMoneys.end()) {
         mMoneys.erase(iter);
+    }
+}
+
+void Game::AddHookPoint(class HookPoint* hp) { mHookPoints.emplace_back(hp); }
+
+void Game::RemoveHookPoint(class HookPoint* hp) {
+    auto iter = std::find(mHookPoints.begin(), mHookPoints.end(), hp);
+    if (iter != mHookPoints.end()) {
+        mHookPoints.erase(iter);
+    }
 }
 
 void Game::AddEnemy(class Enemy* e) { mEnemies.emplace_back(e); }
 
-void Game::RemoveEnemy(class Enemy* e)
-{
+void Game::RemoveEnemy(class Enemy* e) {
     auto iter = std::find(mEnemies.begin(), mEnemies.end(), e);
-    if (iter != mEnemies.end())
+    if (iter != mEnemies.end()) {
         mEnemies.erase(iter);
+    }
 }
 
 Enemy* Game::GetEnemyById(int id) {
@@ -1830,36 +1869,32 @@ Enemy* Game::GetEnemyById(int id) {
     return nullptr;
 }
 
-void Game::AddActor(Actor* actor)
-{
-    if (mUpdatingActors)
+void Game::AddActor(Actor* actor) {
+    if (mUpdatingActors) {
         mPendingActors.emplace_back(actor);
-
-    else
+    }
+    else {
         mActors.emplace_back(actor);
+    }
 }
 
-void Game::RemoveActor(Actor* actor)
-{
+void Game::RemoveActor(Actor* actor) {
     auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
-    if (iter != mPendingActors.end())
-    {
+    if (iter != mPendingActors.end()) {
         // Swap to end of vector and pop off (avoid erase copies)
         std::iter_swap(iter, mPendingActors.end() - 1);
         mPendingActors.pop_back();
     }
 
     iter = std::find(mActors.begin(), mActors.end(), actor);
-    if (iter != mActors.end())
-    {
+    if (iter != mActors.end()) {
         // Swap to end of vector and pop off (avoid erase copies)
         std::iter_swap(iter, mActors.end() - 1);
         mActors.pop_back();
     }
 }
 
-void Game::AddDrawable(class DrawComponent* drawable)
-{
+void Game::AddDrawable(class DrawComponent* drawable) {
     mDrawables.emplace_back(drawable);
 
     std::sort(mDrawables.begin(), mDrawables.end(), [](const DrawComponent* a, const DrawComponent* b)
@@ -1868,8 +1903,7 @@ void Game::AddDrawable(class DrawComponent* drawable)
     });
 }
 
-void Game::RemoveDrawable(class DrawComponent* drawable)
-{
+void Game::RemoveDrawable(class DrawComponent* drawable) {
     auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
     mDrawables.erase(iter);
 }

@@ -649,7 +649,7 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="232" name="Close Wall" x="3648" y="2528" width="128" height="256">
+  <object id="232" name="Close Wall" x="3584" y="2528" width="192" height="256">
    <properties>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="80"/>

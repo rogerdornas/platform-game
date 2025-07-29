@@ -117,6 +117,10 @@ add_executable(${PROJECT_NAME}
         Source/Cutscene.h
         Source/Actors/BushMonster.cpp
         Source/Actors/BushMonster.h
+        Source/Actors/HookPoint.cpp
+        Source/Actors/HookPoint.h
+        Source/Components/DrawComponents/DrawRopeComponent.cpp
+        Source/Components/DrawComponents/DrawRopeComponent.h
 )
 
 

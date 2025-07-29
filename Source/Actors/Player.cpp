@@ -3,8 +3,10 @@
 //
 
 #include "Player.h"
+#include <cfloat>
 #include "Checkpoint.h"
 #include "Effect.h"
+#include "HookPoint.h"
 #include "../Game.h"
 #include "../Actors/Sword.h"
 #include "../Actors/FireBall.h"
@@ -14,6 +16,7 @@
 #include "../Components/DashComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/DrawComponents/DrawRopeComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 
 Player::Player(Game* game, float width, float height)
@@ -98,8 +101,25 @@ Player::Player(Game* game, float width, float height)
     ,mHealAnimationDuration(0.6f)
     ,mHealAnimationTimer(0.0f)
 
-    ,mMoney(0)
+    ,mMoney(1000)
     ,mStartMoney(0)
+
+    ,mIsHooking(false)
+    ,mPrevHookPressed(false)
+    ,mHookDirection(Vector2::Zero)
+    ,mHookSpeed(1700.0f * mGame->GetScale())
+    ,mHookCooldownDuration(0.4f)
+    ,mHookCooldownTimer(0.0f)
+    ,mHookingDuration(0.15f)
+    ,mHookingTimer(0.0f)
+    ,mHookEnd(Vector2::Zero)
+    ,mHookAnimProgress(0.0f)
+    ,mIsHookAnimating(false)
+    ,mHookPoint(nullptr)
+    ,mHookAnimationDuration(0.2f)
+    ,mHookSegments(20)
+    ,mHookAmplitude(12.0f * mGame->GetScale())
+    ,mHookSegmentHeight(8.0f * mGame->GetScale())
 
     ,mIsRunning(false)
     ,mHurtDuration(0.2f)
@@ -119,6 +139,7 @@ Player::Player(Game* game, float width, float height)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
+    ,mDrawRopeComponent(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -205,6 +226,10 @@ Player::Player(Game* game, float width, float height)
     mDrawAnimatedComponent->SetAnimation("idle");
     mDrawAnimatedComponent->SetAnimFPS(10.0f);
 
+    mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
+    mDrawRopeComponent->SetNumSegments(mHookSegments);
+    mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+    mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {255, 255, 0, 255});
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 1600 * mGame->GetScale());
@@ -262,15 +287,18 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                     SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_B);
 
     bool heal = state[SDL_SCANCODE_V] ||
-                SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+                SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 10000;
+
+    bool hook = state[SDL_SCANCODE_S] ||
+            SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
 
     if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
-        !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration)) {
+        !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
         mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
     }
     else {
         if (left && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime) &&
-            (mKnockBackTimer >= mKnockBackDuration)) {
+            (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
@@ -292,7 +320,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         }
 
         if (leftSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime) &&
-            (mKnockBackTimer >= mKnockBackDuration)) {
+            (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(Math::Pi);
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
@@ -314,7 +342,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         }
 
         if (right && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)
-            && (mKnockBackTimer >= mKnockBackDuration)) {
+            && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
@@ -336,7 +364,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         }
 
         if (rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)
-            && (mKnockBackTimer >= mKnockBackDuration)) {
+            && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(0);
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
@@ -427,7 +455,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     // Dash
     if (mCanDash) {
-        if (dash && !mIsFireAttacking) {
+        if (dash && !mIsFireAttacking && (mHookingTimer >= mHookingDuration * 2)) {
             mDashComponent->UseDash(mIsOnGround);
         }
     }
@@ -500,6 +528,56 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         mIsHealing = false;
         mHealAnimationTimer = 0;
     }
+
+    // Hook
+    std::vector<HookPoint* > hookPoints = mGame->GetHookPoints();
+
+    HookPoint* nearestHookPoint = nullptr;
+    float nearestDistance = FLT_MAX;
+
+    for (HookPoint* hp: hookPoints) {
+        float dist = (GetPosition() - hp->GetPosition()).Length();
+        if (dist < hp->GetRadius() && dist < nearestDistance) {
+            nearestDistance = dist;
+            nearestHookPoint = hp;
+        }
+    }
+    if (nearestHookPoint && (nearestHookPoint != mHookPoint)) {
+        nearestHookPoint->SetHookPointState(HookPoint::HookPointState::InRange);
+    }
+
+    if (nearestHookPoint &&
+        hook &&
+        !mPrevHookPressed &&
+        !mDashComponent->GetIsDashing() &&
+        mHookCooldownTimer >= mHookCooldownDuration)
+    {
+        mHookPoint = nearestHookPoint;
+        nearestHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
+        Vector2 dir = (nearestHookPoint->GetPosition() - GetPosition());
+        if (dir.Length() > 0) {
+            dir.Normalize();
+        }
+        mHookDirection = dir;
+        mIsHooking = true;
+        mHookCooldownTimer = 0.0f;
+        mHookingTimer = 0.0f;
+
+        // Quando hook começa
+        mHookEnd = nearestHookPoint->GetPosition();
+        mHookAnimProgress = 0.0f;
+        mIsHookAnimating = true;
+        mDrawRopeComponent->SetIsVisible(true);
+
+        // Resetar dash no ar
+        mDashComponent->SetHasDashedInAir(false);
+        // RESET DO CONTADOR DE PULO
+        mJumpCountInAir = 0;
+
+        mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+        mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+    }
+    mPrevHookPressed = hook;
 }
 
 void Player::OnUpdate(float deltaTime) {
@@ -509,6 +587,29 @@ void Player::OnUpdate(float deltaTime) {
 
     if (mFireBallCooldownTimer < mFireBallCooldownDuration) {
         mFireBallCooldownTimer += deltaTime;
+    }
+
+    if (mHookCooldownTimer < mHookCooldownDuration) {
+        mHookCooldownTimer += deltaTime;
+    }
+
+    if (mHookingTimer < mHookingDuration * 5) {
+        mHookingTimer += deltaTime;
+    }
+
+    if (mIsHookAnimating) {
+        mHookAnimProgress += deltaTime / mHookAnimationDuration;
+        if (mHookAnimProgress >= 1.0f) {
+            mHookAnimProgress = 1.0f;
+            mIsHookAnimating = false;
+            mHookPoint = nullptr;
+            mDrawRopeComponent->SetIsVisible(false);
+        }
+        mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+        mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        if (mHookPoint) {
+            mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
+        }
     }
 
     if (mKnockBackTimer < mKnockBackDuration) {
@@ -584,7 +685,7 @@ void Player::OnUpdate(float deltaTime) {
         if (mJumpTimer <= mMaxJumpTime) {
             // Gravidade menor
             // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && !mIsOnGround) {
+            if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && !mIsOnGround && !mIsHooking) {
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                                          mRigidBodyComponent->GetVelocity().y
                                                          + mLowGravity * deltaTime));
@@ -596,7 +697,7 @@ void Player::OnUpdate(float deltaTime) {
     }
     else {
         // So aplica gravidade se nao estiver dashando e nao estiver tacando fireball
-        if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && !mIsOnGround) {
+        if (!mDashComponent->GetIsDashing() && !mIsFireAttacking && !mIsOnMovingGround && !mIsOnGround && !mIsHooking) {
             if (mRigidBodyComponent->GetVelocity().y < 0) {
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                                          mRigidBodyComponent->GetVelocity().y
@@ -612,6 +713,14 @@ void Player::OnUpdate(float deltaTime) {
 
     ResolveEnemyCollision();
     ResolveGroundCollision();
+
+    if (mIsHooking) {
+        if (mHookingTimer < mHookingDuration) {
+            mRigidBodyComponent->SetVelocity(mHookDirection * mHookSpeed);
+        } else {
+            mIsHooking = false;
+        }
+    }
 
     if (mIsRunning && mIsOnGround) {
         mRunningSoundIntervalTimer += deltaTime;
@@ -1114,6 +1223,19 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mWallSlideSpeed = mWallSlideSpeed / oldScale * newScale;
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
     mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
+    mHookSpeed = mHookSpeed / oldScale * newScale;
+    mHookAmplitude = mHookAmplitude / oldScale * newScale;
+    mHookSegmentHeight = mHookSegmentHeight / oldScale * newScale;
+
+    mHookEnd.x = mHookEnd.x / oldScale * newScale;
+    mHookEnd.y = mHookEnd.y / oldScale * newScale;
+
+    if (mDrawRopeComponent) {
+        mDrawRopeComponent->SetNumSegments(mHookSegments);
+        mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+        mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+    }
+
     mRigidBodyComponent->SetMaxSpeedX(mRigidBodyComponent->GetMaxSpeedX() / oldScale * newScale);
     mRigidBodyComponent->SetMaxSpeedY(mRigidBodyComponent->GetMaxSpeedY() / oldScale * newScale);
     mDashComponent->SetDashSpeed(mDashComponent->GetDashSpeed() / oldScale * newScale);

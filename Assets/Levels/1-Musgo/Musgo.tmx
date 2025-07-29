@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="210">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="214">
  <editorsettings>
   <export target="Musgo.json" format="json"/>
  </editorsettings>
@@ -1462,5 +1462,11 @@
  </objectgroup>
  <objectgroup id="3" name="Player">
   <object id="1" x="6848" y="5632" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup id="10" name="HookPoints">
+  <object id="210" x="7072" y="5024" width="32" height="32"/>
+  <object id="211" x="8032" y="5216" width="32" height="32"/>
+  <object id="212" x="21184" y="3712" width="32" height="32"/>
+  <object id="213" x="22368" y="3680" width="32" height="32"/>
  </objectgroup>
 </map>

@@ -82,9 +82,9 @@ public:
     float GetScale() const { return mScale; }
 
     // Game-specific
-    void AddGround(class Ground *g);
-    void RemoveGround(class Ground *g);
-    std::vector<class Ground *> &GetGrounds() { return mGrounds; }
+    void AddGround(class Ground* g);
+    void RemoveGround(class Ground* g);
+    std::vector<class Ground*> &GetGrounds() { return mGrounds; }
     Ground* GetGroundById(int id);
 
     class Player* GetPlayer() const { return mPlayer; }
@@ -92,24 +92,28 @@ public:
     void UpdateCamera(float deltaTime);
     class Camera* GetCamera() const { return mCamera; }
 
-    void AddFireBall(class FireBall *f);
-    void RemoveFireball(class FireBall *f);
+    void AddFireBall(class FireBall* f);
+    void RemoveFireball(class FireBall* f);
     std::vector<class FireBall*> &GetFireBalls() { return mFireBalls; }
 
-    void AddParticle(class Particle *p);
-    void RemoveParticle(class Particle *p);
+    void AddParticle(class Particle* p);
+    void RemoveParticle(class Particle* p);
     std::vector<class Particle*> &GetParticles() { return mParticles; }
 
-    void AddProjectile(class Projectile *p);
-    void RemoveProjectile(class Projectile *p);
-    std::vector<class Projectile *> &GetProjectiles() { return mProjectiles; }
+    void AddProjectile(class Projectile* p);
+    void RemoveProjectile(class Projectile* p);
+    std::vector<class Projectile*> &GetProjectiles() { return mProjectiles; }
 
-    void AddMoney(class Money *m);
-    void RemoveMoney(class Money *m);
+    void AddMoney(class Money* m);
+    void RemoveMoney(class Money* m);
     std::vector<class Money*> &GetMoneys() { return mMoneys; }
 
-    void AddEnemy(class Enemy *e);
-    void RemoveEnemy(class Enemy *e);
+    void AddHookPoint(class HookPoint* hp);
+    void RemoveHookPoint(class HookPoint* hp);
+    std::vector<class HookPoint*> &GetHookPoints() { return mHookPoints; }
+
+    void AddEnemy(class Enemy* e);
+    void RemoveEnemy(class Enemy* e);
     std::vector<class Enemy*> &GetEnemies() { return mEnemies; }
     Enemy* GetEnemyById(int id);
 
@@ -243,7 +247,8 @@ private:
     std::vector<class Particle*> mParticles;
     std::vector<class Projectile*> mProjectiles;
     std::vector<class Money*> mMoneys;
-    std::vector<class Enemy *> mEnemies;
+    std::vector<class HookPoint*> mHookPoints;
+    std::vector<class Enemy*> mEnemies;
     SDL_GameController *mController;
     class HUD *mHUD;
     std::vector<class Checkpoint*> mCheckPoints;
