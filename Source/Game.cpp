@@ -24,6 +24,7 @@
 #include "Actors/Lever.h"
 #include "Actors/Trigger.h"
 #include "Actors/Fairy.h"
+#include "Actors/FlyingGolem.h"
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Golem.h"
 #include "Actors/HookPoint.h"
@@ -1134,6 +1135,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     mantis->SetPosition(Vector2(x, y));
                     mantis->SetId(id);
                 }
+                else if (name == "FlyingGolem") {
+                    auto* flyingGolem = new FlyingGolem(this, 100, 100, 420, 130);
+                    flyingGolem->SetPosition(Vector2(x, y));
+                    flyingGolem->SetId(id);
+                }
                 else if (name == "Fox") {
                     if (obj.contains("properties")) {
                         for (const auto &prop: obj["properties"]) {
@@ -1959,7 +1965,7 @@ void Game::GenerateOutput()
         if (mUseParallaxBackground) {
             switch (mGameScene) {
                 case GameScene::LevelTeste:
-                    DrawParallaxLayers(mBackgroundLayersLevel2);
+                    DrawParallaxLayers(mBackgroundLayersLevel3);
                 break;
 
                 case GameScene::Level1:
@@ -2052,6 +2058,7 @@ SDL_Texture* Game::LoadTexture(const std::string &texturePath)
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface); // Libera a superfície, já não é mais necessária
+    surface = nullptr;
 
     if (!texture)
     {

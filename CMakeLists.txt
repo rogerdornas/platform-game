@@ -121,6 +121,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/HookPoint.h
         Source/Components/DrawComponents/DrawRopeComponent.cpp
         Source/Components/DrawComponents/DrawRopeComponent.h
+        Source/Actors/FlyingGolem.cpp
+        Source/Actors/FlyingGolem.h
 )
 
 

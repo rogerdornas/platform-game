@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="490" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="197">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="490" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="198">
  <editorsettings>
   <export target="Run.json" format="json"/>
  </editorsettings>
@@ -714,6 +714,7 @@
     <property name="MinPosY" type="float" value="1952"/>
    </properties>
   </object>
+  <object id="197" name="FlyingGolem" x="6208" y="3040" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="6" name="Levers">
   <object id="126" name="Lever1" x="7840" y="2304" width="64" height="64">

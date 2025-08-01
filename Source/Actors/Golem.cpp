@@ -44,7 +44,7 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mDistToPunch(200 * mGame->GetScale())
     ,mIdleWidth(mWidth)
     ,mPunchSpriteWidth(mWidth * 1.5f)
-    ,mPunchOffsetHitBox(mWidth * 0.9f)
+    ,mPunchOffsetHitBox(mWidth * 0.8f)
     ,mPunchDirectionRight(true)
 
     ,mFireballDuration(1.0f)
@@ -63,7 +63,7 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f * 1.875f, mWidth * 1.8f, "../Assets/Sprites/Golem2/Golem.png", "../Assets/Sprites/Golem2/Golem.json", 998);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f * 1.73f, mWidth * 1.8f, "../Assets/Sprites/Golem2/Golem.png", "../Assets/Sprites/Golem2/Golem.json", 998);
     std::vector idle = {54, 22, 23, 24, 55, 25, 58, 26};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
@@ -269,7 +269,7 @@ void Golem::Punch(float deltaTime) {
     Vector2 v3;
     Vector2 v4;
 
-    if (mPunchTimer > 0.5f * mPunchDuration && mPunchTimer < 0.8f * mPunchDuration) {
+    if (mPunchTimer > 0.41f * mPunchDuration && mPunchTimer < 0.78f * mPunchDuration) {
         mWidth = mPunchSpriteWidth;
 
         v1 = Vector2(-mWidth / 2 + mPunchOffsetHitBox * GetForward().x, -mHeight / 2);
@@ -558,19 +558,26 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
+    mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.73f);
+    mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
+
+    Vector2 v1;
+    Vector2 v2;
+    Vector2 v3;
+    Vector2 v4;
+
     if (mWidth == mPunchSpriteWidth) {
-        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.875f);
-        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
+        v1 = Vector2(-mWidth / 2 + mPunchOffsetHitBox * GetForward().x, -mHeight / 2);
+        v2 = Vector2(mWidth / 2 + mPunchOffsetHitBox * GetForward().x, -mHeight / 2);
+        v3 = Vector2(mWidth / 2 + mPunchOffsetHitBox * GetForward().x, mHeight / 2);
+        v4 = Vector2(-mWidth / 2 + mPunchOffsetHitBox * GetForward().x, mHeight / 2);
     }
     else {
-        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.875f);
-        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
+        v1 = Vector2(-mWidth / 2, -mHeight / 2);
+        v2 = Vector2(mWidth / 2, -mHeight / 2);
+        v3 = Vector2(mWidth / 2, mHeight / 2);
+        v4 = Vector2(-mWidth / 2, mHeight / 2);
     }
-
-    Vector2 v1(-mWidth / 2, -mHeight / 2);
-    Vector2 v2(mWidth / 2, -mHeight / 2);
-    Vector2 v3(mWidth / 2, mHeight / 2);
-    Vector2 v4(-mWidth / 2, mHeight / 2);
 
     std::vector<Vector2> vertices;
     vertices.emplace_back(v1);
