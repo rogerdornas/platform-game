@@ -727,7 +727,7 @@
   </object>
  </objectgroup>
  <objectgroup id="6" name="Enemies">
-  <object id="22" name="FlyingShooterEnemy" x="6336" y="1504" width="32" height="32"/>
+  <object id="22" name="FlyingShooterEnemy" x="5120" y="1632" width="32" height="32"/>
   <object id="197" name="Enemy Simple" x="2848" y="2112" width="32" height="32"/>
   <object id="199" name="Enemy Simple" x="3456" y="1920" width="32" height="32"/>
   <object id="221" name="Enemy Simple" x="6464" y="2432" width="32" height="32"/>
@@ -744,7 +744,7 @@
   <object id="224" name="Mantis" x="5120" y="3424" width="32" height="32"/>
   <object id="225" name="Mantis" x="5568" y="3424" width="32" height="32"/>
   <object id="198" name="Flying Emeny" x="2880" y="1792" width="32" height="32"/>
-  <object id="207" name="Flying Enemy" x="5056" y="1600" width="32" height="32"/>
+  <object id="207" name="DragonFly" x="5824" y="1472" width="32" height="32"/>
   <object id="219" name="Flying Enemy" x="6208" y="2208" width="32" height="32"/>
   <object id="264" name="Flying Enemy" x="7648" y="1984" width="32" height="32"/>
   <object id="283" name="Frog" x="9632" y="2528" width="32" height="32">

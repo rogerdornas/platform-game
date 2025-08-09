@@ -37,19 +37,18 @@ FlyingGolem::FlyingGolem(Game *game, float width, float height, float moveSpeed,
     ,mAttackOffsetHitBox(mWidth * 0.7f)
     ,mAttackDirectionRight(true)
 
-    ,mDistToTeleport(1300 * mGame->GetScale())
+    ,mDistToTeleport(1100 * mGame->GetScale())
     ,mTeleportDuration(0.6f)
     ,mTeleportInTimer(0.0f)
     ,mTeleportOutTimer(0.0f)
     ,mTeleportTargetPosition(Vector2::Zero)
-    ,mTeleportHoverHeight(400 * mGame->GetScale())
+    ,mTeleportHoverHeight(250 * mGame->GetScale())
     ,mTeleportRangeTargetX(400* mGame->GetScale())
 {
     mMoneyDrop = 20;
     mKnockBackSpeed = 500.0f * mGame->GetScale();
     mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
-    mDistToSpotPlayer = 400 * mGame->GetScale();
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.7f * 2.0f, mWidth * 1.7f, "../Assets/Sprites/FlyingGolem2/FlyingGolem.png", "../Assets/Sprites/FlyingGolem2/FlyingGolem.json", 998);
     std::vector idle = {22, 23, 24, 25, 26, 27, 28, 29};

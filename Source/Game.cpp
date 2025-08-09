@@ -17,6 +17,7 @@
 #include "HUD.h"
 #include "Actors/BushMonster.h"
 #include "Actors/Checkpoint.h"
+#include "Actors/DragonFly.h"
 #include "UIElements/UIScreen.h"
 #include "Actors/DynamicGround.h"
 #include "Actors/Fox.h"
@@ -1139,6 +1140,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     auto* flyingGolem = new FlyingGolem(this, 100, 100, 420, 130);
                     flyingGolem->SetPosition(Vector2(x, y));
                     flyingGolem->SetId(id);
+                }
+                else if (name == "DragonFly") {
+                    auto* dragonFly = new DragonFly(this, 130, 70, 1300, 500);
+                    dragonFly->SetPosition(Vector2(x, y));
+                    dragonFly->SetId(id);
                 }
                 else if (name == "Fox") {
                     if (obj.contains("properties")) {

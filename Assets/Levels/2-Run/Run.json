@@ -864,30 +864,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":544,
+                 "width":2208,
                  "x":5344,
-                 "y":928
-                }, 
-                {
-                 "height":608,
-                 "id":144,
-                 "name":"Ground",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":544,
-                 "x":6080,
-                 "y":928
-                }, 
-                {
-                 "height":608,
-                 "id":145,
-                 "name":"Ground",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":320,
-                 "x":6816,
                  "y":928
                 }, 
                 {
@@ -1274,7 +1252,7 @@
                  "y":672
                 }, 
                 {
-                 "height":768,
+                 "height":160,
                  "id":92,
                  "name":"Ground",
                  "rotation":0,
@@ -1302,7 +1280,7 @@
                  "y":896
                 }, 
                 {
-                 "height":768,
+                 "height":160,
                  "id":94,
                  "name":"Ground",
                  "rotation":0,
@@ -1330,7 +1308,7 @@
                  "y":896
                 }, 
                 {
-                 "height":768,
+                 "height":160,
                  "id":96,
                  "name":"Ground",
                  "rotation":0,
@@ -1347,8 +1325,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":736,
-                 "x":7392,
+                 "width":576,
+                 "x":7552,
                  "y":1408
                 }, 
                 {
@@ -1358,8 +1336,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":576,
-                 "x":7392,
+                 "width":416,
+                 "x":7552,
                  "y":1312
                 }, 
                 {
@@ -1369,8 +1347,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":384,
-                 "x":7392,
+                 "width":224,
+                 "x":7552,
                  "y":1184
                 }, 
                 {
@@ -1380,20 +1358,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":256,
-                 "x":7392,
+                 "width":96,
+                 "x":7552,
                  "y":1024
-                }, 
-                {
-                 "height":96,
-                 "id":101,
-                 "name":"Ground",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":160,
-                 "x":7392,
-                 "y":928
                 }, 
                 {
                  "height":192,

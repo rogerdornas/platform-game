@@ -5478,7 +5478,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1728,
+                 "width":2528,
                  "x":8160,
                  "y":352
                 }, 
@@ -5505,7 +5505,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":2624,
+                 "width":3392,
                  "x":7296,
                  "y":1696
                 }, 
@@ -5537,7 +5537,7 @@
                  "y":2560
                 }, 
                 {
-                 "height":512,
+                 "height":416,
                  "id":411,
                  "name":"Camera",
                  "properties":[
@@ -5554,9 +5554,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":512,
-                 "x":10048,
-                 "y":1696
+                 "width":672,
+                 "x":10016,
+                 "y":1248
                 }, 
                 {
                  "height":864,
@@ -5758,6 +5758,77 @@
                  "width":352,
                  "x":9152,
                  "y":3232
+                }, 
+                {
+                 "height":512,
+                 "id":446,
+                 "name":"Camera Horizontal",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayerHorizontally"
+                        }, 
+                        {
+                         "name":"FixedCameraPositionY",
+                         "type":"float",
+                         "value":5344
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":2112,
+                 "x":3584,
+                 "y":5728
+                }, 
+                {
+                 "height":192,
+                 "id":447,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":224,
+                 "x":3584,
+                 "y":5504
+                }, 
+                {
+                 "height":288,
+                 "id":448,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1504,
+                 "x":4192,
+                 "y":5408
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6116,6 +6187,17 @@
                  "width":32,
                  "x":544,
                  "y":4544
+                }, 
+                {
+                 "height":32,
+                 "id":445,
+                 "name":"DragonFly",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":4832,
+                 "y":5856
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6124,7 +6206,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":445,
+ "nextobjectid":449,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

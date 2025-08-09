@@ -2218,8 +2218,8 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":6336,
-                 "y":1504
+                 "x":5120,
+                 "y":1632
                 }, 
                 {
                  "height":32,
@@ -2400,13 +2400,13 @@
                 {
                  "height":32,
                  "id":207,
-                 "name":"Flying Enemy",
+                 "name":"DragonFly",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":5056,
-                 "y":1600
+                 "x":5824,
+                 "y":1472
                 }, 
                 {
                  "height":32,

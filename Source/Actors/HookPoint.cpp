@@ -13,7 +13,7 @@ HookPoint::HookPoint(class Game *game)
     :Actor(game)
     ,mWidth(48 * mGame->GetScale())
     ,mHeight(48 * mGame->GetScale())
-    ,mRadius(430.0f * mGame->GetScale())
+    ,mRadius(530.0f * mGame->GetScale())
     ,mHookPointState(HookPointState::OutRange)
 
     ,mDrawSpriteComponent(nullptr)

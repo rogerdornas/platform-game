@@ -107,7 +107,7 @@ Player::Player(Game* game, float width, float height)
     ,mIsHooking(false)
     ,mPrevHookPressed(false)
     ,mHookDirection(Vector2::Zero)
-    ,mHookSpeed(1500.0f * mGame->GetScale())
+    ,mHookSpeed(1600.0f * mGame->GetScale())
     ,mHookCooldownDuration(0.4f)
     ,mHookCooldownTimer(0.0f)
     ,mHookingDuration(0.15f)
@@ -455,8 +455,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     // Dash
     if (mCanDash) {
-        if (dash && !mIsFireAttacking && (mHookingTimer >= mHookingDuration * 2)) {
+        if (dash && !mIsFireAttacking) {
             mDashComponent->UseDash(mIsOnGround);
+            mIsHooking = false;
+            mHookAnimProgress = 1.0f;
+            mIsHookAnimating = false;
+            mHookPoint = nullptr;
+            mDrawRopeComponent->SetIsVisible(false);
         }
     }
 
@@ -537,9 +542,17 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     for (HookPoint* hp: hookPoints) {
         float dist = (GetPosition() - hp->GetPosition()).Length();
-        if (dist < hp->GetRadius() && dist < nearestDistance) {
-            nearestDistance = dist;
-            nearestHookPoint = hp;
+        if (dist < hp->GetRadius()) {
+            float distX = GetPosition().x - hp->GetPosition().x;
+
+            // Verifica se o jogador está olhando para a direção do hookPoint
+            bool lookingRight = GetRotation() == 0 && distX < 0;
+            bool lookingLeft = GetRotation() == Math::Pi && distX > 0;
+
+            if ((lookingRight || lookingLeft) && dist < nearestDistance) {
+                nearestDistance = dist;
+                nearestHookPoint = hp;
+            }
         }
     }
     if (nearestHookPoint && (nearestHookPoint != mHookPoint)) {
@@ -750,6 +763,7 @@ void Player::OnUpdate(float deltaTime) {
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
         mKnockBackTimer = mKnockBackDuration;
         mInvulnerableTimer = mInvulnerableDuration;
+        mIsHealing = false;
         mGame->GetAudio()->StopAllSounds();
         if (mDeathAnimationTimer >= mDeathAnimationDuration) {
             mDeathCounter++;

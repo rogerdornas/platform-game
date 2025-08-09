@@ -123,6 +123,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/DrawComponents/DrawRopeComponent.h
         Source/Actors/FlyingGolem.cpp
         Source/Actors/FlyingGolem.h
+        Source/Actors/DragonFly.cpp
+        Source/Actors/DragonFly.h
 )
 
 
