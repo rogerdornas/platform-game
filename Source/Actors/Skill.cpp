@@ -45,7 +45,7 @@ Skill::Skill(class Game *game, SkillType skill)
 void Skill::OnUpdate(float deltaTime) {
     Player* player = mGame->GetPlayer();
 
-    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
+    if (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
         SetPlayerSkill();
         LoadSkillMessage();
     }
@@ -217,8 +217,10 @@ void Skill::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

@@ -89,8 +89,8 @@ void Money::OnUpdate(float deltaTime) {
     if (!moneys.empty()) {
         for (Money* m: moneys) {
             if (m != this) {
-                if (mAABBComponent->Intersect(*m->GetComponent<AABBComponent>())) {
-                    mAABBComponent->ResolveCollision(*m->GetComponent<AABBComponent>());
+                if (mAABBComponent->Intersect(*m->GetComponent<ColliderComponent>())) {
+                    mAABBComponent->ResolveCollision(*m->GetComponent<ColliderComponent>());
                 }
             }
         }
@@ -129,7 +129,7 @@ void Money::OnUpdate(float deltaTime) {
             break;
     }
 
-    if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<AABBComponent>())) {
+    if (mAABBComponent->Intersect(*mGame->GetPlayer()->GetComponent<ColliderComponent>())) {
         mGame->GetPlayer()->IncreaseMoney(mValue);
         mGame->GetAudio()->PlaySound("Money/Money.wav");
         Deactivate();
@@ -190,8 +190,10 @@ void Money::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

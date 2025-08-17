@@ -51,5 +51,5 @@ private:
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;
     class RigidBodyComponent* mRigidBodyComponent;
-    class AABBComponent* mAABBComponent;
+    class ColliderComponent* mAABBComponent;
 };

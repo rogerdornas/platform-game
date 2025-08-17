@@ -85,5 +85,5 @@ protected:
     std::string mCutsceneId;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
-    class AABBComponent *mAABBComponent;
+    class ColliderComponent *mAABBComponent;
 };

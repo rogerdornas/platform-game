@@ -34,7 +34,7 @@ DragonFly::DragonFly(Game *game, float width, float height, float moveSpeed, flo
     ,mAttackStraightTimer(0.0f)
     ,mAttackStraightTarget(Vector2::Zero)
     ,mDistToGoStraight(250 * mGame->GetScale())
-    ,mDistToDive(30 * mGame->GetScale())
+    ,mDistToDive(40 * mGame->GetScale())
 
     ,mDiveDuration(0.5f)
     ,mDiveTimer(0.0f)
@@ -83,6 +83,20 @@ DragonFly::DragonFly(Game *game, float width, float height, float moveSpeed, flo
 
     mDrawAnimatedComponent->SetAnimation("idle");
     mDrawAnimatedComponent->SetAnimFPS(10.0f);
+
+
+    RemoveComponent(mColliderComponent);
+    delete mColliderComponent;
+    mColliderComponent = nullptr;
+
+    mColliderComponent = new OBBComponent(this, Vector2(mWidth / 2, mHeight / 2));
+
+    if (mDrawPolygonComponent) {
+        if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
+            auto verts = obb->GetVertices();
+            mDrawPolygonComponent->SetVertices(verts);
+        }
+    }
 }
 
 void DragonFly::OnUpdate(float deltaTime) {
@@ -134,24 +148,30 @@ void DragonFly::OnUpdate(float deltaTime) {
         circleBlur->EnemyDestroyed();
     }
     ManageAnimations();
+    if (mDrawPolygonComponent) {
+        if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
+            auto verts = obb->GetVertices();
+            mDrawPolygonComponent->SetVertices(verts);
+        }
+    }
 }
 
 void DragonFly::ResolveGroundCollision() {
-    std::array<bool, 4> collisionSide{};
+    Vector2 collisionNormal(Vector2::Zero);
     std::vector<Ground*> grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (!g->GetIsSpike()) { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     if (mDragonFlyState != State::Attack && mDragonFlyState != State::FlyingAround) {
-                        if (collisionSide[2] && mDragonFlyState != State::Stum) {
+                        if (collisionNormal == Vector2::NegUnitX && mDragonFlyState != State::Stum) {
                             if (GetRotation() > Math::ToRadians(330) || GetRotation() < Math::ToRadians(30)) {
                                 mDrawAnimatedComponent->ResetAnimationTimer();
                                 mDragonFlyState = State::Stum;
                             }
                         }
-                        if (collisionSide[3] && mDragonFlyState != State::Stum) {
+                        if (collisionNormal == Vector2::UnitX && mDragonFlyState != State::Stum) {
                             if (GetRotation() > Math::ToRadians(150) && GetRotation() < Math::ToRadians(210)) {
                                 mDrawAnimatedComponent->ResetAnimationTimer();
                                 mDragonFlyState = State::Stum;
@@ -161,23 +181,23 @@ void DragonFly::ResolveGroundCollision() {
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                     mDragonFlyState = State::Stop;
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     // Colidiu top
-                    if (collisionSide[0]) {
+                    if (collisionNormal == Vector2::NegUnitY){
                         ReceiveHit(10, Vector2::NegUnitY);
                     }
                     // Colidiu bot
-                    if (collisionSide[1]) {
+                    if (collisionNormal == Vector2::UnitY){
                         ReceiveHit(10, Vector2::UnitY);
                     }
                     //Colidiu left
-                    if (collisionSide[2]) {
+                    if (collisionNormal == Vector2::NegUnitX){
                         ReceiveHit(10, Vector2::NegUnitX);
                     }
                     //Colidiu right
-                    if (collisionSide[3]) {
+                    if (collisionNormal == Vector2::UnitX){
                         ReceiveHit(10, Vector2::UnitX);
                     }
 
@@ -530,22 +550,14 @@ void DragonFly::ChangeResolution(float oldScale, float newScale) {
     mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
     mDrawAnimatedComponent->SetHeight(mWidth * 1.8f);
 
-    Vector2 v1(-mWidth / 2, -mHeight / 2);
-    Vector2 v2(mWidth / 2, -mHeight / 2);
-    Vector2 v3(mWidth / 2, mHeight / 2);
-    Vector2 v4(-mWidth / 2, mHeight / 2);
+    if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
+        obb->Update(0);
+        obb->SetHalfSize(Vector2(mWidth / 2, mHeight / 2));
 
-    std::vector<Vector2> vertices;
-    vertices.emplace_back(v1);
-    vertices.emplace_back(v2);
-    vertices.emplace_back(v3);
-    vertices.emplace_back(v4);
-
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
-
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+        if (mDrawPolygonComponent) {
+            auto verts = obb->GetVertices();
+            mDrawPolygonComponent->SetVertices(verts);
+        }
     }
 }
 

@@ -123,8 +123,10 @@ void FrogTongue::OnUpdate(float deltaTime) {
         vertices.emplace_back(v3);
         vertices.emplace_back(v4);
 
-        mAABBComponent->SetMin(v1);
-        mAABBComponent->SetMax(v3);
+        if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+            aabb->SetMin(v1);
+            aabb->SetMax(v3);
+        }
 
         if (mDrawPolygonComponent) {
             mDrawPolygonComponent->SetVertices(vertices);
@@ -167,7 +169,7 @@ void FrogTongue::ResolveGroundCollision() {
     std::vector<Ground* > grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g: grounds) {
-            if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+            if (mAABBComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                 mIsIncreasing = false;
                 break;
             }
@@ -177,12 +179,12 @@ void FrogTongue::ResolveGroundCollision() {
 
 void FrogTongue::ResolvePlayerCollision() {
     Player* player = GetGame()->GetPlayer();
-    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
+    if (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
         player->ReceiveHit(mDamage, GetForward());
         mIsIncreasing = false;
     }
     Sword* sword = player->GetSword();
-    if (mAABBComponent->Intersect(*sword->GetComponent<AABBComponent>())) {
+    if (mAABBComponent->Intersect(*sword->GetComponent<ColliderComponent>())) {
         mIsIncreasing = false;
     }
 }
@@ -243,8 +245,10 @@ void FrogTongue::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

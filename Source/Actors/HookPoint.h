@@ -34,5 +34,5 @@ private:
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;
     class DrawAnimatedComponent* mDrawAnimatedComponent;
-    class AABBComponent* mAABBComponent;
+    class ColliderComponent* mAABBComponent;
 };

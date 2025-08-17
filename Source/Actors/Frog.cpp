@@ -148,8 +148,10 @@ void Frog::OnUpdate(float deltaTime) {
         vertices.emplace_back(v4);
     }
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mColliderComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
@@ -240,48 +242,47 @@ void Frog::TriggerBossDefeat() {
 }
 
 void Frog::ResolveGroundCollision() {
-    std::array<bool, 4> collisionSide{};
+    Vector2 collisionNormal(Vector2::Zero);
     std::vector<Ground* > grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g: grounds) {
             if (!g->GetIsSpike()) { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     mIsOnGround = true;
-                    if (collisionSide[0]) {
+                    if (collisionNormal == Vector2::NegUnitY) {
                         mWallPosition = WallSide::Bottom;
                     }
-                    if (collisionSide[1]) {
+                    if (collisionNormal == Vector2::UnitY) {
                         mWallPosition = WallSide::Top;
                     }
-                    if (collisionSide[2]) {
+                    if (collisionNormal == Vector2::NegUnitX) {
                         mWallPosition = WallSide::Right;
                     }
-                    if (collisionSide[3]) {
+                    if (collisionNormal == Vector2::UnitX) {
                         mWallPosition = WallSide::Left;
                     }
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     // Colidiu top
-                    if (collisionSide[0]) {
+                    if (collisionNormal == Vector2::NegUnitY) {
                         ReceiveHit(10, Vector2::NegUnitY);
                     }
                     // Colidiu bot
-                    if (collisionSide[1]) {
+                    if (collisionNormal == Vector2::UnitY) {
                         ReceiveHit(10, Vector2::UnitY);
                     }
                     //Colidiu left
-                    if (collisionSide[2]) {
+                    if (collisionNormal == Vector2::NegUnitX) {
                         ReceiveHit(10, Vector2::NegUnitX);
                     }
                     //Colidiu right
-                    if (collisionSide[3]) {
+                    if (collisionNormal == Vector2::UnitX) {
                         ReceiveHit(10, Vector2::UnitX);
                     }
-
                     mKnockBackTimer = 0;
                 }
             }
@@ -291,7 +292,7 @@ void Frog::ResolveGroundCollision() {
 
 void Frog::ResolvePlayerCollision() {
     Player* player = GetGame()->GetPlayer();
-    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
+    if (mColliderComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
 
     }
 }
@@ -631,8 +632,10 @@ void Frog::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mColliderComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

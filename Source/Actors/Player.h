@@ -217,6 +217,6 @@ private:
     class DrawRopeComponent* mDrawRopeComponent;
 
     class RigidBodyComponent* mRigidBodyComponent;
-    class AABBComponent* mAABBComponent;
+    class ColliderComponent* mAABBComponent;
     class DashComponent* mDashComponent;
 };

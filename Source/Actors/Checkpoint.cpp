@@ -47,7 +47,7 @@ Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 posi
 
 void Checkpoint::OnProcessInput(const Uint8 *keyState, SDL_GameController &controller) {
     Player* player = mGame->GetPlayer();
-    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
+    if (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
         if (keyState[SDL_SCANCODE_SPACE] || SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_Y)) {
             if (mGame->GetStore()->StoreMessageOpened() && player->GetIsOnGround()) {
                 mGame->GetStore()->CloseStoreMessage();
@@ -64,15 +64,14 @@ void Checkpoint::OnProcessInput(const Uint8 *keyState, SDL_GameController &contr
 
 void Checkpoint::OnUpdate(float deltaTime) {
     Player* player = mGame->GetPlayer();
-    if (!mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
+    if (!mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
         if (mGame->GetStore()->StoreOpened() && mStoreOpened) {
             mGame->GetStore()->CloseStore();
             mStoreOpened = false;
         }
     }
 
-    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
-        // mGame->SetCheckPointPosition(GetPosition() + Vector2(-mWidth * 0.8, mHeight / 2));
+    if (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
         mGame->SetCheckPointPosition(GetPosition());
         mGame->SetCheckPointMoney(player->GetMoney());
         player->ResetHealthPoints();
@@ -84,9 +83,9 @@ void Checkpoint::OnUpdate(float deltaTime) {
             mStoreMessageOpened = true;
         }
     }
-    if ((!mAABBComponent->Intersect(*player->GetComponent<AABBComponent>()) &&
+    if ((!mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>()) &&
         mGame->GetStore()->StoreMessageOpened() && mStoreMessageOpened) ||
-        (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>()) &&
+        (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>()) &&
         !player->GetIsOnGround() &&
         mGame->GetStore()->StoreMessageOpened() && mStoreMessageOpened))
     {
@@ -117,8 +116,10 @@ void Checkpoint::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

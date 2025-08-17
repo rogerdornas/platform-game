@@ -5,10 +5,12 @@
 #pragma once
 
 #include "Component.h"
+#include "ColliderComponent.h"
+#include "OBBComponent.h"
 #include "../Math.h"
 #include <array>
 
-class AABBComponent : public Component
+class AABBComponent : public ColliderComponent
 {
 public:
     AABBComponent(class Actor* owner, Vector2 min, Vector2 max);
@@ -18,15 +20,19 @@ public:
     Vector2 GetMin() { return mMin; }
     Vector2 GetMax() { return mMax; }
 
-    void SetActive(bool active) { mIsActive = active; }
-    bool IsActive() const { return mIsActive; }
+    bool Intersect(ColliderComponent& other) override;
+    bool IntersectWithAABB(AABBComponent& other);
+    bool IntersectWithOBB(class OBBComponent& other);
 
-    bool Intersect(AABBComponent& b);
-    std::array<bool, 4> ResolveCollision(AABBComponent& b);
-    std::array<bool, 4> CollisionSide(AABBComponent& b);
+    Vector2 ResolveCollision(ColliderComponent &other) override;
+    Vector2 ResolveCollisionWithAABB(AABBComponent& other);
+    Vector2 ResolveCollisionWithOBB(class OBBComponent& other);
+
+    Vector2 CollisionSide(ColliderComponent &other) override;
+    Vector2 CollisionSideWithAABB(AABBComponent &other);
+    Vector2 CollisionSideWithOBB(OBBComponent &other);
 
 private:
     Vector2 mMin;
     Vector2 mMax;
-    bool mIsActive;
 };

@@ -98,18 +98,18 @@ void BushMonster::OnUpdate(float deltaTime) {
 }
 
 void BushMonster::ResolveGroundCollision() {
-    std::array<bool, 4> collisionSide{};
+    Vector2 collisionNormal(Vector2::Zero);
     std::vector<Ground*> grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (!g->GetIsSpike()) { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                 }
                 else {
-                    collisionSide = {false, false, false, false};
+                    collisionNormal = Vector2::Zero;
                 }
-                if (collisionSide[2]) {
+                if (collisionNormal == Vector2::NegUnitX) {
                     if (mBushMonsterState == State::Dashing && GetRotation() == 0) {
                         mDashTimer = 0;
                         // Pode entrar em idle ou continuar dashando
@@ -121,8 +121,7 @@ void BushMonster::ResolveGroundCollision() {
                         }
                     }
                 }
-                if (collisionSide[3]) {
-                    // SDL_Log("colidiu parede");
+                if (collisionNormal == Vector2::UnitX){
                     if (mBushMonsterState == State::Dashing && GetRotation() == Math::Pi) {
                         mDashTimer = 0;
                         // Pode entrar em idle ou continuar dashando
@@ -136,22 +135,22 @@ void BushMonster::ResolveGroundCollision() {
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     // Colidiu top
-                    if (collisionSide[0]) {
+                    if (collisionNormal == Vector2::NegUnitY){
                         ReceiveHit(10, Vector2::NegUnitY);
                     }
                     // Colidiu bot
-                    if (collisionSide[1]) {
+                    if (collisionNormal == Vector2::UnitY){
                         ReceiveHit(10, Vector2::UnitY);
                     }
                     //Colidiu left
-                    if (collisionSide[2]) {
+                    if (collisionNormal == Vector2::NegUnitX){
                         ReceiveHit(10, Vector2::NegUnitX);
                     }
                     //Colidiu right
-                    if (collisionSide[3]) {
+                    if (collisionNormal == Vector2::UnitX){
                         ReceiveHit(10, Vector2::UnitX);
                     }
 
@@ -288,8 +287,10 @@ void BushMonster::ChangeResolution(float oldScale, float newScale) {
     Vector2 v4(-mWidth / 2, mHeight / 2);
     std::vector<Vector2> vertices = { v1, v2, v3, v4 };
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mColliderComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

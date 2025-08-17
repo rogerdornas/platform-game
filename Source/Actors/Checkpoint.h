@@ -26,6 +26,6 @@ private:
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawAnimatedComponent* mDrawAnimatedComponent;
-    class AABBComponent *mAABBComponent;
+    class ColliderComponent* mAABBComponent;
 };
 

@@ -51,5 +51,5 @@ protected:
     class DrawGroundSpritesComponent* mDrawGroundSpritesComponent;
 
     class RigidBodyComponent* mRigidBodyComponent;
-    class AABBComponent* mAABBComponent;
+    class ColliderComponent* mAABBComponent;
 };

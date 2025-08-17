@@ -62,7 +62,7 @@ void Lever::OnUpdate(float deltaTime) {
         }
 
         if (mSwordHit == false) {
-            if (mAABBComponent->Intersect(*playerSword->GetComponent<AABBComponent>())) {
+            if (mAABBComponent->Intersect(*playerSword->GetComponent<ColliderComponent>())) {
                 mSwordHit = true;
                 if (mLeverType == LeverType::Lever) {
                     mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
@@ -83,12 +83,13 @@ void Lever::OnUpdate(float deltaTime) {
 
         std::vector<FireBall* > fireBalls = mGame->GetFireBalls();
         for (FireBall* f: fireBalls) {
-            if (!f->GetIsFromEnemy())
-            if (mAABBComponent->Intersect(*f->GetComponent<AABBComponent>())) {
-                mHealthPoints -= f->GetDamage();
-                f->ExplodeFireball();
+            if (!f->GetIsFromEnemy()) {
+                if (mAABBComponent->Intersect(*f->GetComponent<ColliderComponent>())) {
+                    mHealthPoints -= f->GetDamage();
+                    f->ExplodeFireball();
+                    break;
+                }
             }
-            break;
         }
 
         if (mHealthPoints <= 0) {
@@ -223,8 +224,10 @@ void Lever::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

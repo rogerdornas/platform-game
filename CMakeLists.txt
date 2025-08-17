@@ -125,6 +125,10 @@ add_executable(${PROJECT_NAME}
         Source/Actors/FlyingGolem.h
         Source/Actors/DragonFly.cpp
         Source/Actors/DragonFly.h
+        Source/Components/ColliderComponent.cpp
+        Source/Components/ColliderComponent.h
+        Source/Components/OBBComponent.cpp
+        Source/Components/OBBComponent.h
 )
 
 

@@ -135,7 +135,7 @@ void Particle::OnUpdate(float deltaTime)
             std::vector<Ground*> grounds = mGame->GetGrounds();
             if (!grounds.empty()) {
                 for (Ground* g : grounds) {
-                    if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                    if (mAABBComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                         Deactivate();
                         auto* blood = new ParticleSystem(mGame, 6, 100.0, 0.09, 0.05f);
                         blood->SetPosition(GetPosition());
@@ -170,8 +170,10 @@ void Particle::Activate() {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     mAABBComponent->SetActive(true); // reativa colisão
     if (mDrawPolygonComponent) {
@@ -223,8 +225,10 @@ void Particle::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

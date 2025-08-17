@@ -779,20 +779,20 @@ void Player::OnUpdate(float deltaTime) {
 }
 
 void Player::ResolveGroundCollision() {
-    std::array<bool, 4> collisionSide{};
+    Vector2 collisionNormal(Vector2::Zero);
     std::vector<Ground* > grounds = mGame->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g: grounds) {
             if (!g->GetIsSpike()) { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mAABBComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mAABBComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                 }
                 else {
-                    collisionSide = {false, false, false, false};
+                    collisionNormal = Vector2::Zero;
                 }
 
                 // colidiu top
-                if (collisionSide[0]) {
+                if (collisionNormal == Vector2::NegUnitY) {
                     mIsOnGround = true;
                     mIsJumping = false;
                     // Resetar dash no ar
@@ -813,7 +813,7 @@ void Player::ResolveGroundCollision() {
                 }
 
                 // colidiu bot
-                if (collisionSide[1]) {
+                if (collisionNormal == Vector2::UnitY) {
                     mJumpTimer = mMaxJumpTime;
                     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 1));
                     if (g->GetIsMoving()) {
@@ -828,7 +828,7 @@ void Player::ResolveGroundCollision() {
 
                 //colidiu pelas laterais
                 if (mCanWallSlide) {
-                    if ((collisionSide[2] || collisionSide[3])) {
+                    if ((collisionNormal == Vector2::NegUnitX || collisionNormal == Vector2::UnitX)) {
                         // Move o player junto ao ground em movimento
                         if (g->GetIsMoving()) {
                             mIsOnMovingGround = true;
@@ -837,7 +837,7 @@ void Player::ResolveGroundCollision() {
 
                         mIsWallSliding = true;
                         // Testa se não está dashando para não bugar quando dar um dash na quina de baixo e inverter a direção do dash
-                        if (collisionSide[2] && !mDashComponent->GetIsDashing()) {
+                        if (collisionNormal == Vector2::NegUnitX && !mDashComponent->GetIsDashing()) {
                             mWallSlideSide = WallSlideSide::left;
                             if (!mIsOnGround) {
                                 // SetRotation(Math::Pi);
@@ -852,7 +852,7 @@ void Player::ResolveGroundCollision() {
                                                                          mRigidBodyComponent->GetVelocity().y));
                             }
                         }
-                        else if (collisionSide[3] && !mDashComponent->GetIsDashing()) {
+                        else if (collisionNormal == Vector2::UnitX && !mDashComponent->GetIsDashing()) {
                             mWallSlideSide = WallSlideSide::right;
                             if (!mIsOnGround) {
                                 // SetRotation(0);
@@ -885,26 +885,26 @@ void Player::ResolveGroundCollision() {
                     }
                 }
 
-                if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) {
+                if (mSword->GetComponent<ColliderComponent>()->Intersect(*g->GetComponent<ColliderComponent>())) {
                     // Colisão da sword com grounds
                     if (!mSwordHitGround) {
-                        collisionSide = mSword->GetComponent<AABBComponent>()->CollisionSide(*g->GetComponent<AABBComponent>());
-                        if ((collisionSide[0] && Math::Abs(mSword->GetForward().y) == 1) ||
-                            (collisionSide[1] && Math::Abs(mSword->GetForward().y) == 1) ||
-                            (collisionSide[2] && Math::Abs(mSword->GetForward().x) == 1) ||
-                            (collisionSide[3] && Math::Abs(mSword->GetForward().x) == 1) )
+                        collisionNormal = mSword->GetComponent<ColliderComponent>()->CollisionSide(*g->GetComponent<ColliderComponent>());
+                        if ((collisionNormal == Vector2::NegUnitY && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionNormal == Vector2::UnitY && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionNormal == Vector2::NegUnitX && Math::Abs(mSword->GetForward().x) == 1) ||
+                            (collisionNormal == Vector2::UnitX && Math::Abs(mSword->GetForward().x) == 1) )
                         {
                             auto* grass = new ParticleSystem(mGame, 6, 150.0, 0.30, 0.05f);
-                            if (collisionSide[0]) {
+                            if (collisionNormal == Vector2::NegUnitY) {
                                 grass->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y - g->GetHeight() / 2));
                             }
-                            if (collisionSide[1]) {
+                            if (collisionNormal == Vector2::UnitY) {
                                 grass->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y + g->GetHeight() / 2));
                             }
-                            if (collisionSide[2]) {
+                            if (collisionNormal == Vector2::NegUnitX) {
                                 grass->SetPosition(Vector2(g->GetPosition().x - g->GetWidth() / 2, GetPosition().y));
                             }
-                            if (collisionSide[3]) {
+                            if (collisionNormal == Vector2::UnitX) {
                                 grass->SetPosition(Vector2(g->GetPosition().x + g->GetWidth() / 2, GetPosition().y));
                             }
 
@@ -949,7 +949,7 @@ void Player::ResolveGroundCollision() {
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+                if (mAABBComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                     // SetPosition(mStartingPosition);
 
                     // mGame->mResetLevel = true;
@@ -958,57 +958,39 @@ void Player::ResolveGroundCollision() {
                     // SetPosition(g->GetRespawPosition());
                     // ReceiveHit(10, Vector2::Zero);
 
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                    collisionNormal = mAABBComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
 
                     mDashComponent->StopDash();
 
-                    // Colidiu top
-                    if (collisionSide[0]) {
-                        ReceiveHit(10, Vector2::NegUnitY);
-                    }
-
-                    // Colidiu bot
-                    if (collisionSide[1]) {
-                        ReceiveHit(10, Vector2::UnitY);
-                    }
-
-                    //Colidiu left
-                    if (collisionSide[2]) {
-                        ReceiveHit(10, Vector2::NegUnitX);
-                    }
-
-                    //Colidiu right
-                    if (collisionSide[3]) {
-                        ReceiveHit(10, Vector2::UnitX);
-                    }
+                    ReceiveHit(10, collisionNormal);
                 }
-                else if (mSword->GetComponent<AABBComponent>()->Intersect(*g->GetComponent<AABBComponent>())) { // Colisão da sword com spikes
+                else if (mSword->GetComponent<ColliderComponent>()->Intersect(*g->GetComponent<ColliderComponent>())) { // Colisão da sword com spikes
                     if (!mSwordHitSpike) {
-                        collisionSide = mSword->GetComponent<AABBComponent>()->CollisionSide(*g->GetComponent<AABBComponent>());
-                        if ((collisionSide[0] && Math::Abs(mSword->GetForward().y) == 1) ||
-                            (collisionSide[1] && Math::Abs(mSword->GetForward().y) == 1) ||
-                            (collisionSide[2] && Math::Abs(mSword->GetForward().x) == 1) ||
-                            (collisionSide[3] && Math::Abs(mSword->GetForward().x) == 1) )
+                        collisionNormal = mSword->GetComponent<ColliderComponent>()->CollisionSide(*g->GetComponent<ColliderComponent>());
+                        if ((collisionNormal == Vector2::NegUnitY && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionNormal == Vector2::UnitY && Math::Abs(mSword->GetForward().y) == 1) ||
+                            (collisionNormal == Vector2::NegUnitX && Math::Abs(mSword->GetForward().x) == 1) ||
+                            (collisionNormal == Vector2::UnitX && Math::Abs(mSword->GetForward().x) == 1) )
                         {
                             mGame->GetAudio()->PlaySound("HitSpike/HitSpike1.wav");
                             for (int i = 0; i < 3; i++) {
                                 auto* sparkEffect = new Effect(mGame);
                                 sparkEffect->SetDuration(0.1f);
 
-                                collisionSide = mSword->GetComponent<AABBComponent>()->CollisionSide(*g->GetComponent<AABBComponent>());
-                                if (collisionSide[0]) {
+                                // collisionSide = mSword->GetComponent<AABBComponent>()->CollisionSide(*g->GetComponent<AABBComponent>());
+                                if (collisionNormal == Vector2::NegUnitY) {
                                     sparkEffect->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y - g->GetHeight() / 2));
                                 }
 
-                                if (collisionSide[1]) {
+                                if (collisionNormal == Vector2::UnitY) {
                                     sparkEffect->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y + g->GetHeight() / 2));
                                 }
 
-                                if (collisionSide[2]) {
+                                if (collisionNormal == Vector2::NegUnitX) {
                                     sparkEffect->SetPosition(Vector2(g->GetPosition().x - g->GetWidth() / 2, GetPosition().y));
                                 }
 
-                                if (collisionSide[3]) {
+                                if (collisionNormal == Vector2::UnitX) {
                                     sparkEffect->SetPosition(Vector2(g->GetPosition().x + g->GetWidth() / 2, GetPosition().y));
                                 }
 
@@ -1035,38 +1017,20 @@ void Player::ResolveGroundCollision() {
 }
 
 void Player::ResolveEnemyCollision() {
-    std::array<bool, 4> collisionSide{};
+    Vector2 collisionNormal(Vector2::Zero);
     std::vector<Enemy* > enemies = mGame->GetEnemies();
     if (!enemies.empty()) {
         bool swordHitEnemy = false;
         for (Enemy* e: enemies) {
-            if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
-                collisionSide = mAABBComponent->ResolveCollision(*e->GetComponent<AABBComponent>());
+            if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+                collisionNormal = mAABBComponent->ResolveCollision(*e->GetComponent<ColliderComponent>());
 
                 mDashComponent->StopDash();
 
-                // Colidiu top
-                if (collisionSide[0]) {
-                    ReceiveHit(e->GetContactDamage(), Vector2::NegUnitY);
-                }
-
-                // Colidiu bot
-                if (collisionSide[1]) {
-                    ReceiveHit(e->GetContactDamage(), Vector2::UnitY);
-                }
-
-                //Colidiu left
-                if (collisionSide[2]) {
-                    ReceiveHit(e->GetContactDamage(), Vector2::NegUnitX);
-                }
-
-                //Colidiu right
-                if (collisionSide[3]) {
-                    ReceiveHit(e->GetContactDamage(), Vector2::UnitX);
-                }
+                ReceiveHit(e->GetContactDamage(), collisionNormal);
             }
 
-            else if (mSword->GetComponent<AABBComponent>()->Intersect(*e->GetComponent<AABBComponent>())) { // Colisão da sword com enemies
+            else if (mSword->GetComponent<ColliderComponent>()->Intersect(*e->GetComponent<ColliderComponent>())) { // Colisão da sword com enemies
                 if (!mSwordHitEnemy) {
                     e->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
                     swordHitEnemy = true;
@@ -1197,7 +1161,10 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
         //     effect->SetEffect(TargetEffect::swordHit);
         // }
 
-        mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBackSpeed + vel * (mKnockBackSpeed / 3));
+        Vector2 knockBack = knockBackDirection * mKnockBackSpeed + vel * (mKnockBackSpeed / 3);
+        knockBack.Normalize();
+        mRigidBodyComponent->SetVelocity(knockBack * mKnockBackSpeed);
+        // mRigidBodyComponent->SetVelocity(knockBackDirection * mKnockBackSpeed + vel * (mKnockBackSpeed / 3));
         mKnockBackTimer = 0;
         mInvulnerableTimer = 0;
         mGame->ActiveHitStop();
@@ -1270,8 +1237,10 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

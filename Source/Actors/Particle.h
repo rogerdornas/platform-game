@@ -42,5 +42,5 @@ private:
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawParticleComponent* mDrawParticleComponent;
     class RigidBodyComponent* mRigidBodyComponent;
-    class AABBComponent* mAABBComponent;
+    class ColliderComponent* mAABBComponent;
 };

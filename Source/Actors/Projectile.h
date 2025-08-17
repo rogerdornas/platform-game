@@ -52,5 +52,5 @@ private:
     class DrawAnimatedComponent *mDrawAnimatedComponent;
 
     class RigidBodyComponent *mRigidBodyComponent;
-    class AABBComponent *mAABBComponent;
+    class ColliderComponent *mAABBComponent;
 };

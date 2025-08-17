@@ -309,8 +309,10 @@ void FlyingGolem::Attack(float deltaTime) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mColliderComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
@@ -335,7 +337,7 @@ void FlyingGolem::TeleportIn(float deltaTime) {
     }
 
     if (mTeleportInTimer > 0.5f * mTeleportDuration) {
-        mAABBComponent->SetActive(false);
+        mColliderComponent->SetActive(false);
     }
 
 }
@@ -351,7 +353,7 @@ void FlyingGolem::TeleportOut(float deltaTime) {
     }
 
     if (mTeleportOutTimer > 0.1f * mTeleportDuration) {
-        mAABBComponent->SetActive(true);
+        mColliderComponent->SetActive(true);
     }
 }
 
@@ -449,8 +451,10 @@ void FlyingGolem::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mColliderComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

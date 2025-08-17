@@ -49,7 +49,7 @@ Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heath
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {245, 154, 25, 255});
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 40000 * mGame->GetScale());
-    mAABBComponent = new AABBComponent(this, v1, v3);
+    mColliderComponent = new AABBComponent(this, v1, v3);
 
     game->AddEnemy(this);
 }
@@ -171,8 +171,8 @@ void Enemy::ResolveEnemyCollision() const {
     if (!enemies.empty()) {
         for (Enemy* e: enemies) {
             if (e != this) {
-                if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
-                    mAABBComponent->ResolveCollision(*e->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+                    mColliderComponent->ResolveCollision(*e->GetComponent<ColliderComponent>());
                 }
             }
         }
@@ -184,31 +184,30 @@ void Enemy::ResolveGroundCollision() {
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (!g->GetIsSpike()) { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    std::array<bool, 4> collisionSide{};
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    Vector2 collisionNormal;
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     // Colidiu top
-                    if (collisionSide[0]) {
+                    if (collisionNormal == Vector2::NegUnitY) {
                         ReceiveHit(10, Vector2::NegUnitY);
                     }
                     // Colidiu bot
-                    if (collisionSide[1]) {
+                    if (collisionNormal == Vector2::UnitY) {
                         ReceiveHit(10, Vector2::UnitY);
                     }
                     //Colidiu left
-                    if (collisionSide[2]) {
+                    if (collisionNormal == Vector2::NegUnitX) {
                         ReceiveHit(10, Vector2::NegUnitX);
                     }
                     //Colidiu right
-                    if (collisionSide[3]) {
+                    if (collisionNormal == Vector2::UnitX) {
                         ReceiveHit(10, Vector2::UnitX);
                     }
-
                     mKnockBackTimer = 0;
                 }
             }

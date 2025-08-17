@@ -182,45 +182,45 @@ void Fox::TriggerBossDefeat() {
 
 
 void Fox::ResolveGroundCollision() {
-    std::array<bool, 4> collisionSide{};
+    Vector2 collisionNormal(Vector2::Zero);
     std::vector<Ground* > grounds = GetGame()->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g: grounds) {
             if (!g->GetIsSpike()) { // Colisão com ground
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                 }
                 else {
-                    collisionSide = {false, false, false, false};
+                    collisionNormal = Vector2::Zero;
                 }
 
                 // colidiu top
-                if (collisionSide[0]) {
+                if (collisionNormal == Vector2::NegUnitY) {
                     mIsOnGround = true;
                 }
-                if (collisionSide[2] || collisionSide[3]) {
+                if (collisionNormal == Vector2::NegUnitX || collisionNormal == Vector2::UnitX) {
                     if (mState == State::RunAway) {
                         mRunAwayTimer = mRunAwayDuration;
                     }
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
-                if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
-                    collisionSide = mAABBComponent->ResolveCollision(*g->GetComponent<AABBComponent>());
+                if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
+                    collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     // Colidiu top
-                    if (collisionSide[0]) {
+                    if (collisionNormal == Vector2::NegUnitY) {
                         ReceiveHit(10, Vector2::NegUnitY);
                     }
                     // Colidiu bot
-                    if (collisionSide[1]) {
+                    if (collisionNormal == Vector2::UnitY) {
                         ReceiveHit(10, Vector2::UnitY);
                     }
                     //Colidiu left
-                    if (collisionSide[2]) {
+                    if (collisionNormal == Vector2::NegUnitX) {
                         ReceiveHit(10, Vector2::NegUnitX);
                     }
                     //Colidiu right
-                    if (collisionSide[3]) {
+                    if (collisionNormal == Vector2::UnitX) {
                         ReceiveHit(10, Vector2::UnitX);
                     }
 
@@ -233,7 +233,7 @@ void Fox::ResolveGroundCollision() {
 
 void Fox::ResolvePlayerCollision() {
     Player* player = GetGame()->GetPlayer();
-    if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) { // Colisão da Fox com o player
+    if (mColliderComponent->Intersect(*player->GetComponent<ColliderComponent>())) { // Colisão da Fox com o player
         if (mState == State::Dash) {
             mDashCount = 0;
             mDashTimer = 0;
@@ -242,7 +242,7 @@ void Fox::ResolvePlayerCollision() {
             mState = State::RunAway;
         }
     }
-    else if (mSword->GetComponent<AABBComponent>()->Intersect(*player->GetComponent<AABBComponent>())) { // Colisão da sword da fox com o player
+    else if (mSword->GetComponent<ColliderComponent>()->Intersect(*player->GetComponent<ColliderComponent>())) { // Colisão da sword da fox com o player
         if (!mSwordHitPlayer) {
             player->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
             mSwordHitPlayer = true;
@@ -510,8 +510,10 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mColliderComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);

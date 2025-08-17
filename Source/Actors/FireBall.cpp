@@ -154,8 +154,10 @@ void FireBall::Activate() {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     mAABBComponent->SetActive(true); // reativa colisão
     if (mDrawPolygonComponent) {
@@ -207,7 +209,7 @@ void FireBall::ResolveGroundCollision() {
     std::vector<Ground*> grounds = mGame->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
-            if (mAABBComponent->Intersect(*g->GetComponent<AABBComponent>())) {
+            if (mAABBComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                 if (mSound.IsValid()) {
                     if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
                         mGame->GetAudio()->StopSound(mSound);
@@ -236,7 +238,7 @@ void FireBall::ResolveEnemyCollision() {
         std::vector<Enemy*> enemies = mGame->GetEnemies();
         if (!enemies.empty()) {
             for (Enemy* e : enemies) {
-                if (mAABBComponent->Intersect(*e->GetComponent<AABBComponent>())) {
+                if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
                     e->ReceiveHit(mDamage, GetForward());
                     if (mSound.IsValid()) {
                         if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
@@ -265,7 +267,7 @@ void FireBall::ResolveEnemyCollision() {
 void FireBall::ResolvePlayerCollision() {
     if (mIsFromEnemy) {
         Player* player = mGame->GetPlayer();
-        if (mAABBComponent->Intersect(*player->GetComponent<AABBComponent>())) {
+        if (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
             player->ReceiveHit(mDamage, GetForward());
             if (mSound.IsValid()) {
                 if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
@@ -315,8 +317,10 @@ void FireBall::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mAABBComponent->SetMin(v1);
-    mAABBComponent->SetMax(v3);
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
 
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
