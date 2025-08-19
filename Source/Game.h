@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include "AudioSystem.h"
 #include "Cutscene.h"
+#include "Map.h"
 #include "Store.h"
 
 class Game
@@ -269,6 +270,8 @@ private:
     int mLevelHeight;
     int mTileSize;
     const int mOriginalTileSize = 32;
+    Map* mMap;
+    bool mShowMap;
 
     float mScale;
 

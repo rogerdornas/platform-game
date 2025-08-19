@@ -70,6 +70,8 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mPlayer(nullptr)
     ,mLevelData(nullptr)
     ,mLevelDataDynamicGrounds(nullptr)
+    ,mMap(nullptr)
+    ,mShowMap(false)
     ,mTileSheet(nullptr)
     ,mController(nullptr)
     ,mHitstopActive(false)
@@ -351,6 +353,9 @@ void Game::ChangeScene()
                 mPlayer->GetComponent<DrawRopeComponent>()->SetIsVisible(false);
             }
         }
+        // Delete map
+        delete mMap;
+        mMap = nullptr;
     }
 
     // Reset gameplay state
@@ -1142,7 +1147,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     flyingGolem->SetId(id);
                 }
                 else if (name == "DragonFly") {
-                    auto* dragonFly = new DragonFly(this, 130, 70, 1300, 500);
+                    auto* dragonFly = new DragonFly(this, 130, 70, 1300, 120);
                     dragonFly->SetPosition(Vector2(x, y));
                     dragonFly->SetId(id);
                 }
@@ -1293,6 +1298,11 @@ void Game::LoadLevel(const std::string &fileName) {
     mLevelWidth = width;
     mTileSize = tileSize;
 
+    if (mGoingToNextLevel) {
+        // Delete map
+        delete mMap;
+        mMap = nullptr;
+    }
     // Lê matrizes de tiles
     for (const auto& layer : mapData["layers"]) {
         if (layer["name"] == "Camada de Blocos 1") {
@@ -1315,6 +1325,18 @@ void Game::LoadLevel(const std::string &fileName) {
                 }
             }
             mLevelDataDynamicGrounds = matrix;
+        } else if (!mMap) {
+            if (layer["name"] == "Map") {
+                std::vector<int> data = layer["data"];
+                int** matrix = new int*[height];
+                for (int i = 0; i < height; ++i) {
+                    matrix[i] = new int[width];
+                    for (int j = 0; j < width; ++j) {
+                        matrix[i][j] = data[i * width + j];
+                    }
+                }
+                mMap = new Map(this, matrix, mLevelWidth, mLevelHeight);
+            }
         }
     }
 
@@ -1423,7 +1445,8 @@ void Game::ProcessInput()
                     // }
 
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
+                        if (!mStore->StoreOpened() && !mShowMap &&
+                            mGameScene != GameScene::MainMenu &&
                             mGamePlayState != GamePlayState::Cutscene)
                         {
                             if (mIsPaused) {
@@ -1436,6 +1459,14 @@ void Game::ProcessInput()
                                 TogglePause();
                                 LoadPauseMenu();
                             }
+                        }
+                    }
+
+                    if (event.key.keysym.sym == SDLK_m) {
+                        if (mMap) {
+                            mMap->CreateMap(mRenderer);
+                            mShowMap = !mShowMap;
+                            TogglePause();
                         }
                     }
 
@@ -1476,7 +1507,8 @@ void Game::ProcessInput()
                     // }
 
                     if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
-                        if (!mStore->StoreOpened() && mGameScene != GameScene::MainMenu &&
+                        if (!mStore->StoreOpened() && !mShowMap &&
+                            mGameScene != GameScene::MainMenu &&
                             mGamePlayState != GamePlayState::Cutscene)
                         {
                             if (mIsPaused) {
@@ -1489,6 +1521,14 @@ void Game::ProcessInput()
                                 TogglePause();
                                 LoadPauseMenu();
                             }
+                        }
+                    }
+
+                    if (event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK) {
+                        if (mMap) {
+                            mMap->CreateMap(mRenderer);
+                            mShowMap = !mShowMap;
+                            TogglePause();
                         }
                     }
                 }
@@ -1724,6 +1764,10 @@ void Game::UpdateGame()
     UpdateCamera(deltaTime);
 
     UpdateSceneManager(deltaTime);
+
+    if (mMap) {
+        mMap->Update(deltaTime);
+    }
 
 }
 
@@ -2026,6 +2070,10 @@ void Game::GenerateOutput()
         ui->Draw(mRenderer);
     }
 
+    if (mShowMap) {
+        mMap->Draw(mRenderer);
+    }
+
     if (mSceneManagerState == SceneManagerState::Entering || mSceneManagerState == SceneManagerState::Exiting) {
         SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
         // Define a cor preta (RGBA)
@@ -2159,8 +2207,14 @@ void Game::Shutdown()
 {
     delete mPlayer;
     mPlayer = nullptr;
+
     delete mStore;
     mStore = nullptr;
+
+    // Delete map
+    delete mMap;
+    mMap = nullptr;
+
     UnloadScene();
 
     for (auto font : mFonts) {
@@ -2335,5 +2389,9 @@ void Game::ChangeResolution(float oldScale)
         mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
         mLogicalWindowHeight = static_cast<float>(mWindowHeight);
         SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+    }
+
+    if (mMap) {
+        mMap->ChangeResolution(oldScale, mScale);
     }
 }

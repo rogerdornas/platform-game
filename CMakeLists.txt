@@ -129,6 +129,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/ColliderComponent.h
         Source/Components/OBBComponent.cpp
         Source/Components/OBBComponent.h
+        Source/Map.cpp
+        Source/Map.h
 )
 
 
