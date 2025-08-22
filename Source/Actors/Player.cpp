@@ -1030,7 +1030,7 @@ void Player::ResolveEnemyCollision() {
                 ReceiveHit(e->GetContactDamage(), collisionNormal);
             }
 
-            else if (mSword->GetComponent<ColliderComponent>()->Intersect(*e->GetComponent<ColliderComponent>())) { // Colisão da sword com enemies
+            if (mSword->GetComponent<ColliderComponent>()->Intersect(*e->GetComponent<ColliderComponent>())) { // Colisão da sword com enemies
                 if (!mSwordHitEnemy) {
                     e->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
                     swordHitEnemy = true;

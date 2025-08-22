@@ -34,6 +34,12 @@ Map::Map(class Game *game, int **mapData, int width, int height)
             mVisibleMap[i][j] = false;
         }
     }
+
+    // desenha fundo inicial (tudo bloqueado)
+    SDL_SetRenderTarget(mGame->GetRenderer(), mMapTexture);
+    SDL_SetRenderDrawColor(mGame->GetRenderer(), 50, 50, 50, 120);
+    SDL_RenderClear(mGame->GetRenderer());
+    SDL_SetRenderTarget(mGame->GetRenderer(), nullptr);
 }
 
 Map::~Map() {
@@ -71,6 +77,8 @@ void Map::Update(float deltaTime) {
     int playerTileX = mGame->GetPlayer()->GetPosition().x / mGame->GetTileSize();
     int playerTileY = mGame->GetPlayer()->GetPosition().y / mGame->GetTileSize();
 
+    SDL_SetRenderTarget(mGame->GetRenderer(), mMapTexture);
+
     for (int dy = -mRadius; dy <= mRadius; dy++) {
         for (int dx = -mRadius; dx <= mRadius; dx++) {
             int nx = playerTileX + dx;
@@ -81,6 +89,64 @@ void Map::Update(float deltaTime) {
             }
         }
     }
+
+    for (int y = 0; y < mMapHeight; y++) {
+        for (int x = 0; x < mMapWidth; x++) {
+            if (mVisibleMap[y][x]) {
+                int tile = mCompleteMap[y][x];
+
+                SDL_Color c = GetTileColor(tile);
+                SDL_SetRenderDrawColor(mGame->GetRenderer(), c.r, c.g, c.b, c.a);
+
+                SDL_Rect rect = {
+                    static_cast<int>(x * mTileSize),
+                    static_cast<int>(y * mTileSize),
+                    static_cast<int>(mTileSize),
+                    static_cast<int>(mTileSize)
+                };
+                SDL_RenderFillRect(mGame->GetRenderer(), &rect);
+
+                if (tile == Blocked) {
+                    SDL_SetRenderDrawColor(mGame->GetRenderer(), 255, 255, 0, 255);
+
+                    int border = 1; // espessura da borda
+
+                    // cima
+                    if (y > 0 && (mCompleteMap[y-1][x] == Empty || mCompleteMap[y-1][x] == Spike) && mVisibleMap[y-1][x] == true) {
+                        SDL_Rect edge = { rect.x, rect.y, rect.w, border };
+                        SDL_RenderFillRect(mGame->GetRenderer(), &edge);
+                    }
+                    // baixo
+                    if (y < mMapHeight-1 && (mCompleteMap[y+1][x] == Empty || mCompleteMap[y+1][x] == Spike) && mVisibleMap[y+1][x] == true) {
+                        SDL_Rect edge = { rect.x, rect.y + rect.h - border, rect.w, border };
+                        SDL_RenderFillRect(mGame->GetRenderer(), &edge);
+                    }
+                    // esquerda
+                    if (x > 0 && (mCompleteMap[y][x-1] == Empty || mCompleteMap[y][x-1] == Spike) && mVisibleMap[y][x-1] == true) {
+                        SDL_Rect edge = { rect.x, rect.y, border, rect.h };
+                        SDL_RenderFillRect(mGame->GetRenderer(), &edge);
+                    }
+                    // direita
+                    if (x < mMapWidth-1 && (mCompleteMap[y][x+1] == Empty || mCompleteMap[y][x+1] == Spike) && mVisibleMap[y][x+1] == true) {
+                        SDL_Rect edge = { rect.x + rect.w - border, rect.y, border, rect.h };
+                        SDL_RenderFillRect(mGame->GetRenderer(), &edge);
+                    }
+                }
+            }
+        }
+    }
+
+    // desenha o player como um quadrado verde
+    // SDL_SetRenderDrawColor(mGame->GetRenderer(), 0, 255, 0, 255);
+    // SDL_Rect playerRect = {
+    //     static_cast<int>(playerTileX * mTileSize),
+    //     static_cast<int>(playerTileY * mTileSize),
+    //     static_cast<int>(mTileSize),
+    //     static_cast<int>(mTileSize * 2)
+    // };
+    // SDL_RenderFillRect(mGame->GetRenderer(), &playerRect);
+
+    SDL_SetRenderTarget(mGame->GetRenderer(), nullptr);
 }
 
 void Map::CreateMap(SDL_Renderer *renderer) {
@@ -176,13 +242,26 @@ void Map::Draw(SDL_Renderer *renderer) {
     float scale = (float)dstW / (float)mapPixelWidth;
     int dstH = (int)(mapPixelHeight * scale);
 
-    // posição: 1/3 da tela em X e Y
+    // posição: 1/3 da tela em X
     int dstX = mGame->GetLogicalWindowWidth() * 0.125f;
-    int dstY = mGame->GetLogicalWindowHeight() * 0.125f;
+    int dstY = (mGame->GetLogicalWindowHeight() - dstH) / 2;
 
     SDL_Rect dst = { dstX, dstY, dstW, dstH };
 
     SDL_RenderCopy(renderer, mMapTexture, nullptr, &dst);
+
+    // desenha o player por cima (verde)
+    int playerTileX = mGame->GetPlayer()->GetPosition().x / mGame->GetTileSize();
+    int playerTileY = mGame->GetPlayer()->GetPosition().y / mGame->GetTileSize();
+
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_Rect playerRect = {
+        dstX + static_cast<int>(playerTileX * mTileSize * scale),
+        dstY + static_cast<int>(playerTileY * mTileSize * scale - (mTileSize * 4 * scale)),
+        static_cast<int>(mTileSize * 4 * scale),
+        static_cast<int>(mTileSize * 8 * scale)
+    };
+    SDL_RenderFillRect(renderer, &playerRect);
 
     // Desenha a textura pronta
     // SDL_Rect dst = { 200, 200, mMapWidth * mTileSize, mMapHeight * mTileSize };
@@ -190,5 +269,12 @@ void Map::Draw(SDL_Renderer *renderer) {
 }
 
 void Map::ChangeResolution(float oldScale, float newScale) {
-    CreateMap(mGame->GetRenderer());
+    // CreateMap(mGame->GetRenderer());
+    // mTileSize = (mGame->GetLogicalWindowWidth() * 0.75f) / mMapWidth;
+
+    // desenha fundo inicial (tudo bloqueado)
+    SDL_SetRenderTarget(mGame->GetRenderer(), mMapTexture);
+    SDL_SetRenderDrawColor(mGame->GetRenderer(), 50, 50, 50, 120);
+    SDL_RenderClear(mGame->GetRenderer());
+    SDL_SetRenderTarget(mGame->GetRenderer(), nullptr);
 }

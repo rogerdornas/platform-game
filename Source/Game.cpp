@@ -1464,9 +1464,10 @@ void Game::ProcessInput()
 
                     if (event.key.keysym.sym == SDLK_m) {
                         if (mMap) {
-                            mMap->CreateMap(mRenderer);
-                            mShowMap = !mShowMap;
-                            TogglePause();
+                            if (!mIsPaused || (mIsPaused && mShowMap)) {
+                                mShowMap = !mShowMap;
+                                // TogglePause();
+                            }
                         }
                     }
 
@@ -1526,9 +1527,10 @@ void Game::ProcessInput()
 
                     if (event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK) {
                         if (mMap) {
-                            mMap->CreateMap(mRenderer);
-                            mShowMap = !mShowMap;
-                            TogglePause();
+                            if (!mIsPaused || (mIsPaused && mShowMap)) {
+                                mShowMap = !mShowMap;
+                                // TogglePause();
+                            }
                         }
                     }
                 }
@@ -1662,6 +1664,10 @@ void Game::UpdateGame()
         deltaTime *= 1.5;
     }
 
+    if (mMap) {
+        mMap->Update(deltaTime);
+    }
+
     SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255); // Usado para deixar as bordas em preto
     SDL_RenderClear(mRenderer);
 
@@ -1764,11 +1770,6 @@ void Game::UpdateGame()
     UpdateCamera(deltaTime);
 
     UpdateSceneManager(deltaTime);
-
-    if (mMap) {
-        mMap->Update(deltaTime);
-    }
-
 }
 
 void Game::UpdateSceneManager(float deltaTime)

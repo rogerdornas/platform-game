@@ -701,18 +701,18 @@
   <object id="248" name="Ground" x="7136" y="640" width="2560" height="640"/>
   <object id="274" name="Ground" x="8704" y="1280" width="1536" height="352"/>
   <object id="275" name="Ground" x="8448" y="2560" width="2944" height="640"/>
-  <object id="209" name="Ground" x="6528" y="1920" width="32" height="32"/>
-  <object id="210" name="Ground" x="6368" y="2240" width="32" height="32"/>
-  <object id="211" name="Ground" x="6528" y="2560" width="32" height="32"/>
-  <object id="212" name="Ground" x="6368" y="2912" width="32" height="32"/>
-  <object id="213" name="Ground" x="6528" y="3232" width="32" height="32"/>
+  <object id="209" name="Ground" x="6528" y="1824" width="32" height="128"/>
+  <object id="210" name="Ground" x="6368" y="2144" width="32" height="128"/>
+  <object id="211" name="Ground" x="6528" y="2464" width="32" height="128"/>
+  <object id="212" name="Ground" x="6368" y="2816" width="32" height="128"/>
+  <object id="213" name="Ground" x="6528" y="3136" width="32" height="128"/>
   <object id="176" name="Ground" x="2944" y="1952" width="640" height="1152"/>
   <object id="177" name="Ground" x="3584" y="2784" width="1280" height="320"/>
-  <object id="183" name="Ground" x="6144" y="1824" width="416" height="96"/>
-  <object id="184" name="Ground" x="6368" y="2144" width="416" height="96"/>
-  <object id="185" name="Ground" x="6144" y="2464" width="416" height="96"/>
-  <object id="186" name="Ground" x="6368" y="2816" width="416" height="96"/>
-  <object id="187" name="Ground" x="6144" y="3136" width="416" height="96"/>
+  <object id="183" name="Ground" x="6144" y="1824" width="384" height="96"/>
+  <object id="184" name="Ground" x="6400" y="2144" width="384" height="96"/>
+  <object id="185" name="Ground" x="6144" y="2464" width="384" height="96"/>
+  <object id="186" name="Ground" x="6400" y="2816" width="384" height="96"/>
+  <object id="187" name="Ground" x="6144" y="3136" width="384" height="96"/>
   <object id="189" name="Ground" x="4256" y="3456" width="320" height="96"/>
   <object id="190" name="Ground" x="4096" y="3744" width="320" height="480"/>
   <object id="180" name="Ground" x="4576" y="3456" width="2208" height="416"/>
