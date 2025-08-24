@@ -14,6 +14,7 @@ enum class CameraMode {
     FollowPlayerLimitRight,
     FollowPlayerLimitLeft,
     FollowPlayerLimitRightHorizontally,
+    FollowPlayerLimitLeftHorizontally,
     ScrollRight,
     ScrollUp,
     PanoramicCamera,
@@ -46,6 +47,7 @@ private:
     Vector2 FollowPlayerLimitRight();
     Vector2 FollowPlayerLimitLeft();
     Vector2 FollowPlayerLimitRightHorizontally();
+    Vector2 FollowPlayerLimitLeftHorizontally();
     Vector2 ScrollRight(float deltaTime, float speed);
     Vector2 ScrollUp(float deltaTime, float speed);
     Vector2 PanoramicCamera(float deltaTime);

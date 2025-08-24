@@ -1,0 +1,95 @@
+{
+  "waves": [
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Enemy Simple", 
+          "id": "LeftBot", 
+          "delay": 1.0 
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Enemy Simple", 
+          "id": "RightBot", 
+          "delay": 1.0 
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Flying Enemy", 
+          "id": "LeftMid", 
+          "delay": 1.0 
+        },
+        { 
+          "actionType": "SpawnHookPoint", 
+          "type": "Flying Enemy", 
+          "id": "LeftMid", 
+          "delay": 2.0 
+        },
+        { 
+          "actionType": "SpawnHookPoint", 
+          "type": "Flying Enemy", 
+          "id": "RightMid", 
+          "delay": 2.0 
+        },
+        {
+          "actionType": "SpawnPlatform",
+          "id": "ArenaPlatform1",
+          "delay": 2.0
+        }
+      ]
+    },
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "FlyingGolem", 
+          "id": "LeftMid", 
+          "delay": 1.0 
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Mantis", 
+          "id": "LeftBot", 
+          "delay": 1.5 
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "FlyingShooterEnemy", 
+          "id": "RightMid", 
+          "delay": 2.0 
+        },
+        {
+          "actionType": "RemoveHookPoint",
+          "id": "LeftMid",
+          "delay": 1.0
+        }
+      ]
+    },
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "DragonFly", 
+          "id": "LeftMid", 
+          "delay": 1.5 
+        },
+        {
+          "actionType": "RemoveHookPoint",
+          "id": "RightMid",
+          "delay": 0.5
+        }
+      ]
+    },
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Fox", 
+          "id": "CenterBot", 
+          "delay": 1.0 
+        }
+      ]
+    }
+  ]
+}

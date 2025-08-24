@@ -41,8 +41,14 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer* renderer)
                 // offset pos
                 Vector2 offsetPos = offset + mOwnerDynamicGround->GetStartingPosition() - GetGame()->GetCamera()->GetPosCamera();
 
-                Vector2 ownerMinOffsetPos = mOwner->GetComponent<AABBComponent>()->GetMin() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
-                Vector2 ownerMaxOffsetPos = mOwner->GetComponent<AABBComponent>()->GetMax() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
+                Vector2 ownerMinOffsetPos;
+                Vector2 ownerMaxOffsetPos;
+                if (auto* aabb = dynamic_cast<AABBComponent*>(mOwner->GetComponent<ColliderComponent>())) {
+                    ownerMinOffsetPos = aabb->GetMin() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
+                    ownerMaxOffsetPos = aabb->GetMax() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
+                }
+                // Vector2 ownerMinOffsetPos = mOwner->GetComponent<AABBComponent>()->GetMin() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
+                // Vector2 ownerMaxOffsetPos = mOwner->GetComponent<AABBComponent>()->GetMax() + mOwner->GetPosition() - GetGame()->GetCamera()->GetPosCamera();
 
                 // Horizontal
                 if (offsetPos.x >= ownerMinOffsetPos.x && offsetPos.x + mWidth <= ownerMaxOffsetPos.x) {

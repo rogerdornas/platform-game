@@ -131,6 +131,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/OBBComponent.h
         Source/Map.cpp
         Source/Map.h
+        Source/WaveManager.cpp
+        Source/WaveManager.h
 )
 
 

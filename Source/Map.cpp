@@ -13,6 +13,7 @@ Map::Map(class Game *game, int **mapData, int width, int height)
     ,mMapHeight(height)
     ,mRadius(17)
     ,mMapTexture(nullptr)
+    ,mPlayerTexture(nullptr)
 {
     mTileSize = (mGame->GetLogicalWindowWidth() * 0.75f) / mMapWidth;
 
@@ -40,6 +41,8 @@ Map::Map(class Game *game, int **mapData, int width, int height)
     SDL_SetRenderDrawColor(mGame->GetRenderer(), 50, 50, 50, 120);
     SDL_RenderClear(mGame->GetRenderer());
     SDL_SetRenderTarget(mGame->GetRenderer(), nullptr);
+
+    mPlayerTexture = mGame->LoadTexture("../Assets/Sprites/PlayerIconMap/Esquilo.png");
 }
 
 Map::~Map() {
@@ -107,7 +110,7 @@ void Map::Update(float deltaTime) {
                 SDL_RenderFillRect(mGame->GetRenderer(), &rect);
 
                 if (tile == Blocked) {
-                    SDL_SetRenderDrawColor(mGame->GetRenderer(), 255, 255, 0, 255);
+                    SDL_SetRenderDrawColor(mGame->GetRenderer(), 0, 255, 0, 255);
 
                     int border = 1; // espessura da borda
 
@@ -254,14 +257,24 @@ void Map::Draw(SDL_Renderer *renderer) {
     int playerTileX = mGame->GetPlayer()->GetPosition().x / mGame->GetTileSize();
     int playerTileY = mGame->GetPlayer()->GetPosition().y / mGame->GetTileSize();
 
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_Rect playerRect = {
-        dstX + static_cast<int>(playerTileX * mTileSize * scale),
+    SDL_Rect dstRect = {
+        dstX + static_cast<int>(playerTileX * mTileSize * scale - (mTileSize * 4 * scale)),
         dstY + static_cast<int>(playerTileY * mTileSize * scale - (mTileSize * 4 * scale)),
-        static_cast<int>(mTileSize * 4 * scale),
+        static_cast<int>(mTileSize * 8 * scale),
         static_cast<int>(mTileSize * 8 * scale)
     };
-    SDL_RenderFillRect(renderer, &playerRect);
+
+    SDL_RenderCopyEx(renderer, mPlayerTexture, nullptr, &dstRect, 0.0f, nullptr, SDL_FLIP_NONE);
+
+
+    // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    // SDL_Rect playerRect = {
+    //     dstX + static_cast<int>(playerTileX * mTileSize * scale),
+    //     dstY + static_cast<int>(playerTileY * mTileSize * scale - (mTileSize * 4 * scale)),
+    //     static_cast<int>(mTileSize * 4 * scale),
+    //     static_cast<int>(mTileSize * 8 * scale)
+    // };
+    // SDL_RenderFillRect(renderer, &playerRect);
 
     // Desenha a textura pronta
     // SDL_Rect dst = { 200, 200, mMapWidth * mTileSize, mMapHeight * mTileSize };

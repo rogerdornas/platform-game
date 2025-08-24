@@ -29,6 +29,7 @@ public:
         FollowPlayerLimitRight,
         FollowPlayerLimitLeft,
         FollowPlayerLimitRightHorizontally,
+        FollowPlayerLimitLeftHorizontally,
         ScrollRight,
         ScrollUp,
 
@@ -39,6 +40,7 @@ public:
         SetIsMoving,
 
         ChangeScene,
+        StartArena,
 
         SpotPlayer,
         GolemVulnerable,
@@ -56,6 +58,7 @@ public:
     void SetEnemiesIds(const std::vector<int>& ids) { mEnemiesIds = ids; }
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
     void SetScene(std::string scene);
+    void SetWavesPath(const std::string &wavesPath);
     void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
     void SetCutsceneId(const std::string &cutsceneId) { mCutsceneId = cutsceneId; }
 
@@ -80,6 +83,7 @@ protected:
     Vector2 mFixedCameraPosition;
 
     Game::GameScene mScene;
+    std::string mWavesPath;
 
     std::string mDialoguePath;
     std::string mCutsceneId;

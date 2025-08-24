@@ -25,6 +25,7 @@
 #include "Actors/Lever.h"
 #include "Actors/Trigger.h"
 #include "Actors/Fairy.h"
+#include "Actors/EnemySimple.h"
 #include "Actors/FlyingGolem.h"
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Golem.h"
@@ -88,6 +89,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mGoingToNextLevel(false)
     ,mIsPlayingOnKeyboard(true)
     ,mLeftStickYState(StickState::Neutral)
+    ,mWaveManager(nullptr)
     ,mIsPlayingFinalCutscene(false)
     ,mCurrentCutscene(nullptr)
     ,mBackGroundTexture(nullptr)
@@ -252,6 +254,7 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime) {
         // Verifica se a cena é válida
         if (scene == GameScene::MainMenu ||
             scene == GameScene::LevelTeste ||
+            scene == GameScene::Coliseu ||
             scene == GameScene::Prologue ||
             scene == GameScene::Level1 ||
             scene == GameScene::Level2 ||
@@ -354,8 +357,10 @@ void Game::ChangeScene()
             }
         }
         // Delete map
-        delete mMap;
-        mMap = nullptr;
+        if (mMap) {
+            delete mMap;
+            mMap = nullptr;
+        }
     }
 
     // Reset gameplay state
@@ -382,6 +387,21 @@ void Game::ChangeScene()
     else if (mNextScene == GameScene::LevelTeste) {
         mUseParallaxBackground = true;
         LoadLevel(levelsAssets + "Forest/Forest.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
+        mBossMusic.Reset();
+    }
+
+    else if (mNextScene == GameScene::Coliseu) {
+        mUseParallaxBackground = true;
+        LoadLevel(levelsAssets + "Coliseu/Coliseu.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -732,6 +752,20 @@ void Game::LoadLevelSelectMenu() {
             mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
+    name = "   COLISEU";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 16 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Coliseu, 0.5f);
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
     name = "VOLTAR";
     mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, mLevelSelectMenu->GetSize().y - buttonSize.y * 1.2f),
         buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -997,6 +1031,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float fixedCameraPositionX = 0;
                 float fixedCameraPositionY = 0;
                 std::string scene;
+                std::string wavePath;
                 std::string dialoguePath;
                 std::string cutsceneId;
                 if (obj.contains("properties")) {
@@ -1023,6 +1058,9 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "Scene") {
                             scene = prop["value"];
                         }
+                        else if (propName == "Waves") {
+                            wavePath = prop["value"];
+                        }
                         else if (propName == "FilePath") {
                             dialoguePath = prop["value"];
                         }
@@ -1042,6 +1080,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetEnemiesIds(enemiesIds);
                 trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
                 trigger->SetScene(scene);
+                trigger->SetWavesPath(wavePath);
                 trigger->SetDialoguePath(dialoguePath);
                 trigger->SetCutsceneId(cutsceneId);
             }
@@ -1106,6 +1145,24 @@ void Game::LoadObjects(const std::string &fileName) {
 
                 auto* hookPoint = new HookPoint(this);
                 hookPoint->SetPosition(Vector2(x, y));
+            }
+        }
+
+        if (layer["name"] == "SpawnPoint") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                std::string id;
+
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "id") {
+                            id = prop["value"];
+                        }
+                    }
+                }
+                AddSpawnPoint(id, Vector2(x, y));
             }
         }
 
@@ -1300,8 +1357,10 @@ void Game::LoadLevel(const std::string &fileName) {
 
     if (mGoingToNextLevel) {
         // Delete map
-        delete mMap;
-        mMap = nullptr;
+        if (mMap) {
+            delete mMap;
+            mMap = nullptr;
+        }
     }
     // Lê matrizes de tiles
     for (const auto& layer : mapData["layers"]) {
@@ -1767,6 +1826,10 @@ void Game::UpdateGame()
         mResetLevel = false;
     }
 
+    if (mWaveManager) {
+        mWaveManager->Update(deltaTime);
+    }
+
     UpdateCamera(deltaTime);
 
     UpdateSceneManager(deltaTime);
@@ -1908,6 +1971,27 @@ void Game::RemoveHookPoint(class HookPoint* hp) {
     }
 }
 
+void Game::AddSpawnPoint(const std::string &id, const Vector2 &pos) {
+    mSpawnPoints[id] = pos;
+}
+
+Vector2 Game::GetSpawnPointPosition(const std::string &id) const {
+    auto it = mSpawnPoints.find(id);
+    if (it != mSpawnPoints.end()) {
+        return it->second;
+    }
+    throw std::runtime_error("SpawnPoint não encontrado: " + id);
+}
+
+void Game::CreateWaveManager(std::string wavesFilePath) {
+    if (!mWaveManager) {
+        mWaveManager = new WaveManager(this);
+        mWaveManager->LoadFromJson(wavesFilePath);
+        mWaveManager->Start();
+    }
+}
+
+
 void Game::AddEnemy(class Enemy* e) { mEnemies.emplace_back(e); }
 
 void Game::RemoveEnemy(class Enemy* e) {
@@ -2017,6 +2101,10 @@ void Game::GenerateOutput()
             switch (mGameScene) {
                 case GameScene::LevelTeste:
                     DrawParallaxLayers(mBackgroundLayersLevel3);
+                break;
+
+                case GameScene::Coliseu:
+                    DrawParallaxLayers(mBackgroundLayersLevel2);
                 break;
 
                 case GameScene::Level1:
@@ -2202,6 +2290,9 @@ void Game::UnloadScene()
 
     delete mCamera;
     mCamera = nullptr;
+
+    delete mWaveManager;
+    mWaveManager = nullptr;
 }
 
 void Game::Shutdown()
@@ -2213,8 +2304,10 @@ void Game::Shutdown()
     mStore = nullptr;
 
     // Delete map
-    delete mMap;
-    mMap = nullptr;
+    if (mMap) {
+        delete mMap;
+        mMap = nullptr;
+    }
 
     UnloadScene();
 

@@ -35,4 +35,5 @@ private:
     int mTileSize;
     int mRadius;
     SDL_Texture* mMapTexture;
+    SDL_Texture* mPlayerTexture;
 };

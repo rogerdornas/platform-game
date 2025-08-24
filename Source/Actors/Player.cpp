@@ -917,6 +917,10 @@ void Player::ResolveGroundCollision() {
                                     color = {80, 148, 45, 255};
                                     break;
 
+                                case Game::GameScene::Coliseu:
+                                    color = {102, 114, 145, 255};
+                                    break;
+
                                 case Game::GameScene::Level1:
                                     color = {80, 148, 45, 255};
                                     break;

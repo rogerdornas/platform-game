@@ -90,6 +90,10 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::FollowPlayerLimitRightHorizontally;
         return;
     }
+    if (event == "FollowPlayerLimitLeftHorizontally") {
+        mEvent = Event::FollowPlayerLimitLeftHorizontally;
+        return;
+    }
     if (event == "ScrollRight") {
         mEvent = Event::ScrollRight;
         return;
@@ -119,6 +123,10 @@ void Trigger::SetEvent(std::string event) {
 
     if (event == "ChangeScene") {
         mEvent = Event::ChangeScene;
+        return;
+    }
+    if (event == "StartArena") {
+        mEvent = Event::StartArena;
         return;
     }
 
@@ -169,6 +177,9 @@ void Trigger::SetScene(std::string scene) {
     }
 }
 
+void Trigger::SetWavesPath(const std::string &wavesPath) {
+    mWavesPath = "../Assets/EnemiesWaves/" + wavesPath + ".json";
+}
 
 
 void Trigger::OnUpdate(float deltaTime) {
@@ -240,6 +251,11 @@ void Trigger::CameraTrigger() {
         case Event::FollowPlayerLimitRightHorizontally:
             camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::FollowPlayerLimitRightHorizontally);
+            break;
+
+        case Event::FollowPlayerLimitLeftHorizontally:
+            camera->SetFixedCameraPosition(mFixedCameraPosition);
+            camera->ChangeCameraMode(CameraMode::FollowPlayerLimitLeftHorizontally);
             break;
 
         case Event::ScrollRight:
@@ -331,6 +347,11 @@ void Trigger::GameTrigger() {
             mGame->GetAudio()->StopAllSounds();
             mGame->SetGameScene(mScene, 2.0f);
             mGame->SetGoingToNextLevel();
+            SetState(ActorState::Destroy);
+            break;
+
+        case Event::StartArena:
+            mGame->CreateWaveManager(mWavesPath);
             SetState(ActorState::Destroy);
             break;
 

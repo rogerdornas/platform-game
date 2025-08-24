@@ -7,8 +7,6 @@
 #include "Actors/Player.h"
 #include "Actors/FireBall.h"
 #include "Actors/Enemy.h"
-#include "Actors/EnemySimple.h"
-#include "Actors/FlyingEnemySimple.h"
 #include "Math.h"
 #include <string>
 #include <unordered_map>
@@ -16,6 +14,7 @@
 #include "Cutscene.h"
 #include "Map.h"
 #include "Store.h"
+#include "WaveManager.h"
 
 class Game
 {
@@ -33,6 +32,7 @@ public:
     enum class GameScene {
         MainMenu,
         LevelTeste,
+        Coliseu,
         Prologue,
         Level1,
         Level2,
@@ -112,6 +112,12 @@ public:
     void AddHookPoint(class HookPoint* hp);
     void RemoveHookPoint(class HookPoint* hp);
     std::vector<class HookPoint*> &GetHookPoints() { return mHookPoints; }
+
+    void AddSpawnPoint(const std::string& id, const Vector2& pos);
+    Vector2 GetSpawnPointPosition(const std::string& id) const;
+
+    void CreateWaveManager(std::string wavesFilePath);
+    void RemoveWaveManager() { delete mWaveManager; mWaveManager = nullptr; }
 
     void AddEnemy(class Enemy* e);
     void RemoveEnemy(class Enemy* e);
@@ -253,6 +259,9 @@ private:
     SDL_GameController *mController;
     class HUD *mHUD;
     std::vector<class Checkpoint*> mCheckPoints;
+    std::unordered_map<std::string, Vector2> mSpawnPoints;
+
+    WaveManager* mWaveManager;
 
     int mPlayerDeathCounter;
 
