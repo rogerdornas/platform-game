@@ -7,6 +7,7 @@
 #include <fstream>
 #include "Json.h"
 #include "Actors/DragonFly.h"
+#include "Actors/DynamicGround.h"
 #include "Actors/EnemySimple.h"
 #include "Actors/FlyingEnemySimple.h"
 #include "Actors/FlyingGolem.h"
@@ -58,6 +59,14 @@ bool WaveManager::LoadFromJson(const std::string &filePath) {
                 action.actionType = ActionType::RemoveHookPoint;
                 action.hookSpawnId = a["id"];
             }
+            else if (typeStr == "GrowGround") {
+                action.actionType = ActionType::GrowGround;
+                action.groundId = a["id"];
+            }
+            else if (typeStr == "DecreaseGround") {
+                action.actionType = ActionType::DecreaseGround;
+                action.groundId = a["id"];
+            }
             else {
                 // tipo desconhecido → ignora ou loga um erro
                 continue;
@@ -91,6 +100,8 @@ void WaveManager::Update(float deltaTime) {
         if (a.delay >= 0.0f && mWaveTimer >= a.delay) {
             Vector2 pos;
             HookPoint* hookPoint;
+            Ground* g;
+            DynamicGround* dynamicGround;
             switch (a.actionType) {
                 case ActionType::SpawnEnemy:
                     SpawnEnemy(a);
@@ -121,6 +132,22 @@ void WaveManager::Update(float deltaTime) {
                             hook->SetState(ActorState::Destroy);
                             break;;
                         }
+                    }
+                    break;
+
+                case ActionType::GrowGround:
+                    g = mGame->GetGroundById(a.groundId);
+                    dynamicGround = dynamic_cast<DynamicGround*>(g);
+                    if (dynamicGround) {
+                        dynamicGround->SetIsGrowing(true);
+                    }
+                    break;
+
+                case ActionType::DecreaseGround:
+                    g = mGame->GetGroundById(a.groundId);
+                    dynamicGround = dynamic_cast<DynamicGround*>(g);
+                    if (dynamicGround) {
+                        dynamicGround->SetIsDecreasing(true);
                     }
                     break;
             }

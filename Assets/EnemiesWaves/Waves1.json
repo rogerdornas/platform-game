@@ -59,6 +59,16 @@
           "id": "RightMid", 
           "delay": 2.0 
         },
+        { 
+          "actionType": "GrowGround", 
+          "id": 27, 
+          "delay": 3.0 
+        },
+        { 
+          "actionType": "GrowGround", 
+          "id": 28, 
+          "delay": 4.0 
+        },
         {
           "actionType": "RemoveHookPoint",
           "id": "LeftMid",
@@ -74,10 +84,52 @@
           "id": "LeftMid", 
           "delay": 1.5 
         },
+        { 
+          "actionType": "DecreaseGround", 
+          "id": 27, 
+          "delay": 0.0 
+        },
+        { 
+          "actionType": "DecreaseGround", 
+          "id": 28, 
+          "delay": 0.0 
+        },
         {
           "actionType": "RemoveHookPoint",
           "id": "RightMid",
           "delay": 0.5
+        }
+      ]
+    },
+	{
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Flying Enemy", 
+          "id": "LeftTop", 
+          "delay": 1.5 
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Flying Enemy", 
+          "id": "RightTop", 
+          "delay": 1.5 
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Flying Enemy", 
+          "id": "CenterTop", 
+          "delay": 1.5 
+        },
+        { 
+          "actionType": "GrowGround", 
+          "id": 30, 
+          "delay": 0.5 
+        },
+        { 
+          "actionType": "GrowGround", 
+          "id": 31, 
+          "delay": 0.5 
         }
       ]
     },
@@ -88,6 +140,21 @@
           "type": "Fox", 
           "id": "CenterBot", 
           "delay": 1.0 
+        },
+        { 
+          "actionType": "GrowGround", 
+          "id": 29, 
+          "delay": 0.0 
+        },
+        { 
+          "actionType": "DecreaseGround", 
+          "id": 30, 
+          "delay": 0.0 
+        },
+        { 
+          "actionType": "DecreaseGround", 
+          "id": 31, 
+          "delay": 0.0 
         }
       ]
     }

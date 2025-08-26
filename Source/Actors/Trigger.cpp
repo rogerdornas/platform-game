@@ -280,7 +280,7 @@ void Trigger::DynamicGroundTrigger() {
     switch (mEvent) {
         case Event::SetIsGrowing:
             for (int id : mGroundsIds) {
-                Ground *g = mGame->GetGroundById(id);
+                Ground* g = mGame->GetGroundById(id);
                 DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
                 if (dynamicGround) {
                     dynamicGround->SetIsGrowing(true);
@@ -291,7 +291,7 @@ void Trigger::DynamicGroundTrigger() {
 
         case Event::SetIsDecreasing:
             for (int id : mGroundsIds) {
-                Ground *g = mGame->GetGroundById(id);
+                Ground* g = mGame->GetGroundById(id);
                 DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
                 if (dynamicGround) {
                     dynamicGround->SetIsDecreasing(true);

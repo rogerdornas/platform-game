@@ -14,8 +14,10 @@ enum class ActionType {
     SpawnEnemy,
     SpawnPlatform,
     SpawnHookPoint,
+    GrowGround,
     RemovePlatform,
-    RemoveHookPoint
+    RemoveHookPoint,
+    DecreaseGround
 };
 
 struct WaveAction {
@@ -26,6 +28,7 @@ struct WaveAction {
     std::string enemySpawnId;
     std::string hookSpawnId;
     std::string platformSpawnId;
+    int groundId;
     Enemy* enemy;
     HookPoint* hookPoint;
 };

@@ -2461,6 +2461,11 @@ void Game::ChangeResolution(float oldScale)
     mCheckpointPosition.x = mCheckpointPosition.x / oldScale * mScale;
     mCheckpointPosition.y = mCheckpointPosition.y / oldScale * mScale;
 
+    for (auto& [key, value] : mSpawnPoints) {
+        value.x = value.x / oldScale * mScale;
+        value.y = value.y / oldScale * mScale;
+    }
+
     mTileSize = mOriginalTileSize * mScale;
     for (auto actor : mActors) {
         actor->ChangeResolution(oldScale, mScale);
