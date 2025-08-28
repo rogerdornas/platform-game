@@ -26,7 +26,7 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Draw(class SDL_Renderer *renderer);
 	virtual void ProcessInput(const uint8_t* keys);
-	virtual void HandleKeyPress(int key, int controllerButton, int controllerAxisY);
+	virtual void HandleKeyPress(int key, int controllerButton, int controllerAxisY, int controllerAxisX);
 	virtual void HandleMouse(const SDL_Event& event);
 
 	void SetPosition(Vector2 position) { mPos = position; }
@@ -56,6 +56,8 @@ public:
     UIText* AddText(const std::string& name, const Vector2& pos = Vector2::Zero, const Vector2& dims = Vector2::Zero, const int pointSize = 40, Vector3 color = Color::White, const int unsigned wrapLength = 1024);
     UIImage* AddImage(const std::string& imagePath, const Vector2& pos, const Vector2& dims, const Vector3& color = Color::White);
 
+	UIButton* FindNeighbor(UIButton* current, const Vector2& dir);
+
 	virtual void ChangeResolution(float oldScale, float newScale);
 protected:
     // Sets the mouse mode to relative or not
@@ -76,4 +78,6 @@ protected:
 	std::vector<UIButton *> mButtons;
     std::vector<UIText *> mTexts;
     std::vector<UIImage *> mImages;
+
+	float mTolerance;
 };

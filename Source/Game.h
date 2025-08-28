@@ -19,14 +19,16 @@
 class Game
 {
 public:
-    const int DEAD_ZONE = 8000;
+    const int DEAD_ZONE = 20000;
     const float mTransitionTime = 0.2f;
 
     // Estados de movimento do analógico vertical
     enum class StickState {
         Neutral,
         Up,
-        Down
+        Down,
+        Left,
+        Right
     };
 
     enum class GameScene {
@@ -56,6 +58,29 @@ public:
         Leaving,
         Cutscene,
         Menu
+    };
+
+    enum class Action {
+        MoveLeft,
+        MoveRight,
+        Up,
+        Down,
+        Look,
+        Jump,
+        Dash,
+        Attack,
+        FireBall,
+        Heal,
+        Hook,
+        Pause,
+        OpenStore,
+        Confirm,
+        Map
+    };
+
+    struct InputBinding {
+        SDL_Scancode key;              // Teclado
+        SDL_GameControllerButton btn;  // Controle
     };
 
     Game(int windowWidth, int windowHeight, int FPS);
@@ -195,6 +220,13 @@ public:
     void SetGoingToNextLevel() { mGoingToNextLevel = true; }
     void SetCurrentCutscene(Cutscene* cutscene) { mCurrentCutscene = cutscene; }
 
+    // Converte uma Action para sua representação em string
+    std::string ActionToString(Action action);
+    Action StringToAction(const std::string& str);
+    void SaveBindingsToFile(const std::string& filename);
+    void LoadBindingsFromFile(const std::string& filename);
+    bool IsActionPressed(Action action, const Uint8* keyboardState, SDL_GameController* controller);
+
 private:
     void ProcessInput();
     void UpdateGame();
@@ -209,6 +241,7 @@ private:
     void LoadOptionsMenu();
     void LoadControlMenu();
     void LoadKeyBoardMenu();
+    void LoadKeyBoardMenu2();
 
     void ChangeResolution(float oldScale);
 
@@ -263,6 +296,12 @@ private:
 
     WaveManager* mWaveManager;
 
+    UIText* mNewButtonText;
+    bool mWaitingForKey;
+    Action mBindingAction;
+
+    std::unordered_map<Action, InputBinding> mInputBindings;
+
     int mPlayerDeathCounter;
 
     // Player State
@@ -294,7 +333,8 @@ private:
     bool mIsSlowMotion;
     bool mIsAccelerated;
 
-    StickState mLeftStickYState;
+    StickState mLeftStickStateY;
+    StickState mLeftStickStateX;
 
     SoundHandle mMusicHandle;
     SoundHandle mBossMusic;
@@ -315,6 +355,7 @@ private:
     UIScreen* mLevelSelectMenu;
     UIScreen* mControlMenu;
     UIScreen* mKeyboardMenu;
+    UIScreen* mKeyboardMenu2;
 
     std::vector<Vector2> mResolutions = {
         Vector2(640, 360),

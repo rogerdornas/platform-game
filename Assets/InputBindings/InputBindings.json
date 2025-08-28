@@ -1,0 +1,54 @@
+{
+    "Attack": {
+        "btn": 2,
+        "key": 27
+    },
+    "Dash": {
+        "btn": 10,
+        "key": 6
+    },
+    "Down": {
+        "btn": 12,
+        "key": 81
+    },
+    "FireBall": {
+        "btn": 1,
+        "key": 4
+    },
+    "Heal": {
+        "btn": 8,
+        "key": 25
+    },
+    "Hook": {
+        "btn": 9,
+        "key": 22
+    },
+    "Jump": {
+        "btn": 0,
+        "key": 29
+    },
+    "Look": {
+        "btn": -1,
+        "key": 224
+    },
+    "Map": {
+        "btn": 4,
+        "key": 43
+    },
+    "MoveLeft": {
+        "btn": 13,
+        "key": 80
+    },
+    "MoveRight": {
+        "btn": 14,
+        "key": 79
+    },
+    "OpenStore": {
+        "btn": 3,
+        "key": 44
+    },
+    "Up": {
+        "btn": 11,
+        "key": 82
+    }
+}

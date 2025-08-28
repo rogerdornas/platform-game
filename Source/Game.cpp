@@ -88,8 +88,11 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mCheckPointMoney(0)
     ,mGoingToNextLevel(false)
     ,mIsPlayingOnKeyboard(true)
-    ,mLeftStickYState(StickState::Neutral)
+    ,mLeftStickStateY(StickState::Neutral)
+    ,mLeftStickStateX(StickState::Neutral)
     ,mWaveManager(nullptr)
+    ,mNewButtonText(nullptr)
+    ,mWaitingForKey(false)
     ,mIsPlayingFinalCutscene(false)
     ,mCurrentCutscene(nullptr)
     ,mBackGroundTexture(nullptr)
@@ -184,6 +187,8 @@ bool Game::Initialize()
                 break;
         }
     }
+
+    LoadBindingsFromFile("../Assets/InputBindings/InputBindings.json");
 
     Random::Init();
 
@@ -836,7 +841,7 @@ void Game::LoadOptionsMenu() {
     name = "TECLADO";
     button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 3.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        LoadKeyBoardMenu();
+        LoadKeyBoardMenu2();
     }, textPos);
 
     name = "CONTROLE";
@@ -893,6 +898,212 @@ void Game::LoadKeyBoardMenu() {
     });
 }
 
+void Game::LoadKeyBoardMenu2() {
+    mKeyboardMenu2 = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mKeyboardMenu2->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
+    mKeyboardMenu2->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
+
+    Vector2 buttonSize = Vector2(mKeyboardMenu2->GetSize().x * 0.47f, 60 * mScale);
+    Vector2 buttonPos = Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale);
+    int buttonPointSize = static_cast<int>(40 * mScale);
+    Vector2 textPos = Vector2(buttonSize.x / 20, 0);
+
+    mKeyboardMenu2->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mKeyboardMenu2->GetSize());
+
+    UIText* text = mKeyboardMenu2->AddText("TECLADO", Vector2::Zero, Vector2::Zero, 50 * mScale);
+    text->SetPosition(Vector2((mKeyboardMenu2->GetSize().x - text->GetSize().x) / 2, 20 * mScale));
+
+    std::string name;
+
+    name = "CIMA";
+    mKeyboardMenu2->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[1]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[1]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[1]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 0 * 40) * mScale);
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[1];
+        mBindingAction = Action::Up;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Up].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(520, 0) * mScale);
+
+    name = "BAIXO";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 2 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[2]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[2]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[2]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 2 * 40) * mScale);
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[2];
+        mBindingAction = Action::Down;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Down].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(520, 2 * 40) * mScale);
+
+    name = "PULO";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 4 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[3]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[3]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[3]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 4 * 40) * mScale);
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[3];
+        mBindingAction = Action::Jump;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Jump].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(520, 4 * 40) * mScale);
+
+    name = "ATAQUE";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 6 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[4]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[4]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[4]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 6 * 40) * mScale);
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[4];
+        mBindingAction = Action::Attack;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Attack].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(520, 6 * 40) * mScale);
+
+    name = "AVANÇO";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 8 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[5]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[5]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[5]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 8 * 40) * mScale);
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[5];
+        mBindingAction = Action::Dash;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Dash].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(520, 8 * 40) * mScale);
+
+    name = "ATAQUE A DISTÂNCIA";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 10 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[6]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[6]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[6]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 10 * 40) * mScale);
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[6];
+        mBindingAction = Action::FireBall;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::FireBall].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(520, 10 * 40) * mScale);
+
+    name = "CURA";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 12 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[7]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[7]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[7]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 12 * 40) * mScale);
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[7];
+        mBindingAction = Action::Heal;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Heal].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(520, 12 * 40) * mScale);
+
+    name = "ESQUERDA";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 0 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[8]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[8]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[8]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 0 * 40 * mScale));
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[8];
+        mBindingAction = Action::MoveLeft;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::MoveLeft].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 0 * 40 * mScale));
+
+    name = "DIREITA";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 2 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[9]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[9]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[9]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 2 * 40 * mScale));
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[9];
+        mBindingAction = Action::MoveRight;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::MoveRight].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 2 * 40 * mScale));
+
+    name = "GANCHO";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 4 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[10]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[10]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[10]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 4 * 40 * mScale));
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[10];
+        mBindingAction = Action::Hook;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Hook].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 4 * 40 * mScale));
+
+    name = "ABRIR LOJA";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 6 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[11]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[11]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[11]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 6 * 40 * mScale));
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[11];
+        mBindingAction = Action::OpenStore;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::OpenStore].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 6 * 40 * mScale));
+
+    name = "MAPA";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 8 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[12]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[12]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[12]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 8 * 40 * mScale));
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[12];
+        mBindingAction = Action::Map;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Map].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 8 * 40 * mScale));
+
+    name = "CAMINHAR / OLHAR";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 10 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[13]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[13]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[13]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 10 * 40 * mScale));
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[13];
+        mBindingAction = Action::Look;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Look].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 10 * 40 * mScale));
+
+    name = "VOLTAR";
+    mKeyboardMenu2->AddButton(name, Vector2(mKeyboardMenu2->GetSize().x * 0.375f, mKeyboardMenu2->GetSize().y * 0.9f), Vector2(mKeyboardMenu2->GetSize().x * 0.25f, 40 * mScale), buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mKeyboardMenu2->Close();
+    });
+
+}
 
 
 void Game::LoadObjects(const std::string &fileName) {
@@ -1484,11 +1695,33 @@ void Game::ProcessInput()
                 break;
 
             case SDL_KEYDOWN:
-                if (mGamePlayState != GamePlayState::GameOver) {
+                if (mWaitingForKey) {
+                    SDL_Scancode sc = event.key.keysym.scancode;
+
+                    // converte scancode para string legível
+                    std::string keyName = SDL_GetScancodeName(sc);
+
+                    // atualiza o texto do botão
+                    if (mNewButtonText) {
+                        mNewButtonText->SetPointSize(40 * mScale);
+                        mNewButtonText->SetText(keyName);
+                        mNewButtonText->SetPosition(mNewButtonText->GetPosition() + Vector2(50, 0) * mScale);
+                    }
+
+                    mInputBindings[mBindingAction].key = sc;
+
+                    SaveBindingsToFile("../Assets/InputBindings/InputBindings.json");
+
+                    // sai do modo de captura
+                    mWaitingForKey = false;
+                    mNewButtonText = nullptr;
+                }
+
+                else if (mGamePlayState != GamePlayState::GameOver) {
                     mIsPlayingOnKeyboard = true;
                     // Handle key press for UI screens
                     if (!mUIStack.empty()) {
-                        mUIStack.back()->HandleKeyPress(event.key.keysym.sym, SDL_CONTROLLER_BUTTON_INVALID, 0);
+                        mUIStack.back()->HandleKeyPress(event.key.keysym.sym, SDL_CONTROLLER_BUTTON_INVALID, 0, 0);
                     }
 
                     // if (event.key.keysym.sym == SDLK_ESCAPE) {
@@ -1521,7 +1754,8 @@ void Game::ProcessInput()
                         }
                     }
 
-                    if (event.key.keysym.sym == SDLK_m) {
+                    if (SDL_GetScancodeFromKey(event.key.keysym.sym) == mInputBindings[Action::Map].key) {
+                    // if (event.key.keysym.sym == SDLK_m) {
                         if (mMap) {
                             if (!mIsPaused || (mIsPaused && mShowMap)) {
                                 mShowMap = !mShowMap;
@@ -1546,12 +1780,16 @@ void Game::ProcessInput()
                 break;
 
             case SDL_CONTROLLERBUTTONDOWN:
+                if (mWaitingForKey) {
+                    break;
+                }
+
                 if (mGamePlayState != GamePlayState::GameOver) {
                     mIsPlayingOnKeyboard = false;
 
                     // Handle key press for UI screens
                     if (!mUIStack.empty()) {
-                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, event.cbutton.button, 0);
+                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, event.cbutton.button, 0, 0);
                     }
 
                     // if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
@@ -1584,7 +1822,7 @@ void Game::ProcessInput()
                         }
                     }
 
-                    if (event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK) {
+                    if (event.cbutton.button == mInputBindings[Action::Map].btn) {
                         if (mMap) {
                             if (!mIsPaused || (mIsPaused && mShowMap)) {
                                 mShowMap = !mShowMap;
@@ -1596,6 +1834,10 @@ void Game::ProcessInput()
                 break;
 
             case SDL_CONTROLLERAXISMOTION:
+                if (mWaitingForKey) {
+                    break;
+                }
+
                 if (mGamePlayState != GamePlayState::GameOver) {
                     if (Math::Abs(event.caxis.value) > DEAD_ZONE) {
                         mIsPlayingOnKeyboard = false;
@@ -1603,27 +1845,52 @@ void Game::ProcessInput()
 
                     if (!mUIStack.empty()) {
                         if (event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY) {
-                            int value = event.caxis.value;
+                            int valueY = event.caxis.value;
 
-                            if (value < -DEAD_ZONE) {
-                                if (mLeftStickYState != StickState::Up) {
-                                    mLeftStickYState = StickState::Up;
+                            if (valueY < -DEAD_ZONE) {
+                                if (mLeftStickStateY != StickState::Up) {
+                                    mLeftStickStateY = StickState::Up;
                                     if (!mUIStack.empty()) {
-                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, value);
+                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, valueY, 0);
                                     }
                                 }
                             }
-                            else if (value > DEAD_ZONE) {
-                                if (mLeftStickYState != StickState::Down) {
-                                    mLeftStickYState = StickState::Down;
+                            else if (valueY > DEAD_ZONE) {
+                                if (mLeftStickStateY != StickState::Down) {
+                                    mLeftStickStateY = StickState::Down;
                                     if (!mUIStack.empty()) {
-                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, value);
+                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, valueY, 0);
                                     }
                                 }
                             }
                             else {
                                 // Voltou à zona morta
-                                mLeftStickYState = StickState::Neutral;
+                                mLeftStickStateY = StickState::Neutral;
+                            }
+                        }
+
+                        if (event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX) {
+                            int valueX = event.caxis.value;
+
+                            if (valueX < -DEAD_ZONE) {
+                                if (mLeftStickStateX != StickState::Left) {
+                                    mLeftStickStateX = StickState::Left;
+                                    if (!mUIStack.empty()) {
+                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, 0, valueX);
+                                    }
+                                }
+                            }
+                            else if (valueX > DEAD_ZONE) {
+                                if (mLeftStickStateX != StickState::Right) {
+                                    mLeftStickStateX = StickState::Right;
+                                    if (!mUIStack.empty()) {
+                                        mUIStack.back()->HandleKeyPress(SDLK_UNKNOWN, SDL_CONTROLLER_BUTTON_INVALID, 0, valueX);
+                                    }
+                                }
+                            }
+                            else {
+                                // Voltou à zona morta
+                                mLeftStickStateX = StickState::Neutral;
                             }
                         }
                     }
@@ -1631,6 +1898,10 @@ void Game::ProcessInput()
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
+                if (mWaitingForKey) {
+                    break;
+                }
+
                 if (mGamePlayState != GamePlayState::GameOver) {
                     mIsPlayingOnKeyboard = true;
 
@@ -1638,14 +1909,34 @@ void Game::ProcessInput()
                     if (!mUIStack.empty()) {
                         mUIStack.back()->HandleMouse(event);
                     }
+                }
+                break;
+
+            case SDL_MOUSEMOTION:
+                if (mWaitingForKey) {
                     break;
+                }
+                mIsPlayingOnKeyboard = true;
 
-                    case SDL_MOUSEMOTION:
-                        mIsPlayingOnKeyboard = true;
+                // Handle mouse for UI screens
+                if (!mUIStack.empty()) {
+                    mUIStack.back()->HandleMouse(event);
+                }
+                break;
 
-                    // Handle mouse for UI screens
-                    if (!mUIStack.empty()) {
-                        mUIStack.back()->HandleMouse(event);
+            case SDL_CONTROLLERDEVICEADDED:
+                mController = SDL_GameControllerOpen(event.cdevice.which);
+                if (mController) {
+                    SDL_Log("Controle conectado!");
+                }
+                break;
+
+            case SDL_CONTROLLERDEVICEREMOVED:
+                if (mController) {
+                    if (SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(mController)) == event.cdevice.which) {
+                        SDL_GameControllerClose(mController);
+                        mController = nullptr;
+                        SDL_Log("Controle removido!");
                     }
                 }
                 break;
@@ -1751,6 +2042,9 @@ void Game::UpdateGame()
         }
         else {
             UpdateActors(deltaTime);
+            if (mWaveManager) {
+                mWaveManager->Update(deltaTime);
+            }
             // if (mHUD) {
             //     mHUD->Update(deltaTime);
             // }
@@ -1824,10 +2118,6 @@ void Game::UpdateGame()
         mPlayer->ResetHealCount();
         mPlayer->SetMoney(mCheckPointMoney);
         mResetLevel = false;
-    }
-
-    if (mWaveManager) {
-        mWaveManager->Update(deltaTime);
     }
 
     UpdateCamera(deltaTime);
@@ -2088,6 +2378,135 @@ void Game::PlayFinalGoodCutscene() {
 
 void Game::PlayFinalEvilCutscene() {
 
+}
+
+std::string Game::ActionToString(Action action) {
+    switch (action) {
+        case Action::MoveLeft:  return "MoveLeft";
+        case Action::MoveRight: return "MoveRight";
+        case Action::Up:        return "Up";
+        case Action::Down:      return "Down";
+        case Action::Look:      return "Look";
+        case Action::Jump:      return "Jump";
+        case Action::Dash:      return "Dash";
+        case Action::Attack:    return "Attack";
+        case Action::FireBall:  return "FireBall";
+        case Action::Heal:      return "Heal";
+        case Action::Hook:      return "Hook";
+        case Action::Pause:     return "Pause";
+        case Action::OpenStore: return "OpenStore";
+        case Action::Confirm:   return "Confirm";
+        case Action::Map:       return "Map";
+        default:                return "Unknown";
+    }
+}
+
+Game::Action Game::StringToAction(const std::string &str) {
+    if (str == "MoveLeft")  return Action::MoveLeft;
+    if (str == "MoveRight") return Action::MoveRight;
+    if (str == "Up")        return Action::Up;
+    if (str == "Down")      return Action::Down;
+    if (str == "Look")      return Action::Look;
+    if (str == "Jump")      return Action::Jump;
+    if (str == "Dash")      return Action::Dash;
+    if (str == "Attack")    return Action::Attack;
+    if (str == "FireBall")  return Action::FireBall;
+    if (str == "Heal")      return Action::Heal;
+    if (str == "Hook")      return Action::Hook;
+    if (str == "Pause")     return Action::Pause;
+    if (str == "OpenStore") return Action::OpenStore;
+    if (str == "Confirm")   return Action::Confirm;
+    if (str == "Map")       return Action::Map;
+
+    return Action::Confirm;
+}
+
+void Game::SaveBindingsToFile(const std::string &filename) {
+    nlohmann::json j;
+
+    for (const auto& pair : mInputBindings) {
+        Action action = pair.first;
+        InputBinding binding = pair.second;
+
+        // Cria um objeto JSON para o binding atual
+        nlohmann::json bindingJson;
+        bindingJson["key"] = static_cast<int>(binding.key);
+        bindingJson["btn"] = static_cast<int>(binding.btn);
+
+        // Usa a string da Action como chave no JSON principal
+        j[ActionToString(action)] = bindingJson;
+    }
+
+    // Abre o arquivo e escreve o JSON formatado
+    std::ofstream file(filename);
+    if (file.is_open()) {
+        // j.dump(4) formata o JSON com 4 espaços de indentação para ficar legível
+        file << j.dump(4);
+        file.close();
+    } else {
+        std::cerr << "Erro ao abrir o arquivo para salvar os controles: " << filename << std::endl;
+    }
+}
+
+void Game::LoadBindingsFromFile(const std::string &filename) {
+    std::ifstream file(filename);
+
+    if (!file.is_open()) {
+        std::cerr << "Arquivo de controles '" << filename << "' nao encontrado. Criando controles padrao." << std::endl;
+
+        // --- Crie aqui seus controles padrão ---
+        mInputBindings[Action::MoveLeft]  = {SDL_SCANCODE_A, SDL_CONTROLLER_BUTTON_DPAD_LEFT};
+        mInputBindings[Action::MoveRight] = {SDL_SCANCODE_D, SDL_CONTROLLER_BUTTON_DPAD_RIGHT};
+        mInputBindings[Action::Jump]      = {SDL_SCANCODE_SPACE, SDL_CONTROLLER_BUTTON_A};
+        mInputBindings[Action::Attack]    = {SDL_SCANCODE_J, SDL_CONTROLLER_BUTTON_X};
+        // ... adicione todos os outros padrões
+
+        // Salva os padrões para que o arquivo exista na próxima vez
+        SaveBindingsToFile(filename);
+        return;
+    }
+
+    try {
+        nlohmann::json j;
+        file >> j;
+
+        mInputBindings.clear(); // Limpa os bindings antigos antes de carregar os novos
+
+        // Itera sobre todos os elementos do JSON
+        for (auto& [key_str, value] : j.items()) {
+            Action action = StringToAction(key_str);
+
+            SDL_Scancode scancode = SDL_SCANCODE_UNKNOWN;
+            SDL_GameControllerButton button = SDL_CONTROLLER_BUTTON_INVALID;
+
+            // Verifica se as chaves "key" e "btn" existem antes de tentar acessá-las
+            if (value.contains("key") && value["key"].is_number()) {
+                scancode = static_cast<SDL_Scancode>(value["key"].get<int>());
+            }
+            if (value.contains("btn") && value["btn"].is_number()) {
+                button = static_cast<SDL_GameControllerButton>(value["btn"].get<int>());
+            }
+
+            mInputBindings[action] = {scancode, button};
+        }
+
+    } catch (nlohmann::json::parse_error& e) {
+        std::cerr << "Erro de parse no JSON: " << e.what() << '\n'
+                  << "ID da excecao: " << e.id << '\n'
+                  << "Byte do erro: " << e.byte << std::endl;
+    }
+}
+
+bool Game::IsActionPressed(Action action, const Uint8 *keyboardState, SDL_GameController *controller) {
+    auto& binding = mInputBindings[action];
+
+    // Teclado
+    if (keyboardState[binding.key]) return true;
+
+    // Controle
+    if (controller && SDL_GameControllerGetButton(controller, binding.btn)) return true;
+
+    return false;
 }
 
 

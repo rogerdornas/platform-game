@@ -244,53 +244,100 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     mTryingLeavingWallSlideRight = 0;
     mIsRunning = false;
 
-    bool left = (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL]) ||
-                SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
+    // bool left = (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL]) ||
+    //             SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
+    //             SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -20000;
+
+    bool left = (mGame->IsActionPressed(Game::Action::MoveLeft, state, &controller) &&
+                !mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -20000;
 
-    bool leftSlow = (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL]) ||
-                    (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 &&
-                     SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
+    // bool leftSlow = (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL]) ||
+    //                 (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 &&
+    //                  SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
 
-    bool right = (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL]) ||
-                 SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
+    bool leftSlow = (mGame->IsActionPressed(Game::Action::MoveLeft, state, &controller) &&
+                    mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
+                    (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 &&
+                    SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
+
+    // bool right = (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL]) ||
+    //              SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
+    //              SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 20000;
+
+    bool right = (mGame->IsActionPressed(Game::Action::MoveRight, state, &controller) &&
+                 !mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
                  SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 20000;
 
-    bool rightSlow = (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL]) ||
+    // bool rightSlow = (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL]) ||
+    //                  (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000 &&
+    //                   SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
+
+    bool rightSlow = (mGame->IsActionPressed(Game::Action::MoveRight, state, &controller) &&
+                     mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
                      (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000 &&
-                      SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
+                     SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
 
-    bool lookUp = (state[SDL_SCANCODE_UP] && state[SDL_SCANCODE_LCTRL]) ||
-                   SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) < -28000;
 
-    bool lodDown = (state[SDL_SCANCODE_DOWN] && state[SDL_SCANCODE_LCTRL]) ||
-                    SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) > 28000;
+    // bool lookUp = (state[SDL_SCANCODE_UP] && state[SDL_SCANCODE_LCTRL]) ||
+    //                SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) < -28000;
 
-    bool up = state[SDL_SCANCODE_UP] ||
-              SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
+    bool lookUp = (mGame->IsActionPressed(Game::Action::Up, state, &controller) &&
+                  mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
+                  SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) < -28000;
+
+    // bool lodDown = (state[SDL_SCANCODE_DOWN] && state[SDL_SCANCODE_LCTRL]) ||
+    //                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) > 28000;
+
+    bool lodDown = (mGame->IsActionPressed(Game::Action::Down, state, &controller) &&
+                   mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
+                   SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) > 28000;
+
+    // bool up = state[SDL_SCANCODE_UP] ||
+    //           SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
+    //           SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) < -22000;
+
+    bool up = mGame->IsActionPressed(Game::Action::Up, state, &controller) ||
               SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) < -22000;
 
-    bool down = state[SDL_SCANCODE_DOWN] ||
-                SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
-                SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) > 22000;
+    // bool down = state[SDL_SCANCODE_DOWN] ||
+    //             SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
+    //             SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) > 22000;
 
-    bool jump = state[SDL_SCANCODE_Z] ||
-                SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_A);
+    bool down = mGame->IsActionPressed(Game::Action::Down, state, &controller) ||
+          SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) > 22000;
 
-    bool dash = state[SDL_SCANCODE_C] ||
-                SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
 
-    bool sword = state[SDL_SCANCODE_X] ||
-                 SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_X);
+    // bool jump = state[SDL_SCANCODE_Z] ||
+    //             SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_A);
 
-    bool fireBall = state[SDL_SCANCODE_A] ||
-                    SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_B);
+    bool jump = mGame->IsActionPressed(Game::Action::Jump, state, &controller);
 
-    bool heal = state[SDL_SCANCODE_V] ||
+    // bool dash = state[SDL_SCANCODE_C] ||
+    //             SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+
+    bool dash = mGame->IsActionPressed(Game::Action::Dash, state, &controller);
+
+    // bool sword = state[SDL_SCANCODE_X] ||
+    //              SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_X);
+
+    bool sword = mGame->IsActionPressed(Game::Action::Attack, state, &controller);
+
+    // bool fireBall = state[SDL_SCANCODE_A] ||
+    //                 SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_B);
+
+    bool fireBall = mGame->IsActionPressed(Game::Action::FireBall, state, &controller);
+
+    // bool heal = state[SDL_SCANCODE_V] ||
+    //             SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 10000;
+
+    bool heal = mGame->IsActionPressed(Game::Action::Heal, state, &controller) ||
                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 10000;
 
-    bool hook = state[SDL_SCANCODE_S] ||
-            SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+    // bool hook = state[SDL_SCANCODE_S] ||
+    //         SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+
+    bool hook = mGame->IsActionPressed(Game::Action::Hook, state, &controller);
 
     if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
         !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
@@ -516,6 +563,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     if (heal && mHealCount > 0 && mHealthPoints < mMaxHealthPoints && mIsOnGround) {
         if (left || leftSlow || right || rightSlow || jump || dash || sword || fireBall) {
             mHealAnimationTimer = 0;
+            mIsHealing = false;
         }
         else {
             mIsHealing = true;

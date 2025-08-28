@@ -1,6 +1,7 @@
 #include "UIScreen.h"
 #include "../Game.h"
 #include "UIFont.h"
+#include <cfloat>
 
 UIScreen::UIScreen(Game* game, const std::string& fontName)
 	:mGame(game)
@@ -9,6 +10,7 @@ UIScreen::UIScreen(Game* game, const std::string& fontName)
 	,mState(UIState::Active)
     ,mIsVisible(true)
     ,mSelectedButtonIndex(-1)
+    ,mTolerance(10.0f * mGame->GetScale())
 {
     mGame->PushUI(this);
 
@@ -57,29 +59,51 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 
 }
 
-void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY)
+void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY, int controllerAxisX)
 {
+    if (mButtons.size() <= 0) {
+        return;
+    }
+
+    UIButton* current = mButtons[mSelectedButtonIndex];
+    UIButton* next = nullptr;
+
     if (key == SDLK_UP ||
         controllerButton == SDL_CONTROLLER_BUTTON_DPAD_UP ||
-        controllerAxisY < 0) {
-        // Move para o botão anterior
-        mSelectedButtonIndex--;
-        if (mSelectedButtonIndex < 0) {
-            mSelectedButtonIndex = static_cast<int>(mButtons.size()) - 1;
-        }
+        controllerAxisY < 0)
+    {
+        next = FindNeighbor(current, Vector2(0, -1));
     }
     else if (key == SDLK_DOWN ||
-        controllerButton == SDL_CONTROLLER_BUTTON_DPAD_DOWN ||
-        controllerAxisY > 0) {
-        // Move para o próximo botão
-        mSelectedButtonIndex++;
-        if (mSelectedButtonIndex >= static_cast<int>(mButtons.size())) {
-            mSelectedButtonIndex = 0;
-        }
+             controllerButton == SDL_CONTROLLER_BUTTON_DPAD_DOWN ||
+             controllerAxisY > 0)
+    {
+        next = FindNeighbor(current, Vector2(0, 1));
     }
-    else if (key == SDLK_RETURN || controllerButton == SDL_CONTROLLER_BUTTON_A) {
-        // Ativa o botão selecionado
-        if (mSelectedButtonIndex >= 0 && mSelectedButtonIndex < static_cast<int>(mButtons.size())) {
+    else if (key == SDLK_LEFT ||
+             controllerButton == SDL_CONTROLLER_BUTTON_DPAD_LEFT ||
+             controllerAxisX < 0)
+    {
+        next = FindNeighbor(current, Vector2(-1, 0));
+    }
+    else if (key == SDLK_RIGHT ||
+             controllerButton == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ||
+             controllerAxisX > 0)
+    {
+        next = FindNeighbor(current, Vector2(1, 0));
+    }
+
+    // Troca seleção se houver vizinho
+    if (next) {
+        mSelectedButtonIndex = static_cast<int>(
+            std::distance(mButtons.begin(),
+                          std::find(mButtons.begin(), mButtons.end(), next))
+        );
+    }
+
+    // Ativa botão selecionado
+    if (key == SDLK_RETURN || controllerButton == SDL_CONTROLLER_BUTTON_A) {
+        if (mSelectedButtonIndex >= 0 && mSelectedButtonIndex < (int)mButtons.size()) {
             mButtons[mSelectedButtonIndex]->OnClick();
             if (mGame->GetPlayer()) {
                 mGame->GetPlayer()->SetCanJump(false);
@@ -87,7 +111,7 @@ void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY
         }
     }
 
-    // Atualiza destaque dos botões
+    // Atualiza destaque de todos os botões
     for (size_t i = 0; i < mButtons.size(); ++i) {
         mButtons[i]->SetHighlighted(static_cast<int>(i) == mSelectedButtonIndex);
     }
@@ -163,11 +187,119 @@ UIImage* UIScreen::AddImage(const std::string &imagePath, const Vector2 &pos, co
     return img;
 }
 
+UIButton* UIScreen::FindNeighbor(UIButton *current, const Vector2 &dir) {
+    UIButton* best = nullptr;
+    float bestDist = FLT_MAX;
+
+    // ---- 1) Preferência: procurar botões alinhados no mesmo eixo ----
+    for (UIButton* b : mButtons) {
+        if (b == current) continue;
+
+        Vector2 delta = b->GetPosition() - current->GetPosition();
+
+        // Só considera se está na direção certa
+        if ((dir.x > 0 && delta.x <= 0) || (dir.x < 0 && delta.x >= 0) ||
+            (dir.y > 0 && delta.y <= 0) || (dir.y < 0 && delta.y >= 0))
+        {
+            continue;
+        }
+
+        // Checa alinhamento no eixo perpendicular
+        if (dir.x != 0 && std::abs(delta.y) > mTolerance) continue;
+        if (dir.y != 0 && std::abs(delta.x) > mTolerance) continue;
+
+        float dist = delta.LengthSq();
+        if (dist < bestDist) {
+            bestDist = dist;
+            best = b;
+        }
+    }
+
+    // ---- 2) Se não achou nenhum alinhado, pega o mais próximo "livre" na direção ----
+    if (!best) {
+        bestDist = FLT_MAX;
+        for (UIButton* b : mButtons) {
+            if (b == current) continue;
+
+            Vector2 delta = b->GetPosition() - current->GetPosition();
+
+            if ((dir.x > 0 && delta.x <= 0) || (dir.x < 0 && delta.x >= 0) ||
+                (dir.y > 0 && delta.y <= 0) || (dir.y < 0 && delta.y >= 0))
+            {
+                continue;
+            }
+
+            float dist = delta.LengthSq();
+            if (dist < bestDist) {
+                bestDist = dist;
+                best = b;
+            }
+        }
+    }
+
+    // ---- 3) Se ainda não achou, aplica wrap no mesmo eixo ----
+    if (!best) {
+        if (dir.x != 0) {
+            // Procurar botão MAIS distante no eixo X
+            float extremeX = (dir.x > 0 ? -FLT_MAX : FLT_MAX);
+
+            for (UIButton* b : mButtons) {
+                if (b == current) continue;
+
+                // Só considera botões "na mesma linha"
+                if (std::abs(b->GetPosition().y - current->GetPosition().y) > mTolerance) continue;
+
+                float x = b->GetPosition().x;
+                if (dir.x > 0) { // indo para direita → pega o menor X
+                    if (x < extremeX || extremeX == -FLT_MAX) {
+                        extremeX = x;
+                        best = b;
+                    }
+                } else { // indo para esquerda → pega o maior X
+                    if (x > extremeX || extremeX == FLT_MAX) {
+                        extremeX = x;
+                        best = b;
+                    }
+                }
+            }
+        }
+        else if (dir.y != 0) {
+            // Procurar botão MAIS distante no eixo Y
+            float extremeY = (dir.y > 0 ? -FLT_MAX : FLT_MAX);
+
+            for (UIButton* b : mButtons) {
+                if (b == current) continue;
+
+                // Só considera botões "na mesma coluna"
+                if (std::abs(b->GetPosition().x - current->GetPosition().x) > mTolerance) continue;
+
+
+                float y = b->GetPosition().y;
+                if (dir.y > 0) { // indo para baixo → pega o menor Y
+                    if (y < extremeY || extremeY == -FLT_MAX) {
+                        extremeY = y;
+                        best = b;
+                    }
+                } else { // indo para cima → pega o maior Y
+                    if (y > extremeY || extremeY == FLT_MAX) {
+                        extremeY = y;
+                        best = b;
+                    }
+                }
+            }
+        }
+    }
+
+    return best;
+}
+
+
 void UIScreen::ChangeResolution(float oldScale, float newScale) {
     mPos.x = mPos.x / oldScale * newScale;
     mPos.y = mPos.y / oldScale * newScale;
     mSize.x = mSize.x / oldScale * newScale;
     mSize.y = mSize.y / oldScale * newScale;
+    mTolerance = mTolerance / oldScale * newScale;
 
     for (UIImage* image : mImages) {
         image->ChangeResolution(oldScale, newScale);

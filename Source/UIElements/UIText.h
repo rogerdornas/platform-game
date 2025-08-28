@@ -17,6 +17,7 @@ public:
     ~UIText();
 
     void SetText(const std::string& name);
+    void SetPointSize(float pointSize) { mPointSize = pointSize; }
     void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
