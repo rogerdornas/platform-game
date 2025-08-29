@@ -9,6 +9,10 @@ Camera::Camera(class Game* game, Vector2 startPosition)
     :mPos(startPosition)
     ,mGame(game)
     ,mCameraLerpSpeed(6.0f)
+    ,mNormalSpeed(6.0f)
+    ,mSlowTransitionSpeed(3.0f)
+    ,mTransitionDuration(1.0f)
+    ,mTransitionTimer(mTransitionDuration)
     ,mCameraMode(CameraMode::FollowPlayer)
     ,mFixedCameraPosition(Vector2::Zero)
     ,mDistMove(400 * mGame->GetScale())
@@ -30,7 +34,23 @@ void Camera::StartCameraShake(float duration, float strength) {
     mShakeStrength = strength;
 }
 
+void Camera::ChangeCameraMode(CameraMode cameraMode) {
+    if (mCameraMode != cameraMode) {
+        mTransitionTimer = 0;
+    }
+    mCameraMode = cameraMode;
+}
+
+
 void Camera::Update(float deltaTime) {
+    if (mTransitionTimer < mTransitionDuration) {
+        mTransitionTimer += deltaTime;
+        mCameraLerpSpeed = mSlowTransitionSpeed;
+    }
+    else {
+        mCameraLerpSpeed = mNormalSpeed;
+    }
+
     Vector2 targetPosition = Vector2::Zero;
     switch (mCameraMode) {
         case CameraMode::Fixed:

@@ -34,6 +34,8 @@ private:
     int mMapHeight;
     int mTileSize;
     int mRadius;
+    float mPlayerAmplitude;
+    float mFrequency;
     SDL_Texture* mMapTexture;
     SDL_Texture* mPlayerTexture;
 };

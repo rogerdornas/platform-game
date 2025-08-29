@@ -12,6 +12,8 @@ Map::Map(class Game *game, int **mapData, int width, int height)
     ,mMapWidth(width)
     ,mMapHeight(height)
     ,mRadius(17)
+    ,mPlayerAmplitude(3.0f)
+    ,mFrequency(4.0f)
     ,mMapTexture(nullptr)
     ,mPlayerTexture(nullptr)
 {
@@ -253,13 +255,16 @@ void Map::Draw(SDL_Renderer *renderer) {
 
     SDL_RenderCopy(renderer, mMapTexture, nullptr, &dst);
 
-    // desenha o player por cima (verde)
-    int playerTileX = mGame->GetPlayer()->GetPosition().x / mGame->GetTileSize();
-    int playerTileY = mGame->GetPlayer()->GetPosition().y / mGame->GetTileSize();
+    // desenha o player por cima
+    float playerTileX = mGame->GetPlayer()->GetPosition().x / mGame->GetTileSize();
+    float playerTileY = mGame->GetPlayer()->GetPosition().y / mGame->GetTileSize();
+
+    float time = SDL_GetTicks() / 1000.0f;
+    float offsetY = sin(time * mFrequency) * mPlayerAmplitude;
 
     SDL_Rect dstRect = {
         dstX + static_cast<int>(playerTileX * mTileSize * scale - (mTileSize * 4 * scale)),
-        dstY + static_cast<int>(playerTileY * mTileSize * scale - (mTileSize * 4 * scale)),
+        dstY + static_cast<int>(playerTileY * mTileSize * scale - (mTileSize * 4.5 * scale) + offsetY),
         static_cast<int>(mTileSize * 8 * scale),
         static_cast<int>(mTileSize * 8 * scale)
     };
@@ -284,6 +289,8 @@ void Map::Draw(SDL_Renderer *renderer) {
 void Map::ChangeResolution(float oldScale, float newScale) {
     // CreateMap(mGame->GetRenderer());
     // mTileSize = (mGame->GetLogicalWindowWidth() * 0.75f) / mMapWidth;
+
+    mPlayerAmplitude = mPlayerAmplitude / oldScale * newScale;
 
     // desenha fundo inicial (tudo bloqueado)
     SDL_SetRenderTarget(mGame->GetRenderer(), mMapTexture);

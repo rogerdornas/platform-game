@@ -37,7 +37,7 @@ public:
     void SetCameraVelocity(Vector2 velocity) { mCameraVelocity = velocity; }
 
     void StartCameraShake(float duration = 1.0f, float strength = 5.0f);
-    void ChangeCameraMode(CameraMode cameraMode) { mCameraMode = cameraMode; }
+    void ChangeCameraMode(CameraMode cameraMode);
     void ChangeResolution(float oldScale, float newScale);
 
 private:
@@ -55,6 +55,10 @@ private:
     Vector2 mPos;
     class Game *mGame;
     float mCameraLerpSpeed;
+    float mNormalSpeed;
+    float mSlowTransitionSpeed;
+    float mTransitionDuration;
+    float mTransitionTimer;
     CameraMode mCameraMode;
     Vector2 mFixedCameraPosition;
 
