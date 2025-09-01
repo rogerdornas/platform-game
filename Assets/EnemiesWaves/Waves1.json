@@ -31,11 +31,6 @@
           "type": "Flying Enemy", 
           "id": "RightMid", 
           "delay": 2.0 
-        },
-        {
-          "actionType": "SpawnPlatform",
-          "id": "ArenaPlatform1",
-          "delay": 2.0
         }
       ]
     },

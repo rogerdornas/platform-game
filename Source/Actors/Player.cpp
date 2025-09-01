@@ -32,13 +32,13 @@ Player::Player(Game* game, float width, float height)
 
     ,mIsJumping(false)
     ,mJumpTimer(0.0f)
-    ,mMaxJumpTime(0.25f)
-    ,mJumpForce(-900.0f * mGame->GetScale())
+    ,mMaxJumpTime(0.33f)
+    ,mJumpForce(-750.0f * mGame->GetScale())
     ,mCanJump(true)
     ,mJumpCountInAir(0)
     ,mMaxJumpsInAir(1)
     ,mLowGravity(50.0f * mGame->GetScale())
-    ,mMediumGravity(3000.0f * mGame->GetScale())
+    ,mMediumGravity(3300.0f * mGame->GetScale())
     ,mHighGravity(4500.0f * mGame->GetScale())
 
     ,mCanDash(true)
@@ -81,8 +81,8 @@ Player::Player(Game* game, float width, float height)
     ,mTimerToLeaveWallSlidingRight(0.15f)
     ,mMaxTimerToLiveWallSliding(0.15f)
 
-    ,mWallJumpTimer(0.15f)
-    ,mWallJumpMaxTime(0.15f)
+    ,mWallJumpMaxTime(0.12f)
+    ,mWallJumpTimer(0.0f)
 
     ,mKnockBackSpeed(1000.0f * mGame->GetScale())
     ,mKnockBackTimer(0.0f)
@@ -92,7 +92,7 @@ Player::Player(Game* game, float width, float height)
     ,mMaxHealthPoints(70.0f)
     ,mHealthPoints(mMaxHealthPoints)
     ,mIsInvulnerable(false)
-    ,mInvulnerableDuration(0.8f)
+    ,mInvulnerableDuration(0.85f)
     ,mInvulnerableTimer(mInvulnerableDuration)
     ,mMaxHealCount(3)
     ,mHealCount(mMaxHealCount)
@@ -1074,7 +1074,7 @@ void Player::ResolveEnemyCollision() {
     if (!enemies.empty()) {
         bool swordHitEnemy = false;
         for (Enemy* e: enemies) {
-            if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+            if (!mIsInvulnerable && mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
                 collisionNormal = mAABBComponent->ResolveCollision(*e->GetComponent<ColliderComponent>());
 
                 mDashComponent->StopDash();
