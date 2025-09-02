@@ -39,7 +39,7 @@ Sword::Sword(class Game *game, Actor *owner, float width, float height, float du
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight,
                                                        swordAssets + "SwordSlash.png",
-                                                       swordAssets + "SwordSlash.json", 999);
+                                                       swordAssets + "SwordSlash.json", 1001);
 
     const std::vector slash = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9};
     mDrawAnimatedComponent->AddAnimation("slash", slash);

@@ -30,6 +30,7 @@
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Golem.h"
 #include "Actors/HookPoint.h"
+#include "Actors/Lava.h"
 #include "Actors/Mantis.h"
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
@@ -1225,6 +1226,38 @@ void Game::LoadObjects(const std::string &fileName) {
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetSprites();
                 }
+            }
+        }
+        if (layer["name"] == "Lava") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+                bool isMoving = false;
+                float movingDuration = 0.0f;
+                float speedX = 0.0f;
+                float speedY = 0.0f;
+
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "Moving") {
+                            isMoving = prop["value"];
+                        }
+                        else if (propName == "MovingDuration") {
+                            movingDuration = prop["value"];
+                        }
+                        else if (propName == "SpeedX") {
+                            speedX = prop["value"];
+                        }
+                        else if (propName == "SpeedY") {
+                            speedY = prop["value"];
+                        }
+                    }
+                }
+                auto* lava = new Lava(this, width, height, isMoving, movingDuration, Vector2(speedX, speedY));
+                lava->SetPosition(Vector2(x + width / 2, y + height / 2));
             }
         }
         if (layer["name"] == "Triggers") {

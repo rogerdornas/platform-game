@@ -182,7 +182,7 @@ Player::Player(Game* game, float width, float height)
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.6f, mWidth * 3.6f,
                                                    "../Assets/Sprites/Esquilo3/Esquilo.png",
-                                                   "../Assets/Sprites/Esquilo3/Esquilo.json", 1000);
+                                                   "../Assets/Sprites/Esquilo3/Esquilo.json", 1002);
 
     std::vector idle = {19};
     mDrawAnimatedComponent->AddAnimation("idle", idle);

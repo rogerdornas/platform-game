@@ -1,0 +1,365 @@
+{
+  "frames": [
+    {
+      "filename": "Idle01.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle02.png",
+      "frame": {
+        "x": 1,
+        "y": 70,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle03.png",
+      "frame": {
+        "x": 203,
+        "y": 1,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle04.png",
+      "frame": {
+        "x": 1,
+        "y": 139,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle05.png",
+      "frame": {
+        "x": 203,
+        "y": 70,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle06.png",
+      "frame": {
+        "x": 405,
+        "y": 1,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle07.png",
+      "frame": {
+        "x": 1,
+        "y": 208,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle08.png",
+      "frame": {
+        "x": 203,
+        "y": 139,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle09.png",
+      "frame": {
+        "x": 405,
+        "y": 70,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle10.png",
+      "frame": {
+        "x": 1,
+        "y": 277,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle11.png",
+      "frame": {
+        "x": 203,
+        "y": 208,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle12.png",
+      "frame": {
+        "x": 405,
+        "y": 139,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle13.png",
+      "frame": {
+        "x": 203,
+        "y": 277,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle14.png",
+      "frame": {
+        "x": 405,
+        "y": 208,
+        "w": 200,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 67
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Lava.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 606,
+      "h": 345
+    },
+    "scale": 1
+  }
+}

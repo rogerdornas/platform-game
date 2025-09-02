@@ -133,6 +133,8 @@ add_executable(${PROJECT_NAME}
         Source/Map.h
         Source/WaveManager.cpp
         Source/WaveManager.h
+        Source/Actors/Lava.cpp
+        Source/Actors/Lava.h
 )
 
 

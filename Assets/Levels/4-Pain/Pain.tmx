@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="449">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="451">
  <editorsettings>
   <export target="Pain.json" format="json"/>
  </editorsettings>
@@ -1773,13 +1773,6 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="408" name="Camera Boss" x="8160" y="352" width="2528" height="864">
-   <properties>
-    <property name="Event" value="FollowPlayerHorizontally"/>
-    <property name="FixedCameraPositionY" type="float" value="352"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
   <object id="410" name="Camera Horizontal" x="7296" y="1696" width="3392" height="512">
    <properties>
     <property name="Event" value="FollowPlayerHorizontally"/>
@@ -1869,6 +1862,22 @@
   <object id="448" name="Camera" x="4192" y="5408" width="1504" height="288">
    <properties>
     <property name="Event" value="FollowPlayer"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="449" x="9408" y="352" width="1280" height="864">
+   <properties>
+    <property name="Event" value="FollowPlayerLimitRightHorizontally"/>
+    <property name="FixedCameraPositionX" type="float" value="10816"/>
+    <property name="FixedCameraPositionY" type="float" value="288"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="450" x="8160" y="352" width="1248" height="864">
+   <properties>
+    <property name="Event" value="FollowPlayerLimitLeftHorizontally"/>
+    <property name="FixedCameraPositionX" type="float" value="7872"/>
+    <property name="FixedCameraPositionY" type="float" value="288"/>
     <property name="Target" value="Camera"/>
    </properties>
   </object>
