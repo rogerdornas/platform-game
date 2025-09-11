@@ -9,6 +9,7 @@
 #include "HookPoint.h"
 #include "../Game.h"
 #include "../Actors/Sword.h"
+#include "../Actors/JumpEffect.h"
 #include "../Actors/FireBall.h"
 #include "../Actors/ParticleSystem.h"
 #include "../Components/RigidBodyComponent.h"
@@ -237,7 +238,22 @@ Player::Player(Game* game, float width, float height)
     mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), 0.2f, 0.5f);
 
     mSword = new Sword(mGame, this, mSwordWidth, mSwordHeight, 0.15f, mSwordDamage);
+
+    // Pool de Jump Effects
+    for (int i = 0; i < 5; i++) {
+        auto* jumpEffect = new JumpEffect(mGame, this, 0.3f);
+        mJumpEffects.emplace_back(jumpEffect);
+    }
 }
+
+void Player::SetJumpEffects() {
+    mJumpEffects.clear();
+    for (int i = 0; i < 5; i++) {
+        auto* jumpEffect = new JumpEffect(mGame, this, 0.3f);
+        mJumpEffects.emplace_back(jumpEffect);
+    }
+}
+
 
 void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller) {
     mTryingLeavingWallSlideLeft = 0;
@@ -464,6 +480,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 mCanJump = false;
                 mJumpTimer = 0.0f;
                 mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
+                for (JumpEffect* j: mJumpEffects) {
+                    if (j->GetState() == ActorState::Paused) {
+                        j->SetState(ActorState::Active);
+                        j->StartEffect(JumpEffect::EffectType::TakeOff);
+                        break;
+                    }
+                }
             }
             // Wall jumping
             if (mIsWallSliding && !mIsJumping && mCanJump) {
@@ -485,13 +508,20 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             // Pulo no ar
             if (!(mIsOnGround || mIsWallSliding) && mJumpCountInAir < mMaxJumpsInAir && mCanJump
                 && (mWallJumpTimer >= mWallJumpMaxTime)) {
-                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce)
+                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce * 0.8f)
                                                  + mMovingGroundVelocity);
                 mIsJumping = true;
                 mCanJump = false;
-                mJumpTimer = 0.0f;
+                mJumpTimer = mMaxJumpTime * 0.4f;
                 mJumpCountInAir++; // Incrementa número de pulos
                 mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
+                for (JumpEffect* j: mJumpEffects) {
+                    if (j->GetState() == ActorState::Paused) {
+                        j->SetState(ActorState::Active);
+                        j->StartEffect(JumpEffect::EffectType::DoubleJump);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -503,7 +533,15 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     // Dash
     if (mCanDash) {
         if (dash && !mIsFireAttacking) {
-            mDashComponent->UseDash(mIsOnGround);
+            if (mDashComponent->UseDash(mIsOnGround) && mIsOnGround) {
+                for (JumpEffect* j: mJumpEffects) {
+                    if (j->GetState() == ActorState::Paused) {
+                        j->SetState(ActorState::Active);
+                        j->StartEffect(JumpEffect::EffectType::TakeOff);
+                        break;
+                    }
+                }
+            }
             mIsHooking = false;
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
@@ -794,6 +832,13 @@ void Player::OnUpdate(float deltaTime) {
     if (mWasOnGround == false) {
         if (mIsOnGround) {
             mGame->GetAudio()->PlaySound("FallOnGround.wav");
+            for (JumpEffect* j: mJumpEffects) {
+                if (j->GetState() == ActorState::Paused) {
+                    j->SetState(ActorState::Active);
+                    j->StartEffect(JumpEffect::EffectType::Land);
+                    break;
+                }
+            }
             mRunningSoundIntervalTimer = 0;
         }
     }

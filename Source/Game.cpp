@@ -36,6 +36,7 @@
 #include "Actors/Moth.h"
 #include "Actors/Projectile.h"
 #include "Components/AABBComponent.h"
+#include "Components/DashComponent.h"
 #include "Components/DrawComponents/DrawAnimatedComponent.h"
 #include "Components/DrawComponents/DrawPolygonComponent.h"
 #include "Components/DrawComponents/DrawRopeComponent.h"
@@ -1552,6 +1553,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 float y = static_cast<float>(obj["y"]) * mScale;
                 if (mPlayer) {
                     mPlayer->SetSword();
+                    mPlayer->SetJumpEffects();
+                    mPlayer->GetComponent<DashComponent>()->InitDashEffect();
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
                     mPlayer->SetIsDead(false);
 

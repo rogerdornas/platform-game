@@ -42,7 +42,7 @@ Lava::Lava(class Game *game, float width, float height, bool isMoving, float mov
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
     mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawAnimatedComponent->SetAnimFPS(9.0f);
 
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 40000);

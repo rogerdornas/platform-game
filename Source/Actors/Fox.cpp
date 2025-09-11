@@ -41,7 +41,7 @@ Fox::Fox(Game* game, float width, float height, float moveSpeed, float healthPoi
     mStopDuration = 1.5f;
     mStopTimer = 0.0f;
 
-    mDashDuration = 1.0f;
+    mDashDuration = 0.9f;
     mDashTimer = 0.0f;
     mMaxDashes = 3;
     mDashCount = 0;
@@ -64,6 +64,7 @@ Fox::Fox(Game* game, float width, float height, float moveSpeed, float healthPoi
 
     mSwordHitPlayer = false;
     mDistToSword = 200 * mGame->GetScale();
+    mRunAndSwordProbability = 0.5f;
 
     std::string foxAssets = "../Assets/Sprites/Raposa/";
     // mDrawSpriteComponent = new DrawSpriteComponent(this, foxAssets + "Idle.png", 100, 100);
@@ -88,7 +89,7 @@ Fox::Fox(Game* game, float width, float height, float moveSpeed, float healthPoi
     mDrawAnimatedComponent->SetAnimation("idle");
     mDrawAnimatedComponent->SetAnimFPS(16.0f);
 
-    mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), mDashDuration, 0.5f);
+    mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), mDashDuration * 0.95f, 0.5f);
     mSword = new Sword(game, this, mWidth * 3.6f, mHeight * 1.3f, 0.2f, 10.0f);
 }
 
@@ -137,6 +138,7 @@ void Fox::OnUpdate(float deltaTime) {
     }
 
     ManageAnimations();
+
     if (mHealthPoints <= mMaxHealthPoints / 2) {
         mStopDuration = 0.5;
         mFireballDuration = 1.0;
@@ -202,6 +204,16 @@ void Fox::ResolveGroundCollision() {
                     if (mState == State::RunAway) {
                         mRunAwayTimer = mRunAwayDuration;
                     }
+                    if (mState == State::Dash) {
+                        if (collisionNormal == Vector2::NegUnitX) {
+                            mDashTimer = mDashDuration;
+                            SetPosition(GetPosition() - Vector2(32, 0) * mGame->GetScale());
+                        }
+                        else {
+                            mDashTimer = mDashDuration;
+                            SetPosition(GetPosition() + Vector2(32, 0) * mGame->GetScale());
+                        }
+                    }
                 }
             }
             else if (g->GetIsSpike()) { // Colisão com spikes
@@ -235,11 +247,10 @@ void Fox::ResolvePlayerCollision() {
     Player* player = GetGame()->GetPlayer();
     if (mColliderComponent->Intersect(*player->GetComponent<ColliderComponent>())) { // Colisão da Fox com o player
         if (mState == State::Dash) {
-            mDashCount = 0;
-            mDashTimer = 0;
-            mDashComponent->StopDash();
-            mRigidBodyComponent->SetVelocity(Vector2::Zero);
-            mState = State::RunAway;
+            // mDashCount = 0;
+            // mDashTimer = 0;
+            // mDashComponent->StopDash();
+            // mState = State::RunAway;
         }
     }
     else if (mSword->GetComponent<ColliderComponent>()->Intersect(*player->GetComponent<ColliderComponent>())) { // Colisão da sword da fox com o player
@@ -336,29 +347,42 @@ void Fox::Stop(float deltaTime) {
     else {
         mState = State::Fireball;
     }
+
+    // Controla probabilidade de combo de espada para não ficar spamando
+    if (mState == State::RunAndSword) {
+        mRunAndSwordProbability -= 0.1;
+    }
+    else {
+        mRunAndSwordProbability = 0.5;
+    }
 }
 
 void Fox::Dash(float deltaTime) {
     if (mDashCount >= mMaxDashes) {
         mDashCount = 0;
+        mDashTimer = 0;
         mState = State::Stop;
         return;
     }
-    mDashTimer += deltaTime;
-    mDashComponent->UseDash(true);
-    if (mDashTimer < mDashDuration) {
-        return;
+
+    if (mDashTimer == 0) {
+        Player* player = GetGame()->GetPlayer();
+        float dist = GetPosition().x - player->GetPosition().x;
+        if (dist < 0) {
+            SetRotation(0.0);
+        }
+        else {
+            SetRotation(Math::Pi);
+        }
+        mDashComponent->UseDash(true);
     }
 
-    mDashCount++;
-    mDashTimer = 0;
-    Player* player = GetGame()->GetPlayer();
-    float dist = GetPosition().x - player->GetPosition().x;
-    if (dist < 0) {
-        SetRotation(0.0);
-    }
-    else {
-        SetRotation(Math::Pi);
+    mDashTimer += deltaTime;
+
+    if (mDashTimer >= mDashDuration) {
+        mDashCount++;
+        mDashComponent->StopDash();
+        mDashTimer = 0;
     }
 }
 
@@ -445,7 +469,18 @@ void Fox::Fireball(float deltaTime)
     mAlreadyFireballed = false;
     mFireballTimer = 0;
 
-    if (Random::GetFloat() < 0.5) {
+    float jumpProbability = 0.5f;
+
+    // detecta se player está em cima do boss
+    bool up = (player->GetPosition().y < GetPosition().y) &&
+              (player->GetPosition().x > GetPosition().x - mWidth &&
+               player->GetPosition().x < GetPosition().x + mWidth);
+
+    if (up) {
+        jumpProbability = 0.8f;
+    }
+
+    if (Random::GetFloat() < jumpProbability) {
         mState = State::Jump;
     }
     else {

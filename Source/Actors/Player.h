@@ -6,6 +6,7 @@
 
 #include "Actor.h"
 #include "HookPoint.h"
+#include "../Actors/JumpEffect.h"
 #include "../Actors/Sword.h"
 #include "../AudioSystem.h"
 
@@ -18,6 +19,11 @@ public:
 
     void OnProcessInput(const Uint8* keyState, SDL_GameController &controller) override;
     void OnUpdate(float deltaTime) override;
+
+    float GetWidth() override { return mWidth; }
+    float GetHeight() override { return mHeight; }
+
+    void SetJumpEffects();
 
     bool GetIsOnGround() const { return mIsOnGround; }
     void SetMaxJumpsInAir(int jumps) { mMaxJumpsInAir = jumps; }
@@ -110,10 +116,11 @@ private:
     float mLowGravity;
     float mMediumGravity;
     float mHighGravity;
+    std::vector<JumpEffect*> mJumpEffects;
 
     bool mCanDash;
 
-    class Sword* mSword;
+    Sword* mSword;
     bool mPrevSwordPressed;             // Se apertou botão de espada no último frame
     float mSwordCooldownTimer;          // Timer de cooldown da espada
     float mSwordCooldownDuration;       // Cooldown da espada

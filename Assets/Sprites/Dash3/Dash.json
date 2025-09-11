@@ -1,0 +1,165 @@
+{
+  "frames": [
+    {
+      "filename": "01.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 407,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 407,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 407,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "02.png",
+      "frame": {
+        "x": 1,
+        "y": 259,
+        "w": 407,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 407,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 407,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "03.png",
+      "frame": {
+        "x": 410,
+        "y": 1,
+        "w": 407,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 407,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 407,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "04.png",
+      "frame": {
+        "x": 410,
+        "y": 259,
+        "w": 407,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 407,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 407,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "05.png",
+      "frame": {
+        "x": 819,
+        "y": 1,
+        "w": 407,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 407,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 407,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "06.png",
+      "frame": {
+        "x": 819,
+        "y": 259,
+        "w": 407,
+        "h": 256
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 407,
+        "h": 256
+      },
+      "sourceSize": {
+        "w": 407,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Dash.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1227,
+      "h": 516
+    },
+    "scale": 1
+  }
+}

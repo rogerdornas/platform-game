@@ -5,13 +5,37 @@
 #pragma once
 
 #include "Component.h"
+#include "../Actors/Actor.h"
+#include "DrawComponents/DrawAnimatedComponent.h"
+
+class DashEffectActor : public Actor
+{
+public:
+    DashEffectActor(Game* game, Actor* owner, float duration);
+
+    void OnUpdate(float deltaTime) override;
+    void StartDashEffect() { mEffectTimer = 0; mDrawAnimatedComponent->ResetAnimationTimer(); }
+    void StopDash() { mEffectTimer = mEffectDuration; }
+
+    void ChangeResolution(float oldScale, float newScale) override;
+
+private:
+    float mWidth;
+    float mHeight;
+    float mEffectDuration;
+    float mEffectTimer;
+    Actor* mOwner;
+
+    class DrawAnimatedComponent* mDrawAnimatedComponent;
+};
+
 
 class DashComponent : public Component
 {
 public:
     DashComponent(class Actor* owner, float dashSpeed, float dashDuration, float dashCooldown);
 
-    void UseDash(bool isOnGround);
+    bool UseDash(bool isOnGround);
     bool GetIsDashing() const { return mIsDashing; }
     void SetHasDashedInAir(bool hasDashedInAir) { mHasDashedInAir = hasDashedInAir; }
 
@@ -21,6 +45,8 @@ public:
 
     void Update(float deltaTime) override;
 
+    void InitDashEffect();
+
 private:
     bool mIsDashing;
     float mDashSpeed;
@@ -29,4 +55,6 @@ private:
     float mDashTimer;
     float mDashCooldownTimer;
     bool mHasDashedInAir;
+
+    DashEffectActor* mDashEffect;
 };

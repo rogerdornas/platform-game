@@ -77,6 +77,7 @@ private:
     class Sword* mSword;
     bool mSwordHitPlayer;
     float mDistToSword;
+    float mRunAndSwordProbability;
 
     std::vector<int> mUnlockGroundsIds;
 

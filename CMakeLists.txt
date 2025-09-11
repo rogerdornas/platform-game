@@ -135,6 +135,8 @@ add_executable(${PROJECT_NAME}
         Source/WaveManager.h
         Source/Actors/Lava.cpp
         Source/Actors/Lava.h
+        Source/Actors/JumpEffect.cpp
+        Source/Actors/JumpEffect.h
 )
 
 
