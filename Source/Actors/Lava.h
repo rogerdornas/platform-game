@@ -14,6 +14,9 @@ public:
 
     void SetIsMoving(bool isMoving);
 
+    void SetRespawPosition(Vector2 pos) { mRespawnPosition = pos; }
+    Vector2 GetRespawPosition() { return mRespawnPosition; }
+
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
@@ -24,6 +27,7 @@ private:
     float mHeight;
     float mWidth;
     float mDamage;
+    Vector2 mRespawnPosition;
     bool mIsMoving;
     float mMovingDuration;
     float mMovingTimer;

@@ -407,11 +407,36 @@
 </data>
  </layer>
  <objectgroup id="10" name="Lava">
-  <object id="204" x="2880" y="2432" width="544" height="128"/>
-  <object id="205" x="3872" y="2432" width="608" height="128"/>
-  <object id="206" x="5344" y="800" width="544" height="128"/>
-  <object id="207" x="6080" y="800" width="544" height="128"/>
-  <object id="208" x="6816" y="800" width="320" height="128"/>
+  <object id="204" x="2880" y="2432" width="544" height="128">
+   <properties>
+    <property name="RespawnPositionX" type="float" value="2752"/>
+    <property name="RespawnPositionY" type="float" value="2336"/>
+   </properties>
+  </object>
+  <object id="205" x="3872" y="2432" width="608" height="128">
+   <properties>
+    <property name="RespawnPositionX" type="float" value="3744"/>
+    <property name="RespawnPositionY" type="float" value="2336"/>
+   </properties>
+  </object>
+  <object id="206" x="5344" y="800" width="544" height="128">
+   <properties>
+    <property name="RespawnPositionX" type="float" value="5216"/>
+    <property name="RespawnPositionY" type="float" value="672"/>
+   </properties>
+  </object>
+  <object id="207" x="6080" y="800" width="544" height="128">
+   <properties>
+    <property name="RespawnPositionX" type="float" value="5984"/>
+    <property name="RespawnPositionY" type="float" value="672"/>
+   </properties>
+  </object>
+  <object id="208" x="6816" y="800" width="320" height="128">
+   <properties>
+    <property name="RespawnPositionX" type="float" value="6720"/>
+    <property name="RespawnPositionY" type="float" value="672"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="2" name="Grounds">
   <object id="6" name="Ground" x="544" y="3200" width="1088" height="960"/>

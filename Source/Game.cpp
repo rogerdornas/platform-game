@@ -69,6 +69,9 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mUpdatingActors(false)
     ,mFPS(FPS)
     ,mIsPaused(false)
+    ,mIsCrossFading(false)
+    ,mCrossFadeDuration(0.0f)
+    ,mCrossFadeTimer(0.0f)
     ,mCamera(nullptr)
     ,mPlayer(nullptr)
     ,mLevelData(nullptr)
@@ -87,6 +90,8 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mIsAccelerated(false)
     ,mPlayerDeathCounter(0)
     ,mCheckpointPosition(Vector2::Zero)
+    ,mLavaRespawnPosition(Vector2::Zero)
+    ,mHitByLava(false)
     ,mCheckPointMoney(0)
     ,mGoingToNextLevel(false)
     ,mIsPlayingOnKeyboard(true)
@@ -1235,6 +1240,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 float y = static_cast<float>(obj["y"]) * mScale;
                 float width = static_cast<float>(obj["width"]) * mScale;
                 float height = static_cast<float>(obj["height"]) * mScale;
+                float respawnPositionX = 0.0f;
+                float respawnPositionY = 0.0f;
                 bool isMoving = false;
                 float movingDuration = 0.0f;
                 float speedX = 0.0f;
@@ -1243,7 +1250,13 @@ void Game::LoadObjects(const std::string &fileName) {
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
-                        if (propName == "Moving") {
+                        if (propName == "RespawnPositionX") {
+                            respawnPositionX = static_cast<float>(prop["value"]) * mScale;
+                        }
+                        else if (propName == "RespawnPositionY") {
+                            respawnPositionY = static_cast<float>(prop["value"]) * mScale;
+                        }
+                        else if (propName == "Moving") {
                             isMoving = prop["value"];
                         }
                         else if (propName == "MovingDuration") {
@@ -1259,6 +1272,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 }
                 auto* lava = new Lava(this, width, height, isMoving, movingDuration, Vector2(speedX, speedY));
                 lava->SetPosition(Vector2(x + width / 2, y + height / 2));
+                lava->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
             }
         }
         if (layer["name"] == "Triggers") {
@@ -2146,6 +2160,36 @@ void Game::UpdateGame()
         SDL_ShowCursor(SDL_ENABLE);
     }
 
+    if (mIsCrossFading) {
+        if (mCrossFadeTimer < mCrossFadeDuration) {
+            if (mCrossFadeTimer < mCrossFadeDuration * 0.4f) {
+                float progress = mCrossFadeTimer / (mCrossFadeDuration * 0.4f);
+                mFadeAlpha = static_cast<Uint8>(progress * 255.0f);
+            }
+            else if (mCrossFadeTimer >= mCrossFadeDuration * 0.4f && mCrossFadeTimer < mCrossFadeDuration * 0.6f) {
+                mFadeAlpha = 255;
+                if (mHitByLava) {
+                    mPlayer->SetPosition(mLavaRespawnPosition);
+                    mPlayer->SetState(ActorState::Active);
+                    mPlayer->GetComponent<AABBComponent>()->SetActive(true);
+                }
+            }
+            else if (mCrossFadeTimer >= mCrossFadeDuration * 0.6f) {
+                float progress = 1 - (mCrossFadeTimer - (mCrossFadeDuration * 0.6f)) / (mCrossFadeDuration * 0.4f);
+                mFadeAlpha = static_cast<Uint8>(progress * 255.0f);
+            }
+            mCrossFadeTimer += deltaTime;
+        }
+        else {
+            mIsCrossFading = false;
+            if (mHitByLava) {
+                mPlayer->SetState(ActorState::Active);
+                mPlayer->GetComponent<AABBComponent>()->SetActive(true);
+                mHitByLava = false;
+            }
+        }
+    }
+
     if (mResetLevel) {
         mStore->CloseStoreMessage();
         ResetGameScene(1.5f);
@@ -2374,6 +2418,13 @@ void Game::RemoveDrawable(class DrawComponent* drawable) {
     auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
     mDrawables.erase(iter);
 }
+
+void Game::InitCrossFade(float duration) {
+    mIsCrossFading = true;
+    mCrossFadeTimer = 0;
+    mCrossFadeDuration = duration;
+}
+
 
 void Game::StartBossMusic(SoundHandle music) {
     mBossMusic = music;
@@ -2633,6 +2684,18 @@ void Game::GenerateOutput()
     if (mSceneManagerState == SceneManagerState::Active) {
         // Define a cor preta (RGBA)
         SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
+
+        // Cria o retângulo cobrindo toda a tela
+        SDL_Rect fullScreenRect = { 0, 0, mWindowWidth, mWindowHeight };
+
+        // Desenha o retângulo preenchido
+        SDL_RenderFillRect(mRenderer, &fullScreenRect);
+    }
+
+    if (mIsCrossFading) {
+        SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
+        // Define a cor preta (RGBA)
+        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, mFadeAlpha);
 
         // Cria o retângulo cobrindo toda a tela
         SDL_Rect fullScreenRect = { 0, 0, mWindowWidth, mWindowHeight };
@@ -2915,6 +2978,8 @@ void Game::ChangeResolution(float oldScale)
 {
     mCheckpointPosition.x = mCheckpointPosition.x / oldScale * mScale;
     mCheckpointPosition.y = mCheckpointPosition.y / oldScale * mScale;
+    mLavaRespawnPosition.x = mLavaRespawnPosition.x / oldScale * mScale;
+    mLavaRespawnPosition.y = mLavaRespawnPosition.y / oldScale * mScale;
 
     for (auto& [key, value] : mSpawnPoints) {
         value.x = value.x / oldScale * mScale;

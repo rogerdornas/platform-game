@@ -14,7 +14,7 @@ Lava::Lava(class Game *game, float width, float height, bool isMoving, float mov
     :Actor(game)
     ,mWidth(width)
     ,mHeight(height)
-    ,mDamage(1000.0f)
+    ,mDamage(20.0f)
     ,mIsMoving(isMoving)
     ,mMovingDuration(movingDuration)
     ,mMovingTimer(0.0f)
@@ -81,6 +81,15 @@ void Lava::ResolvePlayerCollision() {
     if (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
         player->SetIsInvulnerable(false);
         player->ReceiveHit(mDamage, Vector2::UnitY);
+        if (!player->Died()) {
+            player->GetComponent<AABBComponent>()->SetActive(false);
+            player->SetInvulnerableTimer(-1.0f);
+            player->GetComponent<DrawAnimatedComponent>()->SetAnimation("hurt");
+            player->SetState(ActorState::Paused);
+            mGame->InitCrossFade(2.0f);
+            mGame->SetHitByLava();
+            mGame->SetLavaRespawnPosition(mRespawnPosition);
+        }
 
         auto* fireBubble = new ParticleSystem(mGame, 10, 180.0f, 0.5f, 0.07f);
         fireBubble->SetPosition(Vector2(player->GetPosition().x, GetPosition().y - mHeight / 2));
@@ -98,7 +107,7 @@ void Lava::ResolveEnemyCollision() {
     if (!enemies.empty()) {
         for (Enemy* e : enemies) {
             if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
-                e->ReceiveHit(mDamage, Vector2::UnitY);
+                e->ReceiveHit(mDamage * 1000, Vector2::UnitY);
 
                 auto* fireBubble = new ParticleSystem(mGame, 10, 180.0f, 0.5f, 0.07f);
                 fireBubble->SetPosition(Vector2(e->GetPosition().x, GetPosition().y - mHeight / 2));
@@ -153,6 +162,8 @@ void Lava::ResolveSwordCollision() {
 void Lava::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
+    mRespawnPosition.x = mRespawnPosition.x / oldScale * newScale;
+    mRespawnPosition.y = mRespawnPosition.y / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
     mVelocity.x = mVelocity.x / oldScale * newScale;
     mVelocity.y = mVelocity.y / oldScale * newScale;

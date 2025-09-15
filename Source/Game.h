@@ -150,6 +150,7 @@ public:
     Enemy* GetEnemyById(int id);
 
     void SetResetLevel() { mResetLevel = true; }
+    void InitCrossFade(float duration);
 
     int **GetLevelData() const { return mLevelData; }
     int **GetLevelDataDynamicGrounds() const { return mLevelDataDynamicGrounds; }
@@ -219,6 +220,8 @@ public:
     int GetCheckPointMoney() const { return mCheckPointMoney; }
     void SetGoingToNextLevel() { mGoingToNextLevel = true; }
     void SetCurrentCutscene(Cutscene* cutscene) { mCurrentCutscene = cutscene; }
+    void SetHitByLava() { mHitByLava = true; }
+    void SetLavaRespawnPosition(Vector2 lavaRespawnPosition) { mLavaRespawnPosition = lavaRespawnPosition; }
 
     // Converte uma Action para sua representação em string
     std::string ActionToString(Action action);
@@ -276,6 +279,9 @@ private:
 
     bool mIsPaused;
     bool mResetLevel;
+    bool mIsCrossFading;
+    float mCrossFadeDuration;
+    float mCrossFadeTimer;
 
     // Camera
     class Camera *mCamera;
@@ -308,6 +314,8 @@ private:
     Vector2 mCheckpointPosition;
     int mCheckPointMoney;
     bool mGoingToNextLevel;
+    Vector2 mLavaRespawnPosition;
+    bool mHitByLava;
 
     // Level data
     int **mLevelData;

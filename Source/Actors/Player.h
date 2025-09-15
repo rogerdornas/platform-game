@@ -50,6 +50,7 @@ public:
     float GetMaxHealthPoints() const { return mMaxHealthPoints; }
     void SetMaxHealthPoints(float maxHealthPoints) { mMaxHealthPoints = maxHealthPoints; }
     void SetIsInvulnerable(bool isInvulnerable) { mIsInvulnerable = isInvulnerable; }
+    void SetInvulnerableTimer(float invulnerableTimer) { mInvulnerableTimer = invulnerableTimer; }
 
     void ResetMana() { mMana = mMaxMana; }
     float GetMana() const { return mMana; }

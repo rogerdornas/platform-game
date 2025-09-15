@@ -434,6 +434,17 @@
                  "height":128,
                  "id":204,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":2752
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":2336
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -445,6 +456,17 @@
                  "height":128,
                  "id":205,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":3744
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":2336
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -456,6 +478,17 @@
                  "height":128,
                  "id":206,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":5216
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":672
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -467,6 +500,17 @@
                  "height":128,
                  "id":207,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":5984
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":672
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -478,6 +522,17 @@
                  "height":128,
                  "id":208,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"RespawnPositionX",
+                         "type":"float",
+                         "value":6720
+                        }, 
+                        {
+                         "name":"RespawnPositionY",
+                         "type":"float",
+                         "value":672
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
