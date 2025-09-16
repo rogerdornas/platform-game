@@ -25,6 +25,9 @@ public:
 
     void Update(float deltaTime) override;
 
+    void StartBossFight(class Enemy* boss);
+    void EndBossFight();
+
     void IncreaseHPBar();
     void IncreaseManaBar();
 
@@ -51,6 +54,11 @@ private:
     RectF mManaRemainingBar;
     int mNumOfSubManaBars;
 
+    RectF mBossHPBar;
+    RectF mBossDamageTakenBar;
+    RectF mBossHPRemainingBar;
+    RectF mBossHPGrowingBar;
+
     // SDL_Rect mHPBar;
     // SDL_Rect mDamageTakenBar;
     // SDL_Rect mHPRemainingBar;
@@ -62,10 +70,14 @@ private:
 
     float mWaitToDecreaseDuration;
     float mWaitToDecreaseTimer;
+    float mBossWaitToDecreaseTimer;
     float mWaitToDecreaseManaDuration;
     float mWaitToDecreaseManaTimer;
     bool mPlayerDie;
+    bool mBossFight;
+    class Enemy* mBoss;
 
     void DrawLifeBar(class SDL_Renderer *renderer);
     void DrawManaBar(class SDL_Renderer * renderer);
+    void DrawBossLifeBar(class SDL_Renderer * renderer);
 };

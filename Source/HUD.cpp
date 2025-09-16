@@ -13,9 +13,13 @@ HUD::HUD(class Game* game, const std::string& fontName)
     ,mNumOfSubManaBars(mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost())
     ,mWaitToDecreaseDuration(0.7f)
     ,mWaitToDecreaseTimer(0.0f)
+    ,mBossWaitToDecreaseTimer(0.0f)
     ,mWaitToDecreaseManaDuration(0.7f)
     ,mWaitToDecreaseManaTimer(0.0f)
-    ,mPlayerDie(false) {
+    ,mPlayerDie(false)
+    ,mBossFight(false)
+    ,mBoss(nullptr)
+{
     float HPBarX = 50 * mGame->GetScale();
     float HPBarY = 50 * mGame->GetScale();
     float HPBarWidth = mGame->GetPlayer()->GetMaxHealthPoints() * 5 * mGame->GetScale();
@@ -26,6 +30,11 @@ HUD::HUD(class Game* game, const std::string& fontName)
     float ManaBarWidth = mGame->GetPlayer()->GetMaxMana() * 2.5 * mGame->GetScale();
     float ManaBarHeight = 30 * mGame->GetScale();
 
+    float bossHPBarX = mGame->GetLogicalWindowWidth() * 0.15f;
+    float bossHPBarY = mGame->GetLogicalWindowHeight() * 0.95f;
+    float bossHPBarWidth = mGame->GetLogicalWindowWidth() * 0.7f;
+    float bossHPBarHeight = 30 * mGame->GetScale();
+
     mHPBar = {HPBarX, HPBarY,HPBarWidth,HPBarHeight};
     mDamageTakenBar = mHPBar;
     mHPRemainingBar = mHPBar;
@@ -34,6 +43,11 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mManaBar = {ManaBarX, ManaBarY, ManaBarWidth, ManaBarHeight};
     mManaUsedBar = mManaBar;
     mManaRemainingBar = mManaBar;
+
+    mBossHPBar = {bossHPBarX, bossHPBarY,bossHPBarWidth,bossHPBarHeight};
+    mBossDamageTakenBar = mBossHPBar;
+    mBossHPRemainingBar = mBossHPBar;
+    mBossHPGrowingBar = mBossHPBar;
 
     mPlayerHealCount = AddText(std::to_string(mGame->GetPlayer()->GetHealCount()),
                                 Vector2(50, 120) * mGame->GetScale(),
@@ -135,7 +149,52 @@ void HUD::Update(float deltaTime) {
     if (mGame->GetPlayer()->Died()) {
         mPlayerDie = true;
     }
+
+    // Boss HP bar
+    if (mBossFight) {
+        float bossHealthPoints = mBoss->GetHealthPoints() / mBoss->GetMaxHealthPoints();
+        if (bossHealthPoints < 0) {
+            bossHealthPoints = 0;
+        }
+        mBossHPRemainingBar.w = mBossHPBar.w * bossHealthPoints;
+    }
+
+    if (mBossHPGrowingBar.w < mBossHPRemainingBar.w) {
+        mBossHPGrowingBar.w += mSpeedHPIncrease * deltaTime;
+        if (mBossHPGrowingBar.w > mBossHPRemainingBar.w) {
+            mBossHPGrowingBar.w = mBossHPRemainingBar.w;
+        }
+    }
+    else {
+        mBossHPGrowingBar.w = mBossHPRemainingBar.w;
+    }
+
+    if (mBossDamageTakenBar.w > mBossHPGrowingBar.w) {
+        mBossWaitToDecreaseTimer += deltaTime;
+        if (mBossWaitToDecreaseTimer >= mWaitToDecreaseDuration) {
+            mBossDamageTakenBar.w -= mSpeedHPDecrease * deltaTime;
+        }
+    }
+    else {
+        mBossDamageTakenBar.w = mBossHPGrowingBar.w;
+        mBossWaitToDecreaseTimer = 0;
+    }
+
+    if (mBoss && mBoss->GetState() == ActorState::Destroy) {
+        EndBossFight();
+    }
 }
+
+void HUD::StartBossFight(class Enemy *boss) {
+    mBoss = boss;
+    mBossFight = true;
+}
+
+void HUD::EndBossFight() {
+    mBossFight = false;
+    mBoss = nullptr;
+}
+
 
 void HUD::IncreaseHPBar() {
     mHPBar.w = mGame->GetPlayer()->GetMaxHealthPoints() * 5 * mGame->GetScale();
@@ -164,6 +223,9 @@ void HUD::Draw(class SDL_Renderer *renderer) {
 
     DrawLifeBar(renderer);
     DrawManaBar(renderer);
+    if (mBossFight) {
+        DrawBossLifeBar(renderer);
+    }
 }
 
 void HUD::DrawLifeBar(class SDL_Renderer *renderer) {
@@ -243,6 +305,45 @@ void HUD::DrawManaBar(struct SDL_Renderer *renderer) {
     }
 }
 
+void HUD::DrawBossLifeBar(struct SDL_Renderer *renderer) {
+    SDL_Rect HPBar;
+    HPBar.x = static_cast<int>(mBossHPBar.x);
+    HPBar.y = static_cast<int>(mBossHPBar.y);
+    HPBar.w = static_cast<int>(mBossHPBar.w);
+    HPBar.h = static_cast<int>(mBossHPBar.h);
+
+    SDL_Rect DamageTakenBar;
+    DamageTakenBar.x = static_cast<int>(mBossDamageTakenBar.x);
+    DamageTakenBar.y = static_cast<int>(mBossDamageTakenBar.y);
+    DamageTakenBar.w = static_cast<int>(mBossDamageTakenBar.w);
+    DamageTakenBar.h = static_cast<int>(mBossDamageTakenBar.h);
+
+    SDL_Rect HPRemainingBar;
+    HPRemainingBar.x = static_cast<int>(mBossHPRemainingBar.x);
+    HPRemainingBar.y = static_cast<int>(mBossHPRemainingBar.y);
+    HPRemainingBar.w = static_cast<int>(mBossHPRemainingBar.w);
+    HPRemainingBar.h = static_cast<int>(mBossHPRemainingBar.h);
+
+    SDL_Rect HPGrowingBar;
+    HPGrowingBar.x = static_cast<int>(mBossHPGrowingBar.x);
+    HPGrowingBar.y = static_cast<int>(mBossHPGrowingBar.y);
+    HPGrowingBar.w = static_cast<int>(mBossHPGrowingBar.w);
+    HPGrowingBar.h = static_cast<int>(mBossHPGrowingBar.h);
+
+    SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
+    SDL_RenderFillRect(renderer, &HPBar);
+
+    SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
+    SDL_RenderFillRect(renderer, &DamageTakenBar);
+
+    SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
+    SDL_RenderFillRect(renderer, &HPRemainingBar);
+
+    SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
+    SDL_RenderFillRect(renderer, &HPGrowingBar);
+}
+
+
 void HUD::ChangeResolution(float oldScale, float newScale) {
     mPos.x = mPos.x / oldScale * newScale;
     mPos.y = mPos.y / oldScale * newScale;
@@ -298,4 +399,24 @@ void HUD::ChangeResolution(float oldScale, float newScale) {
     mManaRemainingBar.y = mManaRemainingBar.y / oldScale * newScale;
     mManaRemainingBar.w = mManaRemainingBar.w / oldScale * newScale;
     mManaRemainingBar.h = mManaRemainingBar.h / oldScale * newScale;
+
+    mBossHPBar.x = mBossHPBar.x / oldScale * newScale;
+    mBossHPBar.y = mBossHPBar.y / oldScale * newScale;
+    mBossHPBar.w = mBossHPBar.w / oldScale * newScale;
+    mBossHPBar.h = mBossHPBar.h / oldScale * newScale;
+
+    mBossDamageTakenBar.x = mBossDamageTakenBar.x / oldScale * newScale;
+    mBossDamageTakenBar.y = mBossDamageTakenBar.y / oldScale * newScale;
+    mBossDamageTakenBar.w = mBossDamageTakenBar.w / oldScale * newScale;
+    mBossDamageTakenBar.h = mBossDamageTakenBar.h / oldScale * newScale;
+
+    mBossHPRemainingBar.x = mBossHPRemainingBar.x / oldScale * newScale;
+    mBossHPRemainingBar.y = mBossHPRemainingBar.y / oldScale * newScale;
+    mBossHPRemainingBar.w = mBossHPRemainingBar.w / oldScale * newScale;
+    mBossHPRemainingBar.h = mBossHPRemainingBar.h / oldScale * newScale;
+
+    mBossHPGrowingBar.x = mBossHPGrowingBar.x / oldScale * newScale;
+    mBossHPGrowingBar.y = mBossHPGrowingBar.y / oldScale * newScale;
+    mBossHPGrowingBar.w = mBossHPGrowingBar.w / oldScale * newScale;
+    mBossHPGrowingBar.h = mBossHPGrowingBar.h / oldScale * newScale;
 }

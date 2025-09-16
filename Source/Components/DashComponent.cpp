@@ -35,7 +35,7 @@ void DashEffectActor::OnUpdate(float deltaTime) {
     if (mEffectTimer >= mEffectDuration) {
         mDrawAnimatedComponent->SetIsVisible(false);
     }
-    else {
+    else if (mOwner->GetState() == ActorState::Active) {
         mDrawAnimatedComponent->SetIsVisible(true);
         SetPosition(mOwner->GetPosition() - (Vector2(mOwner->GetWidth() * 1.5, 0) * GetForward().x));
     }

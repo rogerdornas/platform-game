@@ -8,6 +8,7 @@
 #include "ParticleSystem.h"
 #include "Skill.h"
 #include "../Game.h"
+#include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
@@ -119,6 +120,7 @@ void Golem::OnUpdate(float deltaTime) {
                                              + mGravity * deltaTime));
 
     if (mPlayerSpotted) {
+        mGame->GetHUD()->StartBossFight(this);
         if (!mGame->GetBossMusicHandle().IsValid()) {
             mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
         }

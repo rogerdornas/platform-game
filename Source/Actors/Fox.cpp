@@ -8,6 +8,7 @@
 #include "ParticleSystem.h"
 #include "Skill.h"
 #include "../Game.h"
+#include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
@@ -118,6 +119,7 @@ void Fox::OnUpdate(float deltaTime) {
     }
 
     if (mPlayerSpotted) {
+        mGame->GetHUD()->StartBossFight(this);
         if (!mGame->GetBossMusicHandle().IsValid()) {
             mGame->StartBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav", true));
         }
@@ -425,7 +427,17 @@ void Fox::RunAndSword(float deltaTime)
     if (Math::Abs(dist) < mDistToSword) {
         mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         mSword->SetState(ActorState::Active);
-        mSword->SetRotation(GetRotation());
+        // detecta se player está em cima do boss
+        bool up = (player->GetPosition().y < GetPosition().y) &&
+                  (player->GetPosition().x > GetPosition().x - mWidth &&
+                   player->GetPosition().x < GetPosition().x + mWidth);
+
+        if (up) {
+            mSword->SetRotation(3 * Math::Pi / 2);
+        }
+        else {
+            mSword->SetRotation(GetRotation());
+        }
         mSword->SetPosition(GetPosition());
         mSwordHitPlayer = false;
         mState = State::RunAway;
