@@ -22,13 +22,11 @@
         },
         { 
           "actionType": "SpawnHookPoint", 
-          "type": "Flying Enemy", 
           "id": "LeftMid", 
           "delay": 2.0 
         },
         { 
           "actionType": "SpawnHookPoint", 
-          "type": "Flying Enemy", 
           "id": "RightMid", 
           "delay": 2.0 
         }
@@ -134,7 +132,7 @@
           "actionType": "SpawnEnemy", 
           "type": "Fox", 
           "id": "CenterBot", 
-          "delay": 1.0 
+          "delay": 2.0 
         },
         { 
           "actionType": "GrowGround", 
@@ -150,6 +148,32 @@
           "actionType": "DecreaseGround", 
           "id": 31, 
           "delay": 0.0 
+        }
+      ]
+    },
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "HookEnemy", 
+          "id": "LeftBot", 
+          "delay": 2.0 
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "HookEnemy", 
+          "id": "RightBot", 
+          "delay": 2.0 
+        },
+        { 
+          "actionType": "SpawnHookPoint", 
+          "id": "LeftMid1", 
+          "delay": 1.0 
+        },
+        { 
+          "actionType": "SpawnHookPoint", 
+          "id": "RightMid1", 
+          "delay": 1.0 
         }
       ]
     }

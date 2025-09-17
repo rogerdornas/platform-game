@@ -29,6 +29,7 @@
 #include "Actors/FlyingGolem.h"
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Golem.h"
+#include "Actors/HookEnemy.h"
 #include "Actors/HookPoint.h"
 #include "Actors/Lava.h"
 #include "Actors/Mantis.h"
@@ -1548,6 +1549,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     golem->SetArenaMinPos(Vector2(MinPosX, MinPosY));
                     golem->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                 }
+                else if (name == "HookEnemy") {
+                    auto* hookEnemy = new HookEnemy(this, 220, 100, 500, 750);
+                    hookEnemy->SetPosition(Vector2(x, y));
+                    hookEnemy->SetId(id);
+                }
             }
         }
         if (layer["name"] == "Checkpoint") {
@@ -1814,18 +1820,18 @@ void Game::ProcessInput()
                         }
                     }
 
-                    // if (event.key.keysym.sym == SDLK_8)
-                    //     Quit();
-                    //
-                    // if (event.key.keysym.sym == SDLK_5) {
-                    //     mIsSlowMotion = !mIsSlowMotion;
-                    //     mIsAccelerated = false;
-                    // }
-                    //
-                    // if (event.key.keysym.sym == SDLK_6) {
-                    //     mIsAccelerated = !mIsAccelerated;
-                    //     mIsSlowMotion = false;
-                    // }
+                    if (event.key.keysym.sym == SDLK_8)
+                        Quit();
+
+                    if (event.key.keysym.sym == SDLK_5) {
+                        mIsSlowMotion = !mIsSlowMotion;
+                        mIsAccelerated = false;
+                    }
+
+                    if (event.key.keysym.sym == SDLK_6) {
+                        mIsAccelerated = !mIsAccelerated;
+                        mIsSlowMotion = false;
+                    }
                 }
                 break;
 

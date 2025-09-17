@@ -27,6 +27,7 @@ public:
 
     bool GetIsOnGround() const { return mIsOnGround; }
     void SetMaxJumpsInAir(int jumps) { mMaxJumpsInAir = jumps; }
+    int GetMaxJumpsInAir() const { return mMaxJumpsInAir; }
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
     Vector2 GetStartingPosition() const { return mStartingPosition; }

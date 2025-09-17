@@ -13,6 +13,7 @@
 #include "Actors/FlyingGolem.h"
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/Fox.h"
+#include "Actors/HookEnemy.h"
 #include "Actors/Mantis.h"
 
 WaveManager::WaveManager(Game *game)
@@ -217,6 +218,12 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
         fox->SetPosition(pos);
         fox->SetSpottedPlayer(true);
         a.enemy = fox;
+    }
+    if (a.enemyType == "HookEnemy") {
+        auto* hookEnemy = new HookEnemy(mGame, 220, 100, 500, 750);
+        hookEnemy->SetPosition(pos);
+        hookEnemy->SetSpottedPlayer(true);
+        a.enemy = hookEnemy;
     }
 }
 

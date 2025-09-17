@@ -27,7 +27,7 @@ public:
 
 protected:
     bool Died();
-    void ResolveEnemyCollision() const;
+    virtual void ResolveEnemyCollision();
     virtual void ResolveGroundCollision();
     bool IsOnScreen();
 

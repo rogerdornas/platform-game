@@ -137,6 +137,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Lava.h
         Source/Actors/JumpEffect.cpp
         Source/Actors/JumpEffect.h
+        Source/Actors/HookEnemy.cpp
+        Source/Actors/HookEnemy.h
 )
 
 

@@ -166,7 +166,7 @@ bool Enemy::Died() {
     return false;
 }
 
-void Enemy::ResolveEnemyCollision() const {
+void Enemy::ResolveEnemyCollision() {
     std::vector<Enemy* > enemies = mGame->GetEnemies();
     if (!enemies.empty()) {
         for (Enemy* e: enemies) {

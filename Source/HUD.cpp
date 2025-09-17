@@ -193,6 +193,9 @@ void HUD::StartBossFight(class Enemy *boss) {
 void HUD::EndBossFight() {
     mBossFight = false;
     mBoss = nullptr;
+    mBossDamageTakenBar = mBossHPBar;
+    mBossHPRemainingBar = mBossHPBar;
+    mBossHPGrowingBar = mBossHPBar;
 }
 
 

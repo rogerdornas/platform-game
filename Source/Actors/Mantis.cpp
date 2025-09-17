@@ -35,7 +35,7 @@ Mantis::Mantis(Game *game, float width, float height, float moveSpeed, float hea
     mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, 1.25f * mWidth, 1.25f * mHeight, "../Assets/Sprites/Mantis/Mantis.png", "../Assets/Sprites/Mantis/Mantis.json", 998);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, 1.35f * mWidth, 1.35f * mHeight, "../Assets/Sprites/Mantis/Mantis.png", "../Assets/Sprites/Mantis/Mantis.json", 998);
     std::vector walk = {8, 9, 10, 11};
     mDrawAnimatedComponent->AddAnimation("walk", walk);
 
@@ -238,8 +238,8 @@ void Mantis::ChangeResolution(float oldScale, float newScale) {
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.25f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.25f);
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.35f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.35f);
     }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);

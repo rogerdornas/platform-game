@@ -160,9 +160,10 @@ void Fox::TriggerBossDefeat() {
     }
 
     // Player ganha pulo duplo
-    auto* skill = new Skill(mGame, Skill::SkillType::DoubleJump);
-    skill->SetPosition(GetPosition());
-    // mGame->GetPlayer()->SetCanFireBall(true);
+    if (mGame->GetPlayer()->GetMaxJumpsInAir() == 0) {
+        auto* skill = new Skill(mGame, Skill::SkillType::DoubleJump);
+        skill->SetPosition(GetPosition());
+    }
 
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
