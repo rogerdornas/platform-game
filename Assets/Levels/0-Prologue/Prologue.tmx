@@ -208,17 +208,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="Grounds">
+ <objectgroup id="4" name="Grounds" visible="0">
   <object id="1" x="1472" y="4384" width="9472" height="1696"/>
   <object id="3" x="192" y="2880" width="1280" height="3200"/>
   <object id="6" x="10944" y="2880" width="960" height="3200"/>
  </objectgroup>
- <objectgroup id="2" name="Player">
+ <objectgroup id="2" name="Player" visible="0">
   <object id="2" x="1952" y="4352" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="3" name="Triggers">
   <object id="5" name="Level1" x="4896" y="4096" width="448" height="288">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
     <property name="Scene" value="Level1"/>
     <property name="Target" value="Game"/>
@@ -227,6 +228,7 @@
   <object id="8" x="1856" y="4192" width="192" height="192">
    <properties>
     <property name="CutsceneId" value="introduction"/>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="StartCutscene"/>
     <property name="Target" value="Cutscene"/>
    </properties>

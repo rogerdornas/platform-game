@@ -54,6 +54,7 @@ public:
 
     void SetTarget(std::string target);
     void SetEvent(std::string event);
+    void SetDestroy(bool destroy) { mDestroy = destroy; }
     void SetGroundsIds(const std::vector<int>& ids) { mGroundsIds = ids; }
     void SetEnemiesIds(const std::vector<int>& ids) { mEnemiesIds = ids; }
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
@@ -67,7 +68,7 @@ public:
 
 protected:
     void CameraTrigger();
-    virtual void DynamicGroundTrigger();
+    void DynamicGroundTrigger();
     void GroundTrigger();
     void GameTrigger();
     virtual void EnemyTrigger();
@@ -78,6 +79,7 @@ protected:
     float mHeight;
     Target mTarget;
     Event mEvent;
+    bool mDestroy;
     std::vector<int> mGroundsIds;
     std::vector<int> mEnemiesIds;
     Vector2 mFixedCameraPosition;

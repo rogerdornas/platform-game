@@ -1035,6 +1035,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -1061,6 +1066,11 @@
                  "id":16,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -1093,6 +1103,11 @@
                  "id":23,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Enemies",
                          "type":"string",
@@ -1152,6 +1167,11 @@
                  "id":52,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -1305,6 +1325,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsMoving"
@@ -1375,6 +1400,11 @@
                  "id":174,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -1457,6 +1487,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -1483,6 +1518,11 @@
                  "id":178,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Enemies",
                          "type":"string",
@@ -2868,7 +2908,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -2923,7 +2963,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -3154,7 +3194,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -3349,7 +3389,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -3404,7 +3444,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }],

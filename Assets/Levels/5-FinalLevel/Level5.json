@@ -1042,7 +1042,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -1056,6 +1056,11 @@
                  "id":1,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -1116,6 +1121,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Enemies",
                          "type":"string",
                          "value":"31"
@@ -1142,6 +1152,11 @@
                  "id":9,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -1170,6 +1185,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -1196,6 +1216,11 @@
                  "id":6,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -1224,6 +1249,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -1251,6 +1281,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -1277,6 +1312,11 @@
                  "id":10,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -1362,6 +1402,11 @@
                          "name":"CutsceneId",
                          "type":"string",
                          "value":"bossFinalInicio"
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"Event",
@@ -2576,7 +2621,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -2598,7 +2643,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -2631,7 +2676,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }],

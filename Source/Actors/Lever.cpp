@@ -141,31 +141,6 @@ void Lever::OnUpdate(float deltaTime) {
     }
 }
 
-void Lever::DynamicGroundTrigger() {
-    std::vector<Ground* > grounds = mGame->GetGrounds();
-    switch (mEvent) {
-        case Event::SetIsGrowing:
-            for (int id : mGroundsIds) {
-                Ground* g = mGame->GetGroundById(id);
-                DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
-                if (dynamicGround) {
-                    dynamicGround->SetIsGrowing(true);
-                }
-            }
-        break;
-        case Event::SetIsDecreasing:
-            for (int id : mGroundsIds) {
-                Ground* g = mGame->GetGroundById(id);
-                DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
-                if (dynamicGround) {
-                    dynamicGround->SetIsDecreasing(true);
-                }
-            }
-        default:
-            break;
-    }
-}
-
 void Lever::EnemyTrigger() {
     std::vector<Enemy *> enemies = mGame->GetEnemies();
     switch (mEvent) {

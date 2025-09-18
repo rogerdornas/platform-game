@@ -1012,12 +1012,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="2" name="Enemies">
+ <objectgroup id="2" name="Enemies" visible="0">
   <object id="31" name="Moth" x="3264" y="9920" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="5" name="Triggers">
   <object id="1" x="2528" y="10368" width="1632" height="288">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="14,20,32,33"/>
     <property name="Target" value="DynamicGround"/>
@@ -1033,6 +1034,7 @@
   </object>
   <object id="3" x="2880" y="10400" width="1376" height="256">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Enemies" value="31"/>
     <property name="Event" value="SpotPlayer"/>
     <property name="Target" value="Enemy"/>
@@ -1040,6 +1042,7 @@
   </object>
   <object id="9" x="2784" y="9472" width="224" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="25,26"/>
     <property name="Target" value="DynamicGround"/>
@@ -1047,6 +1050,7 @@
   </object>
   <object id="5" x="2752" y="8960" width="224" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="27"/>
     <property name="Target" value="DynamicGround"/>
@@ -1054,6 +1058,7 @@
   </object>
   <object id="6" x="3584" y="8960" width="224" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="27"/>
     <property name="Target" value="DynamicGround"/>
@@ -1061,6 +1066,7 @@
   </object>
   <object id="7" x="3584" y="8512" width="224" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="28"/>
     <property name="Target" value="DynamicGround"/>
@@ -1068,6 +1074,7 @@
   </object>
   <object id="8" x="2784" y="7936" width="224" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="29,40,46,47,48,49,50"/>
     <property name="Target" value="DynamicGround"/>
@@ -1075,6 +1082,7 @@
   </object>
   <object id="10" x="2528" y="7392" width="1600" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="30,41,42"/>
     <property name="Target" value="DynamicGround"/>
@@ -1097,12 +1105,13 @@
   <object id="45" x="1408" y="10144" width="192" height="512">
    <properties>
     <property name="CutsceneId" value="bossFinalInicio"/>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="StartCutscene"/>
     <property name="Target" value="Cutscene"/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="Grounds">
+ <objectgroup id="4" name="Grounds" visible="0">
   <object id="11" x="2240" y="6400" width="224" height="4000"/>
   <object id="12" x="4192" y="6400" width="224" height="4480"/>
   <object id="13" x="2240" y="10656" width="1952" height="224"/>
@@ -1377,11 +1386,11 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="6" name="Checkpoint">
+ <objectgroup id="6" name="Checkpoint" visible="0">
   <object id="36" name="Checkpoint" x="704" y="10464" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="7" name="Levers"/>
- <objectgroup id="3" name="Player">
+ <objectgroup id="3" name="Player" visible="0">
   <object id="35" x="576" y="10624" width="32" height="32"/>
  </objectgroup>
 </map>

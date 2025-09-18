@@ -1282,6 +1282,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float y = static_cast<float>(obj["y"]) * mScale;
                 float width = static_cast<float>(obj["width"]) * mScale;
                 float height = static_cast<float>(obj["height"]) * mScale;
+                bool destroy = false;
                 std::string target;
                 std::string event;
                 std::string grounds;
@@ -1302,6 +1303,9 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                         else if (propName == "Event") {
                             event = prop["value"];
+                        }
+                        else if (propName == "Destroy") {
+                            destroy = prop["value"];
                         }
                         else if (propName == "Grounds") {
                             grounds = prop["value"];
@@ -1336,6 +1340,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetPosition(Vector2(x + width / 2, y + height / 2));
                 trigger->SetTarget(target);
                 trigger->SetEvent(event);
+                trigger->SetDestroy(destroy);
                 trigger->SetGroundsIds(groundsIds);
                 trigger->SetEnemiesIds(enemiesIds);
                 trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));

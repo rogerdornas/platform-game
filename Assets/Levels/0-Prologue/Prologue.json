@@ -253,7 +253,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -275,7 +275,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -289,6 +289,11 @@
                  "id":5,
                  "name":"Level1",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -320,6 +325,11 @@
                          "name":"CutsceneId",
                          "type":"string",
                          "value":"introduction"
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"Event",

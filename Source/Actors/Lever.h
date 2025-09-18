@@ -22,7 +22,6 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void DynamicGroundTrigger() override;
     void EnemyTrigger() override;
 
     LeverType mLeverType;

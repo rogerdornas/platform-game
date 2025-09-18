@@ -1015,6 +1015,7 @@
  <objectgroup id="5" name="Triggers">
   <object id="12" x="9568" y="4896" width="448" height="768">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="13,14"/>
     <property name="Target" value="DynamicGround"/>
@@ -1022,6 +1023,7 @@
   </object>
   <object id="16" x="9568" y="4928" width="448" height="736">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="Fixed"/>
     <property name="FixedCameraPositionX" type="float" value="8800"/>
     <property name="FixedCameraPositionY" type="float" value="4768"/>
@@ -1030,6 +1032,7 @@
   </object>
   <object id="23" x="9568" y="4960" width="448" height="704">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Enemies" value="17,19,20,22"/>
     <property name="Event" value="SpotPlayer"/>
     <property name="Target" value="Enemy"/>
@@ -1045,6 +1048,7 @@
   </object>
   <object id="52" x="15424" y="4992" width="512" height="672">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="49,59,60,61,62,63"/>
     <property name="Target" value="DynamicGround"/>
@@ -1085,6 +1089,7 @@
   </object>
   <object id="103" x="19808" y="4256" width="256" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsMoving"/>
     <property name="Grounds" value="101"/>
     <property name="Target" value="Ground"/>
@@ -1104,6 +1109,7 @@
   </object>
   <object id="174" x="34304" y="6144" width="1184" height="1344">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
     <property name="Scene" value="Level2"/>
     <property name="Target" value="Game"/>
@@ -1125,6 +1131,7 @@
   </object>
   <object id="177" x="29376" y="8192" width="1792" height="224">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="185,186,189"/>
     <property name="Target" value="DynamicGround"/>
@@ -1132,6 +1139,7 @@
   </object>
   <object id="178" x="29408" y="8192" width="1728" height="224">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Enemies" value="173"/>
     <property name="Event" value="SpotPlayer"/>
     <property name="Target" value="Enemy"/>
@@ -1160,7 +1168,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="2" name="Grounds">
+ <objectgroup id="2" name="Grounds" visible="0">
   <object id="2" x="5440" y="5664" width="12512" height="864"/>
   <object id="9" x="7328" y="5408" width="256" height="256"/>
   <object id="10" x="5440" y="4384" width="2240" height="512"/>
@@ -1388,13 +1396,13 @@
   <object id="184" name="Ground" x="32960" y="7488" width="2560" height="2112"/>
   <object id="188" x="31968" y="7648" width="160" height="64"/>
  </objectgroup>
- <objectgroup id="8" name="Checkpoint">
+ <objectgroup id="8" name="Checkpoint" visible="0">
   <object id="167" name="Checkpoint" x="11168" y="5472" width="416" height="192"/>
   <object id="168" name="Checkpoint" x="16992" y="5472" width="416" height="192"/>
   <object id="169" name="Checkpoint" x="28544" y="7296" width="416" height="192"/>
   <object id="172" name="Checkpoint" x="33184" y="7296" width="416" height="192"/>
  </objectgroup>
- <objectgroup id="6" name="Enemies">
+ <objectgroup id="6" name="Enemies" visible="0">
   <object id="17" name="FlyingShooterEnemy" x="9568" y="5248" width="32" height="32"/>
   <object id="19" name="Flying Enemy" x="10432" y="4992" width="32" height="32"/>
   <object id="20" name="Enemy Simple" x="10528" y="5632" width="32" height="32"/>
@@ -1460,10 +1468,10 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="3" name="Player">
+ <objectgroup id="3" name="Player" visible="0">
   <object id="1" x="6848" y="5632" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="10" name="HookPoints">
+ <objectgroup id="10" name="HookPoints" visible="0">
   <object id="210" x="7072" y="5024" width="32" height="32"/>
   <object id="211" x="8032" y="5216" width="32" height="32"/>
   <object id="212" x="21184" y="3712" width="32" height="32"/>

@@ -16,6 +16,7 @@ Trigger::Trigger(class Game *game, float width, float height)
     ,mWidth(width)
     ,mHeight(height)
     ,mTarget(Target::Nothing)
+    ,mDestroy(false)
     ,mDrawPolygonComponent(nullptr)
 
 {
@@ -30,7 +31,7 @@ Trigger::Trigger(class Game *game, float width, float height)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
+    mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
     mAABBComponent = new AABBComponent(this, v1, v3);
 }
 
@@ -217,6 +218,9 @@ void Trigger::OnUpdate(float deltaTime) {
             default:
                 break;
         }
+        if (mDestroy) {
+            SetState(ActorState::Destroy);
+        }
     }
 }
 
@@ -226,7 +230,6 @@ void Trigger::CameraTrigger() {
         case Event::Fixed:
             camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::Fixed);
-            SetState(ActorState::Destroy);
             break;
 
         case Event::FollowPlayer:
@@ -260,12 +263,10 @@ void Trigger::CameraTrigger() {
 
         case Event::ScrollRight:
             camera->ChangeCameraMode(CameraMode::ScrollRight);
-            SetState(ActorState::Destroy);
             break;
 
         case Event::ScrollUp:
             camera->ChangeCameraMode(CameraMode::ScrollUp);
-            SetState(ActorState::Destroy);
             break;
 
         default:
@@ -286,7 +287,6 @@ void Trigger::DynamicGroundTrigger() {
                     dynamicGround->SetIsGrowing(true);
                 }
             }
-            SetState(ActorState::Destroy);
             break;
 
         case Event::SetIsDecreasing:
@@ -297,7 +297,6 @@ void Trigger::DynamicGroundTrigger() {
                     dynamicGround->SetIsDecreasing(true);
                 }
             }
-            SetState(ActorState::Destroy);
             break;
 
         case Event::SetIsDecreasingAfterKillingEnemies:
@@ -334,7 +333,6 @@ void Trigger::GroundTrigger() {
                     g->SetIsMoving(true);
                 }
             }
-            SetState(ActorState::Destroy);
             break;
         default:
             break;
@@ -347,12 +345,10 @@ void Trigger::GameTrigger() {
             mGame->GetAudio()->StopAllSounds();
             mGame->SetGameScene(mScene, 2.0f);
             mGame->SetGoingToNextLevel();
-            SetState(ActorState::Destroy);
             break;
 
         case Event::StartArena:
             mGame->CreateWaveManager(mWavesPath);
-            SetState(ActorState::Destroy);
             break;
 
         default:
@@ -370,7 +366,6 @@ void Trigger::EnemyTrigger() {
                     e->SetSpottedPlayer(true);
                 }
             }
-            SetState(ActorState::Destroy);
             break;
 
         default:
@@ -380,7 +375,6 @@ void Trigger::EnemyTrigger() {
 
 void Trigger::DialogueTrigger() {
     auto* dialogue = new DialogueSystem(mGame, "../Assets/Fonts/K2D-Bold.ttf", mDialoguePath);
-    SetState(ActorState::Destroy);
 }
 
 void Trigger::CutsceneTrigger() {
@@ -388,7 +382,6 @@ void Trigger::CutsceneTrigger() {
     cutscene->Start();
     mGame->SetCurrentCutscene(cutscene);
     mGame->SetGamePlayState(Game::GamePlayState::Cutscene);
-    SetState(ActorState::Destroy);
 }
 
 

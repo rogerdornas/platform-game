@@ -185,7 +185,7 @@ Player::Player(Game* game, float width, float height)
                                                    "../Assets/Sprites/Esquilo3/Esquilo.png",
                                                    "../Assets/Sprites/Esquilo3/Esquilo.json", 1002);
 
-    std::vector idle = {19};
+    std::vector idle = {19, 20, 21, 22};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
     std::vector attackFront = {19, 2, 3};
@@ -200,13 +200,13 @@ Player::Player(Game* game, float width, float height)
     std::vector dash = {6, 7, 7, 7, 8};
     mDrawAnimatedComponent->AddAnimation("dash", dash);
 
-    std::vector run = {23, 24, 25, 26, 27, 28};
+    std::vector run = {26, 27, 28, 29, 30, 31};
     mDrawAnimatedComponent->AddAnimation("run", run);
 
     std::vector heal = {12, 13, 14, 15, 16, 16, 15, 14, 13, 12};
     mDrawAnimatedComponent->AddAnimation("heal", heal);
 
-    std::vector wallSlide = {29};
+    std::vector wallSlide = {32};
     mDrawAnimatedComponent->AddAnimation("wallSlide", wallSlide);
 
     std::vector hurt = {17, 18};
@@ -215,13 +215,13 @@ Player::Player(Game* game, float width, float height)
     std::vector die = {17, 9, 10, 11, 11, 11};
     mDrawAnimatedComponent->AddAnimation("die", die);
 
-    std::vector jumpUp = {20};
+    std::vector jumpUp = {23};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {21};
+    std::vector jumpApex = {24};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {22};
+    std::vector falling = {25};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -1206,6 +1206,7 @@ void Player::ManageAnimations() {
     }
     else {
         mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawAnimatedComponent->SetAnimFPS(7.0f);
     }
 
     if (mIsInvulnerable && mHurtTimer > mHurtDuration) {

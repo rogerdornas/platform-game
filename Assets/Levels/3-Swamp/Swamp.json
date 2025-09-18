@@ -602,7 +602,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -1867,7 +1867,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -1889,7 +1889,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -1899,7 +1899,7 @@
          "name":"Triggers",
          "objects":[
                 {
-                 "height":256,
+                 "height":448,
                  "id":202,
                  "name":"Kill Enemies",
                  "properties":[
@@ -1928,7 +1928,7 @@
                  "visible":true,
                  "width":928,
                  "x":3584,
-                 "y":2528
+                 "y":2336
                 }, 
                 {
                  "height":192,
@@ -2096,6 +2096,11 @@
                  "name":"Close Wall",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -2122,6 +2127,11 @@
                  "id":233,
                  "name":"Close Wall",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -2150,6 +2160,11 @@
                  "name":"Close Wall",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -2176,6 +2191,11 @@
                  "id":269,
                  "name":"Close Wall",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -2204,6 +2224,11 @@
                  "name":"Close Wall",
                  "properties":[
                         {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"Event",
                          "type":"string",
                          "value":"SetIsGrowing"
@@ -2230,6 +2255,11 @@
                  "id":284,
                  "name":"Level4",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Event",
                          "type":"string",
@@ -2316,6 +2346,11 @@
                  "id":291,
                  "name":"",
                  "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Enemies",
                          "type":"string",
@@ -2722,7 +2757,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }],

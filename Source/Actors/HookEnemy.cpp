@@ -474,8 +474,7 @@ void HookEnemy::ManageAnimations() {
     }
     else if (mHookEnemyState == State::Hook) {
         mDrawAnimatedComponent->SetAnimation("jump");
-        float dist = GetPosition().x - playerPos.x;
-        if (dist > 0) {
+        if (mRigidBodyComponent->GetVelocity().x < 0) {
             mDrawAnimatedComponent->UseFlip(true);
             mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
         }

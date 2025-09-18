@@ -476,7 +476,7 @@
       }
     },
     {
-      "filename": "Idle.png",
+      "filename": "Idle01.png",
       "frame": {
         "x": 461,
         "y": 1,
@@ -501,7 +501,7 @@
       }
     },
     {
-      "filename": "Jump1.png",
+      "filename": "Idle02.png",
       "frame": {
         "x": 185,
         "y": 369,
@@ -526,7 +526,7 @@
       }
     },
     {
-      "filename": "Jump2.png",
+      "filename": "Idle03.png",
       "frame": {
         "x": 277,
         "y": 277,
@@ -551,7 +551,7 @@
       }
     },
     {
-      "filename": "Jump3.png",
+      "filename": "Idle04.png",
       "frame": {
         "x": 369,
         "y": 185,
@@ -576,7 +576,7 @@
       }
     },
     {
-      "filename": "Walk1.png",
+      "filename": "Jump1.png",
       "frame": {
         "x": 461,
         "y": 93,
@@ -601,7 +601,32 @@
       }
     },
     {
-      "filename": "Walk2.png",
+      "filename": "Jump2.png",
+      "frame": {
+        "x": 553,
+        "y": 1,
+        "w": 90,
+        "h": 90
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 90
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 90
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Jump3.png",
       "frame": {
         "x": 277,
         "y": 369,
@@ -626,7 +651,7 @@
       }
     },
     {
-      "filename": "Walk3.png",
+      "filename": "Walk1.png",
       "frame": {
         "x": 369,
         "y": 277,
@@ -651,7 +676,7 @@
       }
     },
     {
-      "filename": "Walk4.png",
+      "filename": "Walk2.png",
       "frame": {
         "x": 461,
         "y": 185,
@@ -676,7 +701,32 @@
       }
     },
     {
-      "filename": "Walk5.png",
+      "filename": "Walk3.png",
+      "frame": {
+        "x": 553,
+        "y": 93,
+        "w": 90,
+        "h": 90
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 90
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 90
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk4.png",
       "frame": {
         "x": 369,
         "y": 369,
@@ -701,10 +751,35 @@
       }
     },
     {
-      "filename": "Walk6.png",
+      "filename": "Walk5.png",
       "frame": {
         "x": 461,
         "y": 277,
+        "w": 90,
+        "h": 90
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 90
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 90
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk6.png",
+      "frame": {
+        "x": 553,
+        "y": 185,
         "w": 90,
         "h": 90
       },
@@ -757,7 +832,7 @@
     "image": "Esquilo.png",
     "format": "RGBA8888",
     "size": {
-      "w": 552,
+      "w": 644,
       "h": 460
     },
     "scale": 1

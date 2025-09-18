@@ -406,7 +406,7 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup id="10" name="Lava">
+ <objectgroup id="10" name="Lava" visible="0">
   <object id="204" x="2880" y="2432" width="544" height="128">
    <properties>
     <property name="RespawnPositionX" type="float" value="2752"/>
@@ -438,7 +438,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="2" name="Grounds">
+ <objectgroup id="2" name="Grounds" visible="0">
   <object id="6" name="Ground" x="544" y="3200" width="1088" height="960"/>
   <object id="7" name="Ground" x="1632" y="2912" width="640" height="1248"/>
   <object id="8" name="Ground" x="2272" y="2400" width="608" height="1760"/>
@@ -699,6 +699,7 @@
  <objectgroup id="5" name="Triggers">
   <object id="89" name="Going Up" x="4384" y="2016" width="192" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsMoving"/>
     <property name="Grounds" value="88"/>
     <property name="Target" value="Ground"/>
@@ -706,6 +707,7 @@
   </object>
   <object id="116" name="Going Down" x="8160" y="1376" width="384" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsMoving"/>
     <property name="Grounds" value="117"/>
     <property name="Target" value="Ground"/>
@@ -713,6 +715,7 @@
   </object>
   <object id="121" name="Level3" x="14880" y="3200" width="320" height="224">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
     <property name="Scene" value="Level3"/>
     <property name="Target" value="Game"/>
@@ -720,6 +723,7 @@
   </object>
   <object id="129" name="Close walls" x="6688" y="1536" width="448" height="832">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="127,128"/>
     <property name="Target" value="DynamicGround"/>
@@ -735,6 +739,7 @@
   </object>
   <object id="131" name="Spot Player" x="6688" y="1568" width="448" height="800">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Enemies" value="138,139,140,141,142"/>
     <property name="Event" value="SpotPlayer"/>
     <property name="Target" value="Enemy"/>
@@ -742,6 +747,7 @@
   </object>
   <object id="146" name="Close Wall" x="8128" y="1472" width="512" height="896">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="128"/>
     <property name="Target" value="DynamicGround"/>
@@ -757,6 +763,7 @@
   </object>
   <object id="151" name="Open Wall" x="8896" y="2912" width="352" height="544">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsDecreasing"/>
     <property name="Grounds" value="149"/>
     <property name="Target" value="DynamicGround"/>
@@ -764,6 +771,7 @@
   </object>
   <object id="152" name="Close Wall" x="8864" y="2912" width="352" height="544">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="150"/>
     <property name="Target" value="DynamicGround"/>
@@ -771,6 +779,7 @@
   </object>
   <object id="153" name="Close Wall" x="9504" y="2912" width="352" height="544">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="148,149"/>
     <property name="Target" value="DynamicGround"/>
@@ -792,6 +801,7 @@
   </object>
   <object id="185" name="Close Wall" x="11872" y="3136" width="224" height="320">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="184"/>
     <property name="Target" value="DynamicGround"/>
@@ -813,6 +823,7 @@
   </object>
   <object id="195" name="Going Up" x="4384" y="1024" width="192" height="96">
    <properties>
+    <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="SetIsMoving"/>
     <property name="Grounds" value="196"/>
     <property name="Target" value="Ground"/>
@@ -849,14 +860,14 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="7" name="Checkpoint">
+ <objectgroup id="7" name="Checkpoint" visible="0">
   <object id="56" name="Checkpoint1" x="608" y="3008" width="416" height="192"/>
   <object id="179" name="Checkpoint2" x="4544" y="2208" width="416" height="192"/>
   <object id="180" name="Checkpoint3" x="8128" y="2176" width="416" height="192"/>
   <object id="181" name="Checkpoint4" x="8800" y="3232" width="416" height="192"/>
   <object id="182" name="Checkpoint5" x="12576" y="3232" width="416" height="192"/>
  </objectgroup>
- <objectgroup id="4" name="Enemies">
+ <objectgroup id="4" name="Enemies" visible="0">
   <object id="61" name="Enemy Simple" x="2144" y="2880" width="32" height="32"/>
   <object id="63" name="Enemy Simple" x="2464" y="2368" width="32" height="32"/>
   <object id="64" name="Flying Enemy" x="2880" y="2208" width="32" height="32"/>
@@ -900,7 +911,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="3" name="Player">
+ <objectgroup id="3" name="Player" visible="0">
   <object id="18" name="Player" x="1120" y="3168" width="32" height="32"/>
  </objectgroup>
 </map>
