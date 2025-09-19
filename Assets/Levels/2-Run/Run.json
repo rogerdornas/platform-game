@@ -443,7 +443,7 @@
                         {
                          "name":"RespawnPositionY",
                          "type":"float",
-                         "value":2336
+                         "value":2304
                         }],
                  "rotation":0,
                  "type":"",
@@ -465,7 +465,7 @@
                         {
                          "name":"RespawnPositionY",
                          "type":"float",
-                         "value":2336
+                         "value":2304
                         }],
                  "rotation":0,
                  "type":"",
@@ -542,7 +542,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -1929,7 +1929,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -2648,7 +2648,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -2889,7 +2889,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -2976,7 +2976,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],

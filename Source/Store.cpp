@@ -57,6 +57,9 @@ void Store::OpenStore() {
     float costPosX = mStoreMenu->GetSize().x - 150 * mGame->GetScale();
     float moneyImgX = mStoreMenu->GetSize().x - 180 * mGame->GetScale();
 
+    auto* background = mStoreMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", -1.2 * mStoreMenu->GetPosition(), Vector2(mGame->GetLogicalWindowWidth(), mGame->GetLogicalWindowHeight()) * 1.5f);
+    background->SetTransparency(128);
+
     mStoreMenu->AddImage("../Assets/Sprites/Background/Store.png", Vector2::Zero, mStoreMenu->GetSize());
 
     UIText* text = mStoreMenu->AddText("LOJA", Vector2::Zero, Vector2::Zero, 40 * mGame->GetScale());

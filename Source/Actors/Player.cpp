@@ -63,8 +63,8 @@ Player::Player(Game* game, float width, float height)
     ,mStopInAirFireBallTimer(0.0f)
     ,mStopInAirFireBallMaxDuration(0.0f)
     ,mFireballRecoil(0.0f * mGame->GetScale())
-    ,mFireballWidth(50 * mGame->GetScale())
-    ,mFireBallHeight(50 * mGame->GetScale())
+    ,mFireballWidth(45 * mGame->GetScale())
+    ,mFireBallHeight(45 * mGame->GetScale())
     ,mFireballSpeed(1500 * mGame->GetScale())
     ,mFireballDamage(10.0f)
     ,mMaxMana(90.0f)
@@ -181,9 +181,9 @@ Player::Player(Game* game, float width, float height)
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.png",
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.6f, mWidth * 3.6f,
-                                                   "../Assets/Sprites/Esquilo3/Esquilo.png",
-                                                   "../Assets/Sprites/Esquilo3/Esquilo.json", 1002);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.7f, mWidth * 3.7f * 1.11f,
+                                                   "../Assets/Sprites/Esquilo4/Esquilo.png",
+                                                   "../Assets/Sprites/Esquilo4/Esquilo.json", 1002);
 
     std::vector idle = {19, 20, 21, 22};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
@@ -1206,7 +1206,7 @@ void Player::ManageAnimations() {
     }
     else {
         mDrawAnimatedComponent->SetAnimation("idle");
-        mDrawAnimatedComponent->SetAnimFPS(7.0f);
+        mDrawAnimatedComponent->SetAnimFPS(6.0f);
     }
 
     if (mIsInvulnerable && mHurtTimer > mHurtDuration) {
@@ -1321,8 +1321,8 @@ void Player::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 3.6f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 3.6f);
+    mDrawAnimatedComponent->SetWidth(mWidth * 3.7f);
+    mDrawAnimatedComponent->SetHeight(mWidth * 3.7f * 1.11f);
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

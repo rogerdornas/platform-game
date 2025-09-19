@@ -611,6 +611,9 @@ UIScreen* Game::LoadPauseMenu() {
     mPauseMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
     Vector2 buttonPos = Vector2((mPauseMenu->GetSize().x - buttonSize.x) / 2, 0);
 
+    auto* background = mPauseMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", -1.2 * mPauseMenu->GetPosition(), Vector2(mLogicalWindowWidth, mLogicalWindowHeight) * 1.5f);
+    background->SetTransparency(128);
+
     std::string name = "CONTINUAR";
     int buttonPointSize = static_cast<int>(34 * mScale);
     mPauseMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -1588,7 +1591,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     AddActor(mPlayer);
                 }
                 else {
-                    mPlayer = new Player(this, 60, 85);
+                    mPlayer = new Player(this, 60, 75);
                     mPlayer->SetPosition(Vector2(x, y));
                     mPlayer->SetStartingPosition(Vector2(x, y));
                     mCheckpointPosition = Vector2(x, y);

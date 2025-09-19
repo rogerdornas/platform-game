@@ -31,7 +31,7 @@ Trigger::Trigger(class Game *game, float width, float height)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
+    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
     mAABBComponent = new AABBComponent(this, v1, v3);
 }
 

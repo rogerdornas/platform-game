@@ -41,6 +41,10 @@ void UIScreen::Update(float deltaTime) {
 
 void UIScreen::Draw(SDL_Renderer *renderer)
 {
+    if (!mIsVisible) {
+        return;
+    }
+
     for (UIImage* image : mImages) {
         image->Draw(renderer, mPos);
     }

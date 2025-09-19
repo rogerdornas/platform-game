@@ -8,6 +8,7 @@ UIImage::UIImage(const std::string &imagePath, const Vector2 &pos, const Vector2
     :UIElement(pos, size, color)
     ,mTexture(nullptr)
     ,mRenderer(renderer)
+    ,mTransparency(255)
 {
     SDL_Surface* surface = IMG_Load(imagePath.c_str());
 
@@ -55,6 +56,8 @@ void UIImage::Draw(SDL_Renderer* renderer, const Vector2 &screenPos)
     dstRect.w = mSize.x;
     dstRect.h = mSize.y;
 
+    SDL_SetTextureBlendMode(mTexture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(mTexture, mTransparency);
     SDL_RenderCopyEx(renderer, mTexture, nullptr, &dstRect, 0.0, nullptr, SDL_FLIP_NONE);
 }
 

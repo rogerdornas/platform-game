@@ -17,6 +17,7 @@ public:
     ~UIImage();
 
     void SetImage(const std::string& imagePath);
+    void SetTransparency(int transparency) { mTransparency = transparency; }
     void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
@@ -24,4 +25,5 @@ public:
 private:
     SDL_Texture* mTexture; // Texture for the image
     SDL_Renderer* mRenderer;
+    int mTransparency;
 };

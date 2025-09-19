@@ -406,17 +406,17 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup id="10" name="Lava" visible="0">
+ <objectgroup id="10" name="Lava">
   <object id="204" x="2880" y="2432" width="544" height="128">
    <properties>
     <property name="RespawnPositionX" type="float" value="2752"/>
-    <property name="RespawnPositionY" type="float" value="2336"/>
+    <property name="RespawnPositionY" type="float" value="2304"/>
    </properties>
   </object>
   <object id="205" x="3872" y="2432" width="608" height="128">
    <properties>
     <property name="RespawnPositionX" type="float" value="3744"/>
-    <property name="RespawnPositionY" type="float" value="2336"/>
+    <property name="RespawnPositionY" type="float" value="2304"/>
    </properties>
   </object>
   <object id="206" x="5344" y="800" width="544" height="128">
@@ -438,7 +438,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="2" name="Grounds" visible="0">
+ <objectgroup id="2" name="Grounds">
   <object id="6" name="Ground" x="544" y="3200" width="1088" height="960"/>
   <object id="7" name="Ground" x="1632" y="2912" width="640" height="1248"/>
   <object id="8" name="Ground" x="2272" y="2400" width="608" height="1760"/>
@@ -860,14 +860,14 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="7" name="Checkpoint" visible="0">
+ <objectgroup id="7" name="Checkpoint">
   <object id="56" name="Checkpoint1" x="608" y="3008" width="416" height="192"/>
   <object id="179" name="Checkpoint2" x="4544" y="2208" width="416" height="192"/>
   <object id="180" name="Checkpoint3" x="8128" y="2176" width="416" height="192"/>
   <object id="181" name="Checkpoint4" x="8800" y="3232" width="416" height="192"/>
   <object id="182" name="Checkpoint5" x="12576" y="3232" width="416" height="192"/>
  </objectgroup>
- <objectgroup id="4" name="Enemies" visible="0">
+ <objectgroup id="4" name="Enemies">
   <object id="61" name="Enemy Simple" x="2144" y="2880" width="32" height="32"/>
   <object id="63" name="Enemy Simple" x="2464" y="2368" width="32" height="32"/>
   <object id="64" name="Flying Enemy" x="2880" y="2208" width="32" height="32"/>
@@ -911,7 +911,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="3" name="Player" visible="0">
+ <objectgroup id="3" name="Player">
   <object id="18" name="Player" x="1120" y="3168" width="32" height="32"/>
  </objectgroup>
 </map>
