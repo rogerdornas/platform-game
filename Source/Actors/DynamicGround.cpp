@@ -22,7 +22,7 @@ DynamicGround::DynamicGround(Game* game, float width, float height, bool isSpike
     ,mGrowthDirection(GrowthDirection::Centered)
     ,mDrawDynamicGroundSpritesComponent(nullptr)
 {
-    mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize());
+    mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 100);
 }
 
 void DynamicGround::OnUpdate(float deltaTime) {

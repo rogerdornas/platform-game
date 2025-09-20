@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="380">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="382">
  <editorsettings>
   <export target="Forest.json" format="json"/>
  </editorsettings>
@@ -2676,7 +2676,7 @@
    <properties>
     <property name="GrowSpeedX" type="float" value="0"/>
     <property name="GrowSpeedY" type="float" value="500"/>
-    <property name="GrowthDirection" type="int" value="0"/>
+    <property name="GrowthDirection" type="int" value="1"/>
     <property name="MinHeight" type="float" value="0"/>
     <property name="MinWidth" type="float" value="192"/>
    </properties>

@@ -47,7 +47,7 @@ Ground::Ground(Game* game, float width, float height, bool isSpike, bool isMovin
     mRigidBodyComponent = new RigidBodyComponent(this, 1);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
-    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize());
+    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 99);
     if (mIsMoving) {
         mRigidBodyComponent->SetVelocity(mVelocity);
     }

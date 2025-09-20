@@ -1,7 +1,7 @@
 {
   "frames": [
     {
-      "filename": "Fly01.png",
+      "filename": "Advance01.png",
       "frame": {
         "x": 1,
         "y": 1,
@@ -26,7 +26,7 @@
       }
     },
     {
-      "filename": "Idle01.png",
+      "filename": "Fly01.png",
       "frame": {
         "x": 1,
         "y": 88,
@@ -51,10 +51,35 @@
       }
     },
     {
-      "filename": "Idle02.png",
+      "filename": "Idle01.png",
       "frame": {
         "x": 120,
         "y": 1,
+        "w": 117,
+        "h": 85
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 117,
+        "h": 85
+      },
+      "sourceSize": {
+        "w": 117,
+        "h": 85
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle02.png",
+      "frame": {
+        "x": 1,
+        "y": 175,
         "w": 117,
         "h": 85
       },
@@ -128,8 +153,8 @@
     {
       "filename": "Jump01.png",
       "frame": {
-        "x": 239,
-        "y": 88,
+        "x": 120,
+        "y": 175,
         "w": 117,
         "h": 85
       },
@@ -158,7 +183,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 357,
-      "h": 174
+      "h": 261
     },
     "scale": 1
   }

@@ -59,13 +59,13 @@ HookEnemy::HookEnemy(Game *game, float width, float height, float moveSpeed, flo
     mKnockBackTimer = mKnockBackDuration;
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.35f, mWidth * 1.35f * 0.73f, "../Assets/Sprites/HookEnemy/HookEnemy.png", "../Assets/Sprites/HookEnemy/HookEnemy.json", 998);
-    std::vector idle = {1, 2, 3, 4};
+    std::vector idle = {2, 3, 4, 5};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector fly = {0};
+    std::vector fly = {1};
     mDrawAnimatedComponent->AddAnimation("fly", fly);
 
-    std::vector jump = {5};
+    std::vector jump = {6};
     mDrawAnimatedComponent->AddAnimation("jump", jump);
 
     mDrawAnimatedComponent->SetAnimation("idle");

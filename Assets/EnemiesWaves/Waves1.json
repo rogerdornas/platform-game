@@ -6,19 +6,19 @@
           "actionType": "SpawnEnemy", 
           "type": "Enemy Simple", 
           "id": "LeftBot", 
-          "delay": 1.0 
+          "delay": 2.5
         },
         { 
           "actionType": "SpawnEnemy", 
           "type": "Enemy Simple", 
           "id": "RightBot", 
-          "delay": 1.0 
+          "delay": 2.5
         },
         { 
           "actionType": "SpawnEnemy", 
           "type": "Flying Enemy", 
           "id": "LeftMid", 
-          "delay": 1.0 
+          "delay": 2.5
         },
         { 
           "actionType": "SpawnHookPoint", 
@@ -38,19 +38,19 @@
           "actionType": "SpawnEnemy", 
           "type": "FlyingGolem", 
           "id": "LeftMid", 
-          "delay": 1.0 
+          "delay": 2.5
         },
         { 
           "actionType": "SpawnEnemy", 
           "type": "Mantis", 
           "id": "LeftBot", 
-          "delay": 1.5 
+          "delay": 3.0
         },
         { 
           "actionType": "SpawnEnemy", 
           "type": "FlyingShooterEnemy", 
           "id": "RightMid", 
-          "delay": 2.0 
+          "delay": 3.5
         },
         { 
           "actionType": "GrowGround", 
@@ -75,7 +75,7 @@
           "actionType": "SpawnEnemy", 
           "type": "DragonFly", 
           "id": "LeftMid", 
-          "delay": 1.5 
+          "delay": 3.0
         },
         { 
           "actionType": "DecreaseGround", 
@@ -100,19 +100,19 @@
           "actionType": "SpawnEnemy", 
           "type": "Flying Enemy", 
           "id": "LeftTop", 
-          "delay": 1.5 
+          "delay": 3.0
         },
         { 
           "actionType": "SpawnEnemy", 
           "type": "Flying Enemy", 
           "id": "RightTop", 
-          "delay": 1.5 
+          "delay": 3.0
         },
         { 
           "actionType": "SpawnEnemy", 
           "type": "Flying Enemy", 
           "id": "CenterTop", 
-          "delay": 1.5 
+          "delay": 3.0
         },
         { 
           "actionType": "GrowGround", 
@@ -132,7 +132,7 @@
           "actionType": "SpawnEnemy", 
           "type": "Fox", 
           "id": "CenterBot", 
-          "delay": 2.0 
+          "delay": 3.5
         },
         { 
           "actionType": "GrowGround", 
@@ -157,13 +157,13 @@
           "actionType": "SpawnEnemy", 
           "type": "HookEnemy", 
           "id": "LeftBot", 
-          "delay": 2.0 
+          "delay": 3.5
         },
         { 
           "actionType": "SpawnEnemy", 
           "type": "HookEnemy", 
           "id": "RightBot", 
-          "delay": 2.0 
+          "delay": 3.5
         },
         { 
           "actionType": "SpawnHookPoint", 

@@ -15,6 +15,7 @@
 #include "Actors/Fox.h"
 #include "Actors/HookEnemy.h"
 #include "Actors/Mantis.h"
+#include "Actors/Spawner.h"
 
 WaveManager::WaveManager(Game *game)
     :mGame(game)
@@ -75,6 +76,15 @@ bool WaveManager::LoadFromJson(const std::string &filePath) {
 
             action.delay = a["delay"];
             wave.actions.push_back(action);
+
+            if (action.actionType == ActionType::SpawnEnemy) {
+                WaveAction spawner;
+                spawner.actionType = ActionType::CreateSpawner;
+                spawner.enemyType = action.enemyType;
+                spawner.delay = action.delay - 1.7f;
+                spawner.enemySpawnId = action.enemySpawnId;
+                wave.actions.push_back(spawner);
+            }
         }
         mWaves.push_back(wave);
     }
@@ -151,6 +161,10 @@ void WaveManager::Update(float deltaTime) {
                         dynamicGround->SetIsDecreasing(true);
                     }
                     break;
+
+                case ActionType::CreateSpawner:
+                    CreateSpawner(a);
+                    break;
             }
 
             // marca como feito
@@ -158,10 +172,18 @@ void WaveManager::Update(float deltaTime) {
         }
     }
 
-    // Checar se todos inimigos morreram (depende do seu Game)
+    // Checar se a wave acabou
     if (AllEnemiesDefeated(wave)) {
-        mCurrentWave++;
-        mWaveTimer = 0.0f;
+        bool waveFinished = true;
+        for (auto& action : wave.actions) {
+            if (action.delay != -1.0f) {
+                waveFinished = false;
+            }
+        }
+        if (waveFinished) {
+            mCurrentWave++;
+            mWaveTimer = 0.0f;
+        }
     }
 
     if (IsCompleted()) {
@@ -226,6 +248,13 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
         a.enemy = hookEnemy;
     }
 }
+
+void WaveManager::CreateSpawner(WaveAction &a) {
+    auto* spawner = new Spawner(mGame);
+    auto pos = mGame->GetSpawnPointPosition(a.enemySpawnId);
+    spawner->SetPosition(pos);
+}
+
 
 bool WaveManager::AllEnemiesDefeated(Wave wave) {
     std::vector<class Enemy*> enemies = mGame->GetEnemies();

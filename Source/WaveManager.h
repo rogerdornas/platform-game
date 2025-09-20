@@ -17,7 +17,8 @@ enum class ActionType {
     GrowGround,
     RemovePlatform,
     RemoveHookPoint,
-    DecreaseGround
+    DecreaseGround,
+    CreateSpawner
 };
 
 struct WaveAction {
@@ -69,6 +70,7 @@ private:
 
     // auxiliar: spawn inimigo
     void SpawnEnemy(WaveAction& e);
+    void CreateSpawner(WaveAction& a);
 
     bool AllEnemiesDefeated(Wave wave);
 };

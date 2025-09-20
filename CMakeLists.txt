@@ -139,6 +139,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/JumpEffect.h
         Source/Actors/HookEnemy.cpp
         Source/Actors/HookEnemy.h
+        Source/Actors/Spawner.cpp
+        Source/Actors/Spawner.h
 )
 
 
