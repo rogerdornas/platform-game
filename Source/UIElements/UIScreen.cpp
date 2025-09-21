@@ -122,12 +122,14 @@ void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY
 }
 
 void UIScreen::HandleMouse(const SDL_Event &event) {
-    if (event.button.button == SDL_BUTTON_LEFT) {
-        int x = event.button.x;
-        int y = event.button.y;
-        for (UIButton* button : mButtons) {
-            if (button->ContainsPoint(Vector2(x, y) - GetPosition())) {
-                button->OnClick();
+    if (event.type == SDL_MOUSEBUTTONDOWN) {
+        if (event.button.button == SDL_BUTTON_LEFT) {
+            int x = event.button.x;
+            int y = event.button.y;
+            for (UIButton* button : mButtons) {
+                if (button->ContainsPoint(Vector2(x, y) - GetPosition())) {
+                    button->OnClick();
+                }
             }
         }
     }

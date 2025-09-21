@@ -847,7 +847,7 @@ void Player::OnUpdate(float deltaTime) {
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(mStartingPosition);
+        // SetPosition(mStartingPosition);
     }
 
     if (Died()) {

@@ -1990,9 +1990,9 @@ void Game::ProcessInput()
 
             case SDL_CONTROLLERDEVICEADDED:
                 mController = SDL_GameControllerOpen(event.cdevice.which);
-                if (mController) {
-                    SDL_Log("Controle conectado!");
-                }
+                // if (mController) {
+                //     SDL_Log("Controle conectado!");
+                // }
                 break;
 
             case SDL_CONTROLLERDEVICEREMOVED:
@@ -2000,7 +2000,7 @@ void Game::ProcessInput()
                     if (SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(mController)) == event.cdevice.which) {
                         SDL_GameControllerClose(mController);
                         mController = nullptr;
-                        SDL_Log("Controle removido!");
+                        // SDL_Log("Controle removido!");
                     }
                 }
                 break;
