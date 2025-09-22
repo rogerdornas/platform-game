@@ -2428,7 +2428,7 @@
                  "visible":true,
                  "width":512,
                  "x":5344,
-                 "y":2720
+                 "y":2400
                 }, 
                 {
                  "height":96,
@@ -2579,6 +2579,163 @@
                  "width":1120,
                  "x":10624,
                  "y":1920
+                }, 
+                {
+                 "height":640,
+                 "id":209,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayerLimitLeftHorizontally"
+                        }, 
+                        {
+                         "name":"FixedCameraPositionX",
+                         "type":"float",
+                         "value":448
+                        }, 
+                        {
+                         "name":"FixedCameraPositionY",
+                         "type":"float",
+                         "value":2240
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1728,
+                 "x":544,
+                 "y":2560
+                }, 
+                {
+                 "height":1984,
+                 "id":210,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayerLimitLeft"
+                        }, 
+                        {
+                         "name":"FixedCameraPositionX",
+                         "type":"float",
+                         "value":448
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1728,
+                 "x":544,
+                 "y":416
+                }, 
+                {
+                 "height":288,
+                 "id":211,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayerHorizontally"
+                        }, 
+                        {
+                         "name":"FixedCameraPositionY",
+                         "type":"float",
+                         "value":1600
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":2688,
+                 "x":2304,
+                 "y":2112
+                }, 
+                {
+                 "height":160,
+                 "id":214,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":2688,
+                 "x":2304,
+                 "y":1888
+                }, 
+                {
+                 "height":288,
+                 "id":215,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayerHorizontally"
+                        }, 
+                        {
+                         "name":"FixedCameraPositionY",
+                         "type":"float",
+                         "value":1472
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":3296,
+                 "x":5344,
+                 "y":2080
+                }, 
+                {
+                 "height":224,
+                 "id":216,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":3296,
+                 "x":5344,
+                 "y":1728
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2981,7 +3138,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":209,
+ "nextobjectid":217,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

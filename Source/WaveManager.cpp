@@ -12,8 +12,10 @@
 #include "Actors/FlyingEnemySimple.h"
 #include "Actors/FlyingGolem.h"
 #include "Actors/FlyingShooterEnemy.h"
+#include "Actors/FlyingSpawnerEnemy.h"
 #include "Actors/Fox.h"
 #include "Actors/HookEnemy.h"
+#include "Actors/LittleBat.h"
 #include "Actors/Mantis.h"
 #include "Actors/Spawner.h"
 
@@ -246,6 +248,18 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
         hookEnemy->SetPosition(pos);
         hookEnemy->SetSpottedPlayer(true);
         a.enemy = hookEnemy;
+    }
+    if (a.enemyType == "FlyingSpawnerEnemy") {
+        auto* flyingSpawnerEnemy = new FlyingSpawnerEnemy(mGame, 96, 96, 400, 500);
+        flyingSpawnerEnemy->SetPosition(pos);
+        flyingSpawnerEnemy->SetSpottedPlayer(true);
+        a.enemy = flyingSpawnerEnemy;
+    }
+    if (a.enemyType == "LittleBat") {
+        auto* littleBat = new LittleBat(mGame, 36, 36, 500, 10);
+        littleBat->SetPosition(pos);
+        littleBat->SetSpottedPlayer(true);
+        a.enemy = littleBat;
     }
 }
 

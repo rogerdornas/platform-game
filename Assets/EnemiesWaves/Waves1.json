@@ -4,6 +4,22 @@
       "actions": [
         { 
           "actionType": "SpawnEnemy", 
+          "type": "FlyingSpawnerEnemy", 
+          "id": "RightMid", 
+          "delay": 3.0
+        },
+        {
+          "actionType": "SpawnEnemy", 
+          "type": "FlyingSpawnerEnemy", 
+          "id": "LeftMid", 
+          "delay": 2.0
+        }
+      ]
+    },
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
           "type": "Enemy Simple", 
           "id": "LeftBot", 
           "delay": 2.5

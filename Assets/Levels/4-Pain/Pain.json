@@ -704,7 +704,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -6138,7 +6138,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -6430,17 +6430,6 @@
                 }, 
                 {
                  "height":32,
-                 "id":426,
-                 "name":"Flying Enemy",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":4224,
-                 "y":4544
-                }, 
-                {
-                 "height":32,
                  "id":427,
                  "name":"Flying Enemy",
                  "rotation":0,
@@ -6482,15 +6471,26 @@
                  "width":32,
                  "x":4864,
                  "y":5376
+                }, 
+                {
+                 "height":32,
+                 "id":452,
+                 "name":"FlyingSpawnerEnemy",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":4192,
+                 "y":4672
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":451,
+ "nextobjectid":453,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

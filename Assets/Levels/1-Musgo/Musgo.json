@@ -3179,6 +3179,17 @@
                  "width":32,
                  "x":30240,
                  "y":8384
+                }, 
+                {
+                 "height":32,
+                 "id":221,
+                 "name":"FlyingSpawnerEnemy",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":26400,
+                 "y":6208
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3437,7 +3448,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":221,
+ "nextobjectid":222,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

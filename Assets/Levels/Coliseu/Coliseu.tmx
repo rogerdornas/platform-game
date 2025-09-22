@@ -321,53 +321,6 @@
  <objectgroup id="7" name="HookPoints"/>
  <objectgroup id="8" name="Levers"/>
  <objectgroup id="9" name="Enemies"/>
- <objectgroup id="3" name="Triggers">
-  <object id="11" name="Close Wall" x="2048" y="1216" width="352" height="1984">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="8"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="13" x="1952" y="2336" width="1792" height="864">
-   <properties>
-    <property name="Event" value="Fixed"/>
-    <property name="FixedCameraPositionX" type="float" value="1920"/>
-    <property name="FixedCameraPositionY" type="float" value="2304"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="14" x="1824" y="1280" width="1056" height="1056">
-   <properties>
-    <property name="Event" value="FollowPlayerLimitLeft"/>
-    <property name="FixedCameraPositionX" type="float" value="1920"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="15" x="2880" y="1280" width="1056" height="1056">
-   <properties>
-    <property name="Event" value="FollowPlayerLimitRight"/>
-    <property name="FixedCameraPositionX" type="float" value="3840"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="22" x="2048" y="1248" width="2016" height="2048">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="StartArena"/>
-    <property name="Target" value="Game"/>
-    <property name="Waves" value="Waves1"/>
-   </properties>
-  </object>
-  <object id="23" name="Camera Horizontal" x="96" y="2560" width="1856" height="640">
-   <properties>
-    <property name="Event" value="FollowPlayerHorizontally"/>
-    <property name="FixedCameraPositionY" type="float" value="2304"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
- </objectgroup>
  <objectgroup id="4" name="Grounds">
   <object id="3" x="3744" y="960" width="736" height="3200"/>
   <object id="4" x="0" y="960" width="96" height="3200"/>
@@ -428,6 +381,53 @@
     <property name="MinHeight" type="float" value="32"/>
     <property name="MinWidth" type="float" value="0"/>
     <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Triggers">
+  <object id="11" name="Close Wall" x="2048" y="1216" width="352" height="1984">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="8"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="13" x="1952" y="2336" width="1792" height="864">
+   <properties>
+    <property name="Event" value="Fixed"/>
+    <property name="FixedCameraPositionX" type="float" value="1920"/>
+    <property name="FixedCameraPositionY" type="float" value="2304"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="14" x="1824" y="1280" width="1056" height="1056">
+   <properties>
+    <property name="Event" value="FollowPlayerLimitLeft"/>
+    <property name="FixedCameraPositionX" type="float" value="1920"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="15" x="2880" y="1280" width="1056" height="1056">
+   <properties>
+    <property name="Event" value="FollowPlayerLimitRight"/>
+    <property name="FixedCameraPositionX" type="float" value="3840"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="22" x="2048" y="1248" width="2016" height="2048">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="StartArena"/>
+    <property name="Target" value="Game"/>
+    <property name="Waves" value="Waves1"/>
+   </properties>
+  </object>
+  <object id="23" name="Camera Horizontal" x="96" y="2560" width="1856" height="640">
+   <properties>
+    <property name="Event" value="FollowPlayerHorizontally"/>
+    <property name="FixedCameraPositionY" type="float" value="2304"/>
+    <property name="Target" value="Camera"/>
    </properties>
   </object>
  </objectgroup>

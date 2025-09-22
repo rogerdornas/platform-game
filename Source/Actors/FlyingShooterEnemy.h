@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Actor.h"
-#include "FlyingEnemySimple.h"
+#include "Enemy.h"
 
 class FlyingShooterEnemy : public Enemy
 {

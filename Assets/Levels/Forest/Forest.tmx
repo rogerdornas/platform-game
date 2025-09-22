@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="431">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1000" height="1000" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="436">
  <editorsettings>
   <export target="Forest.json" format="json"/>
  </editorsettings>
@@ -2539,7 +2539,7 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="370" x="9760" y="10880" width="1920" height="640">
+  <object id="370" x="9984" y="10880" width="1472" height="640">
    <properties>
     <property name="Event" value="Fixed"/>
     <property name="FixedCameraPositionX" type="float" value="9760"/>
@@ -2581,6 +2581,12 @@
     <property name="Event" value="SetIsMoving"/>
     <property name="Grounds" value="418"/>
     <property name="Target" value="Ground"/>
+   </properties>
+  </object>
+  <object id="434" x="11584" y="9600" width="352" height="1920">
+   <properties>
+    <property name="Event" value="FollowPlayer"/>
+    <property name="Target" value="Camera"/>
    </properties>
   </object>
  </objectgroup>
@@ -3193,7 +3199,7 @@
   <object id="430" x="8544" y="21440" width="576" height="96"/>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="55" x="2560" y="24608" width="32" height="32"/>
+  <object id="55" x="12096" y="11488" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="4" name="Enemies">
   <object id="70" name="Flying Enemy" x="16448" y="15296" width="32" height="32"/>
@@ -3239,6 +3245,8 @@
   <object id="280" name="DragonFly" x="27744" y="18688" width="32" height="32"/>
   <object id="336" name="HookEnemy" x="14016" y="12384" width="32" height="32"/>
   <object id="351" name="HookEnemy" x="13024" y="12384" width="32" height="32"/>
+  <object id="432" name="FlyingSpawnerEnemy" x="10560" y="18528" width="32" height="32"/>
+  <object id="433" name="LittleBat" x="9728" y="18528" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="9" name="HookPoints">
   <object id="243" x="16896" y="16352" width="32" height="32"/>

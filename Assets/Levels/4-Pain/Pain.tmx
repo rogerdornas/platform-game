@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="451">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="453">
  <editorsettings>
   <export target="Pain.json" format="json"/>
  </editorsettings>
@@ -634,7 +634,7 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup id="5" name="Checkpoint" visible="0">
+ <objectgroup id="5" name="Checkpoint">
   <object id="164" name="Checkpoint" x="640" y="5760" width="416" height="192"/>
   <object id="181" name="Checkpoint" x="5184" y="3872" width="416" height="192"/>
   <object id="254" name="Checkpoint" x="6176" y="4416" width="416" height="192"/>
@@ -1888,10 +1888,10 @@
   </object>
   <object id="444" name="Ground" x="8000" y="640" width="128" height="96"/>
  </objectgroup>
- <objectgroup id="3" name="Player" visible="0">
+ <objectgroup id="3" name="Player">
   <object id="117" name="Player" x="1344" y="6208" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="6" name="Enemies" visible="0">
+ <objectgroup id="6" name="Enemies">
   <object id="269" name="FlyingShooterEnemy" x="8064" y="3648" width="32" height="32"/>
   <object id="270" name="FlyingShooterEnemy" x="8064" y="3872" width="32" height="32"/>
   <object id="428" name="FlyingShooterEnemy" x="3840" y="3520" width="32" height="32"/>
@@ -1921,10 +1921,10 @@
   <object id="425" name="Enemy Simple" x="2720" y="5024" width="32" height="32"/>
   <object id="419" name="Flying Enemy" x="1728" y="5120" width="32" height="32"/>
   <object id="423" name="Flying Enemy" x="1312" y="4544" width="32" height="32"/>
-  <object id="426" name="Flying Enemy" x="4224" y="4544" width="32" height="32"/>
   <object id="427" name="Flying Enemy" x="4928" y="4768" width="32" height="32"/>
   <object id="437" name="Mantis" x="4480" y="6208" width="32" height="32"/>
   <object id="424" name="Flying Enemy" x="544" y="4544" width="32" height="32"/>
   <object id="445" name="DragonFly" x="4864" y="5376" width="32" height="32"/>
+  <object id="452" name="FlyingSpawnerEnemy" x="4192" y="4672" width="32" height="32"/>
  </objectgroup>
 </map>

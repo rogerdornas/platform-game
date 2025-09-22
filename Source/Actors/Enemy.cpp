@@ -32,6 +32,7 @@ Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heath
     ,mFlashTimer(mFlashDuration)
     ,mPlayerSpotted(false)
     ,mOffscreenLimit(0.2f)
+    ,mEnemyCollision(true)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
@@ -167,12 +168,18 @@ bool Enemy::Died() {
 }
 
 void Enemy::ResolveEnemyCollision() {
+    if (!mEnemyCollision) {
+        return;
+    }
+
     std::vector<Enemy* > enemies = mGame->GetEnemies();
     if (!enemies.empty()) {
         for (Enemy* e: enemies) {
             if (e != this) {
-                if (mColliderComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
-                    mColliderComponent->ResolveCollision(*e->GetComponent<ColliderComponent>());
+                if (e->GetEnemyCollision()) {
+                    if (mColliderComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+                        mColliderComponent->ResolveCollision(*e->GetComponent<ColliderComponent>());
+                    }
                 }
             }
         }

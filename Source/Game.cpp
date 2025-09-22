@@ -26,12 +26,15 @@
 #include "Actors/Trigger.h"
 #include "Actors/Fairy.h"
 #include "Actors/EnemySimple.h"
+#include "Actors/FlyingEnemySimple.h"
 #include "Actors/FlyingGolem.h"
 #include "Actors/FlyingShooterEnemy.h"
+#include "Actors/FlyingSpawnerEnemy.h"
 #include "Actors/Golem.h"
 #include "Actors/HookEnemy.h"
 #include "Actors/HookPoint.h"
 #include "Actors/Lava.h"
+#include "Actors/LittleBat.h"
 #include "Actors/Mantis.h"
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
@@ -1457,7 +1460,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     flyingEnemySimple->SetId(id);
                 }
                 else if (name == "FlyingShooterEnemy") {
-                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 250, 60);
+                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 300, 60);
                     flyingShooterEnemy->SetPosition(Vector2(x, y));
                     flyingShooterEnemy->SetId(id);
                 }
@@ -1475,6 +1478,16 @@ void Game::LoadObjects(const std::string &fileName) {
                     auto* dragonFly = new DragonFly(this, 130, 70, 1300, 120);
                     dragonFly->SetPosition(Vector2(x, y));
                     dragonFly->SetId(id);
+                }
+                else if (name == "FlyingSpawnerEnemy") {
+                    auto* flyingSpawnerEnemy = new FlyingSpawnerEnemy(this, 96, 96, 400, 500);
+                    flyingSpawnerEnemy->SetPosition(Vector2(x, y));
+                    flyingSpawnerEnemy->SetId(id);
+                }
+                else if (name == "LittleBat") {
+                    auto* littleBat = new LittleBat(this, 36, 36, 500, 10);
+                    littleBat->SetPosition(Vector2(x, y));
+                    littleBat->SetId(id);
                 }
                 else if (name == "Fox") {
                     if (obj.contains("properties")) {
@@ -2072,7 +2085,7 @@ void Game::UpdateGame()
 
     // testes para alterar velocidade do jogo
     if (mIsSlowMotion) {
-        deltaTime *= 0.5;
+        deltaTime *= 0.3;
     }
     if (mIsAccelerated) {
         deltaTime *= 1.5;

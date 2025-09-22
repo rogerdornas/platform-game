@@ -25,6 +25,8 @@ public:
     void SetId(int id) { mId = id; }
     int GetId() const { return mId; }
 
+    bool GetEnemyCollision() const { return mEnemyCollision; }
+
 protected:
     bool Died();
     virtual void ResolveEnemyCollision();
@@ -55,6 +57,8 @@ protected:
     bool mPlayerSpotted;
 
     float mOffscreenLimit;
+
+    bool mEnemyCollision;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;

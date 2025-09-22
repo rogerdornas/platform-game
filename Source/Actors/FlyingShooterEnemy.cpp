@@ -3,7 +3,6 @@
 //
 
 #include "FlyingShooterEnemy.h"
-#include "Actor.h"
 #include "Effect.h"
 #include "ParticleSystem.h"
 #include "Projectile.h"
@@ -18,6 +17,12 @@
 FlyingShooterEnemy::FlyingShooterEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints)
     :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
     ,mState(State::Fly)
+
+    ,mDistToSpotPlayer(400 * mGame->GetScale())
+    ,mFlyingAroundDuration(1.0f)
+    ,mFlyingAroundTimer(0.0f)
+    ,mFlyingAroundMoveSpeed(100.0f * mGame->GetScale())
+
     ,mPatrolRangeX(400.0f * mGame->GetScale())
     ,mPatrolRangeY(100.0f * mGame->GetScale())
     ,mHoverHeight(300.0f * mGame->GetScale())
@@ -34,14 +39,9 @@ FlyingShooterEnemy::FlyingShooterEnemy(Game* game, float width, float height, fl
     ,mProjectileSpeed(800 * mGame->GetScale())
 {
     mMoneyDrop = 6;
-    mMoveSpeed = 300 * mGame->GetScale();
     mKnockBackSpeed = 800.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
     mKnockBackTimer = mKnockBackDuration;
-    mDistToSpotPlayer = 400 * mGame->GetScale();
-    mFlyingAroundDuration = 1.0f;
-    mFlyingAroundTimer = mFlyingAroundDuration;
-    mFlyingAroundMoveSpeed = 100.0f * mGame->GetScale();
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/Beetle/Beetle.png", "../Assets/Sprites/Beetle/Beetle.json", 998);
     std::vector fly = {0, 1, 2, 3};
@@ -158,7 +158,7 @@ void FlyingShooterEnemy::Fly(float deltaTime) {
     Vector2 direction = mCurrentTarget - GetPosition();
     float distance = direction.Length();
 
-    if (mPatrolTargetTimer >= mPatrolTargetDuration || distance < 5.0f) {
+    if (mPatrolTargetTimer >= mPatrolTargetDuration || distance < 5.0f * mGame->GetScale()) {
         // Quando chegar perto do alvo ou passar o tempo, escolher novo ponto
         mPatrolTargetTimer = 0;
         mTargetSet = false;

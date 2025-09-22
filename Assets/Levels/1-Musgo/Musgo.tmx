@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="221">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="500" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="222">
  <editorsettings>
   <export target="Musgo.json" format="json"/>
  </editorsettings>
@@ -1430,6 +1430,7 @@
   <object id="152" name="Mantis" x="13984" y="5632" width="32" height="32"/>
   <object id="153" name="Mantis" x="15232" y="5632" width="32" height="32"/>
   <object id="173" name="BushMonster" x="30240" y="8384" width="32" height="32"/>
+  <object id="221" name="FlyingSpawnerEnemy" x="26400" y="6208" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="7" name="Levers">
   <object id="51" x="14112" y="3808" width="64" height="64">
