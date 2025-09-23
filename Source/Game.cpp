@@ -1737,8 +1737,7 @@ void Game::ProcessInput()
                 break;
 
             case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-                {
+                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     float oldScale = mScale;
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;

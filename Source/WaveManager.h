@@ -30,6 +30,8 @@ struct WaveAction {
     std::string hookSpawnId;
     std::string platformSpawnId;
     int groundId;
+    Vector2 arenaMinPos;
+    Vector2 arenaMaxPos;
     Enemy* enemy;
     HookPoint* hookPoint;
 };

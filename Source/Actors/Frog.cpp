@@ -63,6 +63,7 @@ Frog::Frog(Game* game)
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
+    mEnemyCollision = false;
 
     SetSize(mWidth, mHeight);
 

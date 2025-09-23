@@ -14,6 +14,8 @@
 #include "Actors/FlyingShooterEnemy.h"
 #include "Actors/FlyingSpawnerEnemy.h"
 #include "Actors/Fox.h"
+#include "Actors/Frog.h"
+#include "Actors/Golem.h"
 #include "Actors/HookEnemy.h"
 #include "Actors/LittleBat.h"
 #include "Actors/Mantis.h"
@@ -46,6 +48,14 @@ bool WaveManager::LoadFromJson(const std::string &filePath) {
                 action.actionType = ActionType::SpawnEnemy;
                 action.enemyType= a["type"];
                 action.enemySpawnId = a["id"];
+                if (a.contains("arenaMinPos")) {
+                    action.arenaMinPos.x = a["arenaMinPos"][0];
+                    action.arenaMinPos.y = a["arenaMinPos"][1];
+                }
+                if (a.contains("arenaMaxPos")) {
+                    action.arenaMaxPos.x = a["arenaMaxPos"][0];
+                    action.arenaMaxPos.y = a["arenaMaxPos"][1];
+                }
             }
             else if (typeStr == "SpawnPlatform") {
                 action.actionType = ActionType::SpawnPlatform;
@@ -242,6 +252,22 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
         fox->SetPosition(pos);
         fox->SetSpottedPlayer(true);
         a.enemy = fox;
+    }
+    if (a.enemyType == "Golem") {
+        auto* golem = new Golem(mGame);
+        golem->SetPosition(pos);
+        golem->SetSpottedPlayer(true);
+        golem->SetArenaMinPos(Vector2(a.arenaMinPos.x, a.arenaMinPos.y));
+        golem->SetArenaMaxPos(Vector2(a.arenaMaxPos.x, a.arenaMaxPos.y));
+        a.enemy = golem;
+    }
+    if (a.enemyType == "Frog") {
+        auto* frog = new Frog(mGame);
+        frog->SetPosition(pos);
+        frog->SetSpottedPlayer(true);
+        frog->SetArenaMinPos(Vector2(a.arenaMinPos.x, a.arenaMinPos.y));
+        frog->SetArenaMaxPos(Vector2(a.arenaMaxPos.x, a.arenaMaxPos.y));
+        a.enemy = frog;
     }
     if (a.enemyType == "HookEnemy") {
         auto* hookEnemy = new HookEnemy(mGame);

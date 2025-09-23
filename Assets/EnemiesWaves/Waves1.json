@@ -167,6 +167,30 @@
         }
       ]
     },
+	{
+      "actions": [
+        {
+          "actionType": "SpawnEnemy", 
+          "type": "Golem", 
+          "id": "CenterBot", 
+		  "arenaMinPos": [2048, 2400],
+		  "arenaMaxPos": [3712, 3168],
+          "delay": 3.5
+        }
+      ]
+    },
+	{
+      "actions": [
+        {
+          "actionType": "SpawnEnemy", 
+          "type": "Frog", 
+          "id": "RightBot", 
+		  "arenaMinPos": [2016, 2368],
+		  "arenaMaxPos": [3744, 3200],
+          "delay": 3.5
+        }
+      ]
+    },
     {
       "actions": [
         { 
