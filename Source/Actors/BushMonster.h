@@ -11,7 +11,7 @@ public:
         Dashing
     };
 
-    BushMonster(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    BushMonster(Game* game);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;

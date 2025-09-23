@@ -13,18 +13,26 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-LittleBat::LittleBat(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
+LittleBat::LittleBat(Game *game)
+    :Enemy(game)
     ,mDistToSpotPlayer(400 * mGame->GetScale())
     ,mFlyingAroundDuration(1.0f)
     ,mFlyingAroundTimer(0.0f)
     ,mFlyingAroundMoveSpeed(100.0f * mGame->GetScale())
 {
+    mWidth = 36 * mGame->GetScale();
+    mHeight = 36 * mGame->GetScale();
+    mMoveSpeed = 500 * mGame->GetScale();
+    mHealthPoints = 10;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 0;
     mKnockBackSpeed = 1200.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
     mKnockBackTimer = mKnockBackDuration;
     mEnemyCollision = false;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 4.0f, mHeight * 4.0f, "../Assets/Sprites/SpawnFly/SpawnFly.png", "../Assets/Sprites/SpawnFly/SpawnFly.json", 999);
     std::vector fly = {0, 1, 2, 3, 4};

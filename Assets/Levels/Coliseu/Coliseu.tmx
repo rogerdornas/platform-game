@@ -393,7 +393,7 @@
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
-  <object id="13" x="1952" y="2336" width="1792" height="864">
+  <object id="13" x="1952" y="2592" width="1792" height="608">
    <properties>
     <property name="Event" value="Fixed"/>
     <property name="FixedCameraPositionX" type="float" value="1920"/>
@@ -401,14 +401,14 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="14" x="1824" y="1280" width="1056" height="1056">
+  <object id="14" x="1824" y="1280" width="1056" height="1312">
    <properties>
     <property name="Event" value="FollowPlayerLimitLeft"/>
     <property name="FixedCameraPositionX" type="float" value="1920"/>
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="15" x="2880" y="1280" width="1056" height="1056">
+  <object id="15" x="2880" y="1280" width="1056" height="1312">
    <properties>
     <property name="Event" value="FollowPlayerLimitRight"/>
     <property name="FixedCameraPositionX" type="float" value="3840"/>

@@ -737,7 +737,7 @@
                  "y":1216
                 }, 
                 {
-                 "height":864,
+                 "height":608,
                  "id":13,
                  "name":"",
                  "properties":[
@@ -766,10 +766,10 @@
                  "visible":true,
                  "width":1792,
                  "x":1952,
-                 "y":2336
+                 "y":2592
                 }, 
                 {
-                 "height":1056,
+                 "height":1312,
                  "id":14,
                  "name":"",
                  "properties":[
@@ -796,7 +796,7 @@
                  "y":1280
                 }, 
                 {
-                 "height":1056,
+                 "height":1312,
                  "id":15,
                  "name":"",
                  "properties":[

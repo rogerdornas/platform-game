@@ -71,6 +71,10 @@ void Skill::SetPlayerSkill() {
             player->SetMaxJumpsInAir(1);
             break;
 
+        case SkillType::Hook:
+            player->SetCanHook(true);
+        break;
+
         case SkillType::TimeControl:
             break;
     }
@@ -127,6 +131,16 @@ void Skill::LoadSkillMessage() {
 
         case SkillType::DoubleJump:
             skillText = mSkillMessage->AddText("GANHOU UM PULO EXTRA NO AR", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
+            break;
+
+        case SkillType::Hook:
+            if (mGame->GetIsPlayingOnKeyboard()) {
+                skillText = mSkillMessage->AddText("PRESSIONE [S] PARA JOGAR UMA CORDA E SE IMPULSIONAR", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            }
+            else {
+                skillText = mSkillMessage->AddText("PRESSIONE [LB] PARA JOGAR UMA CORDA E SE IMPULSIONAR", Vector2::Zero, Vector2::Zero, textPointSize * mGame->GetScale());
+            }
             skillText->SetPosition(Vector2((mSkillMessage->GetSize().x - skillText->GetSize().x) / 2, text->GetPosition().y + text->GetSize().y * 1.2f));
             break;
 

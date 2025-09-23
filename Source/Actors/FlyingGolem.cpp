@@ -14,8 +14,8 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-FlyingGolem::FlyingGolem(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
+FlyingGolem::FlyingGolem(Game *game)
+    :Enemy(game)
     ,mFlyingGolemState(State::FlyingAround)
 
     ,mDistToSpotPlayer(400 * mGame->GetScale())
@@ -32,9 +32,6 @@ FlyingGolem::FlyingGolem(Game *game, float width, float height, float moveSpeed,
     ,mAttackDuration(0.7f)
     ,mAttackTimer(0.0f)
     ,mDistToAttack(400 * mGame->GetScale())
-    ,mIdleWidth(mWidth)
-    ,mAttackSpriteWidth(mWidth * 1.5f)
-    ,mAttackOffsetHitBox(mWidth * 0.7f)
     ,mAttackDirectionRight(true)
 
     ,mDistToTeleport(1100 * mGame->GetScale())
@@ -45,10 +42,21 @@ FlyingGolem::FlyingGolem(Game *game, float width, float height, float moveSpeed,
     ,mTeleportHoverHeight(250 * mGame->GetScale())
     ,mTeleportRangeTargetX(400* mGame->GetScale())
 {
+    mWidth = 100 * mGame->GetScale();
+    mHeight = 100 * mGame->GetScale();
+    mMoveSpeed = 420 * mGame->GetScale();
+    mHealthPoints = 130;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 20;
     mKnockBackSpeed = 500.0f * mGame->GetScale();
     mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
+    mIdleWidth = mWidth;
+    mAttackSpriteWidth = mWidth * 1.5f;
+    mAttackOffsetHitBox = mWidth * 0.7f;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.7f * 2.0f, mWidth * 1.7f, "../Assets/Sprites/FlyingGolem2/FlyingGolem.png", "../Assets/Sprites/FlyingGolem2/FlyingGolem.json", 998);
     std::vector idle = {22, 23, 24, 25, 26, 27, 28, 29};
@@ -93,14 +101,6 @@ void FlyingGolem::OnUpdate(float deltaTime) {
     ResolveGroundCollision();
     ResolveEnemyCollision();
 
-    // if (mPlayerSpotted) {
-    //     mDrawAnimatedComponent->SetAnimFPS(15.0f);
-    //     MovementAfterPlayerSpotted(deltaTime);
-    // }
-    // else {
-    //     MovementBeforePlayerSpotted();
-    // }
-
     MovementAfterPlayerSpotted(deltaTime);
 
     // Teleporta se estiver longe
@@ -113,11 +113,6 @@ void FlyingGolem::OnUpdate(float deltaTime) {
             mFlyingGolemState = State::TeleportIn;
             mDrawAnimatedComponent->ResetAnimationTimer();
         }
-    }
-
-    // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(Vector2::Zero);
     }
 
     // Se morreu

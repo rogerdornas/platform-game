@@ -14,19 +14,27 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
 
-EnemySimple::EnemySimple(Game* game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
+EnemySimple::EnemySimple(Game* game)
+    :Enemy(game)
+    ,mDistToSpotPlayer(400 * mGame->GetScale())
+    ,mPatrolRadius(50 * mGame->GetScale())
+    ,mWalkingAroundDuration(2.0f)
+    ,mWalkingAroundTimer(0.0f)
+    ,mWalkingAroundMoveSpeed(50.0f * mGame->GetScale())
+    ,mGravity(3000 * mGame->GetScale())
 {
+    mWidth = 53 * mGame->GetScale();
+    mHeight = 45 * mGame->GetScale();
+    mMoveSpeed = 200 * mGame->GetScale();
+    mHealthPoints = 30;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 2;
     mKnockBackSpeed = 800.0f * mGame->GetScale();
     mKnockBackDuration = 0.15f;
     mKnockBackTimer = mKnockBackDuration;
-    mDistToSpotPlayer = 400 * mGame->GetScale();
-    mPatrolRadius = 50 * mGame->GetScale();
-    mWalkingAroundDuration = 2.0f;
-    mWalkingAroundTimer = mWalkingAroundDuration;
-    mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
-    mGravity = 3000 * mGame->GetScale();
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/Slime/Slime.png", "../Assets/Sprites/Slime/Slime.json", 998);
     std::vector walk = {0, 1, 2, 3, 4, 6};
@@ -66,10 +74,6 @@ void EnemySimple::OnUpdate(float deltaTime) {
                                              mRigidBodyComponent->GetVelocity().y
                                              + mGravity * deltaTime));
 
-    // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(Vector2::Zero);
-    }
     // Se morreu
     if (Died()) {
         SetState(ActorState::Destroy);

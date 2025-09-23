@@ -859,7 +859,7 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="209" name="Camera" x="544" y="2560" width="1728" height="640">
+  <object id="209" name="Camera" x="544" y="2784" width="1728" height="416">
    <properties>
     <property name="Event" value="FollowPlayerLimitLeftHorizontally"/>
     <property name="FixedCameraPositionX" type="float" value="448"/>
@@ -867,7 +867,7 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="210" name="Camera" x="544" y="416" width="1728" height="1984">
+  <object id="210" name="Camera" x="544" y="416" width="1728" height="2304">
    <properties>
     <property name="Event" value="FollowPlayerLimitLeft"/>
     <property name="FixedCameraPositionX" type="float" value="448"/>
@@ -909,23 +909,23 @@
   <object id="182" name="Checkpoint5" x="12576" y="3232" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="4" name="Enemies">
-  <object id="61" name="Enemy Simple" x="2144" y="2880" width="32" height="32"/>
-  <object id="63" name="Enemy Simple" x="2464" y="2368" width="32" height="32"/>
+  <object id="61" name="Enemy Simple" x="1984" y="2880" width="32" height="32"/>
+  <object id="63" name="Enemy Simple" x="2336" y="2368" width="32" height="32"/>
   <object id="64" name="Flying Enemy" x="2880" y="2208" width="32" height="32"/>
   <object id="65" name="Flying Enemy" x="3808" y="2208" width="32" height="32"/>
   <object id="62" name="Flying Enemy" x="1376" y="2048" width="32" height="32"/>
-  <object id="58" name="Enemy Simple" x="1472" y="3008" width="32" height="32"/>
-  <object id="80" name="Enemy Simple" x="1568" y="2592" width="32" height="32"/>
+  <object id="58" name="Enemy Simple" x="1344" y="3008" width="32" height="32"/>
+  <object id="80" name="Enemy Simple" x="1440" y="2592" width="32" height="32"/>
   <object id="111" name="FlyingShooterEnemy" x="5312" y="640" width="32" height="32"/>
   <object id="112" name="Flying Enemy" x="6784" y="544" width="32" height="32"/>
-  <object id="114" name="Flying Enemy" x="7904" y="1056" width="32" height="32"/>
+  <object id="114" name="Flying Enemy" x="7776" y="1056" width="32" height="32"/>
   <object id="123" name="Flying Enemy" x="4480" y="480" width="32" height="32"/>
-  <object id="124" name="Enemy Simple" x="7808" y="1280" width="32" height="32"/>
+  <object id="124" name="Enemy Simple" x="7776" y="1280" width="32" height="32"/>
   <object id="138" name="FlyingShooterEnemy" x="6304" y="1632" width="32" height="32"/>
   <object id="140" name="Mantis" x="6208" y="2336" width="32" height="32"/>
   <object id="141" name="Enemy Simple" x="6656" y="2336" width="32" height="32"/>
   <object id="142" name="Flying Enemy" x="6560" y="2016" width="32" height="32"/>
-  <object id="143" name="Enemy Simple" x="7360" y="736" width="32" height="32"/>
+  <object id="143" name="Enemy Simple" x="7200" y="736" width="32" height="32"/>
   <object id="171" name="Golem" x="10880" y="3392" width="32" height="32">
    <properties>
     <property name="MaxPosX" type="float" value="11712"/>

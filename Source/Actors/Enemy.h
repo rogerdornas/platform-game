@@ -9,7 +9,7 @@
 class Enemy : public Actor
 {
 public:
-    Enemy(Game* game, float width, float height, float moveSpeed, float healthPoints, float contactDamage);
+    Enemy(Game* game);
     ~Enemy() override;
 
     void SetHealthPoints(float hp) { mHealthPoints = hp; }
@@ -28,6 +28,7 @@ public:
     bool GetEnemyCollision() const { return mEnemyCollision; }
 
 protected:
+    void SetSize(float width, float height);
     bool Died();
     virtual void ResolveEnemyCollision();
     virtual void ResolveGroundCollision();

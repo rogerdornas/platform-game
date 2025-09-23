@@ -202,61 +202,61 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
     auto pos = mGame->GetSpawnPointPosition(a.enemySpawnId);
 
     if (a.enemyType == "Enemy Simple") {
-        auto* enemySimple = new EnemySimple(mGame, 53, 45, 200, 30);
+        auto* enemySimple = new EnemySimple(mGame);
         enemySimple->SetPosition(pos);
         enemySimple->SetSpottedPlayer(true);
         a.enemy = enemySimple;
     }
     if (a.enemyType == "Flying Enemy") {
-        auto* flyingEnemySimple = new FlyingEnemySimple(mGame, 70, 70, 250, 60);
+        auto* flyingEnemySimple = new FlyingEnemySimple(mGame);
         flyingEnemySimple->SetPosition(pos);
         flyingEnemySimple->SetSpottedPlayer(true);
         a.enemy = flyingEnemySimple;
     }
     if (a.enemyType == "FlyingShooterEnemy") {
-        auto* flyingShooterEnemy = new FlyingShooterEnemy(mGame, 70, 70, 250, 60);
+        auto* flyingShooterEnemy = new FlyingShooterEnemy(mGame);
         flyingShooterEnemy->SetPosition(pos);
         flyingShooterEnemy->SetSpottedPlayer(true);
         a.enemy = flyingShooterEnemy;
     }
     if (a.enemyType == "Mantis") {
-        auto* mantis = new Mantis(mGame, 120, 120, 250, 90);
+        auto* mantis = new Mantis(mGame);
         mantis->SetPosition(pos);
         mantis->SetSpottedPlayer(true);
         a.enemy = mantis;
     }
     if (a.enemyType == "FlyingGolem") {
-        auto* flyingGolem = new FlyingGolem(mGame, 100, 100, 420, 130);
+        auto* flyingGolem = new FlyingGolem(mGame);
         flyingGolem->SetPosition(pos);
         flyingGolem->SetSpottedPlayer(true);
         a.enemy = flyingGolem;
     }
     if (a.enemyType == "DragonFly") {
-        auto* dragonFly = new DragonFly(mGame, 130, 70, 1300, 120);
+        auto* dragonFly = new DragonFly(mGame);
         dragonFly->SetPosition(pos);
         dragonFly->SetSpottedPlayer(true);
         a.enemy = dragonFly;
     }
     if (a.enemyType == "Fox") {
-        auto* fox = new Fox(mGame, 100, 170, 300, 700);
+        auto* fox = new Fox(mGame);
         fox->SetPosition(pos);
         fox->SetSpottedPlayer(true);
         a.enemy = fox;
     }
     if (a.enemyType == "HookEnemy") {
-        auto* hookEnemy = new HookEnemy(mGame, 220, 100, 500, 750);
+        auto* hookEnemy = new HookEnemy(mGame);
         hookEnemy->SetPosition(pos);
         hookEnemy->SetSpottedPlayer(true);
         a.enemy = hookEnemy;
     }
     if (a.enemyType == "FlyingSpawnerEnemy") {
-        auto* flyingSpawnerEnemy = new FlyingSpawnerEnemy(mGame, 96, 96, 400, 500);
+        auto* flyingSpawnerEnemy = new FlyingSpawnerEnemy(mGame);
         flyingSpawnerEnemy->SetPosition(pos);
         flyingSpawnerEnemy->SetSpottedPlayer(true);
         a.enemy = flyingSpawnerEnemy;
     }
     if (a.enemyType == "LittleBat") {
-        auto* littleBat = new LittleBat(mGame, 36, 36, 500, 10);
+        auto* littleBat = new LittleBat(mGame);
         littleBat->SetPosition(pos);
         littleBat->SetSpottedPlayer(true);
         a.enemy = littleBat;

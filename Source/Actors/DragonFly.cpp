@@ -14,8 +14,8 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-DragonFly::DragonFly(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 10.0f)
+DragonFly::DragonFly(Game *game)
+    :Enemy(game)
     ,mDragonFlyState(State::FlyingAround)
 
     ,mDistToSpotPlayer(700 * mGame->GetScale())
@@ -47,17 +47,25 @@ DragonFly::DragonFly(Game *game, float width, float height, float moveSpeed, flo
     ,mCurveSpeedY(16500 * mGame->GetScale())
     ,mIsCurvingRight(true)
 
-    ,mStumDuration(2.0f)
+    ,mStumDuration(1.5f)
     ,mStumTimer(0.0f)
     ,mStunnedAnimation(false)
 
     ,mAttackDuration(0.7f)
     ,mAttackTimer(0.0f)
 {
+    mWidth = 130 * mGame->GetScale();
+    mHeight = 70 * mGame->GetScale();
+    mMoveSpeed = 1300 * mGame->GetScale();
+    mHealthPoints = 120;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 30;
     mKnockBackSpeed = 700.0f * mGame->GetScale();
     mKnockBackDuration = 0.15f;
     mKnockBackTimer = mKnockBackDuration;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mWidth * 1.8f, "../Assets/Sprites/DragonFly/DragonFly.png", "../Assets/Sprites/DragonFly/DragonFly.json", 998);
     std::vector idle = {39, 40, 41, 42, 43, 44};
@@ -120,11 +128,6 @@ void DragonFly::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     MovementAfterPlayerSpotted(deltaTime);
-
-    // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(Vector2::Zero);
-    }
 
     // Se morreu
     if (Died()) {

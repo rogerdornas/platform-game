@@ -10,7 +10,7 @@
 class Mantis : public Enemy
 {
 public:
-    Mantis(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    Mantis(Game* game);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;

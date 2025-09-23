@@ -20,11 +20,11 @@
 #include "../Components/DrawComponents/DrawRopeComponent.h"
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 
-Player::Player(Game* game, float width, float height)
+Player::Player(Game* game)
     :Actor(game)
     ,mStartingPosition(Vector2::Zero)
-    ,mHeight(height * mGame->GetScale())
-    ,mWidth(width * mGame->GetScale())
+    ,mWidth(60 * mGame->GetScale())
+    ,mHeight(75 * mGame->GetScale())
 
     ,mIsOnGround(false)
     ,mIsOnMovingGround(false)
@@ -105,6 +105,7 @@ Player::Player(Game* game, float width, float height)
     ,mMoney(1000)
     ,mStartMoney(0)
 
+    ,mCanHook(true)
     ,mIsHooking(false)
     ,mPrevHookPressed(false)
     ,mHookDirection(Vector2::Zero)
@@ -621,62 +622,64 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     }
 
     // Hook
-    std::vector<HookPoint* > hookPoints = mGame->GetHookPoints();
+    if (mCanHook) {
+        std::vector<HookPoint* > hookPoints = mGame->GetHookPoints();
 
-    HookPoint* nearestHookPoint = nullptr;
-    float nearestDistance = FLT_MAX;
+        HookPoint* nearestHookPoint = nullptr;
+        float nearestDistance = FLT_MAX;
 
-    for (HookPoint* hp: hookPoints) {
-        float dist = (GetPosition() - hp->GetPosition()).Length();
-        if (dist < hp->GetRadius()) {
-            float distX = GetPosition().x - hp->GetPosition().x;
+        for (HookPoint* hp: hookPoints) {
+            float dist = (GetPosition() - hp->GetPosition()).Length();
+            if (dist < hp->GetRadius()) {
+                float distX = GetPosition().x - hp->GetPosition().x;
 
-            // Verifica se o jogador está olhando para a direção do hookPoint
-            bool lookingRight = GetRotation() == 0 && distX < 0;
-            bool lookingLeft = GetRotation() == Math::Pi && distX > 0;
+                // Verifica se o jogador está olhando para a direção do hookPoint
+                bool lookingRight = GetRotation() == 0 && distX < 0;
+                bool lookingLeft = GetRotation() == Math::Pi && distX > 0;
 
-            if ((lookingRight || lookingLeft) && dist < nearestDistance) {
-                nearestDistance = dist;
-                nearestHookPoint = hp;
+                if ((lookingRight || lookingLeft) && dist < nearestDistance) {
+                    nearestDistance = dist;
+                    nearestHookPoint = hp;
+                }
             }
         }
-    }
-    if (nearestHookPoint && (nearestHookPoint != mHookPoint)) {
-        nearestHookPoint->SetHookPointState(HookPoint::HookPointState::InRange);
-    }
-
-    if (nearestHookPoint &&
-        hook &&
-        !mPrevHookPressed &&
-        !mDashComponent->GetIsDashing() &&
-        mHookCooldownTimer >= mHookCooldownDuration)
-    {
-        mHookPoint = nearestHookPoint;
-        nearestHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
-        Vector2 dir = (nearestHookPoint->GetPosition() - GetPosition());
-        if (dir.Length() > 0) {
-            dir.Normalize();
+        if (nearestHookPoint && (nearestHookPoint != mHookPoint)) {
+            nearestHookPoint->SetHookPointState(HookPoint::HookPointState::InRange);
         }
-        mHookDirection = dir;
-        mIsHooking = true;
-        mHookCooldownTimer = 0.0f;
-        mHookingTimer = 0.0f;
 
-        // Quando hook começa
-        mHookEnd = nearestHookPoint->GetPosition();
-        mHookAnimProgress = 0.0f;
-        mIsHookAnimating = true;
-        mDrawRopeComponent->SetIsVisible(true);
+        if (nearestHookPoint &&
+            hook &&
+            !mPrevHookPressed &&
+            !mDashComponent->GetIsDashing() &&
+            mHookCooldownTimer >= mHookCooldownDuration)
+        {
+            mHookPoint = nearestHookPoint;
+            nearestHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
+            Vector2 dir = (nearestHookPoint->GetPosition() - GetPosition());
+            if (dir.Length() > 0) {
+                dir.Normalize();
+            }
+            mHookDirection = dir;
+            mIsHooking = true;
+            mHookCooldownTimer = 0.0f;
+            mHookingTimer = 0.0f;
 
-        // Resetar dash no ar
-        mDashComponent->SetHasDashedInAir(false);
-        // RESET DO CONTADOR DE PULO
-        mJumpCountInAir = 0;
+            // Quando hook começa
+            mHookEnd = nearestHookPoint->GetPosition();
+            mHookAnimProgress = 0.0f;
+            mIsHookAnimating = true;
+            mDrawRopeComponent->SetIsVisible(true);
 
-        mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-        mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+            // Resetar dash no ar
+            mDashComponent->SetHasDashedInAir(false);
+            // RESET DO CONTADOR DE PULO
+            mJumpCountInAir = 0;
+
+            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        }
+        mPrevHookPressed = hook;
     }
-    mPrevHookPressed = hook;
 }
 
 void Player::OnUpdate(float deltaTime) {

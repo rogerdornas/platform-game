@@ -15,6 +15,7 @@ public:
         FireBall,
         WallSlide,
         DoubleJump,
+        Hook,
         TimeControl
     };
 

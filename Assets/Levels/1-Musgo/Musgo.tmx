@@ -1414,19 +1414,19 @@
   <object id="172" name="Checkpoint" x="33184" y="7296" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="6" name="Enemies">
-  <object id="53" name="Enemy Simple" x="16576" y="4992" width="32" height="32"/>
-  <object id="66" name="Flying Enemy" x="16544" y="4192" width="32" height="32"/>
-  <object id="68" name="Enemy Simple" x="14336" y="3840" width="32" height="32"/>
+  <object id="53" name="Enemy Simple" x="16448" y="4992" width="32" height="32"/>
+  <object id="66" name="Flying Enemy" x="16448" y="4192" width="32" height="32"/>
+  <object id="68" name="Enemy Simple" x="14240" y="3840" width="32" height="32"/>
   <object id="69" name="FlyingShooterEnemy" x="14400" y="4832" width="32" height="32"/>
   <object id="70" name="FlyingShooterEnemy" x="14240" y="4192" width="32" height="32"/>
-  <object id="71" name="Flying Enemy" x="14464" y="4192" width="32" height="32"/>
+  <object id="71" name="Flying Enemy" x="14368" y="4192" width="32" height="32"/>
   <object id="84" name="FlyingShooterEnemy" x="18880" y="4096" width="32" height="32"/>
-  <object id="85" name="Enemy Simple" x="19008" y="4448" width="32" height="32"/>
-  <object id="96" name="Flying Enemy" x="20352" y="3968" width="32" height="32"/>
+  <object id="85" name="Enemy Simple" x="18880" y="4448" width="32" height="32"/>
+  <object id="96" name="Flying Enemy" x="20224" y="3968" width="32" height="32"/>
   <object id="100" name="FlyingShooterEnemy" x="20960" y="3968" width="32" height="32"/>
   <object id="120" name="FlyingShooterEnemy" x="22464" y="3968" width="32" height="32"/>
-  <object id="121" name="Flying Enemy" x="23072" y="3968" width="32" height="32"/>
-  <object id="134" name="Flying Enemy" x="23872" y="3968" width="32" height="32"/>
+  <object id="121" name="Flying Enemy" x="22944" y="3968" width="32" height="32"/>
+  <object id="134" name="Flying Enemy" x="23744" y="3968" width="32" height="32"/>
   <object id="152" name="Mantis" x="13984" y="5632" width="32" height="32"/>
   <object id="153" name="Mantis" x="15232" y="5632" width="32" height="32"/>
   <object id="173" name="BushMonster" x="30240" y="8384" width="32" height="32"/>

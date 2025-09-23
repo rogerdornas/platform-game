@@ -21,54 +21,62 @@
 #include "../Actors/DynamicGround.h"
 
 
-Fox::Fox(Game* game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 10)
+Fox::Fox(Game* game)
+    :Enemy(game)
+    ,mDistToSpotPlayer(400 * mGame->GetScale())
+    ,mWalkingAroundDuration(2.0f)
+    ,mWalkingAroundTimer(0.0f)
+    ,mWalkingAroundMoveSpeed(50.0f * mGame->GetScale())
+
+    ,mFoxState(State::Stop)
+
+    ,mIsRunning(true)
+
+    ,mStopDuration(1.5f)
+    ,mStopTimer(0.0f)
+
+    ,mDashDuration(0.9f)
+    ,mDashTimer(0.0f)
+    ,mMaxDashes(3)
+    ,mDashCount(0)
+
+    ,mRunAwayDuration(0.8f)
+    ,mRunAwayTimer(0.0f)
+
+    ,mFireballDuration(1.5f)
+    ,mFireballTimer(0.0f)
+    ,mAlreadyFireballed(false)
+    ,mFireballWidth(100 * mGame->GetScale())
+    ,mFireBallHeight(100 * mGame->GetScale())
+    ,mFireballSpeed(1400 * mGame->GetScale())
+
+    ,mIsOnGround(true)
+    ,mMaxJumps(3)
+    ,mJumpCount(0)
+    ,mJumpForce(-1300.0f * mGame->GetScale())
+    ,mGravity(3000 * mGame->GetScale())
+
+    ,mSword(nullptr)
+    ,mSwordHitPlayer(false)
+    ,mDistToSword(200 * mGame->GetScale())
+    ,mRunAndSwordProbability(0.5f)
+
+    ,mDashComponent(nullptr)
 {
+    mWidth = 100 * mGame->GetScale();
+    mHeight = 170 * mGame->GetScale();
+    mMoveSpeed = 300 * mGame->GetScale();
+    mHealthPoints = 700;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 150;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mDistToSpotPlayer = 400 * mGame->GetScale();
-
-    mWalkingAroundDuration = 2.0f;
-    mWalkingAroundTimer = mWalkingAroundDuration;
-    mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
-
-    mIsRunning = true;
-
-    mState = State::Stop;
-
-    mStopDuration = 1.5f;
-    mStopTimer = 0.0f;
-
-    mDashDuration = 0.9f;
-    mDashTimer = 0.0f;
-    mMaxDashes = 3;
-    mDashCount = 0;
-
-    mRunAwayDuration = 0.8f;
-    mRunAwayTimer = 0.0f;
-
-    mFireballDuration = 1.5f;
-    mFireballTimer = 0.0f;
-    mAlreadyFireballed = false;
-    mFireballWidth = 100 * mGame->GetScale();
-    mFireBallHeight = 100 * mGame->GetScale();
-    mFireballSpeed = 1400 * mGame->GetScale();
-
-    mIsOnGround = true;
-    mMaxJumps = 3;
-    mJumpCount = 0;
-    mJumpForce = -1300.0f * mGame->GetScale();
-    mGravity = 3000 * mGame->GetScale();
-
-    mSwordHitPlayer = false;
-    mDistToSword = 200 * mGame->GetScale();
-    mRunAndSwordProbability = 0.5f;
+    SetSize(mWidth, mHeight);
 
     std::string foxAssets = "../Assets/Sprites/Raposa/";
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, foxAssets + "Idle.png", 100, 100);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.3f, 0.91f * mWidth * 2.3f,
                                                        foxAssets + "Raposa.png",
@@ -129,11 +137,6 @@ void Fox::OnUpdate(float deltaTime) {
         MovementBeforePlayerSpotted();
     }
 
-    // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(Vector2::Zero);
-    }
-
     // Se morreu
     if (Died()) {
         TriggerBossDefeat();
@@ -150,22 +153,13 @@ void Fox::OnUpdate(float deltaTime) {
 
 void Fox::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
-    // Abre chão que estava travando
-    for (int id : mUnlockGroundsIds) {
-        Ground* g = mGame->GetGroundById(id);
-        DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
-        if (dynamicGround) {
-            dynamicGround->SetIsDecreasing(true);
-        }
-    }
+    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
     // Player ganha pulo duplo
     if (mGame->GetPlayer()->GetMaxJumpsInAir() == 0) {
         auto* skill = new Skill(mGame, Skill::SkillType::DoubleJump);
         skill->SetPosition(GetPosition());
     }
-
-    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
     auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());
@@ -204,10 +198,10 @@ void Fox::ResolveGroundCollision() {
                     mIsOnGround = true;
                 }
                 if (collisionNormal == Vector2::NegUnitX || collisionNormal == Vector2::UnitX) {
-                    if (mState == State::RunAway) {
+                    if (mFoxState == State::RunAway) {
                         mRunAwayTimer = mRunAwayDuration;
                     }
-                    if (mState == State::Dash) {
+                    if (mFoxState == State::Dash) {
                         if (collisionNormal == Vector2::NegUnitX) {
                             mDashTimer = mDashDuration;
                             SetPosition(GetPosition() - Vector2(32, 0) * mGame->GetScale());
@@ -249,11 +243,11 @@ void Fox::ResolveGroundCollision() {
 void Fox::ResolvePlayerCollision() {
     Player* player = GetGame()->GetPlayer();
     if (mColliderComponent->Intersect(*player->GetComponent<ColliderComponent>())) { // Colisão da Fox com o player
-        if (mState == State::Dash) {
+        if (mFoxState == State::Dash) {
             // mDashCount = 0;
             // mDashTimer = 0;
             // mDashComponent->StopDash();
-            // mState = State::RunAway;
+            // mFoxState = State::RunAway;
         }
     }
     else if (mSword->GetComponent<ColliderComponent>()->Intersect(*player->GetComponent<ColliderComponent>())) { // Colisão da sword da fox com o player
@@ -265,7 +259,7 @@ void Fox::ResolvePlayerCollision() {
 }
 
 void Fox::MovementAfterPlayerSpotted(float deltaTime) {
-    switch (mState) {
+    switch (mFoxState) {
         case State::Stop:
             Stop(deltaTime);
             break;
@@ -345,14 +339,14 @@ void Fox::Stop(float deltaTime) {
     mStopTimer = 0;
 
     if (Random::GetFloat() < 0.5) {
-        mState = State::RunAndSword;
+        mFoxState = State::RunAndSword;
     }
     else {
-        mState = State::Fireball;
+        mFoxState = State::Fireball;
     }
 
     // Controla probabilidade de combo de espada para não ficar spamando
-    if (mState == State::RunAndSword) {
+    if (mFoxState == State::RunAndSword) {
         mRunAndSwordProbability -= 0.1;
     }
     else {
@@ -364,7 +358,7 @@ void Fox::Dash(float deltaTime) {
     if (mDashCount >= mMaxDashes) {
         mDashCount = 0;
         mDashTimer = 0;
-        mState = State::Stop;
+        mFoxState = State::Stop;
         return;
     }
 
@@ -409,7 +403,7 @@ void Fox::RunAway(float deltaTime) {
     }
 
     mRunAwayTimer = 0;
-    mState = State::Stop;
+    mFoxState = State::Stop;
 }
 
 void Fox::RunAndSword(float deltaTime)
@@ -441,7 +435,7 @@ void Fox::RunAndSword(float deltaTime)
         }
         mSword->SetPosition(GetPosition());
         mSwordHitPlayer = false;
-        mState = State::RunAway;
+        mFoxState = State::RunAway;
     }
 }
 
@@ -494,10 +488,10 @@ void Fox::Fireball(float deltaTime)
     }
 
     if (Random::GetFloat() < jumpProbability) {
-        mState = State::Jump;
+        mFoxState = State::Jump;
     }
     else {
-        mState = State::Dash;
+        mFoxState = State::Dash;
     }
 }
 
@@ -506,7 +500,7 @@ void Fox::Jump(float deltaTime) {
     if (mJumpCount >= mMaxJumps) {
         if (mIsOnGround) {
             mJumpCount = 0;
-            mState = State::Stop;
+            mFoxState = State::Stop;
         }
         return;
     }

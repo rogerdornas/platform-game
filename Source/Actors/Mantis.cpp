@@ -13,8 +13,8 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-Mantis::Mantis(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 15.0f)
+Mantis::Mantis(Game *game)
+    :Enemy(game)
     ,mMantisState(State::WalkForward)
     ,mDistToSpotPlayer(400 * mGame->GetScale())
     ,mWalkingAroundDuration(3.0f)
@@ -30,10 +30,18 @@ Mantis::Mantis(Game *game, float width, float height, float moveSpeed, float hea
     ,mWaitToAttackDuration(0.3f)
     ,mWaitToAttackTimer(0.0f)
 {
+    mWidth = 120 * mGame->GetScale();
+    mHeight = 120 * mGame->GetScale();
+    mMoveSpeed = 250 * mGame->GetScale();
+    mHealthPoints = 90;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 15;
     mMoneyDrop = 10;
     mKnockBackSpeed = 700.0f * mGame->GetScale();
     mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, 1.35f * mWidth, 1.35f * mHeight, "../Assets/Sprites/Mantis/Mantis.png", "../Assets/Sprites/Mantis/Mantis.json", 998);
     std::vector walk = {8, 9, 10, 11};
@@ -76,10 +84,6 @@ void Mantis::OnUpdate(float deltaTime) {
                                              mRigidBodyComponent->GetVelocity().y
                                              + mGravity * deltaTime));
 
-    // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(Vector2::Zero);
-    }
     // Se morreu
     if (Died()) {
         SetState(ActorState::Destroy);

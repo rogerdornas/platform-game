@@ -16,7 +16,7 @@ public:
         Shoot
     };
 
-    FlyingShooterEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    FlyingShooterEnemy(Game* game);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;

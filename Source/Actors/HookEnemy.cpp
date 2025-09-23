@@ -17,8 +17,8 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Components/DrawComponents/DrawRopeComponent.h"
 
-HookEnemy::HookEnemy(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 10)
+HookEnemy::HookEnemy(Game *game)
+    :Enemy(game)
     ,mHookEnemyState(State::Stop)
 
     ,mGravity(3000 * mGame->GetScale())
@@ -53,10 +53,18 @@ HookEnemy::HookEnemy(Game *game, float width, float height, float moveSpeed, flo
 
     ,mSpeedIncreaseRate(3.5f)
 {
+    mWidth = 220 * mGame->GetScale();
+    mHeight = 100 * mGame->GetScale();
+    mMoveSpeed = 500 * mGame->GetScale();
+    mHealthPoints = 750;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 50;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.35f, mWidth * 1.35f * 0.73f, "../Assets/Sprites/HookEnemy/HookEnemy.png", "../Assets/Sprites/HookEnemy/HookEnemy.json", 998);
     std::vector idle = {2, 3, 4, 5};
@@ -436,8 +444,13 @@ void HookEnemy::ForwardAttack(float deltaTime) {
 
 void HookEnemy::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
-
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
+
+    // Player ganha hook
+    if (!mGame->GetPlayer()->GetCanHook()) {
+        auto* skill = new Skill(mGame, Skill::SkillType::Hook);
+        skill->SetPosition(GetPosition());
+    }
 
     auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());

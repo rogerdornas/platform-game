@@ -20,7 +20,7 @@ public:
         SpawnBat
     };
 
-    FlyingSpawnerEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    FlyingSpawnerEnemy(Game* game);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;

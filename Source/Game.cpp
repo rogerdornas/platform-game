@@ -1450,42 +1450,42 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::string grounds;
                 std::vector<int> ids;
                 if (name == "Enemy Simple") {
-                    auto* enemySimple = new EnemySimple(this, 53, 45, 200, 30);
+                    auto* enemySimple = new EnemySimple(this);
                     enemySimple->SetPosition(Vector2(x, y));
                     enemySimple->SetId(id);
                 }
                 else if (name == "Flying Enemy") {
-                    auto* flyingEnemySimple = new FlyingEnemySimple(this, 70, 70, 250, 60);
+                    auto* flyingEnemySimple = new FlyingEnemySimple(this);
                     flyingEnemySimple->SetPosition(Vector2(x, y));
                     flyingEnemySimple->SetId(id);
                 }
                 else if (name == "FlyingShooterEnemy") {
-                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this, 70, 70, 300, 60);
+                    auto* flyingShooterEnemy = new FlyingShooterEnemy(this);
                     flyingShooterEnemy->SetPosition(Vector2(x, y));
                     flyingShooterEnemy->SetId(id);
                 }
                 else if (name == "Mantis") {
-                    auto* mantis = new Mantis(this, 120, 120, 250, 90);
+                    auto* mantis = new Mantis(this);
                     mantis->SetPosition(Vector2(x, y));
                     mantis->SetId(id);
                 }
                 else if (name == "FlyingGolem") {
-                    auto* flyingGolem = new FlyingGolem(this, 100, 100, 420, 130);
+                    auto* flyingGolem = new FlyingGolem(this);
                     flyingGolem->SetPosition(Vector2(x, y));
                     flyingGolem->SetId(id);
                 }
                 else if (name == "DragonFly") {
-                    auto* dragonFly = new DragonFly(this, 130, 70, 1300, 120);
+                    auto* dragonFly = new DragonFly(this);
                     dragonFly->SetPosition(Vector2(x, y));
                     dragonFly->SetId(id);
                 }
                 else if (name == "FlyingSpawnerEnemy") {
-                    auto* flyingSpawnerEnemy = new FlyingSpawnerEnemy(this, 96, 96, 400, 500);
+                    auto* flyingSpawnerEnemy = new FlyingSpawnerEnemy(this);
                     flyingSpawnerEnemy->SetPosition(Vector2(x, y));
                     flyingSpawnerEnemy->SetId(id);
                 }
                 else if (name == "LittleBat") {
-                    auto* littleBat = new LittleBat(this, 36, 36, 500, 10);
+                    auto* littleBat = new LittleBat(this);
                     littleBat->SetPosition(Vector2(x, y));
                     littleBat->SetId(id);
                 }
@@ -1499,10 +1499,9 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto* fox = new Fox(this, 100, 170, 300, 700);
+                    auto* fox = new Fox(this);
                     fox->SetPosition(Vector2(x, y));
                     fox->SetId(id);
-                    fox->SetUnlockGroundsIds(ids);
                 }
                 else if (name == "Frog") {
                     if (obj.contains("properties")) {
@@ -1526,20 +1525,19 @@ void Game::LoadObjects(const std::string &fileName) {
                         }
                     }
                     ids = ParseIntList(grounds);
-                    auto* frog = new Frog(this, 165, 165, 300, 500);
+                    auto* frog = new Frog(this);
                     frog->SetPosition(Vector2(x, y));
                     frog->SetId(id);
                     frog->SetArenaMinPos(Vector2(MinPosX, MinPosY));
                     frog->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
-                    frog->SetUnlockGroundsIds(ids);
                 }
                 else if (name == "Moth") {
-                    auto* moth = new Moth(this, 200, 200, 500, 1000);
+                    auto* moth = new Moth(this);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
                 }
                 else if (name == "BushMonster") {
-                    auto* bushMonster = new BushMonster(this, 220, 140, 300, 100);
+                    auto* bushMonster = new BushMonster(this);
                     bushMonster->SetPosition(Vector2(x, y));
                     bushMonster->SetId(id);
                 }
@@ -1564,14 +1562,14 @@ void Game::LoadObjects(const std::string &fileName) {
                             }
                         }
                     }
-                    auto* golem = new Golem(this, 144, 190, 600, 400);
+                    auto* golem = new Golem(this);
                     golem->SetPosition(Vector2(x, y));
                     golem->SetId(id);
                     golem->SetArenaMinPos(Vector2(MinPosX, MinPosY));
                     golem->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                 }
                 else if (name == "HookEnemy") {
-                    auto* hookEnemy = new HookEnemy(this, 220, 100, 500, 750);
+                    auto* hookEnemy = new HookEnemy(this);
                     hookEnemy->SetPosition(Vector2(x, y));
                     hookEnemy->SetId(id);
                 }
@@ -1604,7 +1602,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     AddActor(mPlayer);
                 }
                 else {
-                    mPlayer = new Player(this, 60, 75);
+                    mPlayer = new Player(this);
                     mPlayer->SetPosition(Vector2(x, y));
                     mPlayer->SetStartingPosition(Vector2(x, y));
                     mCheckpointPosition = Vector2(x, y);

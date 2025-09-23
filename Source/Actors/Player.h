@@ -15,7 +15,7 @@ class Player : public Actor
 public:
     enum class WallSlideSide { notSliding, left, right };
 
-    Player(Game* game, float width, float height);
+    Player(Game* game);
 
     void OnProcessInput(const Uint8* keyState, SDL_GameController &controller) override;
     void OnUpdate(float deltaTime) override;
@@ -35,7 +35,9 @@ public:
     void ReceiveHit(float damage, Vector2 knockBackDirection);
     void SetCanFireBall(bool canFireBall) { mCanFireBall = canFireBall; }
     bool GetCanFireBall() const { return mCanFireBall; }
+
     void SetCanWallSlide(bool canWallSlide) { mCanWallSlide = canWallSlide; }
+    bool GetCanWallSlide() const { return mCanWallSlide; }
 
     class Sword* GetSword() const { return mSword; }
     void SetSword() { mSword = new Sword(mGame, this, mSwordWidth, mSwordHeight, 0.15f, mSwordDamage); }
@@ -44,6 +46,10 @@ public:
     void SetSwordDamage(float damage) { mSwordDamage = damage; }
 
     void SetCanDash(bool canDash) { mCanDash = canDash; }
+    bool GetCanDash() const { return mCanDash; }
+
+    void SetCanHook(bool canHook) { mCanHook = canHook; }
+    bool GetCanHook() const { return mCanHook; }
 
     void ResetHealthPoints() { mHealthPoints = mMaxHealthPoints; }
     float GetHealthPoints() const { return mHealthPoints; }
@@ -100,8 +106,8 @@ private:
 
     Vector2 mStartingPosition;
 
-    float mHeight;
     float mWidth;
+    float mHeight;
 
     bool mIsOnGround;
     bool mIsOnMovingGround;
@@ -184,6 +190,7 @@ private:
     int mMoney;
     int mStartMoney;
 
+    bool mCanHook;
     bool mIsHooking;
     bool mPrevHookPressed;
     Vector2 mHookDirection;

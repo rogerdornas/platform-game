@@ -22,7 +22,7 @@ public:
         Attack
     };
 
-    DragonFly(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    DragonFly(Game* game);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;

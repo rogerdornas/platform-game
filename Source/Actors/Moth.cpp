@@ -18,8 +18,8 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Actors/DynamicGround.h"
 
-Moth::Moth(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 15)
+Moth::Moth(Game *game)
+    :Enemy(game)
     ,mMothState(State::Stop)
     ,mIsSlowMotion(false)
     ,mSlowMotionProbability(0.45f)
@@ -62,12 +62,18 @@ Moth::Moth(Game *game, float width, float height, float moveSpeed, float healthP
     ,mFlyUpDuration(6.5f)
     ,mFlyUpTimer(0.0f)
 {
+    mWidth = 200 * mGame->GetScale();
+    mHeight = 200 * mGame->GetScale();
+    mMoveSpeed = 500 * mGame->GetScale();
+    mHealthPoints = 1000;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 20;
     mMoneyDrop = 200;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
 
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Moth/Moth2.png", mWidth * 1.3f, mHeight * 1.3f, 999);
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/FinalBoss/FinalBoss.png", "../Assets/Sprites/FinalBoss/FinalBoss.json", 998);
     std::vector idle = {53, 54, 55, 56, 57, 58, 59, 60};
@@ -144,7 +150,6 @@ void Moth::OnUpdate(float deltaTime) {
 
     // Se morreu
     if (Died()) {
-        // mMothState = State::Dying;
         TriggerBossDefeat();
     }
 

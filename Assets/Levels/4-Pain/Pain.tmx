@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="453">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="455">
  <editorsettings>
   <export target="Pain.json" format="json"/>
  </editorsettings>
@@ -790,6 +790,14 @@
     <property name="FixedCameraPositionX" type="float" value="7872"/>
     <property name="FixedCameraPositionY" type="float" value="288"/>
     <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="454" name="Boss Battle" x="8160" y="352" width="2528" height="864">
+   <properties>
+    <property name="Enemies" value="407"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="284,329,436,440"/>
+    <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
  </objectgroup>
@@ -1899,31 +1907,27 @@
   <object id="331" name="FlyingShooterEnemy" x="9440" y="4480" width="32" height="32"/>
   <object id="332" name="FlyingShooterEnemy" x="8704" y="4480" width="32" height="32"/>
   <object id="299" name="Mantis" x="9440" y="3968" width="32" height="32"/>
-  <object id="271" name="Flying Enemy" x="7872" y="3648" width="32" height="32"/>
-  <object id="272" name="Flying Enemy" x="7136" y="3680" width="32" height="32"/>
-  <object id="273" name="Enemy Simple" x="8064" y="4032" width="32" height="32"/>
-  <object id="275" name="Enemy Simple" x="7872" y="3808" width="32" height="32"/>
-  <object id="274" name="Enemy Simple" x="7808" y="4256" width="32" height="32"/>
-  <object id="407" name="Fox" x="8576" y="1184" width="32" height="32">
-   <properties>
-    <property name="UnlockGrounds" value="436,440"/>
-   </properties>
-  </object>
-  <object id="418" name="Enemy Simple" x="1120" y="5344" width="32" height="32"/>
-  <object id="420" name="Enemy Simple" x="1056" y="4192" width="32" height="32"/>
-  <object id="421" name="Enemy Simple" x="1888" y="4192" width="32" height="32"/>
-  <object id="438" name="Mantis" x="2688" y="4192" width="32" height="32"/>
-  <object id="422" name="Enemy Simple" x="2848" y="4448" width="32" height="32"/>
-  <object id="429" name="Enemy Simple" x="6432" y="4224" width="32" height="32"/>
-  <object id="430" name="Enemy Simple" x="6432" y="3552" width="32" height="32"/>
-  <object id="431" name="Enemy Simple" x="6432" y="2720" width="32" height="32"/>
-  <object id="432" name="Enemy Simple" x="6432" y="1888" width="32" height="32"/>
-  <object id="425" name="Enemy Simple" x="2720" y="5024" width="32" height="32"/>
-  <object id="419" name="Flying Enemy" x="1728" y="5120" width="32" height="32"/>
-  <object id="423" name="Flying Enemy" x="1312" y="4544" width="32" height="32"/>
-  <object id="427" name="Flying Enemy" x="4928" y="4768" width="32" height="32"/>
+  <object id="271" name="Flying Enemy" x="7744" y="3648" width="32" height="32"/>
+  <object id="272" name="Flying Enemy" x="7008" y="3680" width="32" height="32"/>
+  <object id="273" name="Enemy Simple" x="7968" y="4032" width="32" height="32"/>
+  <object id="275" name="Enemy Simple" x="7712" y="3808" width="32" height="32"/>
+  <object id="274" name="Enemy Simple" x="7712" y="4256" width="32" height="32"/>
+  <object id="407" name="Fox" x="8576" y="1184" width="32" height="32"/>
+  <object id="418" name="Enemy Simple" x="1024" y="5344" width="32" height="32"/>
+  <object id="420" name="Enemy Simple" x="928" y="4192" width="32" height="32"/>
+  <object id="421" name="Enemy Simple" x="1792" y="4192" width="32" height="32"/>
+  <object id="438" name="Mantis" x="2464" y="4192" width="32" height="32"/>
+  <object id="422" name="Enemy Simple" x="2720" y="4448" width="32" height="32"/>
+  <object id="429" name="Enemy Simple" x="6336" y="4224" width="32" height="32"/>
+  <object id="430" name="Enemy Simple" x="6336" y="3552" width="32" height="32"/>
+  <object id="431" name="Enemy Simple" x="6336" y="2720" width="32" height="32"/>
+  <object id="432" name="Enemy Simple" x="6336" y="1888" width="32" height="32"/>
+  <object id="425" name="Enemy Simple" x="2656" y="5024" width="32" height="32"/>
+  <object id="419" name="Flying Enemy" x="1536" y="5120" width="32" height="32"/>
+  <object id="423" name="Flying Enemy" x="1184" y="4544" width="32" height="32"/>
+  <object id="427" name="Flying Enemy" x="4800" y="4768" width="32" height="32"/>
   <object id="437" name="Mantis" x="4480" y="6208" width="32" height="32"/>
-  <object id="424" name="Flying Enemy" x="544" y="4544" width="32" height="32"/>
+  <object id="424" name="Flying Enemy" x="448" y="4544" width="32" height="32"/>
   <object id="445" name="DragonFly" x="4864" y="5376" width="32" height="32"/>
   <object id="452" name="FlyingSpawnerEnemy" x="4192" y="4672" width="32" height="32"/>
  </objectgroup>

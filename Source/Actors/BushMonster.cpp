@@ -12,8 +12,8 @@
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Random.h"
 
-BushMonster::BushMonster(Game* game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 5)
+BushMonster::BushMonster(Game* game)
+    :Enemy(game)
     ,mBushMonsterState(State::Idle)
     ,mGravity(3000 * mGame->GetScale())
     ,mIdleDuration(1.0f)
@@ -25,7 +25,15 @@ BushMonster::BushMonster(Game* game, float width, float height, float moveSpeed,
     ,mHitDuration(0.3f)
     ,mHitTimer(0.0f)
 {
+    mWidth = 220 * mGame->GetScale();
+    mHeight = 140 * mGame->GetScale();
+    mMoveSpeed = 300 * mGame->GetScale();
+    mHealthPoints = 100;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 100;
+
+    SetSize(mWidth, mHeight);
 
     const std::string spritePath = "../Assets/Sprites/BushMonster2/BushMonster.png";
     const std::string jsonPath = "../Assets/Sprites/BushMonster2/BushMonster.json";
@@ -61,15 +69,6 @@ void BushMonster::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
-
-    // Player* player = GetGame()->GetPlayer();
-    // float dist = GetPosition().x - player->GetPosition().x;
-    // if (dist < 0) {
-    //     SetRotation(0.0);
-    // }
-    // else {
-    //     SetRotation(Math::Pi);
-    // }
 
     // Gravidade
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
@@ -243,8 +242,10 @@ void BushMonster::TriggerBossDefeat() {
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
     // Player ganha dash
-    auto* skill = new Skill(mGame, Skill::SkillType::Dash);
-    skill->SetPosition(GetPosition());
+    if (!mGame->GetPlayer()->GetCanDash()) {
+        auto* skill = new Skill(mGame, Skill::SkillType::Dash);
+        skill->SetPosition(GetPosition());
+    }
 
     auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());

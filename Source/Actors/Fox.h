@@ -19,9 +19,8 @@ public:
         Jump
     };
 
-    Fox(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    Fox(Game* game);
     void OnUpdate(float deltaTime) override;
-    void SetUnlockGroundsIds(const std::vector<int>& ids) { mUnlockGroundsIds = ids; }
 
     void ChangeResolution(float oldScale, float newScale) override;
 
@@ -42,10 +41,11 @@ private:
     void Fireball(float deltaTime);
     void Jump(float deltaTime);
 
+    State mFoxState;
 
     float mDistToSpotPlayer;
-    float mWalkingAroundTimer;
     float mWalkingAroundDuration;
+    float mWalkingAroundTimer;
     float mWalkingAroundMoveSpeed;
 
     bool mIsRunning;
@@ -78,10 +78,6 @@ private:
     bool mSwordHitPlayer;
     float mDistToSword;
     float mRunAndSwordProbability;
-
-    std::vector<int> mUnlockGroundsIds;
-
-    State mState;
 
     class DashComponent* mDashComponent;
 };

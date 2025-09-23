@@ -17,8 +17,8 @@
 #include "../Random.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-Golem::Golem(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 10)
+Golem::Golem(Game *game)
+    :Enemy(game)
     ,mGolemState(State::Stop)
 
     ,mIsRunning(false)
@@ -43,9 +43,6 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mPunchDuration(0.4f)
     ,mPunchTimer(0.0f)
     ,mDistToPunch(200 * mGame->GetScale())
-    ,mIdleWidth(mWidth)
-    ,mPunchSpriteWidth(mWidth * 1.5f)
-    ,mPunchOffsetHitBox(mWidth * 0.8f)
     ,mPunchDirectionRight(true)
 
     ,mFireballDuration(1.0f)
@@ -59,10 +56,21 @@ Golem::Golem(Game *game, float width, float height, float moveSpeed, float healt
     ,mRunningSoundIntervalDuration(0.3f)
     ,mRunningSoundIntervalTimer(0.0f)
 {
+    mWidth = 144 * mGame->GetScale();
+    mHeight = 190 * mGame->GetScale();
+    mMoveSpeed = 600 * mGame->GetScale();
+    mHealthPoints = 400;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 50;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
+    mIdleWidth = mWidth;
+    mPunchSpriteWidth = mWidth * 1.5f;
+    mPunchOffsetHitBox = mWidth * 0.8f;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f * 1.73f, mWidth * 1.8f, "../Assets/Sprites/Golem2/Golem.png", "../Assets/Sprites/Golem2/Golem.json", 998);
     std::vector idle = {54, 22, 23, 24, 55, 25, 58, 26};
@@ -132,7 +140,6 @@ void Golem::OnUpdate(float deltaTime) {
 
     // Se morreu
     if (Died()) {
-        // mMothState = State::Dying;
         TriggerBossDefeat();
     }
 
@@ -395,8 +402,10 @@ void Golem::TriggerBossDefeat() {
     mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
     // Player ganha bola de fogo
-    auto* skill = new Skill(mGame, Skill::SkillType::FireBall);
-    skill->SetPosition(GetPosition());
+    if (!mGame->GetPlayer()->GetCanFireBall()) {
+        auto* skill = new Skill(mGame, Skill::SkillType::FireBall);
+        skill->SetPosition(GetPosition());
+    }
 
     auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());

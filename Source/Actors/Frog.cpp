@@ -19,43 +19,52 @@
 #include "../Actors/DynamicGround.h"
 
 
-Frog::Frog(Game* game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 10)
+Frog::Frog(Game* game)
+    :Enemy(game)
+    ,mDistToSpotPlayer(500 * mGame->GetScale())
+    ,mWalkingAroundDuration(2.0f)
+    ,mWalkingAroundTimer(0.0f)
+    ,mWalkingAroundMoveSpeed(50.0f * mGame->GetScale())
+
+    ,mFrogState(State::Stop)
+
+    ,mIsRunning(true)
+
+    ,mStopDuration(1.5f)
+    ,mStopTimer(0.0f)
+
+    ,mIsOnGround(true)
+    ,mMaxJumps(6)
+    ,mJumpCount(0)
+    ,mJumpForce(1500.0f * mGame->GetScale())
+    ,mDurationBetweenJumps(0.3f)
+    ,mTimerBetweenJumps(0.0f)
+
+    ,mWallPosition(WallSide::Bottom)
+    ,mDestinyWall(WallSide::Bottom)
+    ,mGravity(3000 * mGame->GetScale())
+
+    ,mMinDistFromEdge(256 * mGame->GetScale())
+    ,mAttackJumpInterval(2)
+
+    ,mTongue(nullptr)
+    ,mTongueDuration(1.4f)
+    ,mTongueTimer(0.0f)
+    ,mIsLicking(false)
+    ,mJumpComboProbability(0.6f)
 {
+    mWidth = 165 * mGame->GetScale();
+    mHeight = 165 * mGame->GetScale();
+    mMoveSpeed = 300 * mGame->GetScale();
+    mHealthPoints = 500;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 100;
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
 
-    mDistToSpotPlayer = 500 * mGame->GetScale();
-
-    mWalkingAroundDuration = 2.0f;
-    mWalkingAroundTimer = mWalkingAroundDuration;
-    mWalkingAroundMoveSpeed = 50.0f * mGame->GetScale();
-
-    mIsRunning = true;
-
-    mState = State::Stop;
-
-    mStopDuration = 1.5f;
-    mStopTimer = 0.5f;
-
-    mIsOnGround = true;
-    mMaxJumps = 6;
-    mJumpCount = 0;
-    mJumpForce = 1500.0f * mGame->GetScale();
-    mDurationBetweenJumps = 0.3f;
-    mTimerBetweenJumps = 0.0f;
-
-    mWallPosition = WallSide::Bottom;
-
-    mMinDistFromEdge = 256 * mGame->GetScale();
-    mAttackJumpInterval = 2;
-    mGravity = 3000 * mGame->GetScale();
-    mTongueDuration = 1.4f;
-    mTongueTimer = 0.0f;
-    mIsLicking = false;
-    mJumpComboProbability = 0.6f;
+    SetSize(mWidth, mHeight);
 
     std::string frogAssets = "../Assets/Sprites/Frog/";
 
@@ -178,11 +187,6 @@ void Frog::OnUpdate(float deltaTime) {
         MovementBeforePlayerSpotted();
     }
 
-    // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(Vector2::Zero);
-    }
-
     // Se morreu
     if (Died()) {
         TriggerBossDefeat();
@@ -203,27 +207,17 @@ void Frog::OnUpdate(float deltaTime) {
 
 void Frog::TriggerBossDefeat() {
     SetState(ActorState::Destroy);
-    // Abre chão que estava travando
-    for (int id : mUnlockGroundsIds) {
-        Ground* g = mGame->GetGroundById(id);
-        DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
-        if (dynamicGround) {
-            dynamicGround->SetIsDecreasing(true);
-        }
-    }
-
     mTongue->SetState(ActorState::Destroy);
-
-    // mGame->GetPlayer()->SetCanWallSlide(true);
+    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
     // Player ganha wall slide
-    auto* skill = new Skill(mGame, Skill::SkillType::WallSlide);
-    skill->SetPosition(GetPosition());
-    if (skill->GetPosition().y < mArenaMaxPos.y - 320 * mGame->GetScale()) {
-        skill->SetPosition(Vector2(GetPosition().x, mArenaMaxPos.y - 320 * mGame->GetScale()));
+    if (!mGame->GetPlayer()->GetCanWallSlide()) {
+        auto* skill = new Skill(mGame, Skill::SkillType::WallSlide);
+        skill->SetPosition(GetPosition());
+        if (skill->GetPosition().y < mArenaMaxPos.y - 320 * mGame->GetScale()) {
+            skill->SetPosition(Vector2(GetPosition().x, mArenaMaxPos.y - 320 * mGame->GetScale()));
+        }
     }
-
-    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
     auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());
@@ -300,7 +294,7 @@ void Frog::ResolvePlayerCollision() {
 }
 
 void Frog::MovementAfterPlayerSpotted(float deltaTime) {
-    switch (mState) {
+    switch (mFrogState) {
         case State::Stop:
             Stop(deltaTime);
             break;
@@ -325,7 +319,7 @@ void Frog::MovementBeforePlayerSpotted() {
 }
 
 void Frog::ManageAnimations() {
-    if (mState == State::Tongue) {
+    if (mFrogState == State::Tongue) {
         mDrawAnimatedComponent->SetAnimation("tongue");
     }
     else if (mIsOnGround) {
@@ -400,7 +394,7 @@ void Frog::ManageAnimations() {
         else {
             mDrawAnimatedComponent->SetAnimation("hitJump");
         }
-        if (mState == State::Tongue) {
+        if (mFrogState == State::Tongue) {
             mDrawAnimatedComponent->SetAnimation("hitTongue");
         }
     }
@@ -424,15 +418,15 @@ void Frog::Stop(float deltaTime) {
 
     mStopTimer = 0;
     if (Random::GetFloat() < mJumpComboProbability) {
-        mState = State::JumpCombo;
+        mFrogState = State::JumpCombo;
     }
     else {
-        mState = State::Tongue;
+        mFrogState = State::Tongue;
         mIsLicking = true;
     }
 
     // Controla probabilidade de combo de pulo para não ficar spamando
-    if (mState == State::JumpCombo) {
+    if (mFrogState == State::JumpCombo) {
         mJumpComboProbability -= 0.1;
     }
     else {
@@ -469,7 +463,7 @@ void Frog::JumpCombo(float deltaTime) {
         }
         if (mJumpCount >= mMaxJumps) {
             mJumpCount = 0;
-            mState = State::Stop;
+            mFrogState = State::Stop;
             return;
         }
         mTimerBetweenJumps += deltaTime;
@@ -592,7 +586,7 @@ void Frog::JumpCombo(float deltaTime) {
 
 void Frog::Tongue(float delTime) {
     if (!mIsLicking) {
-        mState = State::Stop;
+        mFrogState = State::Stop;
         return;
     }
 

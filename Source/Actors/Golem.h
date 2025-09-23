@@ -19,7 +19,7 @@ public:
         Fireball
     };
 
-    Golem(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    Golem(Game* game);
     void OnUpdate(float deltaTime) override;
     void SetArenaMinPos(Vector2 pos) { mArenaMinPos = pos; }
     void SetArenaMaxPos(Vector2 pos) { mArenaMaxPos = pos; }

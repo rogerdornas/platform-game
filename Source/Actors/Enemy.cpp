@@ -14,15 +14,9 @@
 #include "../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 
-Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heathPoints, float contactDamage)
+Enemy::Enemy(Game* game)
     :Actor(game)
-    ,mWidth(width * mGame->GetScale())
-    ,mHeight(height * mGame->GetScale())
-    ,mMoneyDrop(1)
-    ,mMoveSpeed(moveSpeed * mGame->GetScale())
-    ,mHealthPoints(heathPoints)
-    ,mMaxHealthPoints(heathPoints)
-    ,mContactDamage(contactDamage)
+    ,mMoneyDrop(0)
     ,mKnockBackSpeed(0.0f)
     ,mKnockBackTimer(0.0f)
     ,mKnockBackDuration(0.0f)
@@ -37,10 +31,18 @@ Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heath
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
 {
-    Vector2 v1(-mWidth/2, -mHeight/2);
-    Vector2 v2(mWidth/2, -mHeight/2);
-    Vector2 v3(mWidth/2, mHeight/2);
-    Vector2 v4(-mWidth/2, mHeight/2);
+    game->AddEnemy(this);
+}
+
+Enemy::~Enemy() {
+    mGame->RemoveEnemy(this);
+}
+
+void Enemy::SetSize(float width, float height) {
+    Vector2 v1(-width / 2, -height / 2);
+    Vector2 v2(width / 2, -height / 2);
+    Vector2 v3(width / 2, height / 2);
+    Vector2 v4(-width / 2, height / 2);
 
     std::vector<Vector2> vertices;
     vertices.emplace_back(v1);
@@ -51,12 +53,6 @@ Enemy::Enemy(Game* game, float width, float height, float moveSpeed, float heath
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {245, 154, 25, 255});
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 40000 * mGame->GetScale());
     mColliderComponent = new AABBComponent(this, v1, v3);
-
-    game->AddEnemy(this);
-}
-
-Enemy::~Enemy() {
-    mGame->RemoveEnemy(this);
 }
 
 void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {

@@ -10,7 +10,7 @@
 class LittleBat : public Enemy
 {
     public:
-    LittleBat(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    LittleBat(Game* game);
     void OnUpdate(float deltaTime) override;
 
     void ChangeResolution(float oldScale, float newScale) override;

@@ -17,7 +17,7 @@ public:
         ForwardAttack
     };
 
-    HookEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    HookEnemy(Game* game);
 
     void OnUpdate(float deltaTime) override;
     State GetHookEnemyState() const { return mHookEnemyState; }

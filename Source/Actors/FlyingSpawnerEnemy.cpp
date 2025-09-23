@@ -14,8 +14,8 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-FlyingSpawnerEnemy::FlyingSpawnerEnemy(Game *game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 10.0f)
+FlyingSpawnerEnemy::FlyingSpawnerEnemy(Game *game)
+    :Enemy(game)
     ,mEnemyState(State::Fly)
 
     ,mDistToSpotPlayer(400 * mGame->GetScale())
@@ -46,19 +46,26 @@ FlyingSpawnerEnemy::FlyingSpawnerEnemy(Game *game, float width, float height, fl
     ,mSmashAttackRecoveryDuration(0.6f)
     ,mSmashAttackRecoveryTimer(0.0f)
 
-    ,mOriginalHeight(mHeight)
-    ,mSmashHeight(mHeight * 1.7f)
-
     ,mSpawnBatDuration(1.0f)
     ,mSpawnBatTimer(0.0f)
     ,mAlreadySpawnedBat(false)
     ,mMaxSpawnBat(2)
     ,mCountSpawnBat(0)
 {
+    mWidth = 96 * mGame->GetScale();
+    mHeight = 96 * mGame->GetScale();
+    mMoveSpeed = 400 * mGame->GetScale();
+    mHealthPoints = 100;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 14;
     mKnockBackSpeed = 600.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
     mKnockBackTimer = mKnockBackDuration;
+    mOriginalHeight = mHeight;
+    mSmashHeight = mHeight * 1.7f;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/FlyingSpawnerEnemy/FlyingSpawnerEnemy.png", "../Assets/Sprites/FlyingSpawnerEnemy/FlyingSpawnerEnemy.json", 998);
     std::vector fly = {0, 1, 2, 3, 4, 5, 6, 7};
@@ -425,7 +432,7 @@ void FlyingSpawnerEnemy::SpawnBat(float deltaTime) {
 
     if (!mAlreadySpawnedBat) {
         if (mSpawnBatTimer >= mSpawnBatDuration * 0.83f) {
-            auto* littleBat = new LittleBat(mGame, 36, 36, 500, 10);
+            auto* littleBat = new LittleBat(mGame);
             littleBat->SetPosition(GetPosition() + Vector2(mWidth * 0.8f * GetForward().x, 30 * mGame->GetScale()));
             littleBat->SetSpottedPlayer(true);
             mAlreadySpawnedBat = true;

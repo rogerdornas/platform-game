@@ -1305,6 +1305,38 @@
                  "width":1248,
                  "x":8160,
                  "y":352
+                }, 
+                {
+                 "height":864,
+                 "id":454,
+                 "name":"Boss Battle",
+                 "properties":[
+                        {
+                         "name":"Enemies",
+                         "type":"string",
+                         "value":"407"
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsDecreasingAfterKillingEnemies"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"284,329,436,440"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":2528,
+                 "x":8160,
+                 "y":352
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6232,7 +6264,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":7872,
+                 "x":7744,
                  "y":3648
                 }, 
                 {
@@ -6243,7 +6275,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":7136,
+                 "x":7008,
                  "y":3680
                 }, 
                 {
@@ -6254,7 +6286,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":8064,
+                 "x":7968,
                  "y":4032
                 }, 
                 {
@@ -6265,7 +6297,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":7872,
+                 "x":7712,
                  "y":3808
                 }, 
                 {
@@ -6276,19 +6308,13 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":7808,
+                 "x":7712,
                  "y":4256
                 }, 
                 {
                  "height":32,
                  "id":407,
                  "name":"Fox",
-                 "properties":[
-                        {
-                         "name":"UnlockGrounds",
-                         "type":"string",
-                         "value":"436,440"
-                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -6304,7 +6330,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":1120,
+                 "x":1024,
                  "y":5344
                 }, 
                 {
@@ -6315,7 +6341,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":1056,
+                 "x":928,
                  "y":4192
                 }, 
                 {
@@ -6326,7 +6352,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":1888,
+                 "x":1792,
                  "y":4192
                 }, 
                 {
@@ -6337,7 +6363,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":2688,
+                 "x":2464,
                  "y":4192
                 }, 
                 {
@@ -6348,7 +6374,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":2848,
+                 "x":2720,
                  "y":4448
                 }, 
                 {
@@ -6359,7 +6385,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":6432,
+                 "x":6336,
                  "y":4224
                 }, 
                 {
@@ -6370,7 +6396,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":6432,
+                 "x":6336,
                  "y":3552
                 }, 
                 {
@@ -6381,7 +6407,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":6432,
+                 "x":6336,
                  "y":2720
                 }, 
                 {
@@ -6392,7 +6418,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":6432,
+                 "x":6336,
                  "y":1888
                 }, 
                 {
@@ -6403,7 +6429,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":2720,
+                 "x":2656,
                  "y":5024
                 }, 
                 {
@@ -6414,7 +6440,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":1728,
+                 "x":1536,
                  "y":5120
                 }, 
                 {
@@ -6425,7 +6451,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":1312,
+                 "x":1184,
                  "y":4544
                 }, 
                 {
@@ -6436,7 +6462,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":4928,
+                 "x":4800,
                  "y":4768
                 }, 
                 {
@@ -6458,7 +6484,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":544,
+                 "x":448,
                  "y":4544
                 }, 
                 {
@@ -6490,7 +6516,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":453,
+ "nextobjectid":455,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

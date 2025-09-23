@@ -14,8 +14,8 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/DrawComponents/DrawPolygonComponent.h"
 
-FlyingShooterEnemy::FlyingShooterEnemy(Game* game, float width, float height, float moveSpeed, float healthPoints)
-    :Enemy(game, width, height, moveSpeed, healthPoints, 5.0f)
+FlyingShooterEnemy::FlyingShooterEnemy(Game* game)
+    :Enemy(game)
     ,mState(State::Fly)
 
     ,mDistToSpotPlayer(400 * mGame->GetScale())
@@ -38,10 +38,18 @@ FlyingShooterEnemy::FlyingShooterEnemy(Game* game, float width, float height, fl
     ,mProjectileHeight(55 * mGame->GetScale())
     ,mProjectileSpeed(800 * mGame->GetScale())
 {
+    mWidth = 70 * mGame->GetScale();
+    mHeight = 70 * mGame->GetScale();
+    mMoveSpeed = 300 * mGame->GetScale();
+    mHealthPoints = 60;
+    mMaxHealthPoints = mHealthPoints;
+    mContactDamage = 10;
     mMoneyDrop = 6;
     mKnockBackSpeed = 800.0f * mGame->GetScale();
     mKnockBackDuration = 0.2f;
     mKnockBackTimer = mKnockBackDuration;
+
+    SetSize(mWidth, mHeight);
 
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/Beetle/Beetle.png", "../Assets/Sprites/Beetle/Beetle.json", 998);
     std::vector fly = {0, 1, 2, 3};
@@ -74,11 +82,6 @@ void FlyingShooterEnemy::OnUpdate(float deltaTime) {
     }
     else {
         MovementBeforePlayerSpotted();
-    }
-
-    // Se cair, volta para a posição inicial
-    if (GetPosition().y > 20000 * mGame->GetScale()) {
-        SetPosition(Vector2::Zero);
     }
 
     // Se morreu

@@ -24,11 +24,10 @@ public:
         Right
     };
 
-    Frog(Game* game, float width, float height, float moveSpeed, float healthPoints);
+    Frog(Game* game);
     void OnUpdate(float deltaTime) override;
     void SetArenaMinPos(Vector2 pos) { mArenaMinPos = pos; }
     void SetArenaMaxPos(Vector2 pos) { mArenaMaxPos = pos; }
-    void SetUnlockGroundsIds(const std::vector<int>& ids) { mUnlockGroundsIds = ids; }
     void SetIsLicking(bool isLicking) { mIsLicking = isLicking; }
 
     void ChangeResolution(float oldScale, float newScale) override;
@@ -48,9 +47,11 @@ private:
     void Tongue(float delTime);
 
     float mDistToSpotPlayer;
-    float mWalkingAroundTimer;
     float mWalkingAroundDuration;
+    float mWalkingAroundTimer;
     float mWalkingAroundMoveSpeed;
+
+    State mFrogState;
 
     bool mIsRunning;
 
@@ -61,8 +62,8 @@ private:
     int mMaxJumps;
     int mJumpCount;
     float mJumpForce;
-    float mTimerBetweenJumps;
     float mDurationBetweenJumps;
+    float mTimerBetweenJumps;
 
     WallSide mWallPosition;
     WallSide mDestinyWall;
@@ -72,13 +73,10 @@ private:
     Vector2 mArenaMaxPos;
     float mMinDistFromEdge;
     int mAttackJumpInterval;
+
     class FrogTongue *mTongue;
     float mTongueDuration;
     float mTongueTimer;
     bool mIsLicking;
     float mJumpComboProbability;
-
-    std::vector<int> mUnlockGroundsIds;
-
-    State mState;
 };
