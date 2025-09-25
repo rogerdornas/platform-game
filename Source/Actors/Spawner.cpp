@@ -45,23 +45,33 @@ Spawner::Spawner(class Game *game)
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 997);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.2f, mHeight * 1.2f,
-                                            "../Assets/Sprites/StoneGate/StoneGate.png", "../Assets/Sprites/StoneGate/StoneGate.json", 98);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mHeight * 1.8f,
+                                            "../Assets/Sprites/Portal2/Portal.png", "../Assets/Sprites/Portal2/Portal.json", 98);
 
     // std::vector appear = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10};
     // mDrawAnimatedComponent->AddAnimation("appear", appear);
 
-    std::vector appear = {10};
-    mDrawAnimatedComponent->AddAnimation("appear", appear);
-
-    std::vector open = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21};
-    mDrawAnimatedComponent->AddAnimation("open", open);
+    // std::vector appear = {10};
+    // mDrawAnimatedComponent->AddAnimation("appear", appear);
+    //
+    // std::vector open = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21};
+    // mDrawAnimatedComponent->AddAnimation("open", open);
 
     // std::vector disappear = {21, 22, 23, 24, 25, 26, 27, 28, 30, 29, 0, 0, 0};
     // mDrawAnimatedComponent->AddAnimation("disappear", disappear);
 
-    std::vector disappear = {21};
+    // std::vector disappear = {21};
+    // mDrawAnimatedComponent->AddAnimation("disappear", disappear);
+
+    std::vector appear = {0, 1, 2, 3, 4, 5, 6};
+    mDrawAnimatedComponent->AddAnimation("appear", appear);
+
+    std::vector open = {0, 1, 2, 3, 4, 5, };
+    mDrawAnimatedComponent->AddAnimation("open", open);
+
+    std::vector disappear = {0, 1, 2, 3, 4, 5, };
     mDrawAnimatedComponent->AddAnimation("disappear", disappear);
+
 
     mDrawAnimatedComponent->SetAnimation("appear");
     mDrawAnimatedComponent->SetAnimFPS(11.0f / mAppearDuration);
@@ -106,8 +116,8 @@ void Spawner::OnUpdate(float deltaTime) {
             }
 
             if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetWidth(mWidth * 1.2f);
-                mDrawAnimatedComponent->SetHeight(mHeight * 1.2f);
+                mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
             }
             break;
 
@@ -149,8 +159,8 @@ void Spawner::OnUpdate(float deltaTime) {
             }
 
             if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetWidth(mWidth * 1.2f);
-                    mDrawAnimatedComponent->SetHeight(mHeight * 1.2f);
+                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
             }
             break;
     }
@@ -179,8 +189,8 @@ void Spawner::ChangeResolution(float oldScale, float newScale) {
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
     if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth);
-        mDrawAnimatedComponent->SetHeight(mHeight);
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
     }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);

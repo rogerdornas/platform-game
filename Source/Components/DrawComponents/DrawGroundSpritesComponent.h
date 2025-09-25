@@ -14,12 +14,14 @@ public:
     DrawGroundSpritesComponent(Actor* owner, int width = 32, int height = 32, int drawOrder = 100);
 
     void Draw(SDL_Renderer* renderer) override;
-    void SetSpriteOffsetMap(std::unordered_map<int, std::vector<Vector2> > spriteOffsetMap) {mSpriteOffsetMap = spriteOffsetMap; }
+    void SetSpriteOffsetMap(std::unordered_map<int, std::vector<Vector2> > spriteOffsetMap) { mSpriteOffsetMap = spriteOffsetMap; }
+    void SetTilesIndex(std::vector<std::vector<int>> tilesIndex) { mTilesIndex = tilesIndex; }
     void SetWidth(float width) { mWidth = width; }
     void SetHeight(float height) { mHeight = height; }
 
 protected:
     std::unordered_map<int, std::vector<Vector2> > mSpriteOffsetMap;
+    std::vector<std::vector<int>> mTilesIndex;
 
     int mWidth;
     int mHeight;

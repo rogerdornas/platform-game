@@ -1324,7 +1324,7 @@
                         {
                          "name":"Grounds",
                          "type":"string",
-                         "value":"284,329,436,440"
+                         "value":"329,440"
                         }, 
                         {
                          "name":"Target",
@@ -1334,8 +1334,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":2528,
-                 "x":8160,
+                 "width":1792,
+                 "x":8156,
                  "y":352
                 }],
          "opacity":1,
@@ -2517,7 +2517,7 @@
                  "y":4800
                 }, 
                 {
-                 "height":128,
+                 "height":120.667,
                  "id":169,
                  "name":"Spike",
                  "properties":[
@@ -2531,7 +2531,7 @@
                  "visible":true,
                  "width":32,
                  "x":768,
-                 "y":5376
+                 "y":5378.67
                 }, 
                 {
                  "height":224,
@@ -6315,6 +6315,12 @@
                  "height":32,
                  "id":407,
                  "name":"Fox",
+                 "properties":[
+                        {
+                         "name":"UnlockGrounds",
+                         "type":"string",
+                         "value":"436,440"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

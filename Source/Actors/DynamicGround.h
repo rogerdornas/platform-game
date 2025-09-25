@@ -30,12 +30,15 @@ public:
     void SetIsOscillating(bool isOscillating) { mIsOscillating = isOscillating; }
     void SetMaxWidth(float maxWidth) { mMaxWidth = maxWidth; }
     void SetMaxHeight(float maxHeight) { mMaxHeight = maxHeight; }
+    float GetMaxWidth() const { return mMaxWidth; }
+    float GetMaxHeight() const { return mMaxHeight; }
     void SetMinWidth(float minWidth) { mMinWidth = minWidth; }
     void SetMinHeight(float minHeight) { mMinHeight = minHeight; }
     void SetGrowSpeed(Vector2 speed) { mGrowSpeed = speed*  mGame->GetScale(); }
     void SetGrowDirection(GrowthDirection growDirection) { mGrowthDirection = growDirection; }
 
     void SetSprites() override;
+    void SetTilesIndex(float width, float height, float x, float y) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
 

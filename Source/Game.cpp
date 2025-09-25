@@ -1133,6 +1133,10 @@ void Game::LoadObjects(const std::string &fileName) {
         if (layer["name"] == "Grounds") {
             for (const auto &obj: layer["objects"]) {
                 std::string name = obj["name"];
+                float xOriginal = static_cast<float>(obj["x"]);
+                float yOriginal = static_cast<float>(obj["y"]);
+                float widthOriginal = static_cast<float>(obj["width"]);
+                float heightOriginal = static_cast<float>(obj["height"]);
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
                 float width = static_cast<float>(obj["width"]) * mScale;
@@ -1229,7 +1233,7 @@ void Game::LoadObjects(const std::string &fileName) {
                         break;
                     }
                     dynamicGround->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
-                    dynamicGround->SetSprites();
+                    dynamicGround->SetTilesIndex(widthOriginal, heightOriginal, xOriginal, yOriginal);
                 }
                 else {
                     ground = new Ground(this, width, height, isSpike, isMoving, movingDuration, Vector2(speedX, speedY));
@@ -1237,7 +1241,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
                     ground->SetStartingPosition(Vector2(x + width / 2, y + height / 2));
-                    ground->SetSprites();
+                    ground->SetTilesIndex(widthOriginal, heightOriginal, xOriginal, yOriginal);
                 }
             }
         }
@@ -1636,7 +1640,7 @@ void Game::LoadLevel(const std::string &fileName) {
     // Lê altura, largura e tileSize
     int height = int(mapData["height"]);
     int width = int(mapData["width"]);
-    int tileSize = int(mapData["tilewidth"]) * mScale;
+    float tileSize = static_cast<float>(mapData["tilewidth"]) * mScale;
     mLevelHeight = height;
     mLevelWidth = width;
     mTileSize = tileSize;
@@ -1748,8 +1752,9 @@ void Game::ProcessInput()
                         SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
 
                         float ratio = mOriginalWindowWidth / static_cast<float>(mLogicalWindowWidth);
-                        int tileSize = static_cast<int>(mOriginalTileSize / ratio);
-                        mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+                        mScale = 1 / ratio;
+                        // int tileSize = static_cast<int>(mOriginalTileSize / ratio);
+                        // mScale = static_cast<float>(tileSize) / mOriginalTileSize;
                     }
                     else {
                         // Comenta essa parte para tirar o zoom do mapa
@@ -1758,8 +1763,9 @@ void Game::ProcessInput()
                         SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
 
                         float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
-                        int tileSize = static_cast<int>(mOriginalTileSize / ratio);
-                        mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+                        mScale = 1 / ratio;
+                        // int tileSize = static_cast<int>(mOriginalTileSize / ratio);
+                        // mScale = static_cast<float>(tileSize) / mOriginalTileSize;
                     }
                     // const float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
                     // const int tileSize = static_cast<int>(32 / ratio);
@@ -1838,8 +1844,9 @@ void Game::ProcessInput()
                         }
                     }
 
-                    if (event.key.keysym.sym == SDLK_8)
+                    if (event.key.keysym.sym == SDLK_8) {
                         Quit();
+                    }
 
                     if (event.key.keysym.sym == SDLK_5) {
                         mIsSlowMotion = !mIsSlowMotion;
@@ -2082,7 +2089,7 @@ void Game::UpdateGame()
 
     // testes para alterar velocidade do jogo
     if (mIsSlowMotion) {
-        deltaTime *= 0.3;
+        deltaTime *= 0.5;
     }
     if (mIsAccelerated) {
         deltaTime *= 1.5;
@@ -3010,7 +3017,8 @@ void Game::ChangeResolution(float oldScale)
         value.y = value.y / oldScale * mScale;
     }
 
-    mTileSize = mOriginalTileSize * mScale;
+    mTileSize = mTileSize / oldScale * mScale;
+
     for (auto actor : mActors) {
         actor->ChangeResolution(oldScale, mScale);
     }

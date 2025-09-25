@@ -22,6 +22,10 @@ DynamicGround::DynamicGround(Game* game, float width, float height, bool isSpike
     ,mGrowthDirection(GrowthDirection::Centered)
     ,mDrawDynamicGroundSpritesComponent(nullptr)
 {
+    RemoveComponent(mDrawGroundSpritesComponent);
+    delete mDrawGroundSpritesComponent;
+    mDrawGroundSpritesComponent = nullptr;
+
     mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 100);
 }
 
@@ -135,8 +139,8 @@ void DynamicGround::SetSprites() {
     int rows = mMaxHeight / mGame->GetTileSize();
     int cols = mMaxWidth / mGame->GetTileSize();
 
-    int topLeftX = mStartingPosition.x - mMaxWidth / 2;
-    int topLeftY = mStartingPosition.y - mMaxHeight / 2;
+    float topLeftX = mStartingPosition.x - mMaxWidth / 2;
+    float topLeftY = mStartingPosition.y - mMaxHeight / 2;
 
     int minRow = topLeftY / mGame->GetTileSize();
     int maxRow = minRow + rows;
@@ -167,6 +171,31 @@ void DynamicGround::SetSprites() {
     mDrawDynamicGroundSpritesComponent->SetHeight(mGame->GetTileSize());
 }
 
+void DynamicGround::SetTilesIndex(float width, float height, float x, float y) {
+    int rows = height / mGame->GetOriginalTileSize();
+    int cols = width / mGame->GetOriginalTileSize();
+    mTilesIndex.resize(rows, std::vector<int>(cols));
+
+    float topLeftX = x;
+    float topLeftY = y;
+
+    int minRow = topLeftY / mGame->GetOriginalTileSize();
+    int maxRow = minRow + rows;
+
+    int minCol = topLeftX / mGame->GetOriginalTileSize();
+    int maxCol = minCol + cols;
+
+    int** levelData = mGame->GetLevelDataDynamicGrounds();
+
+    for (int row = 0; row < rows; ++row) {
+        for (int col = 0; col < cols; ++col) {
+            int tile = levelData[row + minRow][col + minCol];
+            mTilesIndex[row][col] = tile;
+        }
+    }
+
+    mDrawDynamicGroundSpritesComponent->SetTilesIndex(mTilesIndex);
+}
 
 void DynamicGround::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
@@ -208,5 +237,4 @@ void DynamicGround::ChangeResolution(float oldScale, float newScale) {
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
     }
-    SetSprites();
 }

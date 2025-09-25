@@ -792,11 +792,11 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="454" name="Boss Battle" x="8160" y="352" width="2528" height="864">
+  <object id="454" name="Boss Battle" x="8156" y="352" width="1792" height="864">
    <properties>
     <property name="Enemies" value="407"/>
     <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="284,329,436,440"/>
+    <property name="Grounds" value="329,440"/>
     <property name="Target" value="DynamicGround"/>
    </properties>
   </object>
@@ -991,7 +991,7 @@
     <property name="Spike" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="169" name="Spike" x="768" y="5376" width="32" height="128">
+  <object id="169" name="Spike" x="768" y="5378.67" width="32" height="120.667">
    <properties>
     <property name="Spike" type="bool" value="true"/>
    </properties>
@@ -1912,7 +1912,11 @@
   <object id="273" name="Enemy Simple" x="7968" y="4032" width="32" height="32"/>
   <object id="275" name="Enemy Simple" x="7712" y="3808" width="32" height="32"/>
   <object id="274" name="Enemy Simple" x="7712" y="4256" width="32" height="32"/>
-  <object id="407" name="Fox" x="8576" y="1184" width="32" height="32"/>
+  <object id="407" name="Fox" x="8576" y="1184" width="32" height="32">
+   <properties>
+    <property name="UnlockGrounds" value="436,440"/>
+   </properties>
+  </object>
   <object id="418" name="Enemy Simple" x="1024" y="5344" width="32" height="32"/>
   <object id="420" name="Enemy Simple" x="928" y="4192" width="32" height="32"/>
   <object id="421" name="Enemy Simple" x="1792" y="4192" width="32" height="32"/>

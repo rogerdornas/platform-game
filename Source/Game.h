@@ -157,7 +157,8 @@ public:
     SDL_Texture* GetTileSheet() const { return mTileSheet; }
     std::unordered_map<int, SDL_Rect> GetTileSheetData() { return mTileSheetData; }
 
-    int GetTileSize() const { return mTileSize; }
+    float GetTileSize() { return mTileSize; }
+    int GetOriginalTileSize() { return mOriginalTileSize; }
 
     // Loading functions
     class UIFont* LoadFont(const std::string& fileName);
@@ -324,8 +325,8 @@ private:
     std::unordered_map<int, SDL_Rect> mTileSheetData;
     int mLevelWidth;
     int mLevelHeight;
-    int mTileSize;
-    const int mOriginalTileSize = 32;
+    float mTileSize;
+    int mOriginalTileSize = 32;
     Map* mMap;
     bool mShowMap;
 

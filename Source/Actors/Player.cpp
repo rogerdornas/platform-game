@@ -23,7 +23,7 @@
 Player::Player(Game* game)
     :Actor(game)
     ,mStartingPosition(Vector2::Zero)
-    ,mWidth(60 * mGame->GetScale())
+    ,mWidth(50 * mGame->GetScale())
     ,mHeight(75 * mGame->GetScale())
 
     ,mIsOnGround(false)
@@ -182,7 +182,7 @@ Player::Player(Game* game)
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.png",
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.7f, mWidth * 3.7f * 1.11f,
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 4.44f, mWidth * 4.44f * 1.11f,
                                                    "../Assets/Sprites/Esquilo4/Esquilo.png",
                                                    "../Assets/Sprites/Esquilo4/Esquilo.json", 1002);
 
@@ -1324,8 +1324,8 @@ void Player::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 3.7f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 3.7f * 1.11f);
+    mDrawAnimatedComponent->SetWidth(mWidth * 4.44f);
+    mDrawAnimatedComponent->SetHeight(mWidth * 4.44f * 1.11f);
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

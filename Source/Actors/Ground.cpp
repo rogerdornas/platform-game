@@ -113,6 +113,33 @@ void Ground::SetSprites() {
     mDrawGroundSpritesComponent->SetHeight(mGame->GetTileSize());
 }
 
+void Ground::SetTilesIndex(float width, float height, float x, float y) {
+    int rows = height / mGame->GetOriginalTileSize();
+    int cols = width / mGame->GetOriginalTileSize();
+    mTilesIndex.resize(rows, std::vector<int>(cols));
+
+    float topLeftX = x;
+    float topLeftY = y;
+
+    int minRow = topLeftY / mGame->GetOriginalTileSize();
+    int maxRow = minRow + rows;
+
+    int minCol = topLeftX / mGame->GetOriginalTileSize();
+    int maxCol = minCol + cols;
+
+    int** levelData = mGame->GetLevelData();
+
+    for (int row = 0; row < rows; ++row) {
+        for (int col = 0; col < cols; ++col) {
+            int tile = levelData[row + minRow][col + minCol];
+            mTilesIndex[row][col] = tile;
+        }
+    }
+
+    mDrawGroundSpritesComponent->SetTilesIndex(mTilesIndex);
+}
+
+
 void Ground::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
@@ -146,5 +173,4 @@ void Ground::ChangeResolution(float oldScale, float newScale) {
     if (mDrawPolygonComponent) {
         mDrawPolygonComponent->SetVertices(vertices);
     }
-    SetSprites();
 }

@@ -26,6 +26,7 @@ public:
     Vector2 GetRespawPosition() { return mRespawnPosition; }
 
     virtual void SetSprites();
+    virtual void SetTilesIndex(float width, float height, float x, float y);
 
     void SetStartingPosition(Vector2 pos) { mStartingPosition = pos; }
     Vector2 GetStartingPosition() { return mStartingPosition; }
@@ -46,6 +47,7 @@ protected:
     Vector2 mStartingPosition;
     Vector2 mRespawnPosition;
     Vector2 mVelocity;
+    std::vector<std::vector<int>> mTilesIndex;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawGroundSpritesComponent* mDrawGroundSpritesComponent;
