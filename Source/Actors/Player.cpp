@@ -23,13 +23,18 @@
 Player::Player(Game* game)
     :Actor(game)
     ,mStartingPosition(Vector2::Zero)
-    ,mWidth(50 * mGame->GetScale())
+    ,mWidth(45 * mGame->GetScale())
     ,mHeight(75 * mGame->GetScale())
 
     ,mIsOnGround(false)
     ,mIsOnMovingGround(false)
     ,mMovingGroundVelocity(Vector2::Zero)
     ,mMoveSpeed(700 * mGame->GetScale())
+
+    ,mMaxTimeOutOfGroundToJump(0.07)
+    ,mTimerOutOfGroundToJump(0.0f)
+    ,mMaxTimeOutOfWallToJump(0.07)
+    ,mTimerOutOfWallToJump(0.0f)
 
     ,mIsJumping(false)
     ,mJumpTimer(0.0f)
@@ -71,6 +76,8 @@ Player::Player(Game* game)
     ,mMana(90.0f)
     ,mManaIncreaseRate(6.0f)
     ,mFireballManaCost(30.0f)
+    ,mFireballAnimationDuration(0.2f)
+    ,mFireballAnimationTimer(mFireballAnimationDuration)
 
     ,mCanWallSlide(true)
     ,mIsWallSliding(false)
@@ -78,9 +85,12 @@ Player::Player(Game* game)
     ,mWallSlideSpeed(300 * mGame->GetScale())
     ,mTryingLeavingWallSlideLeft(0)
     ,mTryingLeavingWallSlideRight(0)
-    ,mTimerToLeaveWallSlidingLeft(0.15f)
-    ,mTimerToLeaveWallSlidingRight(0.15f)
-    ,mMaxTimerToLiveWallSliding(0.15f)
+    ,mTimerToLeaveWallSlidingLeft(0.0f)
+    ,mTimerToLeaveWallSlidingRight(0.0f)
+    ,mMaxTimerToLiveWallSliding(0.0f)
+
+    ,mIsGoingRight(false)
+    ,mIsGoingLeft(false)
 
     ,mWallJumpMaxTime(0.12f)
     ,mWallJumpTimer(0.0f)
@@ -182,47 +192,50 @@ Player::Player(Game* game)
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.png",
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 4.44f, mWidth * 4.44f * 1.11f,
-                                                   "../Assets/Sprites/Esquilo4/Esquilo.png",
-                                                   "../Assets/Sprites/Esquilo4/Esquilo.json", 1002);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 4.93f, mWidth * 4.93f * 1.11f,
+                                                   "../Assets/Sprites/Esquilo5/Esquilo.png",
+                                                   "../Assets/Sprites/Esquilo5/Esquilo.json", 1002);
 
-    std::vector idle = {19, 20, 21, 22};
+    std::vector idle = {21, 22, 23, 24};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 
-    std::vector attackFront = {19, 2, 3};
+    std::vector attackFront = {21, 2, 3};
     mDrawAnimatedComponent->AddAnimation("attackFront", attackFront);
 
-    std::vector attackUp = {19, 4, 5};
+    std::vector attackUp = {21, 4, 5};
     mDrawAnimatedComponent->AddAnimation("attackUp", attackUp);
 
-    std::vector attackDown = {19, 0, 1};
+    std::vector attackDown = {21, 0, 1};
     mDrawAnimatedComponent->AddAnimation("attackDown", attackDown);
+
+    std::vector fireball = {12, 13};
+    mDrawAnimatedComponent->AddAnimation("fireball", fireball);
 
     std::vector dash = {6, 7, 7, 7, 8};
     mDrawAnimatedComponent->AddAnimation("dash", dash);
 
-    std::vector run = {26, 27, 28, 29, 30, 31};
+    std::vector run = {28, 29, 30, 31, 32, 33};
     mDrawAnimatedComponent->AddAnimation("run", run);
 
-    std::vector heal = {12, 13, 14, 15, 16, 16, 15, 14, 13, 12};
+    std::vector heal = {14, 15, 16, 17, 18, 18, 17, 16, 15, 14};
     mDrawAnimatedComponent->AddAnimation("heal", heal);
 
-    std::vector wallSlide = {32};
+    std::vector wallSlide = {34};
     mDrawAnimatedComponent->AddAnimation("wallSlide", wallSlide);
 
-    std::vector hurt = {17, 18};
+    std::vector hurt = {19, 20};
     mDrawAnimatedComponent->AddAnimation("hurt", hurt);
 
-    std::vector die = {17, 9, 10, 11, 11, 11};
+    std::vector die = {19, 9, 10, 11, 11, 11};
     mDrawAnimatedComponent->AddAnimation("die", die);
 
-    std::vector jumpUp = {23};
+    std::vector jumpUp = {25};
     mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {24};
+    std::vector jumpApex = {26};
     mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {25};
+    std::vector falling = {27};
     mDrawAnimatedComponent->AddAnimation("falling", falling);
 
     mDrawAnimatedComponent->SetAnimation("idle");
@@ -356,6 +369,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     bool hook = mGame->IsActionPressed(Game::Action::Hook, state, &controller);
 
+    if (right) {
+        mIsGoingRight = true;
+    }
+    if (left) {
+        mIsGoingLeft = true;
+    }
+
     if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
         !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
         mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
@@ -474,12 +494,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     if (jump && !mIsFireAttacking) {
         if (!mDashComponent->GetIsDashing()) {
             // Pulo do chao
-            if (mIsOnGround && !mIsJumping && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
+            if ((mTimerOutOfGroundToJump < mMaxTimeOutOfGroundToJump) && !mIsJumping && mCanJump && (mWallJumpTimer >= mWallJumpMaxTime)) {
                 mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce)
                                                  + mMovingGroundVelocity);
                 mIsJumping = true;
                 mCanJump = false;
                 mJumpTimer = 0.0f;
+                mTimerOutOfGroundToJump = mMaxTimeOutOfGroundToJump;
                 mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
                 for (JumpEffect* j: mJumpEffects) {
                     if (j->GetState() == ActorState::Paused) {
@@ -490,12 +511,12 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 }
             }
             // Wall jumping
-            if (mIsWallSliding && !mIsJumping && mCanJump) {
+            if ((mTimerOutOfWallToJump < mMaxTimeOutOfWallToJump) && !mIsJumping && mCanJump) {
                 if (mWallSlideSide == WallSlideSide::left) {
                     mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
                     SetRotation(Math::Pi);
                 }
-                else {
+                else if (mWallSlideSide == WallSlideSide::right) {
                     mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
                     SetRotation(0);
                 }
@@ -504,6 +525,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 mCanJump = false;
                 mJumpTimer = 0.0f;
                 mWallJumpTimer = 0;
+                mTimerOutOfWallToJump = mMaxTimeOutOfWallToJump;
                 mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
             }
             // Pulo no ar
@@ -588,6 +610,8 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                     f->SetPosition(GetPosition() + f->GetForward() * (f->GetWidth() / 2));
                     mIsFireAttacking = true;
                     mStopInAirFireBallTimer = 0;
+                    mFireballAnimationTimer = 0;
+                    mDrawAnimatedComponent->ResetAnimationTimer();
                     mMana -= mFireballManaCost;
                     break;
                 }
@@ -691,6 +715,10 @@ void Player::OnUpdate(float deltaTime) {
         mFireBallCooldownTimer += deltaTime;
     }
 
+    if (mFireballAnimationTimer < mFireballAnimationDuration) {
+        mFireballAnimationTimer += deltaTime;
+    }
+
     if (mHookCooldownTimer < mHookCooldownDuration) {
         mHookCooldownTimer += deltaTime;
     }
@@ -776,7 +804,9 @@ void Player::OnUpdate(float deltaTime) {
     mIsOnMovingGround = false;
     mMovingGroundVelocity = Vector2::Zero;
     mIsWallSliding = false;
-    mWallSlideSide = WallSlideSide::notSliding;
+    if (mTimerOutOfWallToJump > mMaxTimeOutOfWallToJump) {
+        mWallSlideSide = WallSlideSide::notSliding;
+    }
 
     if (mIsFireAttacking) {
         mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0) + mMovingGroundVelocity);
@@ -816,6 +846,22 @@ void Player::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
     ResolveGroundCollision();
 
+    if (mIsOnGround) {
+        mIsGoingRight = false;
+        mIsGoingLeft = false;
+        mTimerOutOfGroundToJump = 0;
+    }
+    else {
+        mTimerOutOfGroundToJump += deltaTime;
+    }
+
+    if (mIsWallSliding) {
+        mTimerOutOfWallToJump = 0;
+    }
+    else {
+        mTimerOutOfWallToJump += deltaTime;
+    }
+
     if (mIsHooking) {
         if (mHookingTimer < mHookingDuration) {
             mRigidBodyComponent->SetVelocity(mHookDirection * mHookSpeed);
@@ -846,7 +892,7 @@ void Player::OnUpdate(float deltaTime) {
         }
     }
 
-    mWasOnGround = mIsOnGround;
+    mWasOnGround = mTimerOutOfGroundToJump < mMaxTimeOutOfGroundToJump;
 
     // Se cair, volta para a posição inicial
     if (GetPosition().y > 20000 * mGame->GetScale()) {
@@ -875,6 +921,7 @@ void Player::OnUpdate(float deltaTime) {
 }
 
 void Player::ResolveGroundCollision() {
+    bool isCollidingSides = false;
     Vector2 collisionNormal(Vector2::Zero);
     std::vector<Ground* > grounds = mGame->GetGrounds();
     if (!grounds.empty()) {
@@ -925,15 +972,18 @@ void Player::ResolveGroundCollision() {
                 //colidiu pelas laterais
                 if (mCanWallSlide) {
                     if ((collisionNormal == Vector2::NegUnitX || collisionNormal == Vector2::UnitX)) {
-                        // Move o player junto ao ground em movimento
-                        if (g->GetIsMoving()) {
-                            mIsOnMovingGround = true;
-                            mMovingGroundVelocity = g->GetComponent<RigidBodyComponent>()->GetVelocity();
-                        }
-
-                        mIsWallSliding = true;
+                        isCollidingSides = true;
                         // Testa se não está dashando para não bugar quando dar um dash na quina de baixo e inverter a direção do dash
-                        if (collisionNormal == Vector2::NegUnitX && !mDashComponent->GetIsDashing()) {
+                        if (collisionNormal == Vector2::NegUnitX &&
+                            !mDashComponent->GetIsDashing() &&
+                            mIsGoingRight)
+                        {
+                            // Move o player junto ao ground em movimento
+                            if (g->GetIsMoving()) {
+                                mIsOnMovingGround = true;
+                                mMovingGroundVelocity = g->GetComponent<RigidBodyComponent>()->GetVelocity();
+                            }
+                            mIsWallSliding = true;
                             mWallSlideSide = WallSlideSide::left;
                             if (!mIsOnGround) {
                                 // SetRotation(Math::Pi);
@@ -948,7 +998,16 @@ void Player::ResolveGroundCollision() {
                                                                          mRigidBodyComponent->GetVelocity().y));
                             }
                         }
-                        else if (collisionNormal == Vector2::UnitX && !mDashComponent->GetIsDashing()) {
+                        else if (collisionNormal == Vector2::UnitX &&
+                            !mDashComponent->GetIsDashing() &&
+                            mIsGoingLeft)
+                        {
+                            // Move o player junto ao ground em movimento
+                            if (g->GetIsMoving()) {
+                                mIsOnMovingGround = true;
+                                mMovingGroundVelocity = g->GetComponent<RigidBodyComponent>()->GetVelocity();
+                            }
+                            mIsWallSliding = true;
                             mWallSlideSide = WallSlideSide::right;
                             if (!mIsOnGround) {
                                 // SetRotation(0);
@@ -963,20 +1022,23 @@ void Player::ResolveGroundCollision() {
                                                                          mRigidBodyComponent->GetVelocity().y));
                             }
                         }
-                        // Resetar dash no ar
-                        mDashComponent->SetHasDashedInAir(false);
-                        // RESET DO CONTADOR DE PULO
-                        mJumpCountInAir = 0;
-                        if (mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y - mMovingGroundVelocity.y > 0) {
-                            mIsJumping = false;
-                            mRigidBodyComponent->SetVelocity(Vector2(
-                                mRigidBodyComponent->GetVelocity().x + mMovingGroundVelocity.x,
-                                mWallSlideSpeed + mMovingGroundVelocity.y));
-                        }
-                        else if (!mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y > 0) {
-                            mIsJumping = false;
-                            mRigidBodyComponent->SetVelocity(
-                                Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
+
+                        if (mIsWallSliding) {
+                            // Resetar dash no ar
+                            mDashComponent->SetHasDashedInAir(false);
+                            // RESET DO CONTADOR DE PULO
+                            mJumpCountInAir = 0;
+                            if (mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y - mMovingGroundVelocity.y > 0) {
+                                mIsJumping = false;
+                                mRigidBodyComponent->SetVelocity(Vector2(
+                                    mRigidBodyComponent->GetVelocity().x + mMovingGroundVelocity.x,
+                                    mWallSlideSpeed + mMovingGroundVelocity.y));
+                            }
+                            else if (!mIsOnMovingGround && mRigidBodyComponent->GetVelocity().y > 0) {
+                                mIsJumping = false;
+                                mRigidBodyComponent->SetVelocity(
+                                    Vector2(mRigidBodyComponent->GetVelocity().x, mWallSlideSpeed));
+                            }
                         }
                     }
                 }
@@ -1113,6 +1175,10 @@ void Player::ResolveGroundCollision() {
                 }
             }
         }
+        if (!isCollidingSides) {
+            mIsGoingRight = false;
+            mIsGoingLeft = false;
+        }
     }
 }
 
@@ -1176,6 +1242,10 @@ void Player::ManageAnimations() {
             mDrawAnimatedComponent->SetAnimation("attackFront");
         }
         mDrawAnimatedComponent->SetAnimFPS(3.0f / 0.15f);
+    }
+    else if (mFireballAnimationTimer < mFireballAnimationDuration) {
+        mDrawAnimatedComponent->SetAnimation("fireball");
+        mDrawAnimatedComponent->SetAnimFPS(2.0f / mFireballAnimationDuration);
     }
     else if (mIsWallSliding && !mIsOnGround && mRigidBodyComponent->GetVelocity().y > 0) {
         mDrawAnimatedComponent->UseFlip(true);
@@ -1324,8 +1394,8 @@ void Player::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 4.44f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 4.44f * 1.11f);
+    mDrawAnimatedComponent->SetWidth(mWidth * 4.93f);
+    mDrawAnimatedComponent->SetHeight(mWidth * 4.93f * 1.11f);
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

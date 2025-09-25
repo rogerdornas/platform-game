@@ -114,6 +114,11 @@ private:
     Vector2 mMovingGroundVelocity;
     float mMoveSpeed;    // Velocidade de movimento
 
+    float mMaxTimeOutOfGroundToJump;  // Variáveis para dar um intervalo para pular quando sair do chão ou parede
+    float mTimerOutOfGroundToJump;
+    float mMaxTimeOutOfWallToJump;
+    float mTimerOutOfWallToJump;
+
     bool mIsJumping;     // Está no meio de um pulo sustentado?
     float mJumpTimer;    // Quanto tempo já pulou
     float mMaxJumpTime;  // Tempo máximo de pulo sustentado
@@ -156,6 +161,8 @@ private:
     float mMana;
     float mManaIncreaseRate;
     float mFireballManaCost;
+    float mFireballAnimationDuration;
+    float mFireballAnimationTimer;
 
     bool mCanWallSlide;                  // Habilidade de agarrar na parede
     bool mIsWallSliding;                 // Se esta deslizando
@@ -166,6 +173,9 @@ private:
     float mTimerToLeaveWallSlidingLeft;  //
     float mTimerToLeaveWallSlidingRight; //
     float mMaxTimerToLiveWallSliding;    // ter um tempo para segurar a setinha para se desgrudar da parede
+
+    bool mIsGoingRight;
+    bool mIsGoingLeft;
 
     float mWallJumpTimer;   // Timer enquanto está pulando de uma parede
     float mWallJumpMaxTime; // Tempo maximo que fica pulando de uma parede

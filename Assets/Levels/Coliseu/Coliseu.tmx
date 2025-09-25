@@ -432,12 +432,12 @@
   </object>
  </objectgroup>
  <objectgroup id="10" name="SpawnPoint">
-  <object id="16" x="3456" y="3168" width="32" height="32">
+  <object id="16" x="3456" y="3136" width="32" height="32">
    <properties>
     <property name="id" value="RightBot"/>
    </properties>
   </object>
-  <object id="17" x="2400" y="3168" width="32" height="32">
+  <object id="17" x="2400" y="3136" width="32" height="32">
    <properties>
     <property name="id" value="LeftBot"/>
    </properties>
@@ -452,7 +452,7 @@
     <property name="id" value="LeftMid"/>
    </properties>
   </object>
-  <object id="24" x="2912" y="3168" width="32" height="32">
+  <object id="24" x="2912" y="3136" width="32" height="32">
    <properties>
     <property name="id" value="CenterBot"/>
    </properties>
