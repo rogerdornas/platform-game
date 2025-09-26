@@ -64,10 +64,11 @@ DragonFly::DragonFly(Game *game)
     mKnockBackSpeed = 700.0f * mGame->GetScale();
     mKnockBackDuration = 0.15f;
     mKnockBackTimer = mKnockBackDuration;
+    mEnemyCollision = false;
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mWidth * 1.8f, "../Assets/Sprites/DragonFly/DragonFly.png", "../Assets/Sprites/DragonFly/DragonFly.json", 998);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mWidth * 1.8f, "../Assets/Sprites/DragonFly/DragonFly.png", "../Assets/Sprites/DragonFly/DragonFly.json", 999);
     std::vector idle = {39, 40, 41, 42, 43, 44};
     mDrawAnimatedComponent->AddAnimation("idle", idle);
 

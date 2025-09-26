@@ -418,6 +418,10 @@ void Trigger::ChangeResolution(float oldScale, float newScale) {
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
     mFixedCameraPosition.x = mFixedCameraPosition.x / oldScale * newScale;
     mFixedCameraPosition.y = mFixedCameraPosition.y / oldScale * newScale;
+    mLimitMinCameraPosition.x = mLimitMinCameraPosition.x / oldScale * newScale;
+    mLimitMinCameraPosition.y = mLimitMinCameraPosition.y / oldScale * newScale;
+    mLimitMaxCameraPosition.x = mLimitMaxCameraPosition.x / oldScale * newScale;
+    mLimitMaxCameraPosition.y = mLimitMaxCameraPosition.y / oldScale * newScale;
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

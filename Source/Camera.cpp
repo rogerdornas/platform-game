@@ -514,6 +514,15 @@ void Camera::ChangeResolution(float oldScale, float newScale) {
     mDistMove = mDistMove / oldScale * newScale;
     mShakeStrength = mShakeStrength / oldScale * newScale;
     mCameraSpeed = mCameraSpeed / oldScale * newScale;
+    mCurrentOffsetX = mCurrentOffsetX / oldScale * newScale;
     mFixedCameraPosition.x = mFixedCameraPosition.x / oldScale * newScale;
     mFixedCameraPosition.y = mFixedCameraPosition.y / oldScale * newScale;
+    mLimitMinCameraPosition.x = mLimitMinCameraPosition.x / oldScale * newScale;
+    mLimitMinCameraPosition.y = mLimitMinCameraPosition.y / oldScale * newScale;
+    mLimitMaxCameraPosition.x = mLimitMaxCameraPosition.x / oldScale * newScale;
+    mLimitMaxCameraPosition.y = mLimitMaxCameraPosition.y / oldScale * newScale;
+    mCurrentLimitMinPosition.x = mCurrentLimitMinPosition.x / oldScale * newScale;
+    mCurrentLimitMinPosition.y = mCurrentLimitMinPosition.y / oldScale * newScale;
+    mCurrentLimitMaxPosition.x = mCurrentLimitMaxPosition.x / oldScale * newScale;
+    mCurrentLimitMaxPosition.y = mCurrentLimitMaxPosition.y / oldScale * newScale;
 }

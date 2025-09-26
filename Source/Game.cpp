@@ -1919,19 +1919,36 @@ void Game::ProcessInput()
                     // }
 
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        if (!mStore->StoreOpened() && !mShowMap &&
+                        if (!mShowMap &&
                             mGameScene != GameScene::MainMenu &&
                             mGamePlayState != GamePlayState::Cutscene)
                         {
                             if (mIsPaused) {
-                                if (mUIStack.back() == mPauseMenu) {
-                                    mPauseMenu->Close();
+                                for (auto iter = mUIStack.rbegin(); *iter != mHUD; ++iter) {
+                                    if ((*iter)->GetState() != UIScreen::UIState::Closing) {
+                                        (*iter)->Close();
+                                    }
+                                }
+                                if (mStore->StoreMessageOpened()) {
+                                    mStore->CloseStoreMessage();
+                                }
+                                if (mStore->StoreOpened()) {
+                                    mStore->CloseStore();
+                                }
+                                else {
                                     TogglePause();
                                 }
                             }
                             else {
                                 TogglePause();
                                 LoadPauseMenu();
+                            }
+                        }
+                        else if (mGameScene == GameScene::MainMenu) {
+                            for (auto iter = mUIStack.rbegin(); iter != mUIStack.rend() - 1; ++iter) {
+                                if ((*iter)->GetState() != UIScreen::UIState::Closing) {
+                                    (*iter)->Close();
+                                }
                             }
                         }
                     }
@@ -1988,19 +2005,68 @@ void Game::ProcessInput()
                     // }
 
                     if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
-                        if (!mStore->StoreOpened() && !mShowMap &&
+                        if (!mShowMap &&
                             mGameScene != GameScene::MainMenu &&
                             mGamePlayState != GamePlayState::Cutscene)
                         {
                             if (mIsPaused) {
-                                if (mUIStack.back() == mPauseMenu) {
-                                    mPauseMenu->Close();
+                                for (auto iter = mUIStack.rbegin(); *iter != mHUD; ++iter) {
+                                    if ((*iter)->GetState() != UIScreen::UIState::Closing) {
+                                        (*iter)->Close();
+                                    }
+                                }
+                                if (mStore->StoreMessageOpened()) {
+                                    mStore->CloseStoreMessage();
+                                }
+                                if (mStore->StoreOpened()) {
+                                    mStore->CloseStore();
+                                }
+                                else {
                                     TogglePause();
                                 }
                             }
                             else {
                                 TogglePause();
                                 LoadPauseMenu();
+                            }
+                        }
+                        else if (mGameScene == GameScene::MainMenu) {
+                            for (auto iter = mUIStack.rbegin(); iter != mUIStack.rend() - 1; ++iter) {
+                                if ((*iter)->GetState() != UIScreen::UIState::Closing) {
+                                    (*iter)->Close();
+                                }
+                            }
+                        }
+                    }
+
+                    // Apertar B para sair dos menus
+                    if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
+                        if (!mShowMap &&
+                            mGameScene != GameScene::MainMenu &&
+                            mGamePlayState != GamePlayState::Cutscene)
+                        {
+                            if (mIsPaused) {
+                                for (auto iter = mUIStack.rbegin(); *iter != mHUD; ++iter) {
+                                    if ((*iter)->GetState() != UIScreen::UIState::Closing) {
+                                        (*iter)->Close();
+                                    }
+                                }
+                                if (mStore->StoreMessageOpened()) {
+                                    mStore->CloseStoreMessage();
+                                }
+                                if (mStore->StoreOpened()) {
+                                    mStore->CloseStore();
+                                }
+                                else {
+                                    TogglePause();
+                                }
+                            }
+                        }
+                        else if (mGameScene == GameScene::MainMenu) {
+                            for (auto iter = mUIStack.rbegin(); iter != mUIStack.rend() - 1; ++iter) {
+                                if ((*iter)->GetState() != UIScreen::UIState::Closing) {
+                                    (*iter)->Close();
+                                }
                             }
                         }
                     }

@@ -194,11 +194,6 @@
     {
       "actions": [
         { 
-          "actionType": "DecreaseGround", 
-          "id": 29, 
-          "delay": 0.0 
-        },
-        { 
           "actionType": "SpawnEnemy", 
           "type": "HookEnemy", 
           "id": "LeftBot", 
