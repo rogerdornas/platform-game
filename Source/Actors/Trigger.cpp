@@ -87,6 +87,18 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::FollowPlayerLimitLeft;
         return;
     }
+    if (event == "FollowPlayerLimitUp") {
+        mEvent = Event::FollowPlayerLimitUp;
+        return;
+    }
+    if (event == "FollowPlayerLimitDown") {
+        mEvent = Event::FollowPlayerLimitDown;
+        return;
+    }
+    if (event == "FollowPlayerLimited") {
+        mEvent = Event::FollowPlayerLimited;
+        return;
+    }
     if (event == "FollowPlayerLimitRightHorizontally") {
         mEvent = Event::FollowPlayerLimitRightHorizontally;
         return;
@@ -146,7 +158,7 @@ void Trigger::SetEvent(std::string event) {
     }
 
     if (event == "StartCutscene") {
-        mEvent = Event::StarCutscene;
+        mEvent = Event::StartCutscene;
         return;
     }
 }
@@ -251,6 +263,22 @@ void Trigger::CameraTrigger() {
             camera->ChangeCameraMode(CameraMode::FollowPlayerLimitLeft);
             break;
 
+        case Event::FollowPlayerLimitUp:
+            camera->SetFixedCameraPosition(mFixedCameraPosition);
+            camera->ChangeCameraMode(CameraMode::FollowPlayerLimitUp);
+            break;
+
+        case Event::FollowPlayerLimitDown:
+            camera->SetFixedCameraPosition(mFixedCameraPosition);
+            camera->ChangeCameraMode(CameraMode::FollowPlayerLimitDown);
+            break;
+
+        case Event::FollowPlayerLimited:
+            camera->SetLimitMinCameraPosition(mLimitMinCameraPosition);
+            camera->SetLimitMaxCameraPosition(mLimitMaxCameraPosition);
+            camera->ChangeCameraMode(CameraMode::FollowPlayerLimited);
+            break;
+
         case Event::FollowPlayerLimitRightHorizontally:
             camera->SetFixedCameraPosition(mFixedCameraPosition);
             camera->ChangeCameraMode(CameraMode::FollowPlayerLimitRightHorizontally);
@@ -314,7 +342,6 @@ void Trigger::DynamicGroundTrigger() {
                         dynamicGround->SetIsDecreasing(true);
                     }
                 }
-                SetState(ActorState::Destroy);
             }
             break;
 
@@ -343,7 +370,7 @@ void Trigger::GameTrigger() {
     switch (mEvent) {
         case Event::ChangeScene:
             mGame->GetAudio()->StopAllSounds();
-            mGame->SetGameScene(mScene, 2.0f);
+            mGame->SetGameScene(mScene, 0.8f);
             mGame->SetGoingToNextLevel();
             break;
 

@@ -153,6 +153,11 @@ Vector2 AABBComponent::ResolveCollisionWithAABB(AABBComponent &other) {
 
     dist *= GetGame()->GetScale();
 
+    top = Math::Abs(top);
+    bottom = Math::Abs(bottom);
+    left = Math::Abs(left);
+    right = Math::Abs(right);
+
     // Se menor distância de colisão for ‘top’
     if (collision[0]) {
         if (Math::Abs(top - left) < dist && vel.y < 0) {

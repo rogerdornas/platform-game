@@ -23,7 +23,7 @@ FlyingEnemySimple::FlyingEnemySimple(Game *game)
     mWidth = 70 * mGame->GetScale();
     mHeight = 70 * mGame->GetScale();
     mMoveSpeed = 250 * mGame->GetScale();
-    mHealthPoints = 60;
+    mHealthPoints = 30;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 10;
     mMoneyDrop = 4;

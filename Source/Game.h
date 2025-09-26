@@ -40,7 +40,8 @@ public:
         Level2,
         Level3,
         Level4,
-        Level5
+        Level5,
+        Room0
     };
 
     enum class SceneManagerState {
@@ -219,6 +220,7 @@ public:
     Vector2 GetCheckPointPosition() { return mCheckpointPosition; }
     void SetCheckPointMoney(int money) { mCheckPointMoney = money; }
     int GetCheckPointMoney() const { return mCheckPointMoney; }
+    void SetCheckpointStartCameraPosition(Vector2 pos) { mCheckpointStartCameraPosition = pos; }
     void SetGoingToNextLevel() { mGoingToNextLevel = true; }
     void SetCurrentCutscene(Cutscene* cutscene) { mCurrentCutscene = cutscene; }
     void SetHitByLava() { mHitByLava = true; }
@@ -314,6 +316,7 @@ private:
     // Player State
     Vector2 mCheckpointPosition;
     int mCheckPointMoney;
+    Vector2 mCheckpointStartCameraPosition;
     bool mGoingToNextLevel;
     Vector2 mLavaRespawnPosition;
     bool mHitByLava;

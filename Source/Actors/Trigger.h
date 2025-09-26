@@ -28,6 +28,9 @@ public:
         FollowPlayerHorizontally,
         FollowPlayerLimitRight,
         FollowPlayerLimitLeft,
+        FollowPlayerLimitUp,
+        FollowPlayerLimitDown,
+        FollowPlayerLimited,
         FollowPlayerLimitRightHorizontally,
         FollowPlayerLimitLeftHorizontally,
         ScrollRight,
@@ -47,7 +50,7 @@ public:
 
         StartDialogue,
 
-        StarCutscene
+        StartCutscene
     };
 
     Trigger(class Game *game, float width, float height);
@@ -58,6 +61,8 @@ public:
     void SetGroundsIds(const std::vector<int>& ids) { mGroundsIds = ids; }
     void SetEnemiesIds(const std::vector<int>& ids) { mEnemiesIds = ids; }
     void SetFixedCameraPosition(Vector2 pos) { mFixedCameraPosition = pos * mGame->GetScale(); }
+    void SetLimitMinCameraPosition(Vector2 pos) { mLimitMinCameraPosition = pos * mGame->GetScale(); }
+    void SetLimitMaxCameraPosition(Vector2 pos) { mLimitMaxCameraPosition = pos * mGame->GetScale(); }
     void SetScene(std::string scene);
     void SetWavesPath(const std::string &wavesPath);
     void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
@@ -83,6 +88,8 @@ protected:
     std::vector<int> mGroundsIds;
     std::vector<int> mEnemiesIds;
     Vector2 mFixedCameraPosition;
+    Vector2 mLimitMinCameraPosition;
+    Vector2 mLimitMaxCameraPosition;
 
     Game::GameScene mScene;
     std::string mWavesPath;

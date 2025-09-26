@@ -10,12 +10,15 @@ Camera::Camera(class Game* game, Vector2 startPosition)
     ,mGame(game)
     ,mCameraLerpSpeed(6.0f)
     ,mNormalSpeed(6.0f)
-    ,mSlowTransitionSpeed(3.0f)
-    ,mTransitionDuration(1.5f)
+    ,mSlowTransitionSpeed(2.5f)
+    ,mTransitionDuration(0.0f)
     ,mTransitionTimer(mTransitionDuration)
     ,mCameraMode(CameraMode::FollowPlayer)
     ,mFixedCameraPosition(Vector2::Zero)
-    ,mDistMove(400 * mGame->GetScale())
+    ,mLimitMinCameraPosition(Vector2(-1, -1))
+    ,mLimitMaxCameraPosition(Vector2(-1, -1))
+    ,mCurrentOffsetX(0.0f)
+    ,mDistMove(200 * mGame->GetScale())
     ,mIsShaking(false)
     ,mShakeDuration(1.0f)
     ,mShakeTimer(0.0f)
@@ -41,8 +44,87 @@ void Camera::ChangeCameraMode(CameraMode cameraMode) {
     mCameraMode = cameraMode;
 }
 
+void Camera::SetLimitMinCameraPosition(Vector2 pos) {
+    if (mLimitMinCameraPosition.x != pos.x ||
+        mLimitMinCameraPosition.y != pos.y)
+    {
+        mLimitMinCameraPosition = pos;
+        mCurrentLimitMinPosition = mPos;
+    }
+}
+
+void Camera::SetLimitMaxCameraPosition(Vector2 pos) {
+    if (mLimitMaxCameraPosition.x != pos.x ||
+        mLimitMaxCameraPosition.y != pos.y)
+    {
+        mLimitMaxCameraPosition = pos;
+        mCurrentLimitMaxPosition = mPos + Vector2(mGame->GetLogicalWindowWidth(), mGame->GetLogicalWindowHeight());
+    }
+}
+
 
 void Camera::Update(float deltaTime) {
+    if (mCameraMode == CameraMode::FollowPlayerLimited) {
+        // Atualiza limites suavizados
+        mCurrentLimitMinPosition = Vector2::Lerp(mCurrentLimitMinPosition, mLimitMinCameraPosition, mSlowTransitionSpeed * deltaTime);
+        mCurrentLimitMaxPosition = Vector2::Lerp(mCurrentLimitMaxPosition, mLimitMaxCameraPosition, mSlowTransitionSpeed * deltaTime);
+
+        // OFFSET HORIZONTAL BASEADO NA ROTAÇÃO
+        float desiredOffsetX = mGame->GetPlayer()->GetWidth() * 2.5f * mGame->GetPlayer()->GetForward().x;
+
+        // Suaviza a transição do offset
+        mCurrentOffsetX = Math::Lerp(mCurrentOffsetX, desiredOffsetX, mSlowTransitionSpeed * deltaTime);
+
+        // Calcula posição alvo do player
+        Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+        Vector2 playerPosOffset(
+            playerPos.x - mGame->GetLogicalWindowWidth() / 2 + mCurrentOffsetX,
+            playerPos.y - mGame->GetLogicalWindowHeight() / 2
+        );
+
+        // Aplica limites já suavizados ao alvo
+        playerPosOffset.x = Math::Clamp(playerPosOffset.x, mCurrentLimitMinPosition.x, mCurrentLimitMaxPosition.x - mGame->GetLogicalWindowWidth());
+        playerPosOffset.y = Math::Clamp(playerPosOffset.y, mCurrentLimitMinPosition.y, mCurrentLimitMaxPosition.y - mGame->GetLogicalWindowHeight());
+
+        // Aplica deslocamento vertical se estiver olhando para cima ou para baixo
+        if (mLookUp) {
+            playerPosOffset.y -= mDistMove;
+        }
+        else if (mLookDown) {
+            playerPosOffset.y += mDistMove;
+        }
+
+        // Interpola da posição atual até a posição alvo (já limitada)
+        mPos = Vector2::Lerp(mPos, playerPosOffset, mNormalSpeed * deltaTime);
+
+        // Camera Shake
+        if (mShakeTimer < mShakeDuration) {
+            mShakeTimer += deltaTime;
+        }
+
+        float shakeOffsetX = 0;
+        float shakeOffsetY = 0;
+
+        if (mIsShaking) {
+            shakeOffsetX = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
+            shakeOffsetY = Random::GetFloat() * (2 * mShakeStrength + 1) - mShakeStrength;
+
+            if (mShakeTimer >= mShakeDuration) {
+                mIsShaking = false;
+                shakeOffsetX = 0;
+                shakeOffsetY = 0;
+            }
+        }
+        mPos.x += shakeOffsetX * mCameraLerpSpeed * deltaTime;
+        mPos.y += shakeOffsetY * mCameraLerpSpeed * deltaTime;
+
+        // Reset flags para o próximo frame
+        mLookUp = false;
+        mLookDown = false;
+
+        return;
+    }
+
     if (mTransitionTimer < mTransitionDuration) {
         mTransitionTimer += deltaTime;
         mCameraLerpSpeed = mSlowTransitionSpeed;
@@ -71,6 +153,14 @@ void Camera::Update(float deltaTime) {
 
         case CameraMode::FollowPlayerLimitLeft:
             targetPosition = FollowPlayerLimitLeft();
+            break;
+
+        case CameraMode::FollowPlayerLimitUp:
+            targetPosition = FollowPlayerLimitUp();
+            break;
+
+        case CameraMode::FollowPlayerLimitDown:
+            targetPosition = FollowPlayerLimitDown();
             break;
 
         case CameraMode::FollowPlayerLimitRightHorizontally:
@@ -107,6 +197,8 @@ void Camera::Update(float deltaTime) {
         mCameraMode == CameraMode::FollowPlayerHorizontally ||
         mCameraMode == CameraMode::FollowPlayerLimitRight ||
         mCameraMode == CameraMode::FollowPlayerLimitLeft ||
+        mCameraMode == CameraMode::FollowPlayerLimitUp ||
+        mCameraMode == CameraMode::FollowPlayerLimitDown ||
         mCameraMode == CameraMode::FollowPlayerLimitRightHorizontally ||
         mCameraMode == CameraMode::FollowPlayerLimitLeftHorizontally )
     {
@@ -129,6 +221,7 @@ void Camera::Update(float deltaTime) {
     else if (mCameraMode == CameraMode::PanoramicCamera) {
         mPos = targetPosition;
     }
+
 
     // Camera Shake
     if (mShakeTimer < mShakeDuration) {
@@ -192,6 +285,28 @@ Vector2 Camera::FollowPlayerLimitLeft() {
 
     if (targetPos.x < mFixedCameraPosition.x) {
         targetPos.x = mFixedCameraPosition.x;
+    }
+    return targetPos;
+}
+
+Vector2 Camera::FollowPlayerLimitUp() {
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    Vector2 targetPos(playerPos.x - mGame->GetLogicalWindowWidth() / 2,
+                      playerPos.y - mGame->GetLogicalWindowHeight() / 2);
+
+    if (targetPos.y < mFixedCameraPosition.y) {
+        targetPos.y = mFixedCameraPosition.y;
+    }
+    return targetPos;
+}
+
+Vector2 Camera::FollowPlayerLimitDown() {
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    Vector2 targetPos(playerPos.x - mGame->GetLogicalWindowWidth() / 2,
+                      playerPos.y - mGame->GetLogicalWindowHeight() / 2);
+
+    if (targetPos.y + mGame->GetLogicalWindowHeight() > mFixedCameraPosition.y) {
+        targetPos.y = mFixedCameraPosition.y - mGame->GetLogicalWindowHeight();
     }
     return targetPos;
 }

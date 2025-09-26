@@ -94,6 +94,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mIsAccelerated(false)
     ,mPlayerDeathCounter(0)
     ,mCheckpointPosition(Vector2::Zero)
+    ,mCheckpointStartCameraPosition(Vector2::Zero)
     ,mLavaRespawnPosition(Vector2::Zero)
     ,mHitByLava(false)
     ,mCheckPointMoney(0)
@@ -121,7 +122,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Prologue)
+    ,mContinueScene(GameScene::Room0)
 {
 }
 
@@ -276,7 +277,8 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime) {
             scene == GameScene::Level2 ||
             scene == GameScene::Level3 ||
             scene == GameScene::Level4 ||
-            scene == GameScene::Level5) {
+            scene == GameScene::Level5 ||
+            scene == GameScene::Room0) {
             mNextScene = scene;
             mSceneManagerState = SceneManagerState::Entering;
             mSceneManagerTimer = transitionTime;
@@ -535,6 +537,21 @@ void Game::ChangeScene()
         // mBackgroundLayers.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
 
         LoadLevel(levelsAssets + "5-FinalLevel/Level5.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
+        mBossMusic.Reset();
+    }
+    else if (mNextScene == GameScene::Room0) {
+        mUseParallaxBackground = true;
+
+        LoadLevel(levelsAssets + "Room0/Room0.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -1301,6 +1318,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::vector<int> enemiesIds;
                 float fixedCameraPositionX = 0;
                 float fixedCameraPositionY = 0;
+                Vector2 limitMinCameraPosition(Vector2::Zero);
+                Vector2 limitMaxCameraPosition(Vector2::Zero);
                 std::string scene;
                 std::string wavePath;
                 std::string dialoguePath;
@@ -1329,6 +1348,18 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "FixedCameraPositionY") {
                             fixedCameraPositionY = prop["value"];
                         }
+                        else if (propName == "LimitMinCameraPositionX") {
+                            limitMinCameraPosition.x = prop["value"];
+                        }
+                        else if (propName == "LimitMinCameraPositionY") {
+                            limitMinCameraPosition.y = prop["value"];
+                        }
+                        else if (propName == "LimitMaxCameraPositionX") {
+                            limitMaxCameraPosition.x = prop["value"];
+                        }
+                        else if (propName == "LimitMaxCameraPositionY") {
+                            limitMaxCameraPosition.y = prop["value"];
+                        }
                         else if (propName == "Scene") {
                             scene = prop["value"];
                         }
@@ -1354,10 +1385,68 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetGroundsIds(groundsIds);
                 trigger->SetEnemiesIds(enemiesIds);
                 trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
+                trigger->SetLimitMinCameraPosition(limitMinCameraPosition);
+                trigger->SetLimitMaxCameraPosition(limitMaxCameraPosition);
                 trigger->SetScene(scene);
                 trigger->SetWavesPath(wavePath);
                 trigger->SetDialoguePath(dialoguePath);
                 trigger->SetCutsceneId(cutsceneId);
+            }
+        }
+        if (layer["name"] == "Camera") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+                bool destroy = false;
+                std::string target;
+                std::string event;
+                float fixedCameraPositionX = 0;
+                float fixedCameraPositionY = 0;
+                Vector2 limitMinCameraPosition(Vector2::Zero);
+                Vector2 limitMaxCameraPosition(Vector2::Zero);
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "Target") {
+                            target = prop["value"];
+                        }
+                        else if (propName == "Event") {
+                            event = prop["value"];
+                        }
+                        else if (propName == "Destroy") {
+                            destroy = prop["value"];
+                        }
+                        else if (propName == "FixedCameraPositionX") {
+                            fixedCameraPositionX = prop["value"];
+                        }
+                        else if (propName == "FixedCameraPositionY") {
+                            fixedCameraPositionY = prop["value"];
+                        }
+                        else if (propName == "LimitMinCameraPositionX") {
+                            limitMinCameraPosition.x = prop["value"];
+                        }
+                        else if (propName == "LimitMinCameraPositionY") {
+                            limitMinCameraPosition.y = prop["value"];
+                        }
+                        else if (propName == "LimitMaxCameraPositionX") {
+                            limitMaxCameraPosition.x = prop["value"];
+                        }
+                        else if (propName == "LimitMaxCameraPositionY") {
+                            limitMaxCameraPosition.y = prop["value"];
+                        }
+                    }
+                }
+
+                auto* trigger = new Trigger(this, width, height);
+                trigger->SetPosition(Vector2(x + width / 2, y + height / 2));
+                trigger->SetTarget(target);
+                trigger->SetEvent(event);
+                trigger->SetDestroy(destroy);
+                trigger->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
+                trigger->SetLimitMinCameraPosition(limitMinCameraPosition);
+                trigger->SetLimitMaxCameraPosition(limitMaxCameraPosition);
             }
         }
         if (layer["name"] == "Levers") {
@@ -1585,8 +1674,21 @@ void Game::LoadObjects(const std::string &fileName) {
                 float y = static_cast<float>(obj["y"]) * mScale;
                 float width = static_cast<float>(obj["width"]) * mScale;
                 float height = static_cast<float>(obj["height"]) * mScale;
+                Vector2 cameraPosition(Vector2::Zero);
 
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "CameraPositionX") {
+                            cameraPosition.x = prop["value"];
+                        }
+                        if (propName == "CameraPositionY") {
+                            cameraPosition.y = prop["value"];
+                        }
+                    }
+                }
                 auto checkpoint = new Checkpoint(this, width, height, Vector2(x + width / 2, y + height / 2));
+                checkpoint->SetCameraStartPosition(cameraPosition);
             }
         }
 
@@ -2663,6 +2765,10 @@ void Game::GenerateOutput()
                 case GameScene::Level5:
                     DrawParallaxLayers(mBackgroundLayersLevel4);
                     break;
+
+                case GameScene::Room0:
+                    DrawParallaxLayers(mBackgroundLayersLevel2);
+                break;
 
                 default:
                     break;
