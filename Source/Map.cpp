@@ -39,10 +39,10 @@ Map::Map(class Game *game, int **mapData, int width, int height)
     }
 
     // desenha fundo inicial (tudo bloqueado)
-    SDL_SetRenderTarget(mGame->GetRenderer(), mMapTexture);
-    SDL_SetRenderDrawColor(mGame->GetRenderer(), 50, 50, 50, 120);
-    SDL_RenderClear(mGame->GetRenderer());
-    SDL_SetRenderTarget(mGame->GetRenderer(), nullptr);
+    // SDL_SetRenderTarget(mGame->GetRenderer(), mMapTexture);
+    // SDL_SetRenderDrawColor(mGame->GetRenderer(), 50, 50, 50, 120);
+    // SDL_RenderClear(mGame->GetRenderer());
+    // SDL_SetRenderTarget(mGame->GetRenderer(), nullptr);
 
     mPlayerTexture = mGame->LoadTexture("../Assets/Sprites/PlayerIconMap/Esquilo.png");
 }

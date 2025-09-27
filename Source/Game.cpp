@@ -8,6 +8,7 @@
 #include "Actors/ParticleSystem.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <map>
 #include "CSV.h"
 #include "Json.h"

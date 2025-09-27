@@ -93,6 +93,7 @@ public:
     // Funções para sair da pausa com o controle sem pular ou atirar bola de fogo
     void SetCanJump(bool j) { mCanJump = j; }
     void SetPrevFireBallPressed(bool f) { mPrevFireBallPressed = f; }
+    void SetPrevSwordPressed(bool s) { mPrevSwordPressed = s; }
 
     bool Died();
 

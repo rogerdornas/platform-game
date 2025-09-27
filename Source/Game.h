@@ -232,6 +232,7 @@ public:
     void SaveBindingsToFile(const std::string& filename);
     void LoadBindingsFromFile(const std::string& filename);
     bool IsActionPressed(Action action, const Uint8* keyboardState, SDL_GameController* controller);
+    std::unordered_map<Action, InputBinding> GetInputBinding() { return mInputBindings; }
 
 private:
     void ProcessInput();

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="471">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="472">
  <editorsettings>
   <export target="Pain.json" format="json"/>
  </editorsettings>
@@ -1863,7 +1863,7 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="463" name="Camera" x="8192" y="3584" width="1344" height="1024">
+  <object id="463" name="Camera" x="8544" y="3584" width="992" height="1024">
    <properties>
     <property name="Event" value="FollowPlayerLimited"/>
     <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
@@ -1940,6 +1940,16 @@
     <property name="LimitMaxCameraPositionY" type="float" value="1368"/>
     <property name="LimitMinCameraPositionX" type="float" value="7232"/>
     <property name="LimitMinCameraPositionY" type="float" value="288"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="471" name="Camera" x="8224" y="3584" width="256" height="1024">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6816"/>
+    <property name="LimitMinCameraPositionY" type="float" value="3552"/>
     <property name="Target" value="Camera"/>
    </properties>
   </object>

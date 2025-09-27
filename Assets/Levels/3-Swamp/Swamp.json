@@ -1694,7 +1694,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1344,
+                 "width":1280,
                  "x":7104,
                  "y":1280
                 }, 
@@ -1721,7 +1721,7 @@
                         {
                          "name":"LimitMinCameraPositionX",
                          "type":"float",
-                         "value":7424
+                         "value":6700
                         }, 
                         {
                          "name":"LimitMinCameraPositionY",
@@ -3083,7 +3083,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 

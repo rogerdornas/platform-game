@@ -492,6 +492,26 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         }
     }
 
+    // Dash
+    if (mCanDash) {
+        if (dash && !mIsFireAttacking) {
+            if (mDashComponent->UseDash(mIsOnGround) && mIsOnGround) {
+                for (JumpEffect* j: mJumpEffects) {
+                    if (j->GetState() == ActorState::Paused) {
+                        j->SetState(ActorState::Active);
+                        j->StartEffect(JumpEffect::EffectType::TakeOff);
+                        break;
+                    }
+                }
+            }
+            mIsHooking = false;
+            mHookAnimProgress = 1.0f;
+            mIsHookAnimating = false;
+            mHookPoint = nullptr;
+            mDrawRopeComponent->SetIsVisible(false);
+        }
+    }
+
     //Início do pulo
     if (jump && !mIsFireAttacking) {
         if (!mDashComponent->GetIsDashing()) {
@@ -553,26 +573,6 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     else {
         mIsJumping = false; // jogador soltou o W
         mCanJump = true;
-    }
-
-    // Dash
-    if (mCanDash) {
-        if (dash && !mIsFireAttacking) {
-            if (mDashComponent->UseDash(mIsOnGround) && mIsOnGround) {
-                for (JumpEffect* j: mJumpEffects) {
-                    if (j->GetState() == ActorState::Paused) {
-                        j->SetState(ActorState::Active);
-                        j->StartEffect(JumpEffect::EffectType::TakeOff);
-                        break;
-                    }
-                }
-            }
-            mIsHooking = false;
-            mHookAnimProgress = 1.0f;
-            mIsHookAnimating = false;
-            mHookPoint = nullptr;
-            mDrawRopeComponent->SetIsVisible(false);
-        }
     }
 
     // Sword

@@ -65,32 +65,37 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 
 void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY, int controllerAxisX)
 {
-    if (mButtons.size() <= 0) {
+    if (mButtons.empty()) {
         return;
     }
 
     UIButton* current = mButtons[mSelectedButtonIndex];
     UIButton* next = nullptr;
+    auto inputBinding = mGame->GetInputBinding();
 
     if (key == SDLK_UP ||
+        key == SDL_GetKeyFromScancode(inputBinding[Game::Action::Up].key) ||
         controllerButton == SDL_CONTROLLER_BUTTON_DPAD_UP ||
         controllerAxisY < 0)
     {
         next = FindNeighbor(current, Vector2(0, -1));
     }
     else if (key == SDLK_DOWN ||
+             key == SDL_GetKeyFromScancode(inputBinding[Game::Action::Down].key) ||
              controllerButton == SDL_CONTROLLER_BUTTON_DPAD_DOWN ||
              controllerAxisY > 0)
     {
         next = FindNeighbor(current, Vector2(0, 1));
     }
     else if (key == SDLK_LEFT ||
+             key == SDL_GetKeyFromScancode(inputBinding[Game::Action::MoveLeft].key) ||
              controllerButton == SDL_CONTROLLER_BUTTON_DPAD_LEFT ||
              controllerAxisX < 0)
     {
         next = FindNeighbor(current, Vector2(-1, 0));
     }
     else if (key == SDLK_RIGHT ||
+             key == SDL_GetKeyFromScancode(inputBinding[Game::Action::MoveRight].key) ||
              controllerButton == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ||
              controllerAxisX > 0)
     {
@@ -106,11 +111,16 @@ void UIScreen::HandleKeyPress(int key, int controllerButton, int controllerAxisY
     }
 
     // Ativa botão selecionado
-    if (key == SDLK_RETURN || controllerButton == SDL_CONTROLLER_BUTTON_A) {
+    if (key == SDLK_RETURN ||
+        controllerButton == SDL_CONTROLLER_BUTTON_A||
+        key == SDL_GetKeyFromScancode(inputBinding[Game::Action::Jump].key) ||
+        key == SDL_GetKeyFromScancode(inputBinding[Game::Action::Attack].key))
+    {
         if (mSelectedButtonIndex >= 0 && mSelectedButtonIndex < (int)mButtons.size()) {
             mButtons[mSelectedButtonIndex]->OnClick();
             if (mGame->GetPlayer()) {
                 mGame->GetPlayer()->SetCanJump(false);
+                mGame->GetPlayer()->SetPrevSwordPressed(true);
             }
         }
     }

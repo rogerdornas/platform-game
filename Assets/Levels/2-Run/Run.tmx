@@ -990,7 +990,7 @@
   <object id="181" name="Checkpoint4" x="8800" y="3232" width="416" height="192"/>
   <object id="182" name="Checkpoint5" x="12576" y="3232" width="416" height="192"/>
  </objectgroup>
- <objectgroup id="3" name="Player" visible="0">
+ <objectgroup id="3" name="Player">
   <object id="18" name="Player" x="1120" y="3168" width="32" height="32"/>
  </objectgroup>
 </map>

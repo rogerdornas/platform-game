@@ -794,7 +794,7 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
-  <object id="309" name="Camera" x="7104" y="1280" width="1344" height="224">
+  <object id="309" name="Camera" x="7104" y="1280" width="1280" height="224">
    <properties>
     <property name="Event" value="FollowPlayerLimited"/>
     <property name="LimitMaxCameraPositionX" type="float" value="70000"/>
@@ -809,7 +809,7 @@
     <property name="Event" value="FollowPlayerLimited"/>
     <property name="LimitMaxCameraPositionX" type="float" value="70000"/>
     <property name="LimitMaxCameraPositionY" type="float" value="70000"/>
-    <property name="LimitMinCameraPositionX" type="float" value="7424"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6700"/>
     <property name="LimitMinCameraPositionY" type="float" value="1160"/>
     <property name="Target" value="Camera"/>
    </properties>
@@ -855,7 +855,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="2" name="Grounds">
+ <objectgroup id="2" name="Grounds" visible="0">
   <object id="80" name="DynamicGround" x="4512" y="1824" width="384" height="992">
    <properties>
     <property name="GrowSpeedX" type="float" value="0"/>

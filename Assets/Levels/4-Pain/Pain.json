@@ -6071,8 +6071,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1344,
-                 "x":8192,
+                 "width":992,
+                 "x":8544,
                  "y":3584
                 }, 
                 {
@@ -6368,6 +6368,48 @@
                  "width":928,
                  "x":7168,
                  "y":352
+                }, 
+                {
+                 "height":1024,
+                 "id":471,
+                 "name":"Camera",
+                 "properties":[
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"FollowPlayerLimited"
+                        }, 
+                        {
+                         "name":"LimitMaxCameraPositionX",
+                         "type":"float",
+                         "value":9760
+                        }, 
+                        {
+                         "name":"LimitMaxCameraPositionY",
+                         "type":"float",
+                         "value":4632
+                        }, 
+                        {
+                         "name":"LimitMinCameraPositionX",
+                         "type":"float",
+                         "value":6816
+                        }, 
+                        {
+                         "name":"LimitMinCameraPositionY",
+                         "type":"float",
+                         "value":3552
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Camera"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":256,
+                 "x":8224,
+                 "y":3584
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6772,7 +6814,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":471,
+ "nextobjectid":472,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
