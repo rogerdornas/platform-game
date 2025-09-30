@@ -16,6 +16,8 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include "HUD.h"
+#include "SaveData.h"
+#include "SaveManager.h"
 #include "Actors/BushMonster.h"
 #include "Actors/Checkpoint.h"
 #include "Actors/DragonFly.h"
@@ -79,6 +81,8 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mCrossFadeTimer(0.0f)
     ,mCamera(nullptr)
     ,mPlayer(nullptr)
+    ,mStore(nullptr)
+    ,mScale(1.0f)
     ,mLevelData(nullptr)
     ,mLevelDataDynamicGrounds(nullptr)
     ,mMap(nullptr)
@@ -93,8 +97,12 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mHitstopDelayTimer(0.0f)
     ,mIsSlowMotion(false)
     ,mIsAccelerated(false)
+    ,mSaveSlot(0)
+    ,mSaveData(nullptr)
+    ,mSaveManager(nullptr)
     ,mPlayerDeathCounter(0)
     ,mCheckpointPosition(Vector2::Zero)
+    ,mCheckpointGameScene(GameScene::Prologue)
     ,mCheckpointStartCameraPosition(Vector2::Zero)
     ,mLavaRespawnPosition(Vector2::Zero)
     ,mHitByLava(false)
@@ -116,14 +124,22 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mUseParallaxBackground(false)
     ,mAudio(nullptr)
     ,mHUD(nullptr)
+    ,mMainMenu(nullptr)
     ,mPauseMenu(nullptr)
+    ,mOptionsMenu(nullptr)
+    ,mLevelSelectMenu(nullptr)
+    ,mControlMenu(nullptr)
+    ,mKeyboardMenu(nullptr)
+    ,mKeyboardMenu2(nullptr)
+    ,mConfirmBackToMenu(nullptr)
+    ,mConfirmQuitGameMenu(nullptr)
+    ,mLoadGameMenu(nullptr)
     ,mSceneManagerState(SceneManagerState::None)
     ,mFadeDuration(0.5f)
     ,mSceneManagerTimer(0.0f)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
     ,mNextScene(GameScene::MainMenu)
-    ,mContinueScene(GameScene::Room0)
 {
 }
 
@@ -254,6 +270,9 @@ bool Game::Initialize()
 
     mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
 
+    mSaveData = new SaveData(this);
+    mSaveManager = new SaveManager(this);
+
     // const std::string backgroundAssets = "../Assets/Sprites/Background/";
     // mBackGroundTexture = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
     // mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
@@ -361,7 +380,6 @@ void Game::ChangeScene()
         }
 
         // Guarda último level que o player estava
-        mContinueScene = mNextScene;
         mIsPaused = false;
     }
     else {
@@ -566,66 +584,212 @@ void Game::ChangeScene()
     }
 
     // Verifica as 2 primeiras mortes do player para tocar cutscene
-    if (mPlayerDeathCounter < 3 && mPlayer) {
-        if (mPlayerDeathCounter < mPlayer->GetDeathCounter() && mGamePlayState == GamePlayState::Playing) {
-            mPlayerDeathCounter = mPlayer->GetDeathCounter();
-            if (mPlayerDeathCounter == 1) {
-                mCurrentCutscene = new Cutscene(this, "primeiraMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
-                mCurrentCutscene->Start();
-                SetCurrentCutscene(mCurrentCutscene);
-                SetGamePlayState(Game::GamePlayState::Cutscene);
-            }
-            if (mPlayerDeathCounter == 2) {
-                mCurrentCutscene = new Cutscene(this, "segundaMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
-                mCurrentCutscene->Start();
-                SetCurrentCutscene(mCurrentCutscene);
-                SetGamePlayState(Game::GamePlayState::Cutscene);
-            }
-        }
-    }
+    // if (mPlayerDeathCounter < 3 && mPlayer) {
+    //     if (mPlayerDeathCounter < mPlayer->GetDeathCounter() && mGamePlayState == GamePlayState::Playing) {
+    //         mPlayerDeathCounter = mPlayer->GetDeathCounter();
+    //         if (mPlayerDeathCounter == 1) {
+    //             mCurrentCutscene = new Cutscene(this, "primeiraMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
+    //             mCurrentCutscene->Start();
+    //             SetCurrentCutscene(mCurrentCutscene);
+    //             SetGamePlayState(Game::GamePlayState::Cutscene);
+    //         }
+    //         if (mPlayerDeathCounter == 2) {
+    //             mCurrentCutscene = new Cutscene(this, "segundaMortePlayer", "../Assets/Cutscenes/Cutscenes.json");
+    //             mCurrentCutscene->Start();
+    //             SetCurrentCutscene(mCurrentCutscene);
+    //             SetGamePlayState(Game::GamePlayState::Cutscene);
+    //         }
+    //     }
+    // }
 
     // Set new scene
     mGameScene = mNextScene;
 }
 
 void Game::LoadMainMenu() {
-    auto mainMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mMainMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
     const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 5, 50 * mScale);
-    mainMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
-    mainMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
-    Vector2 buttonPos = Vector2((mainMenu->GetSize().x - buttonSize.x) / 2, 0);
+    mMainMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
+    mMainMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
+    Vector2 buttonPos = Vector2((mMainMenu->GetSize().x - buttonSize.x) / 2, 0);
 
-    std::string name = "CONTINUAR";
+    std::string name = "INICIAR JOGO";
     int buttonPointSize = static_cast<int>(34 * mScale);
-    mainMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    [this]() { SetGameScene(mContinueScene, 0.5f); });
-
-    name = "NOVO JOGO";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        SetGameScene(GameScene::Prologue, 0.5f);
-        delete mPlayer;
-        mPlayer = nullptr;
-        mPlayerDeathCounter = 0;
-        delete mStore;
-        mStore = nullptr;
-        mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        LoadLoadGameMenu();
     });
 
     name = "SELECIONAR FASE";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
         [this]() { LoadLevelSelectMenu(); });
 
     name = "OPÇÕES";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() { LoadOptionsMenu(); });
 
     name = "SAIR";
-    mainMenu->AddButton(name, buttonPos + Vector2(0, 8 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-    [this]() { Quit(); });
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 8 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mMainMenu->SetIsVisible(false);
+        LoadConfirmQuitGameMenu();
+    });
 }
 
-UIScreen* Game::LoadPauseMenu() {
+void Game::LoadConfirmQuitGameMenu() {
+    mConfirmQuitGameMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 5, 50 * mScale);
+    mConfirmQuitGameMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
+    mConfirmQuitGameMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
+    Vector2 buttonPos = Vector2((mConfirmQuitGameMenu->GetSize().x - buttonSize.x) / 2, mConfirmQuitGameMenu->GetSize().y * 0.30f);
+
+    UIText* text = mConfirmQuitGameMenu->AddText("SAIR DO JOGO?", Vector2::Zero, Vector2::Zero, 38 * mScale);
+    text->SetPosition(Vector2((mConfirmQuitGameMenu->GetSize().x - text->GetSize().x) / 2, 0));
+
+    std::string name = "SIM";
+    int buttonPointSize = static_cast<int>(34 * mScale);
+    mConfirmQuitGameMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        Quit();
+    });
+
+    name = "NÃO";
+    mConfirmQuitGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mConfirmQuitGameMenu->Close();
+        mMainMenu->SetIsVisible(true);
+    });
+}
+
+void Game::LoadLoadGameMenu() {
+    mLoadGameMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mLoadGameMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
+    mLoadGameMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
+
+    auto buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.65f, 150 * mScale);
+    auto buttonPointSize = static_cast<int>(36 * mScale);
+    auto buttonPos = Vector2(mLoadGameMenu->GetSize().x * 0.05f, mLoadGameMenu->GetSize().y * 0.2f);
+
+    mLoadGameMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mLoadGameMenu->GetSize());
+
+    UIText* text = mLoadGameMenu->AddText("SELECIONAR PERFIL", Vector2::Zero, Vector2::Zero, 50 * mScale);
+    text->SetPosition(Vector2((mLoadGameMenu->GetSize().x - text->GetSize().x) / 2, mLoadGameMenu->GetSize().y * 0.05f));
+
+    std::string name = "   SLOT 1";
+    mLoadGameMenu->AddButton(name, buttonPos,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+            mSaveSlot = 1;
+            mSaveData = mSaveManager->LoadGame(mSaveSlot);
+            mSaveData->ApplyToGame();
+        });
+
+    name = "   SLOT 2";
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * 85) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+            mSaveSlot = 2;
+            mSaveData = mSaveManager->LoadGame(mSaveSlot);
+            mSaveData->ApplyToGame();
+        });
+
+    name = "   SLOT 3";
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 4 * 85) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+            mSaveSlot = 3;
+            mSaveData = mSaveManager->LoadGame(mSaveSlot);
+            mSaveData->ApplyToGame();
+        });
+
+    name = "   SLOT 4";
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 6 * 85) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            delete mPlayer;
+            mPlayer = nullptr;
+            mPlayerDeathCounter = 0;
+            delete mStore;
+            mStore = nullptr;
+            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+            mSaveSlot = 4;
+            mSaveData = mSaveManager->LoadGame(mSaveSlot);
+            mSaveData->ApplyToGame();
+        });
+
+    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.20f, 50 * mScale);
+    buttonPos = Vector2(mLoadGameMenu->GetSize().x * 0.75f, mLoadGameMenu->GetSize().y * 0.25f);
+
+    name = "DELETAR SAVE";
+    mLoadGameMenu->AddButton(name, buttonPos,
+        buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]()
+        {
+            mSaveManager->DeleteSave(1);
+        });
+
+    name = "DELETAR SAVE";
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * 85) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]()
+        {
+            mSaveManager->DeleteSave(2);
+        });
+
+    name = "DELETAR SAVE";
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 4 * 85) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]()
+        {
+            mSaveManager->DeleteSave(3);
+        });
+
+    name = "DELETAR SAVE";
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 6 * 85) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]()
+        {
+            mSaveManager->DeleteSave(4);
+        });
+
+    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.2f, 50 * mScale);
+    buttonPos = Vector2((mLoadGameMenu->GetSize().x - buttonSize.x) / 2, mLoadGameMenu->GetSize().y - 60 * mScale);
+    name = "VOLTAR";
+    mLoadGameMenu->AddButton(name, buttonPos,
+        buttonSize, buttonPointSize, UIButton::TextPos::Center,
+        [this]() {
+            mLoadGameMenu->Close();
+        });
+}
+
+
+void Game::LoadPauseMenu() {
     mPauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
     const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.22f, 50 * mScale);
     mPauseMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
@@ -670,14 +834,45 @@ UIScreen* Game::LoadPauseMenu() {
     name = "VOLTAR AO MENU";
     mPauseMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
+        mPauseMenu->SetIsVisible(false);
+        LoadConfirmBackToMenu();
+    });
+}
+
+void Game::LoadConfirmBackToMenu() {
+    mConfirmBackToMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.22f, 50 * mScale);
+    mConfirmBackToMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
+    mConfirmBackToMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
+    Vector2 buttonPos = Vector2((mConfirmBackToMenu->GetSize().x - buttonSize.x) / 2, mConfirmBackToMenu->GetSize().y * 0.30f);
+
+    auto* background = mConfirmBackToMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", -1.2 * mConfirmBackToMenu->GetPosition(), Vector2(mLogicalWindowWidth, mLogicalWindowHeight) * 1.5f);
+    background->SetTransparency(128);
+
+    UIText* text = mConfirmBackToMenu->AddText("VOLTAR AO MENU?", Vector2::Zero, Vector2::Zero, 38 * mScale);
+    text->SetPosition(Vector2((mConfirmBackToMenu->GetSize().x - text->GetSize().x) / 2, 0));
+
+    std::string name = "SIM";
+    int buttonPointSize = static_cast<int>(34 * mScale);
+    mConfirmBackToMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mSaveData->CaptureFromGame();
+        mSaveManager->SaveGame(mSaveData, mSaveSlot);
+        // mSaveData->Save("../Saves/slot_1.json");
         SetGameScene(GameScene::MainMenu, 0.5f);
+        mConfirmBackToMenu->Close();
         mPauseMenu->Close();
         if (mStore->StoreOpened()) {
             mStore->CloseStore();
         }
     });
 
-    return mPauseMenu;
+    name = "NÃO";
+    mConfirmBackToMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    [this]() {
+        mConfirmBackToMenu->Close();
+        mPauseMenu->SetIsVisible(true);
+    });
 }
 
 void Game::LoadLevelSelectMenu() {
@@ -1697,12 +1892,20 @@ void Game::LoadObjects(const std::string &fileName) {
             for (const auto &obj: layer["objects"]) {
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
+
+                if (mGoingToNextLevel) {
+                    mGoingToNextLevel = false;
+                }
+
                 if (mPlayer) {
                     mPlayer->SetSword();
                     mPlayer->SetJumpEffects();
                     mPlayer->GetComponent<DashComponent>()->InitDashEffect();
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
                     mPlayer->SetIsDead(false);
+                    mPlayer->SetState(ActorState::Active);
+                    mPlayer->SetPosition(Vector2(x, y));
+                    mPlayer->GetComponent<AABBComponent>()->SetActive(true);
 
                     // Faz isso para o player ser sempre o último a ser atualizado a cada frame
                     RemoveActor(mPlayer);
@@ -1710,21 +1913,9 @@ void Game::LoadObjects(const std::string &fileName) {
                 }
                 else {
                     mPlayer = new Player(this);
-                    mPlayer->SetPosition(Vector2(x, y));
-                    mPlayer->SetStartingPosition(Vector2(x, y));
-                    mCheckpointPosition = Vector2(x, y);
+                    mSaveData->ApplyToPlayer();
                     mCheckPointMoney = mPlayer->GetMoney();
                 }
-
-                if (mGoingToNextLevel) {
-                    mCheckpointPosition = Vector2(x, y);
-                    mCheckPointMoney = mPlayer->GetMoney();
-                    mGoingToNextLevel = false;
-                }
-
-                mPlayer->SetState(ActorState::Active);
-                mPlayer->SetPosition(mCheckpointPosition);
-                mPlayer->GetComponent<AABBComponent>()->SetActive(true);
             }
         }
     }
@@ -2264,7 +2455,7 @@ void Game::UpdateGame()
         deltaTime *= 1.5;
     }
 
-    if (mMap) {
+    if (mMap && mGamePlayState == GamePlayState::Playing) {
         mMap->Update(deltaTime);
     }
 
@@ -2656,7 +2847,6 @@ void Game::PlayFinalGoodCutscene() {
     else {
         if (mCurrentCutscene == nullptr) {
             SetGameScene(GameScene::MainMenu, 1.5f);
-            mContinueScene = GameScene::Prologue;
             mGoingToNextLevel = true;
             mIsPlayingFinalCutscene = false;
         }
@@ -3089,6 +3279,10 @@ void Game::Shutdown()
     // Destroi audio
     delete mAudio;
     mAudio = nullptr;
+
+    // Destroy Save Data
+    delete mSaveData;
+    delete mSaveManager;
 
     Mix_CloseAudio();
 

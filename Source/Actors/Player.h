@@ -84,6 +84,7 @@ public:
     void SetFireballDamage(float damage) { mFireballDamage = damage; }
     float GetFireballDamage() const { return mFireballDamage; }
 
+    void SetDeathCounter(int count) { mDeathCounter = count; }
     int GetDeathCounter() const { return mDeathCounter; }
     void SetIsDead(bool isDead) { mIsDead = isDead; }
 

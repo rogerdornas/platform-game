@@ -73,6 +73,7 @@ void Checkpoint::OnUpdate(float deltaTime) {
 
     if (mAABBComponent->Intersect(*player->GetComponent<ColliderComponent>())) {
         mGame->SetCheckPointPosition(GetPosition());
+        mGame->SetCheckpointGameScene(mGame->GetGameScene());
         mGame->SetCheckPointMoney(player->GetMoney());
         mGame->SetCheckpointStartCameraPosition(mCameraStartPosition);
         player->ResetHealthPoints();

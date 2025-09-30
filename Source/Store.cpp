@@ -44,6 +44,53 @@ Store::~Store() {
 
 }
 
+void Store::UpgradePlayerSwordRange() {
+    mGame->GetPlayer()->SetSwordWidth(mGame->GetPlayer()->GetSword()->GetWidth() * mSwordRangeIncrease);
+    mGame->GetPlayer()->GetSword()->SetWidth(mGame->GetPlayer()->GetSword()->GetWidth() * mSwordRangeIncrease);
+
+    mGame->GetPlayer()->SetSwordHeight(mGame->GetPlayer()->GetSword()->GetHeight() * mSwordRangeIncrease);
+    mGame->GetPlayer()->GetSword()->SetHeight(mGame->GetPlayer()->GetSword()->GetHeight() * mSwordRangeIncrease);
+
+    mSwordRangeUpgrade = true;
+}
+
+void Store::UpgradePlayerSwordDamage() {
+    mGame->GetPlayer()->SetSwordDamage(mGame->GetPlayer()->GetSword()->GetDamage() * mSwordDamageIncrease);
+    mGame->GetPlayer()->GetSword()->SetDamage(mGame->GetPlayer()->GetSword()->GetDamage() * mSwordDamageIncrease);
+    mSwordDamageUpgrade = true;
+}
+
+void Store::UpgradePlayerSwordSpeed() {
+    mGame->GetPlayer()->AdjustSwordAttackSpeed(mSwordSpeedIncrease);
+    mSwordSpeedUpgrade = true;
+}
+
+void Store::UpgradePlayerHealthPoints() {
+    float hpPercentage = mGame->GetPlayer()->GetHealthPoints() / mGame->GetPlayer()->GetMaxHealthPoints();
+    mGame->GetPlayer()->SetMaxHealthPoints(mGame->GetPlayer()->GetMaxHealthPoints() + mHealthPointsIncrease);
+    mGame->GetPlayer()->SetHealthPoints(hpPercentage * mGame->GetPlayer()->GetMaxHealthPoints());
+    // mGame->GetHUD()->IncreaseHPBar();
+    mHealthPointsUpgrade = true;
+}
+
+void Store::UpgradePlayerHealCount() {
+    mGame->GetPlayer()->IncreaseHealCount();
+    mHealCountUpgrade = true;
+}
+
+void Store::UpgradePlayerMana() {
+    mGame->GetPlayer()->SetMaxMana(mGame->GetPlayer()->GetMaxMana() + mManaIncrease);
+    // mGame->GetHUD()->IncreaseManaBar();
+    mManaUpgrade = true;
+}
+
+void Store::UpgradePlayerFireball() {
+    mGame->GetPlayer()->SetFireballDamage(mGame->GetPlayer()->GetFireballDamage() * mFireballDamageIncrease);
+    mGame->GetPlayer()->SetFireballWidth(mGame->GetPlayer()->GetFireballWidth() * mFireballSizeIncrease);
+    mGame->GetPlayer()->SetFireballHeight(mGame->GetPlayer()->GetFireballHeight() * mFireballSizeIncrease);
+    mFireballUpgrade = true;
+}
+
 void Store::OpenStore() {
     if (mStoreOpened) {
         return;
@@ -78,21 +125,13 @@ void Store::OpenStore() {
     UIButton* button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         if (!mSwordRangeUpgrade && mGame->GetPlayer()->GetMoney() >= mSwordRangeUpgradeCost) {
-            mGame->GetPlayer()->SetSwordWidth(mGame->GetPlayer()->GetSword()->GetWidth() * mSwordRangeIncrease);
-            mGame->GetPlayer()->GetSword()->SetWidth(mGame->GetPlayer()->GetSword()->GetWidth() * mSwordRangeIncrease);
-
-            mGame->GetPlayer()->SetSwordHeight(mGame->GetPlayer()->GetSword()->GetHeight() * mSwordRangeIncrease);
-            mGame->GetPlayer()->GetSword()->SetHeight(mGame->GetPlayer()->GetSword()->GetHeight() * mSwordRangeIncrease);
-
+            UpgradePlayerSwordRange();
             mGame->GetPlayer()->DecreaseMoney(mSwordRangeUpgradeCost);
-            mSwordRangeUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
             mStoreMenu->GetButtons()[0]->GetText()->SetColor(Color::Red);
             mStoreMenu->GetButtons()[0]->GetText()->SetText("AUMENTAR ALCANCE DA ESPADA");
             mStoreMenu->GetTexts()[1]->SetColor(Color::Red);
             mStoreMenu->GetTexts()[1]->SetText(std::to_string(mSwordRangeUpgradeCost));
-            // CloseStore();
-            // OpenStore();
         }
     }, textPos, mTextColor);
     std::string cost = std::to_string(mSwordRangeUpgradeCost);
@@ -110,17 +149,14 @@ void Store::OpenStore() {
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 2 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         if (!mManaUpgrade && mGame->GetPlayer()->GetMoney() >= mManaUpgradeCost) {
-            mGame->GetPlayer()->SetMaxMana(mGame->GetPlayer()->GetMaxMana() + mManaIncrease);
-            mGame->GetHUD()->IncreaseManaBar();
+            UpgradePlayerMana();
             mGame->GetPlayer()->DecreaseMoney(mManaUpgradeCost);
-            mManaUpgrade = true;
+            mGame->GetHUD()->IncreaseManaBar();
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
             mStoreMenu->GetButtons()[1]->GetText()->SetColor(Color::Red);
             mStoreMenu->GetButtons()[1]->GetText()->SetText("AUMENTAR MANA MÁXIMO");
             mStoreMenu->GetTexts()[2]->SetColor(Color::Red);
             mStoreMenu->GetTexts()[2]->SetText(std::to_string(mManaUpgradeCost));
-            // CloseStore();
-            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mManaUpgradeCost);
@@ -138,19 +174,14 @@ void Store::OpenStore() {
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 3 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         if (!mHealthPointsUpgrade && mGame->GetPlayer()->GetMoney() >= mHealthPointsUpgradeCost) {
-            float hpPercentage = mGame->GetPlayer()->GetHealthPoints() / mGame->GetPlayer()->GetMaxHealthPoints();
-            mGame->GetPlayer()->SetMaxHealthPoints(mGame->GetPlayer()->GetMaxHealthPoints() + mHealthPointsIncrease);
-            mGame->GetPlayer()->SetHealthPoints(hpPercentage * mGame->GetPlayer()->GetMaxHealthPoints());
-            mGame->GetHUD()->IncreaseHPBar();
+            UpgradePlayerHealthPoints();
             mGame->GetPlayer()->DecreaseMoney(mHealthPointsUpgradeCost);
-            mHealthPointsUpgrade = true;
+            mGame->GetHUD()->IncreaseHPBar();
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
             mStoreMenu->GetButtons()[2]->GetText()->SetColor(Color::Red);
             mStoreMenu->GetButtons()[2]->GetText()->SetText("AUMENTAR VIDA MÁXIMA");
             mStoreMenu->GetTexts()[3]->SetColor(Color::Red);
             mStoreMenu->GetTexts()[3]->SetText(std::to_string(mHealthPointsUpgradeCost));
-            // CloseStore();
-            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mHealthPointsUpgradeCost);
@@ -168,16 +199,13 @@ void Store::OpenStore() {
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 4 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         if (!mHealCountUpgrade && mGame->GetPlayer()->GetMoney() >= mHealCountUpgradeCost) {
-            mGame->GetPlayer()->IncreaseHealCount();
+            UpgradePlayerHealCount();
             mGame->GetPlayer()->DecreaseMoney(mHealCountUpgradeCost);
-            mHealCountUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
             mStoreMenu->GetButtons()[3]->GetText()->SetColor(Color::Red);
             mStoreMenu->GetButtons()[3]->GetText()->SetText("AUMENTAR NÚMERO DE CURAS");
             mStoreMenu->GetTexts()[4]->SetColor(Color::Red);
             mStoreMenu->GetTexts()[4]->SetText(std::to_string(mHealCountUpgradeCost));
-            // CloseStore();
-            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mHealCountUpgradeCost);
@@ -195,16 +223,13 @@ void Store::OpenStore() {
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 5 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         if (!mSwordSpeedUpgrade && mGame->GetPlayer()->GetMoney() >= mSwordSpeedUpgradeCost) {
-            mGame->GetPlayer()->AdjustSwordAttackSpeed(mSwordSpeedIncrease);
+            UpgradePlayerSwordSpeed();
             mGame->GetPlayer()->DecreaseMoney(mSwordSpeedUpgradeCost);
-            mSwordSpeedUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
             mStoreMenu->GetButtons()[4]->GetText()->SetColor(Color::Red);
             mStoreMenu->GetButtons()[4]->GetText()->SetText("AUMENTAR VELOCIDADE DA ESPADA");
             mStoreMenu->GetTexts()[5]->SetColor(Color::Red);
             mStoreMenu->GetTexts()[5]->SetText(std::to_string(mSwordSpeedUpgradeCost));
-            // CloseStore();
-            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mSwordSpeedUpgradeCost);
@@ -222,17 +247,13 @@ void Store::OpenStore() {
     button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 6 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         if (!mSwordDamageUpgrade && mGame->GetPlayer()->GetMoney() >= mSwordDamageUpgradeCost) {
-            mGame->GetPlayer()->SetSwordDamage(mGame->GetPlayer()->GetSword()->GetDamage() * mSwordDamageIncrease);
-            mGame->GetPlayer()->GetSword()->SetDamage(mGame->GetPlayer()->GetSword()->GetDamage() * mSwordDamageIncrease);
+            UpgradePlayerSwordDamage();
             mGame->GetPlayer()->DecreaseMoney(mSwordDamageUpgradeCost);
-            mSwordDamageUpgrade = true;
             mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
             mStoreMenu->GetButtons()[5]->GetText()->SetColor(Color::Red);
             mStoreMenu->GetButtons()[5]->GetText()->SetText("AUMENTAR DANO DA ESPADA");
             mStoreMenu->GetTexts()[6]->SetColor(Color::Red);
             mStoreMenu->GetTexts()[6]->SetText(std::to_string(mSwordDamageUpgradeCost));
-            // CloseStore();
-            // OpenStore();
         }
     }, textPos, mTextColor);
     cost = std::to_string(mSwordDamageUpgradeCost);
@@ -251,18 +272,13 @@ void Store::OpenStore() {
         button = mStoreMenu->AddButton(name, buttonPos + Vector2(0, 7 * buttonSize.y), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]() {
             if (!mFireballUpgrade && mGame->GetPlayer()->GetMoney() >= mFireballUpgradeCost) {
-                mGame->GetPlayer()->SetFireballDamage(mGame->GetPlayer()->GetFireballDamage() * mFireballDamageIncrease);
-                mGame->GetPlayer()->SetFireballWidth(mGame->GetPlayer()->GetFireballWidth() * mFireballSizeIncrease);
-                mGame->GetPlayer()->SetFireballHeight(mGame->GetPlayer()->GetFireballHeight() * mFireballSizeIncrease);
+                UpgradePlayerFireball();
                 mGame->GetPlayer()->DecreaseMoney(mFireballUpgradeCost);
-                mFireballUpgrade = true;
                 mGame->GetAudio()->PlaySound("BuyItem/BuyItem.wav");
                 mStoreMenu->GetButtons()[6]->GetText()->SetColor(Color::Red);
                 mStoreMenu->GetButtons()[6]->GetText()->SetText("MELHORAR BOLA DE FOGO");
                 mStoreMenu->GetTexts()[7]->SetColor(Color::Red);
                 mStoreMenu->GetTexts()[7]->SetText(std::to_string(mFireballUpgradeCost));
-                // CloseStore();
-                // OpenStore();
             }
         }, textPos, mTextColor);
         cost = std::to_string(mFireballUpgradeCost);

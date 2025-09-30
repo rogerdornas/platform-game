@@ -1,0 +1,27 @@
+{
+    "game": {
+        "last_checkpoint": {
+            "x": 848.0,
+            "y": 4672.0
+        },
+        "scene": "Level5"
+    },
+    "player": {
+        "can_dash": true,
+        "can_fireball": true,
+        "can_hook": false,
+        "can_wallslide": true,
+        "death_counter": 0,
+        "max_jumps_in_air": 1,
+        "money": 348
+    },
+    "upgrades": {
+        "fireball": true,
+        "heal_count": true,
+        "health_points": true,
+        "mana": true,
+        "sword_damage": true,
+        "sword_range": true,
+        "sword_speed": true
+    }
+}

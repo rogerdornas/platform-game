@@ -13,6 +13,7 @@
 #include "AudioSystem.h"
 #include "Cutscene.h"
 #include "Map.h"
+#include "SaveManager.h"
 #include "Store.h"
 #include "WaveManager.h"
 
@@ -218,6 +219,8 @@ public:
 
     void SetCheckPointPosition(Vector2 pos) { mCheckpointPosition = pos; }
     Vector2 GetCheckPointPosition() { return mCheckpointPosition; }
+    void SetCheckpointGameScene(GameScene scene) { mCheckpointGameScene = scene; }
+    GameScene GetCheckpointGameScene() const { return mCheckpointGameScene; }
     void SetCheckPointMoney(int money) { mCheckPointMoney = money; }
     int GetCheckPointMoney() const { return mCheckPointMoney; }
     void SetCheckpointStartCameraPosition(Vector2 pos) { mCheckpointStartCameraPosition = pos; }
@@ -242,13 +245,17 @@ private:
     // Load Level
     void LoadObjects(const std::string &fileName);
     void LoadLevel(const std::string &fileName);
+
     void LoadMainMenu();
-    UIScreen* LoadPauseMenu();
+    void LoadPauseMenu();
     void LoadLevelSelectMenu();
     void LoadOptionsMenu();
     void LoadControlMenu();
     void LoadKeyBoardMenu();
     void LoadKeyBoardMenu2();
+    void LoadConfirmBackToMenu();
+    void LoadConfirmQuitGameMenu();
+    void LoadLoadGameMenu();
 
     void ChangeResolution(float oldScale);
 
@@ -316,11 +323,16 @@ private:
 
     // Player State
     Vector2 mCheckpointPosition;
+    GameScene mCheckpointGameScene;
     int mCheckPointMoney;
     Vector2 mCheckpointStartCameraPosition;
     bool mGoingToNextLevel;
     Vector2 mLavaRespawnPosition;
     bool mHitByLava;
+
+    int mSaveSlot;
+    class SaveData* mSaveData;
+    class SaveManager* mSaveManager;
 
     // Level data
     int **mLevelData;
@@ -363,12 +375,16 @@ private:
     // All the UI elements
     std::vector<class UIScreen*> mUIStack;
     std::unordered_map<std::string, class UIFont*> mFonts;
+    UIScreen* mMainMenu;
     UIScreen* mPauseMenu;
     UIScreen* mOptionsMenu;
     UIScreen* mLevelSelectMenu;
     UIScreen* mControlMenu;
     UIScreen* mKeyboardMenu;
     UIScreen* mKeyboardMenu2;
+    UIScreen* mConfirmBackToMenu;
+    UIScreen* mConfirmQuitGameMenu;
+    UIScreen* mLoadGameMenu;
 
     std::vector<Vector2> mResolutions = {
         Vector2(640, 360),
@@ -385,7 +401,6 @@ private:
     // Track level state
     GameScene mGameScene;
     GameScene mNextScene;
-    GameScene mContinueScene;
 
     Cutscene* mCurrentCutscene;
     bool mIsPlayingFinalCutscene;

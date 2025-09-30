@@ -145,6 +145,10 @@ add_executable(${PROJECT_NAME}
         Source/Actors/FlyingSpawnerEnemy.h
         Source/Actors/LittleBat.cpp
         Source/Actors/LittleBat.h
+        Source/SaveData.cpp
+        Source/SaveData.h
+        Source/SaveManager.cpp
+        Source/SaveManager.h
 )
 
 

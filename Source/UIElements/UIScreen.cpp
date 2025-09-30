@@ -10,7 +10,6 @@ UIScreen::UIScreen(Game* game, const std::string& fontName)
 	,mState(UIState::Active)
     ,mIsVisible(true)
     ,mSelectedButtonIndex(-1)
-    ,mTolerance(10.0f * mGame->GetScale())
 {
     mGame->PushUI(this);
 
@@ -203,11 +202,28 @@ UIImage* UIScreen::AddImage(const std::string &imagePath, const Vector2 &pos, co
     return img;
 }
 
+// Retorna true se há interseção no eixo perpendicular
+bool IntersectsY(UIButton* a, UIButton* b) {
+    float topA = a->GetPosition().y;
+    float bottomA = topA + a->GetSize().y;
+    float topB = b->GetPosition().y;
+    float bottomB = topB + b->GetSize().y;
+    return !(bottomA <= topB || bottomB <= topA);
+}
+
+bool IntersectsX(UIButton* a, UIButton* b) {
+    float leftA = a->GetPosition().x;
+    float rightA = leftA + a->GetSize().x;
+    float leftB = b->GetPosition().x;
+    float rightB = leftB + b->GetSize().x;
+    return !(rightA <= leftB || rightB <= leftA);
+}
+
 UIButton* UIScreen::FindNeighbor(UIButton *current, const Vector2 &dir) {
     UIButton* best = nullptr;
     float bestDist = FLT_MAX;
 
-    // ---- 1) Preferência: procurar botões alinhados no mesmo eixo ----
+    // ---- 1) Preferência: botões que intersectam no eixo perpendicular ----
     for (UIButton* b : mButtons) {
         if (b == current) continue;
 
@@ -220,9 +236,15 @@ UIButton* UIScreen::FindNeighbor(UIButton *current, const Vector2 &dir) {
             continue;
         }
 
-        // Checa alinhamento no eixo perpendicular
-        if (dir.x != 0 && std::abs(delta.y) > mTolerance) continue;
-        if (dir.y != 0 && std::abs(delta.x) > mTolerance) continue;
+        bool intersects;
+        if (dir.x != 0) {
+            intersects = IntersectsY(current, b);
+        }
+        else {
+            intersects = IntersectsX(current, b);
+        }
+
+        if (!intersects) continue;
 
         float dist = delta.LengthSq();
         if (dist < bestDist) {
@@ -262,8 +284,7 @@ UIButton* UIScreen::FindNeighbor(UIButton *current, const Vector2 &dir) {
             for (UIButton* b : mButtons) {
                 if (b == current) continue;
 
-                // Só considera botões "na mesma linha"
-                if (std::abs(b->GetPosition().y - current->GetPosition().y) > mTolerance) continue;
+                if (!IntersectsY(current, b)) continue;
 
                 float x = b->GetPosition().x;
                 if (dir.x > 0) { // indo para direita → pega o menor X
@@ -286,9 +307,7 @@ UIButton* UIScreen::FindNeighbor(UIButton *current, const Vector2 &dir) {
             for (UIButton* b : mButtons) {
                 if (b == current) continue;
 
-                // Só considera botões "na mesma coluna"
-                if (std::abs(b->GetPosition().x - current->GetPosition().x) > mTolerance) continue;
-
+                if (!IntersectsX(current, b)) continue;
 
                 float y = b->GetPosition().y;
                 if (dir.y > 0) { // indo para baixo → pega o menor Y
@@ -315,7 +334,6 @@ void UIScreen::ChangeResolution(float oldScale, float newScale) {
     mPos.y = mPos.y / oldScale * newScale;
     mSize.x = mSize.x / oldScale * newScale;
     mSize.y = mSize.y / oldScale * newScale;
-    mTolerance = mTolerance / oldScale * newScale;
 
     for (UIImage* image : mImages) {
         image->ChangeResolution(oldScale, newScale);

@@ -259,28 +259,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":2,
-         "name":"Player",
-         "objects":[
-                {
-                 "height":32,
-                 "id":2,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":1952,
-                 "y":4352
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":3,
          "name":"Triggers",
          "objects":[
@@ -302,7 +280,7 @@
                         {
                          "name":"Scene",
                          "type":"string",
-                         "value":"Level1"
+                         "value":"Room0"
                         }, 
                         {
                          "name":"Target",
@@ -379,6 +357,28 @@
                  "width":3328,
                  "x":1472,
                  "y":4160
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Player",
+         "objects":[
+                {
+                 "height":32,
+                 "id":2,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1952,
+                 "y":4352
                 }],
          "opacity":1,
          "type":"objectgroup",

@@ -1249,7 +1249,11 @@ void Player::ManageAnimations() {
         mDrawAnimatedComponent->SetAnimation("fireball");
         mDrawAnimatedComponent->SetAnimFPS(2.0f / mFireballAnimationDuration);
     }
-    else if (mIsWallSliding && !mIsOnGround && mRigidBodyComponent->GetVelocity().y > 0) {
+    else if ((!mIsOnMovingGround && !mIsOnGround && mIsWallSliding &&
+               mRigidBodyComponent->GetVelocity().y > 0) ||
+              (mIsOnMovingGround && !mIsOnGround && mIsWallSliding &&
+               mRigidBodyComponent->GetVelocity().y - mMovingGroundVelocity.y > 0))
+    {
         mDrawAnimatedComponent->UseFlip(true);
         if (mWallSlideSide == WallSlideSide::left) {
             mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);

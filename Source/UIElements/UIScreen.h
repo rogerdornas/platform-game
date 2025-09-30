@@ -78,6 +78,4 @@ protected:
 	std::vector<UIButton *> mButtons;
     std::vector<UIText *> mTexts;
     std::vector<UIImage *> mImages;
-
-	float mTolerance;
 };

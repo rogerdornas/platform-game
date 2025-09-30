@@ -1,0 +1,27 @@
+{
+    "game": {
+        "last_checkpoint": {
+            "x": 17968.0,
+            "y": 16608.0
+        },
+        "scene": "LevelTeste"
+    },
+    "player": {
+        "can_dash": false,
+        "can_fireball": false,
+        "can_hook": false,
+        "can_wallslide": false,
+        "death_counter": 0,
+        "max_jumps_in_air": 0,
+        "money": 24
+    },
+    "upgrades": {
+        "fireball": false,
+        "heal_count": false,
+        "health_points": false,
+        "mana": false,
+        "sword_damage": false,
+        "sword_range": false,
+        "sword_speed": false
+    }
+}

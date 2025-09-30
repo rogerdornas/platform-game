@@ -55,12 +55,12 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer* renderer)
                     dstRect.x = ownerMinPos.x;
                     dstRect.w = std::ceil(tileMaxPos.x - ownerMinPos.x);
                     // srcRect.w = tileMaxPos.x - ownerMinPos.x;
-                    srcRect.w = tileMinPos.x + originalTileSize - ownerMinPos.x + 1;
+                    srcRect.w = tileMinPos.x + originalTileSize - ownerMinPos.x;
                 }
                 else if (tileMinPos.x >= ownerMinPos.x && tileMaxPos.x > ownerMaxPos.x) {
                     dstRect.x = tileMinPos.x;
                     dstRect.w = std::ceil(ownerMaxPos.x - tileMinPos.x);
-                    srcRect.w = ownerMaxPos.x - tileMinPos.x + 1;
+                    srcRect.w = ownerMaxPos.x - tileMinPos.x;
                 }
 
                 if (tileMinPos.y >= ownerMinPos.y && tileMaxPos.y <= ownerMaxPos.y) {
@@ -71,13 +71,13 @@ void DrawDynamicGroundSpritesComponent::Draw(SDL_Renderer* renderer)
                 else if (tileMinPos.y < ownerMinPos.y && tileMaxPos.y <= ownerMaxPos.y) {
                     dstRect.y = ownerMinPos.y;
                     dstRect.h = std::ceil(tileMaxPos.y - ownerMinPos.y);
-                    srcRect.h = tileMaxPos.y - ownerMinPos.y;
-                    srcRect.h = tileMinPos.y + originalTileSize - ownerMinPos.y + 1;
+                    // srcRect.h = tileMaxPos.y - ownerMinPos.y;
+                    srcRect.h = tileMinPos.y + originalTileSize - ownerMinPos.y;
                 }
                 else if (tileMinPos.y >= ownerMinPos.y && tileMaxPos.y > ownerMaxPos.y) {
                     dstRect.y = tileMinPos.y;
                     dstRect.h = std::ceil(ownerMaxPos.y - tileMinPos.y);
-                    srcRect.h = ownerMaxPos.y - tileMinPos.y + 1;
+                    srcRect.h = ownerMaxPos.y - tileMinPos.y;
                 }
 
                 SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, 0.0f, nullptr, SDL_FLIP_NONE);

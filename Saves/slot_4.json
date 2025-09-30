@@ -1,0 +1,27 @@
+{
+    "game": {
+        "last_checkpoint": {
+            "x": 1952.0,
+            "y": 4352.0
+        },
+        "scene": "Prologue"
+    },
+    "player": {
+		"can_dash": false,
+        "can_fireball": false,
+        "can_hook": false,
+        "can_wallslide": false,
+        "death_counter": 0,
+        "max_jumps_in_air": 0,
+        "money": 0
+    },
+    "upgrades": {
+        "fireball": false,
+        "heal_count": false,
+        "health_points": false,
+        "mana": false,
+        "sword_damage": false,
+        "sword_range": false,
+        "sword_speed": false
+    }
+}

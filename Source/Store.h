@@ -21,6 +21,22 @@ public:
     bool StoreOpened() const { return mStoreOpened; }
     bool StoreMessageOpened() const { return mStoreMessageOpened; }
 
+    void UpgradePlayerSwordRange();
+    void UpgradePlayerSwordDamage();
+    void UpgradePlayerSwordSpeed();
+    void UpgradePlayerHealthPoints();
+    void UpgradePlayerHealCount();
+    void UpgradePlayerMana();
+    void UpgradePlayerFireball();
+
+    bool GetSwordRangeUpgrade() const { return mSwordRangeUpgrade; }
+    bool GetSwordDamageUpgrade() const { return mSwordDamageUpgrade; }
+    bool GetSwordSpeedUpgrade() const { return mSwordSpeedUpgrade; }
+    bool GetHealthPointsUpgrade() const { return mHealthPointsUpgrade; }
+    bool GetHealCountUpgrade() const { return mHealCountUpgrade; }
+    bool GetManaUpgrade() const { return mManaUpgrade; }
+    bool GetFireballUpgrade() const { return mFireballUpgrade; }
+
     void ChangeResolution(float oldScale, float newScale);
 
 private:

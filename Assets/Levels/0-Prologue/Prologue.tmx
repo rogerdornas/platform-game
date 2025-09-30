@@ -213,15 +213,12 @@
   <object id="3" x="192" y="2880" width="1280" height="3200"/>
   <object id="6" x="10944" y="2880" width="960" height="3200"/>
  </objectgroup>
- <objectgroup id="2" name="Player">
-  <object id="2" x="1952" y="4352" width="32" height="32"/>
- </objectgroup>
  <objectgroup id="3" name="Triggers">
   <object id="5" name="Level1" x="4896" y="4096" width="448" height="288">
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
-    <property name="Scene" value="Level1"/>
+    <property name="Scene" value="Room0"/>
     <property name="Target" value="Game"/>
    </properties>
   </object>
@@ -241,5 +238,8 @@
     <property name="Target" value="Camera"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="2" name="Player">
+  <object id="2" x="1952" y="4352" width="32" height="32"/>
  </objectgroup>
 </map>

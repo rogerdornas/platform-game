@@ -1990,6 +1990,6 @@
   <object id="437" name="Mantis" x="4480" y="6208" width="32" height="32"/>
   <object id="424" name="Flying Enemy" x="448" y="4544" width="32" height="32"/>
   <object id="445" name="DragonFly" x="4864" y="5376" width="32" height="32"/>
-  <object id="452" name="FlyingSpawnerEnemy" x="4192" y="4672" width="32" height="32"/>
+  <object id="452" name="FlyingSpawnerEnemy" x="3840" y="4576" width="32" height="32"/>
  </objectgroup>
 </map>

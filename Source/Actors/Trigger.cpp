@@ -168,6 +168,14 @@ void Trigger::SetScene(std::string scene) {
         mScene = Game::GameScene::LevelTeste;
         return;
     }
+    if (scene == "Room0") {
+        mScene = Game::GameScene::Room0;
+        return;
+    }
+    if (scene == "Coliseu") {
+        mScene = Game::GameScene::Coliseu;
+        return;
+    }
     if (scene == "Level1") {
         mScene = Game::GameScene::Level1;
         return;
