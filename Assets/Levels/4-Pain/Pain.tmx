@@ -635,9 +635,6 @@
 </data>
  </layer>
  <objectgroup id="4" name="Levers" visible="0"/>
- <objectgroup id="3" name="Player">
-  <object id="117" name="Player" x="1344" y="6208" width="32" height="32"/>
- </objectgroup>
  <objectgroup id="2" name="Grounds" visible="0">
   <object id="126" name="Ground" x="1120" y="6240" width="4928" height="352"/>
   <object id="121" name="Ground" x="800" y="5376" width="1184" height="128"/>
@@ -1769,6 +1766,7 @@
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
+    <property name="PlayerStartPositionId" type="int" value="0"/>
     <property name="Scene" value="Level5"/>
     <property name="Target" value="Game"/>
    </properties>
@@ -1959,6 +1957,13 @@
   <object id="181" name="Checkpoint" x="5184" y="3872" width="416" height="192"/>
   <object id="254" name="Checkpoint" x="6176" y="4416" width="416" height="192"/>
   <object id="321" name="Checkpoint" x="10176" y="2016" width="416" height="192"/>
+ </objectgroup>
+ <objectgroup id="3" name="Player">
+  <object id="117" name="Player" x="1344" y="6208" width="32" height="32">
+   <properties>
+    <property name="StartPositionId" type="int" value="0"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="6" name="Enemies">
   <object id="269" name="FlyingShooterEnemy" x="8064" y="3648" width="32" height="32"/>

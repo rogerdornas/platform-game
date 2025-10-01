@@ -737,7 +737,7 @@
                 {
                  "height":320,
                  "id":29,
-                 "name":"Level2",
+                 "name":"Level1",
                  "properties":[
                         {
                          "name":"Destroy",
@@ -748,6 +748,11 @@
                          "name":"Event",
                          "type":"string",
                          "value":"ChangeScene"
+                        }, 
+                        {
+                         "name":"PlayerStartPositionId",
+                         "type":"int",
+                         "value":0
                         }, 
                         {
                          "name":"Scene",
@@ -769,7 +774,7 @@
                 {
                  "height":352,
                  "id":30,
-                 "name":"Level2",
+                 "name":"Coliseu",
                  "properties":[
                         {
                          "name":"Destroy",
@@ -780,6 +785,11 @@
                          "name":"Event",
                          "type":"string",
                          "value":"ChangeScene"
+                        }, 
+                        {
+                         "name":"PlayerStartPositionId",
+                         "type":"int",
+                         "value":0
                         }, 
                         {
                          "name":"Scene",
@@ -801,7 +811,7 @@
                 {
                  "height":448,
                  "id":49,
-                 "name":"Level2",
+                 "name":"Forest",
                  "properties":[
                         {
                          "name":"Destroy",
@@ -812,6 +822,11 @@
                          "name":"Event",
                          "type":"string",
                          "value":"ChangeScene"
+                        }, 
+                        {
+                         "name":"PlayerStartPositionId",
+                         "type":"int",
+                         "value":0
                         }, 
                         {
                          "name":"Scene",
@@ -1093,7 +1108,18 @@
          "draworder":"topdown",
          "id":6,
          "name":"Checkpoint",
-         "objects":[],
+         "objects":[
+                {
+                 "height":192,
+                 "id":50,
+                 "name":"Checkpoint",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":416,
+                 "x":1120,
+                 "y":5216
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -1175,12 +1201,69 @@
                  "height":32,
                  "id":6,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"StartPositionId",
+                         "type":"int",
+                         "value":0
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":1120,
+                 "x":1024,
                  "y":5376
+                }, 
+                {
+                 "height":32,
+                 "id":51,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"StartPositionId",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":864,
+                 "y":3680
+                }, 
+                {
+                 "height":32,
+                 "id":52,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"StartPositionId",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":864,
+                 "y":3104
+                }, 
+                {
+                 "height":32,
+                 "id":53,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"StartPositionId",
+                         "type":"int",
+                         "value":3
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":6208,
+                 "y":4576
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1200,7 +1283,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":50,
+ "nextobjectid":54,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

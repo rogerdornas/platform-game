@@ -53,6 +53,14 @@ Golem::Golem(Game *game)
     ,mFireballSpeed(1400 * mGame->GetScale())
     ,mFireballDamage(15)
 
+    ,mFireballRainIntervalDuration(0.8f)
+    ,mFireballRainIntervalTimer(0.0f)
+    ,mFireballRainWidth(70 * mGame->GetScale())
+    ,mFireballRainHeight(70 * mGame->GetScale())
+    ,mFireballRainSpeed(700 * mGame->GetScale())
+    ,mFireballRainDamage(15)
+    ,mFireballRainPositionYOffset(30 * mGame->GetScale())
+
     ,mRunningSoundIntervalDuration(0.3f)
     ,mRunningSoundIntervalTimer(0.0f)
 {
@@ -163,6 +171,7 @@ void Golem::OnUpdate(float deltaTime) {
         mFireballDuration = 0.7f;
         mMoveSpeedIncrease = 2;
         mRunningSoundIntervalDuration = 0.2;
+        FireballRain(deltaTime);
     }
 }
 
@@ -342,8 +351,33 @@ void Golem::Fireball(float deltaTime) {
         }
         mAlreadyFireBalled = true;
     }
-
 }
+
+void Golem::FireballRain(float deltaTime) {
+    mFireballRainIntervalTimer += deltaTime;
+    if (mFireballRainIntervalTimer >= mFireballRainIntervalDuration) {
+        mFireballRainIntervalTimer = 0;
+        float positionX = Random::GetFloatRange(mArenaMinPos.x, mArenaMaxPos.x);
+        float positionY = mArenaMinPos.y + mFireballRainPositionYOffset;
+        Vector2 position(positionX, positionY);
+
+        std::vector<FireBall* > fireBalls = GetGame()->GetFireBalls();
+        for (FireBall* f: fireBalls) {
+            if (f->GetState() == ActorState::Paused) {
+                f->SetState(ActorState::Active);
+                f->SetRotation(Math::PiOver2);
+                f->SetWidth(mFireballRainWidth);
+                f->SetHeight(mFireballRainHeight);
+                f->SetSpeed(mFireballRainSpeed);
+                f->SetDamage(mFireballRainDamage);
+                f->SetIsFromEnemy();
+                f->SetPosition(position);
+                break;
+            }
+        }
+    }
+}
+
 
 void Golem::ControlSpawCrystal() {
     if (!mAlreadySpawnedCrystal) {
@@ -567,6 +601,12 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
     mFireballWidth = mFireballWidth / oldScale * newScale;
     mFireBallHeight = mFireBallHeight / oldScale * newScale;
     mFireballSpeed = mFireballSpeed / oldScale * newScale;
+
+    mFireballRainWidth = mFireballRainWidth / oldScale * newScale;
+    mFireballRainHeight = mFireballRainHeight / oldScale * newScale;
+    mFireballRainSpeed = mFireballRainSpeed / oldScale * newScale;
+    mFireballRainPositionYOffset = mFireballRainPositionYOffset / oldScale * newScale;
+
     mGravity = mGravity / oldScale * newScale;
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));

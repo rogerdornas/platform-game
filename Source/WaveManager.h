@@ -21,19 +21,30 @@ enum class ActionType {
     CreateSpawner
 };
 
+enum class ConditionType {
+    None,
+    EnemyHealthBelow,
+    EnemyDefeated,
+};
+
 struct WaveAction {
     ActionType actionType;
     float delay;             // segundos após início da wave
+    bool executed = false;
+
+    ConditionType condition = ConditionType::None;
+    float conditionValue = 0.0f;
 
     std::string enemyType;
     std::string enemySpawnId;
     std::string hookSpawnId;
     std::string platformSpawnId;
+    std::string enemyId;
     int groundId;
     Vector2 arenaMinPos;
     Vector2 arenaMaxPos;
-    Enemy* enemy;
-    HookPoint* hookPoint;
+    Enemy* enemy = nullptr;
+    HookPoint* hookPoint = nullptr;
 };
 
 struct Wave {
@@ -52,6 +63,7 @@ public:
 
     // atualizar a lógica das waves
     void Update(float deltaTime);
+    bool CheckCondition(WaveAction& a);
 
     // iniciar as waves
     void Start();

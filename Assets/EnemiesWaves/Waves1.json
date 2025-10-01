@@ -172,10 +172,31 @@
         {
           "actionType": "SpawnEnemy", 
           "type": "Golem", 
-          "id": "CenterBot", 
+          "id": "CenterBot",
+		  "enemyId": "Golem1",
 		  "arenaMinPos": [2048, 2400],
 		  "arenaMaxPos": [3712, 3168],
           "delay": 3.5
+        },
+        {
+          "actionType": "GrowGround", 
+          "id": 27, 
+          "delay": 1.5,
+		  "condition": {
+		    "type": "EnemyHealthBelow",
+			"enemyId": "Golem1",
+			"value": 0.6
+		  }
+        },
+        {
+          "actionType": "DecreaseGround", 
+          "id": 27, 
+          "delay": 1.5,
+		  "condition": {
+		    "type": "EnemyHealthBelow",
+			"enemyId": "Golem1",
+			"value": 0.3
+		  }
         }
       ]
     },

@@ -654,6 +654,7 @@
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
+    <property name="PlayerStartPositionId" type="int" value="0"/>
     <property name="Scene" value="Level4"/>
     <property name="Target" value="Game"/>
    </properties>
@@ -855,7 +856,49 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="2" name="Grounds" visible="0">
+ <objectgroup id="6" name="Enemies">
+  <object id="22" name="FlyingShooterEnemy" x="5120" y="1632" width="32" height="32"/>
+  <object id="197" name="Enemy Simple" x="2656" y="2112" width="32" height="32"/>
+  <object id="199" name="Enemy Simple" x="3296" y="1920" width="32" height="32"/>
+  <object id="221" name="Enemy Simple" x="6336" y="2432" width="32" height="32"/>
+  <object id="222" name="Enemy Simple" x="6336" y="3104" width="32" height="32"/>
+  <object id="256" name="Enemy Simple" x="7360" y="3072" width="32" height="32"/>
+  <object id="261" name="Enemy Simple" x="7424" y="3392" width="32" height="32"/>
+  <object id="262" name="Enemy Simple" x="7296" y="3712" width="32" height="32"/>
+  <object id="257" name="Enemy Simple" x="7456" y="2752" width="32" height="32"/>
+  <object id="258" name="Enemy Simple" x="7360" y="2432" width="32" height="32"/>
+  <object id="259" name="Enemy Simple" x="7456" y="2112" width="32" height="32"/>
+  <object id="260" name="Enemy Simple" x="7296" y="1792" width="32" height="32"/>
+  <object id="200" name="Mantis" x="4192" y="2752" width="32" height="32"/>
+  <object id="208" name="Mantis" x="5984" y="1792" width="32" height="32"/>
+  <object id="224" name="Mantis" x="5120" y="3424" width="32" height="32"/>
+  <object id="225" name="Mantis" x="5568" y="3424" width="32" height="32"/>
+  <object id="198" name="Flying Emeny" x="2880" y="1792" width="32" height="32"/>
+  <object id="207" name="DragonFly" x="5824" y="1472" width="32" height="32"/>
+  <object id="219" name="Flying Enemy" x="6144" y="2208" width="32" height="32"/>
+  <object id="264" name="Flying Enemy" x="7520" y="1984" width="32" height="32"/>
+  <object id="283" name="Frog" x="9632" y="2528" width="32" height="32">
+   <properties>
+    <property name="MaxPosX" type="float" value="10240"/>
+    <property name="MaxPosY" type="float" value="2560"/>
+    <property name="MinPosX" type="float" value="8448"/>
+    <property name="MinPosY" type="float" value="1632"/>
+   </properties>
+  </object>
+  <object id="266" name="Flying Enemy" x="7648" y="2592" width="32" height="32"/>
+  <object id="267" name="Flying Enemy" x="7552" y="3232" width="32" height="32"/>
+  <object id="268" name="Flying Enemy" x="7552" y="3872" width="32" height="32"/>
+  <object id="265" name="Flying Enemy" x="7296" y="1664" width="32" height="32"/>
+  <object id="220" name="Flying Enemy" x="6176" y="2816" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup id="3" name="Player">
+  <object id="193" name="Player" x="1440" y="1792" width="32" height="32">
+   <properties>
+    <property name="StartPositionId" type="int" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="2" name="Grounds">
   <object id="80" name="DynamicGround" x="4512" y="1824" width="384" height="992">
    <properties>
     <property name="GrowSpeedX" type="float" value="0"/>
@@ -1066,43 +1109,5 @@
     <property name="Spike" type="bool" value="true"/>
    </properties>
   </object>
- </objectgroup>
- <objectgroup id="6" name="Enemies">
-  <object id="22" name="FlyingShooterEnemy" x="5120" y="1632" width="32" height="32"/>
-  <object id="197" name="Enemy Simple" x="2656" y="2112" width="32" height="32"/>
-  <object id="199" name="Enemy Simple" x="3296" y="1920" width="32" height="32"/>
-  <object id="221" name="Enemy Simple" x="6336" y="2432" width="32" height="32"/>
-  <object id="222" name="Enemy Simple" x="6336" y="3104" width="32" height="32"/>
-  <object id="256" name="Enemy Simple" x="7360" y="3072" width="32" height="32"/>
-  <object id="261" name="Enemy Simple" x="7424" y="3392" width="32" height="32"/>
-  <object id="262" name="Enemy Simple" x="7296" y="3712" width="32" height="32"/>
-  <object id="257" name="Enemy Simple" x="7456" y="2752" width="32" height="32"/>
-  <object id="258" name="Enemy Simple" x="7360" y="2432" width="32" height="32"/>
-  <object id="259" name="Enemy Simple" x="7456" y="2112" width="32" height="32"/>
-  <object id="260" name="Enemy Simple" x="7296" y="1792" width="32" height="32"/>
-  <object id="200" name="Mantis" x="4192" y="2752" width="32" height="32"/>
-  <object id="208" name="Mantis" x="5984" y="1792" width="32" height="32"/>
-  <object id="224" name="Mantis" x="5120" y="3424" width="32" height="32"/>
-  <object id="225" name="Mantis" x="5568" y="3424" width="32" height="32"/>
-  <object id="198" name="Flying Emeny" x="2880" y="1792" width="32" height="32"/>
-  <object id="207" name="DragonFly" x="5824" y="1472" width="32" height="32"/>
-  <object id="219" name="Flying Enemy" x="6144" y="2208" width="32" height="32"/>
-  <object id="264" name="Flying Enemy" x="7520" y="1984" width="32" height="32"/>
-  <object id="283" name="Frog" x="9632" y="2528" width="32" height="32">
-   <properties>
-    <property name="MaxPosX" type="float" value="10240"/>
-    <property name="MaxPosY" type="float" value="2560"/>
-    <property name="MinPosX" type="float" value="8448"/>
-    <property name="MinPosY" type="float" value="1632"/>
-   </properties>
-  </object>
-  <object id="266" name="Flying Enemy" x="7648" y="2592" width="32" height="32"/>
-  <object id="267" name="Flying Enemy" x="7552" y="3232" width="32" height="32"/>
-  <object id="268" name="Flying Enemy" x="7552" y="3872" width="32" height="32"/>
-  <object id="265" name="Flying Enemy" x="7296" y="1664" width="32" height="32"/>
-  <object id="220" name="Flying Enemy" x="6176" y="2816" width="32" height="32"/>
- </objectgroup>
- <objectgroup id="3" name="Player">
-  <object id="193" name="Player" x="1440" y="1792" width="32" height="32"/>
  </objectgroup>
 </map>

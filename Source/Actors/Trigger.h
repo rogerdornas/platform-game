@@ -64,6 +64,7 @@ public:
     void SetLimitMinCameraPosition(Vector2 pos) { mLimitMinCameraPosition = pos * mGame->GetScale(); }
     void SetLimitMaxCameraPosition(Vector2 pos) { mLimitMaxCameraPosition = pos * mGame->GetScale(); }
     void SetScene(std::string scene);
+    void SetPlayerStartPositionId(int id) { mPlayerStartPositionId = id; }
     void SetWavesPath(const std::string &wavesPath);
     void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
     void SetCutsceneId(const std::string &cutsceneId) { mCutsceneId = cutsceneId; }
@@ -92,6 +93,7 @@ protected:
     Vector2 mLimitMaxCameraPosition;
 
     Game::GameScene mScene;
+    int mPlayerStartPositionId;
     std::string mWavesPath;
 
     std::string mDialoguePath;

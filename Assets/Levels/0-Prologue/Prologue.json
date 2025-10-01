@@ -278,6 +278,11 @@
                          "value":"ChangeScene"
                         }, 
                         {
+                         "name":"PlayerStartPositionId",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
                          "name":"Scene",
                          "type":"string",
                          "value":"Room0"
@@ -373,6 +378,12 @@
                  "height":32,
                  "id":2,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"StartPositionId",
+                         "type":"int",
+                         "value":0
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

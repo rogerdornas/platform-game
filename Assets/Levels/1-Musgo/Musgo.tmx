@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1080" height="280" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="252">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1080" height="280" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="253">
  <editorsettings>
   <export target="Musgo.json" format="json"/>
  </editorsettings>
@@ -572,80 +572,6 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="5" name="Triggers">
-  <object id="52" x="11968" y="3680" width="512" height="672">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="49,59,60,61,62,63"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="103" x="16352" y="2944" width="256" height="96">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsMoving"/>
-    <property name="Grounds" value="101"/>
-    <property name="Target" value="Ground"/>
-   </properties>
-  </object>
-  <object id="174" x="30848" y="4832" width="1184" height="1344">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="ChangeScene"/>
-    <property name="Scene" value="Level2"/>
-    <property name="Target" value="Game"/>
-   </properties>
-  </object>
-  <object id="177" x="25920" y="6880" width="1792" height="224">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="185,186,189"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="178" x="25952" y="6880" width="1728" height="224">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Enemies" value="173"/>
-    <property name="Event" value="SpotPlayer"/>
-    <property name="Target" value="Enemy"/>
-   </properties>
-  </object>
-  <object id="180" x="25952" y="6304" width="1728" height="800">
-   <properties>
-    <property name="Enemies" value="173"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="185,186,189"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="215" x="6112" y="3584" width="448" height="768">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="StartArena"/>
-    <property name="Target" value="Game"/>
-    <property name="Waves" value="MusgoArena1"/>
-   </properties>
-  </object>
-  <object id="227" x="11520" y="3680" width="512" height="224">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="49,59,60,61,62,63"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="251" x="1600" y="4064" width="192" height="288">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="ChangeScene"/>
-    <property name="Scene" value="Room0"/>
-    <property name="Target" value="Game"/>
-   </properties>
-  </object>
- </objectgroup>
  <objectgroup id="11" name="SpawnPoint">
   <object id="216" x="6784" y="4320" width="32" height="32">
    <properties>
@@ -1180,7 +1106,84 @@
   <object id="172" name="Checkpoint" x="29728" y="5984" width="416" height="192"/>
   <object id="222" name="Checkpoint" x="3008" y="4160" width="416" height="192"/>
  </objectgroup>
+ <objectgroup id="5" name="Triggers">
+  <object id="103" x="16352" y="2944" width="256" height="96">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsMoving"/>
+    <property name="Grounds" value="101"/>
+    <property name="Target" value="Ground"/>
+   </properties>
+  </object>
+  <object id="174" x="30848" y="4832" width="1184" height="1344">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="ChangeScene"/>
+    <property name="PlayerStartPositionId" type="int" value="0"/>
+    <property name="Scene" value="Level2"/>
+    <property name="Target" value="Game"/>
+   </properties>
+  </object>
+  <object id="177" x="25920" y="6880" width="1792" height="224">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="185,186,189"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="178" x="25952" y="6880" width="1728" height="224">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Enemies" value="173"/>
+    <property name="Event" value="SpotPlayer"/>
+    <property name="Target" value="Enemy"/>
+   </properties>
+  </object>
+  <object id="180" x="25952" y="6304" width="1728" height="800">
+   <properties>
+    <property name="Enemies" value="173"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="185,186,189"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="215" x="6112" y="3584" width="448" height="768">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="StartArena"/>
+    <property name="Target" value="Game"/>
+    <property name="Waves" value="MusgoArena1"/>
+   </properties>
+  </object>
+  <object id="227" x="11520" y="3680" width="960" height="672">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="49,59,60,61,62,63"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="251" x="1600" y="4064" width="192" height="288">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="ChangeScene"/>
+    <property name="PlayerStartPositionId" type="int" value="3"/>
+    <property name="Scene" value="Room0"/>
+    <property name="Target" value="Game"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="1" x="2080" y="4320" width="32" height="32"/>
+  <object id="1" x="2080" y="4320" width="32" height="32">
+   <properties>
+    <property name="StartPositionId" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="252" x="30656" y="6144" width="32" height="32">
+   <properties>
+    <property name="StartPositionId" type="int" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

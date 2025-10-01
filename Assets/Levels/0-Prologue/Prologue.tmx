@@ -218,6 +218,7 @@
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
+    <property name="PlayerStartPositionId" type="int" value="0"/>
     <property name="Scene" value="Room0"/>
     <property name="Target" value="Game"/>
    </properties>
@@ -240,6 +241,10 @@
   </object>
  </objectgroup>
  <objectgroup id="2" name="Player">
-  <object id="2" x="1952" y="4352" width="32" height="32"/>
+  <object id="2" x="1952" y="4352" width="32" height="32">
+   <properties>
+    <property name="StartPositionId" type="int" value="0"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

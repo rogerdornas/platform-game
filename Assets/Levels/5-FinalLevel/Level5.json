@@ -379,28 +379,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":3,
-         "name":"Player",
-         "objects":[
-                {
-                 "height":32,
-                 "id":35,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":512,
-                 "y":4736
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":9,
          "name":"Camera",
          "objects":[
@@ -2150,6 +2128,34 @@
                  "width":224,
                  "x":3104,
                  "y":960
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Player",
+         "objects":[
+                {
+                 "height":32,
+                 "id":35,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"StartPositionId",
+                         "type":"int",
+                         "value":0
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":512,
+                 "y":4736
                 }],
          "opacity":1,
          "type":"objectgroup",

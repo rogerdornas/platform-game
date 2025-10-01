@@ -43,6 +43,20 @@ bool WaveManager::LoadFromJson(const std::string &filePath) {
         for (auto& a : w["actions"]) {
             WaveAction action;
 
+            if (a.contains("condition")) {
+                auto& cond = a["condition"];
+                std::string condType = cond["type"];
+                if (condType == "EnemyHealthBelow") {
+                    action.condition = ConditionType::EnemyHealthBelow;
+                    action.enemyId = cond["enemyId"];
+                    action.conditionValue = cond["value"];
+                }
+                else if (condType == "EnemyDefeated") {
+                    action.condition = ConditionType::EnemyDefeated;
+                    action.enemyId = cond["enemyId"];
+                }
+            }
+
             std::string typeStr = a["actionType"];
             if (typeStr == "SpawnEnemy") {
                 action.actionType = ActionType::SpawnEnemy;
@@ -55,6 +69,9 @@ bool WaveManager::LoadFromJson(const std::string &filePath) {
                 if (a.contains("arenaMaxPos")) {
                     action.arenaMaxPos.x = a["arenaMaxPos"][0];
                     action.arenaMaxPos.y = a["arenaMaxPos"][1];
+                }
+                if (a.contains("enemyId")) {
+                    action.enemyId = a["enemyId"];
                 }
             }
             else if (typeStr == "SpawnPlatform") {
@@ -109,6 +126,44 @@ void WaveManager::Start() {
     mWaveTimer = 0.0f;
 }
 
+bool WaveManager::CheckCondition(WaveAction &a) {
+    switch (a.condition) {
+        case ConditionType::None:
+            return true;
+
+        case ConditionType::EnemyHealthBelow: {
+            Enemy* target = nullptr;
+
+            Wave& wave = mWaves[mCurrentWave];
+
+            for (auto& action : wave.actions) {
+                if (action.actionType == ActionType::SpawnEnemy) {
+                    if (action.enemy != nullptr) {
+                        if (action.enemyId == a.enemyId) {
+                            target = action.enemy;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (target && target->GetState() != ActorState::Destroy) {
+                float healthPercent = target->GetHealthPoints() / target->GetMaxHealthPoints();
+                return healthPercent < a.conditionValue;
+            }
+            return false;
+        }
+
+        case ConditionType::EnemyDefeated: {
+            return true;
+        }
+
+        default:
+            return false;
+    }
+}
+
+
 void WaveManager::Update(float deltaTime) {
     if (!mStarted || mCurrentWave < 0 || mCurrentWave >= (int)mWaves.size()) {
         return;
@@ -120,34 +175,35 @@ void WaveManager::Update(float deltaTime) {
 
     // Spawn inimigos conforme delay
     for (auto& a : wave.actions) {
-        if (a.delay >= 0.0f && mWaveTimer >= a.delay) {
-            Vector2 pos;
-            HookPoint* hookPoint;
-            Ground* g;
-            DynamicGround* dynamicGround;
-            switch (a.actionType) {
-                case ActionType::SpawnEnemy:
-                    SpawnEnemy(a);
+        if (!a.executed && a.delay >= 0.0f && mWaveTimer >= a.delay) {
+            if (CheckCondition(a)) {
+                Vector2 pos;
+                HookPoint* hookPoint;
+                Ground* g;
+                DynamicGround* dynamicGround;
+                switch (a.actionType) {
+                    case ActionType::SpawnEnemy:
+                        SpawnEnemy(a);
                     break;
 
-                case ActionType::SpawnPlatform:
+                    case ActionType::SpawnPlatform:
 
-                    break;
+                        break;
 
-                case ActionType::RemovePlatform:
+                    case ActionType::RemovePlatform:
 
-                    break;
+                        break;
 
-                case ActionType::SpawnHookPoint:
-                    pos = mGame->GetSpawnPointPosition(a.hookSpawnId);
+                    case ActionType::SpawnHookPoint:
+                        pos = mGame->GetSpawnPointPosition(a.hookSpawnId);
                     hookPoint = new HookPoint(mGame);
                     hookPoint->SetPosition(pos);
                     a.hookPoint = hookPoint;
                     mHookPoints.emplace_back(hookPoint);
                     break;
 
-                case ActionType::RemoveHookPoint:
-                    pos = mGame->GetSpawnPointPosition(a.hookSpawnId);
+                    case ActionType::RemoveHookPoint:
+                        pos = mGame->GetSpawnPointPosition(a.hookSpawnId);
                     for (auto it = mHookPoints.begin(); it != mHookPoints.end(); ++it) {
                         if ((*it)->GetPosition() == pos) {
                             auto hook = *it;
@@ -158,29 +214,31 @@ void WaveManager::Update(float deltaTime) {
                     }
                     break;
 
-                case ActionType::GrowGround:
-                    g = mGame->GetGroundById(a.groundId);
+                    case ActionType::GrowGround:
+                        g = mGame->GetGroundById(a.groundId);
                     dynamicGround = dynamic_cast<DynamicGround*>(g);
                     if (dynamicGround) {
                         dynamicGround->SetIsGrowing(true);
                     }
                     break;
 
-                case ActionType::DecreaseGround:
-                    g = mGame->GetGroundById(a.groundId);
+                    case ActionType::DecreaseGround:
+                        g = mGame->GetGroundById(a.groundId);
                     dynamicGround = dynamic_cast<DynamicGround*>(g);
                     if (dynamicGround) {
                         dynamicGround->SetIsDecreasing(true);
                     }
                     break;
 
-                case ActionType::CreateSpawner:
-                    CreateSpawner(a);
+                    case ActionType::CreateSpawner:
+                        CreateSpawner(a);
                     break;
-            }
+                }
 
-            // marca como feito
-            a.delay = -1.0f;
+                // marca como feito
+                a.delay = -1.0f;
+                a.executed = true;
+            }
         }
     }
 

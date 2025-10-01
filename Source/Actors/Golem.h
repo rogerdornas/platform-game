@@ -43,6 +43,7 @@ private:
     void RunForward(float deltaTime);
     void Punch(float deltaTime);
     void Fireball(float deltaTime);
+    void FireballRain(float deltaTime);
 
     void ControlSpawCrystal();
     void SpawCrystal(Vector2 position);
@@ -85,6 +86,14 @@ private:
     float mFireBallHeight;
     float mFireballSpeed;
     float mFireballDamage;
+
+    float mFireballRainIntervalDuration;
+    float mFireballRainIntervalTimer;
+    float mFireballRainWidth;
+    float mFireballRainHeight;
+    float mFireballRainSpeed;
+    float mFireballRainDamage;
+    float mFireballRainPositionYOffset;
 
     // Atributos para sounds
     float mRunningSoundIntervalDuration;

@@ -106,6 +106,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mCheckpointStartCameraPosition(Vector2::Zero)
     ,mLavaRespawnPosition(Vector2::Zero)
     ,mHitByLava(false)
+    ,mPlayerStartPositionId(0)
     ,mCheckPointMoney(0)
     ,mGoingToNextLevel(false)
     ,mIsPlayingOnKeyboard(true)
@@ -338,7 +339,7 @@ void Game::ChangeScene()
 
     if (mNextScene != GameScene::MainMenu) {
         // Pool de Fireballs
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             new FireBall(this);
         }
 
@@ -813,15 +814,16 @@ void Game::LoadPauseMenu() {
         LoadOptionsMenu();
     });
 
-    name = "VOLTAR AO CHECKPOINT";
+    name = "SELECIONAR FASE";
     mPauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        ResetGameScene(0.2f);
-        mPlayer->ResetHealthPoints();
-        mPlayer->ResetMana();
-        mPlayer->ResetHealCount();
-        mPlayer->SetMoney(mCheckPointMoney);
-
+        LoadLevelSelectMenu();
+        // ResetGameScene(0.2f);
+        // mPlayer->ResetHealthPoints();
+        // mPlayer->ResetMana();
+        // mPlayer->ResetHealCount();
+        // mPlayer->SetMoney(mCheckPointMoney);
+        //
         mPauseMenu->Close();
         if (mStore->StoreOpened()) {
             mStore->CloseStore();
@@ -892,12 +894,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Prologue, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   1 - FLORESTA";
@@ -906,12 +908,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level1, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   2 - FOGO";
@@ -920,12 +922,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level2, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   3 - PÂNTANO";
@@ -934,12 +936,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level3, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   4 - NEVE";
@@ -948,12 +950,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level4, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   5 - FINAL";
@@ -962,12 +964,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level5, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   TESTE";
@@ -976,12 +978,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::LevelTeste, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   COLISEU";
@@ -990,12 +992,12 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Coliseu, 0.5f);
-            delete mPlayer;
-            mPlayer = nullptr;
-            mPlayerDeathCounter = 0;
-            delete mStore;
-            mStore = nullptr;
-            mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+            // delete mPlayer;
+            // mPlayer = nullptr;
+            // mPlayerDeathCounter = 0;
+            // delete mStore;
+            // mStore = nullptr;
+            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "VOLTAR";
@@ -1517,6 +1519,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 Vector2 limitMinCameraPosition(Vector2::Zero);
                 Vector2 limitMaxCameraPosition(Vector2::Zero);
                 std::string scene;
+                int playerStartPositionId = 0;
                 std::string wavePath;
                 std::string dialoguePath;
                 std::string cutsceneId;
@@ -1559,6 +1562,9 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "Scene") {
                             scene = prop["value"];
                         }
+                        else if (propName == "PlayerStartPositionId") {
+                            playerStartPositionId = prop["value"];
+                        }
                         else if (propName == "Waves") {
                             wavePath = prop["value"];
                         }
@@ -1584,6 +1590,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetLimitMinCameraPosition(limitMinCameraPosition);
                 trigger->SetLimitMaxCameraPosition(limitMaxCameraPosition);
                 trigger->SetScene(scene);
+                trigger->SetPlayerStartPositionId(playerStartPositionId);
                 trigger->SetWavesPath(wavePath);
                 trigger->SetDialoguePath(dialoguePath);
                 trigger->SetCutsceneId(cutsceneId);
@@ -1892,6 +1899,20 @@ void Game::LoadObjects(const std::string &fileName) {
             for (const auto &obj: layer["objects"]) {
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
+                int playerStartPositionId = 0;
+
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "StartPositionId") {
+                            playerStartPositionId = prop["value"];
+                        }
+                    }
+                }
+
+                if (playerStartPositionId != mPlayerStartPositionId) {
+                    continue;
+                }
 
                 if (mGoingToNextLevel) {
                     mGoingToNextLevel = false;
@@ -1917,6 +1938,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     mCheckPointMoney = mPlayer->GetMoney();
                 }
             }
+            mPlayerStartPositionId = 0;
         }
     }
 }

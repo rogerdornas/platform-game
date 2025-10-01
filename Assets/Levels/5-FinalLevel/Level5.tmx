@@ -336,9 +336,6 @@
   <object id="36" name="Checkpoint" x="640" y="4576" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="7" name="Levers"/>
- <objectgroup id="3" name="Player">
-  <object id="35" x="512" y="4736" width="32" height="32"/>
- </objectgroup>
  <objectgroup id="9" name="Camera">
   <object id="52" name="Camera" x="448" y="4256" width="1888" height="512">
    <properties>
@@ -746,6 +743,13 @@
     <property name="GrowthDirection" type="int" value="1"/>
     <property name="MinHeight" type="float" value="0"/>
     <property name="MinWidth" type="float" value="224"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Player">
+  <object id="35" x="512" y="4736" width="32" height="32">
+   <properties>
+    <property name="StartPositionId" type="int" value="0"/>
    </properties>
   </object>
  </objectgroup>

@@ -36,7 +36,7 @@ Lava::Lava(class Game *game, float width, float height, bool isMoving, float mov
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {255, 0, 0, 255});
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight * 1.1f, "../Assets/Sprites/Lava/Lava.png", "../Assets/Sprites/Lava/Lava.json", 1000);
+    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight * 1.1f, "../Assets/Sprites/Lava/Lava.png", "../Assets/Sprites/Lava/Lava.json", 98);
 
     std::vector<int> idle = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
     mDrawAnimatedComponent->AddAnimation("idle", idle);

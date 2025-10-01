@@ -228,6 +228,7 @@ public:
     void SetCurrentCutscene(Cutscene* cutscene) { mCurrentCutscene = cutscene; }
     void SetHitByLava() { mHitByLava = true; }
     void SetLavaRespawnPosition(Vector2 lavaRespawnPosition) { mLavaRespawnPosition = lavaRespawnPosition; }
+    void SetPlayerStartPositionId(int id) { mPlayerStartPositionId = id; }
 
     // Converte uma Action para sua representação em string
     std::string ActionToString(Action action);
@@ -329,6 +330,7 @@ private:
     bool mGoingToNextLevel;
     Vector2 mLavaRespawnPosition;
     bool mHitByLava;
+    int mPlayerStartPositionId;
 
     int mSaveSlot;
     class SaveData* mSaveData;

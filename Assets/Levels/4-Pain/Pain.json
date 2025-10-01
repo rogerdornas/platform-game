@@ -666,28 +666,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":3,
-         "name":"Player",
-         "objects":[
-                {
-                 "height":32,
-                 "id":117,
-                 "name":"Player",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":1344,
-                 "y":6208
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":2,
          "name":"Grounds",
          "objects":[
@@ -5638,6 +5616,11 @@
                          "value":"ChangeScene"
                         }, 
                         {
+                         "name":"PlayerStartPositionId",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
                          "name":"Scene",
                          "type":"string",
                          "value":"Level5"
@@ -6465,6 +6448,34 @@
                  "width":416,
                  "x":10176,
                  "y":2016
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Player",
+         "objects":[
+                {
+                 "height":32,
+                 "id":117,
+                 "name":"Player",
+                 "properties":[
+                        {
+                         "name":"StartPositionId",
+                         "type":"int",
+                         "value":0
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1344,
+                 "y":6208
                 }],
          "opacity":1,
          "type":"objectgroup",

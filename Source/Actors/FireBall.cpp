@@ -56,6 +56,7 @@ FireBall::FireBall(class Game* game)
     mDrawAnimatedComponent->SetAnimation("firing");
     const float fps = 4.0f / mDeactivateDuration;
     mDrawAnimatedComponent->SetAnimFPS(fps);
+    mDrawAnimatedComponent->UseRotation(true);
 
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
