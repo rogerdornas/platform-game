@@ -60,7 +60,9 @@ void LittleBat::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        mDrawAnimatedComponent->SetAnimFPS(14.0f);
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->SetAnimFPS(14.0f);
+        }
         MovementAfterPlayerSpotted(deltaTime);
     }
     else {
@@ -72,7 +74,9 @@ void LittleBat::OnUpdate(float deltaTime) {
         SetState(ActorState::Destroy);
         mGame->GetCamera()->StartCameraShake(0.3, mCameraShakeStrength);
     }
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 }
 
 void LittleBat::MovementBeforePlayerSpotted() {

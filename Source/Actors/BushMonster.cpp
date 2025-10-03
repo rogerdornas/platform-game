@@ -59,7 +59,9 @@ BushMonster::BushMonster(Game* game)
 void BushMonster::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mFlashTimer += deltaTime;
     }
@@ -94,8 +96,9 @@ void BushMonster::OnUpdate(float deltaTime) {
         mIdleDuration = 0.8f;
         mDashSpeed = 2000 * mGame->GetScale();
     }
-
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 }
 
 void BushMonster::ResolveGroundCollision() {

@@ -89,9 +89,11 @@ void Spawner::OnUpdate(float deltaTime) {
             mAppearTimer += deltaTime;
             if (mAppearTimer >= mAppearDuration) {
                 mSpawnerState = SpawnerState::Open;
-                mDrawAnimatedComponent->SetAnimation("open");
-                mDrawAnimatedComponent->SetAnimFPS(13.0f / mOpenDuration);
-                mDrawAnimatedComponent->ResetAnimationTimer();
+                if (mDrawAnimatedComponent) {
+                    mDrawAnimatedComponent->SetAnimation("open");
+                    mDrawAnimatedComponent->SetAnimFPS(13.0f / mOpenDuration);
+                    mDrawAnimatedComponent->ResetAnimationTimer();
+                }
             }
 
             mHeight = (mAppearTimer / mAppearDuration) * mMaxHeight;
@@ -125,9 +127,11 @@ void Spawner::OnUpdate(float deltaTime) {
             mOpenTimer += deltaTime;
             if (mOpenTimer >= mOpenDuration) {
                 mSpawnerState = SpawnerState::Disappear;
-                mDrawAnimatedComponent->SetAnimation("disappear");
-                mDrawAnimatedComponent->SetAnimFPS(10.0f / mDisappearDuration);
-                mDrawAnimatedComponent->ResetAnimationTimer();
+                if (mDrawAnimatedComponent) {
+                    mDrawAnimatedComponent->SetAnimation("disappear");
+                    mDrawAnimatedComponent->SetAnimFPS(10.0f / mDisappearDuration);
+                    mDrawAnimatedComponent->ResetAnimationTimer();
+                }
             }
             break;
 
@@ -159,8 +163,8 @@ void Spawner::OnUpdate(float deltaTime) {
             }
 
             if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+                mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
             }
             break;
     }

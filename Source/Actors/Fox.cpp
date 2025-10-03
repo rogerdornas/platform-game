@@ -142,7 +142,9 @@ void Fox::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 
     if (mHealthPoints <= mMaxHealthPoints / 2) {
         mStopDuration = 0.5;
@@ -538,8 +540,10 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 2.3f);
-    mDrawAnimatedComponent->SetHeight(0.91f * mWidth * 2.3f);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 2.3f);
+        mDrawAnimatedComponent->SetHeight(0.91f * mWidth * 2.3f);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

@@ -103,7 +103,9 @@ void FlyingSpawnerEnemy::OnUpdate(float deltaTime) {
             mEnemyState != State::SmashAttackRecovery &&
             mEnemyState != State::SpawnBat)
         {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mFlashTimer += deltaTime;
     }
@@ -142,7 +144,9 @@ void FlyingSpawnerEnemy::OnUpdate(float deltaTime) {
         circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 }
 
 void FlyingSpawnerEnemy::ResolveGroundCollision() {
@@ -154,7 +158,9 @@ void FlyingSpawnerEnemy::ResolveGroundCollision() {
                 if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                     collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     if (mEnemyState == State::SmashAttack && collisionNormal == Vector2::NegUnitY) {
-                        mDrawAnimatedComponent->ResetAnimationTimer();
+                        if (mDrawAnimatedComponent) {
+                            mDrawAnimatedComponent->ResetAnimationTimer();
+                        }
                         mEnemyState = State::SmashAttackRecovery;
                     }
                 }
@@ -165,7 +171,9 @@ void FlyingSpawnerEnemy::ResolveGroundCollision() {
                     // Colidiu top
                     if (mEnemyState == State::SmashAttack && collisionNormal == Vector2::NegUnitY) {
                         ReceiveHit(10, Vector2::NegUnitY);
-                        mDrawAnimatedComponent->ResetAnimationTimer();
+                        if (mDrawAnimatedComponent) {
+                            mDrawAnimatedComponent->ResetAnimationTimer();
+                        }
                         mEnemyState = State::SmashAttackRecovery;
                     }
                     // Colidiu bot
@@ -263,7 +271,9 @@ void FlyingSpawnerEnemy::Fly(float deltaTime) {
     if (mFlyTimer >= mFlyDuration) {
         mFlyTimer = 0;
         mTargetSet = false; // reseta alvo da próxima patrulha
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         if (Random::GetFloat() < 0.5) {
             mEnemyState = State::SmashAttackCharge;
         }
@@ -326,7 +336,9 @@ void FlyingSpawnerEnemy::SmashAttackCharge(float deltaTime) {
     mSmashAttackChargeTimer += deltaTime;
     if (mSmashAttackChargeTimer >= mSmashAttachChargeDuration) {
         mSmashAttackChargeTimer = 0;
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         mEnemyState = State::SmashAttack;
     }
 

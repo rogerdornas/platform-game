@@ -211,8 +211,10 @@ void Particle::ChangeResolution(float oldScale, float newScale) {
 
     float width = 1.2 * mSize;
     float height = mSize;
-    mDrawParticleComponent->SetWidth(width * 1.6f);
-    mDrawParticleComponent->SetHeight(height * 1.6f);
+    if (mDrawParticleComponent) {
+        mDrawParticleComponent->SetWidth(width * 1.6f);
+        mDrawParticleComponent->SetHeight(height * 1.6f);
+    }
 
     Vector2 v1(-width / 2, -height / 2);
     Vector2 v2(width / 2, -height / 2);

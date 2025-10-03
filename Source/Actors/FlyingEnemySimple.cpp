@@ -59,7 +59,9 @@ void FlyingEnemySimple::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        mDrawAnimatedComponent->SetAnimFPS(15.0f);
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->SetAnimFPS(15.0f);
+        }
         MovementAfterPlayerSpotted(deltaTime);
     }
     else {
@@ -87,7 +89,9 @@ void FlyingEnemySimple::OnUpdate(float deltaTime) {
         circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 }
 
 void FlyingEnemySimple::MovementAfterPlayerSpotted(float deltaTime) {

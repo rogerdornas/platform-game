@@ -72,7 +72,9 @@ void Mantis::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        mDrawAnimatedComponent->SetAnimFPS(10.0f);
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->SetAnimFPS(10.0f);
+        }
         MovementAfterPlayerSpotted(deltaTime);
     }
     else {
@@ -105,7 +107,9 @@ void Mantis::OnUpdate(float deltaTime) {
         circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 }
 
 void Mantis::MovementBeforePlayerSpotted() {
@@ -168,7 +172,9 @@ void Mantis::WalkForward(float deltaTime) {
             mWaitToAttackTimer = 0;
             mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 4, mJumpForce));
             mMantisState = State::Attack;
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
             mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
         }
     }

@@ -117,7 +117,9 @@ void DragonFly::OnUpdate(float deltaTime) {
             mDragonFlyState != State::AttackStraight &&
             mDragonFlyState != State::Dive)
         {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mFlashTimer += deltaTime;
     }
@@ -151,7 +153,9 @@ void DragonFly::OnUpdate(float deltaTime) {
         circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
     if (mDrawPolygonComponent) {
         if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
             auto verts = obb->GetVertices();
@@ -171,13 +175,17 @@ void DragonFly::ResolveGroundCollision() {
                     if (mDragonFlyState != State::Attack && mDragonFlyState != State::FlyingAround) {
                         if (collisionNormal == Vector2::NegUnitX && mDragonFlyState != State::Stum) {
                             if (GetRotation() > Math::ToRadians(330) || GetRotation() < Math::ToRadians(30)) {
-                                mDrawAnimatedComponent->ResetAnimationTimer();
+                                if (mDrawAnimatedComponent) {
+                                    mDrawAnimatedComponent->ResetAnimationTimer();
+                                }
                                 mDragonFlyState = State::Stum;
                             }
                         }
                         if (collisionNormal == Vector2::UnitX && mDragonFlyState != State::Stum) {
                             if (GetRotation() > Math::ToRadians(150) && GetRotation() < Math::ToRadians(210)) {
-                                mDrawAnimatedComponent->ResetAnimationTimer();
+                                if (mDrawAnimatedComponent) {
+                                    mDrawAnimatedComponent->ResetAnimationTimer();
+                                }
                                 mDragonFlyState = State::Stum;
                             }
                         }
@@ -430,7 +438,9 @@ void DragonFly::Stum(float deltaTime) {
         mStumTimer = 0;
         mStunnedAnimation = false;
         SetRotation(Math::Abs(GetRotation() - Math::Pi));  // Inverte rotação
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         mDragonFlyState = State::Attack;
         return;
     }
@@ -551,8 +561,10 @@ void DragonFly::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 1.8f);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+        mDrawAnimatedComponent->SetHeight(mWidth * 1.8f);
+    }
 
     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
         obb->Update(0);

@@ -181,8 +181,10 @@ void Sword::ChangeResolution(float oldScale, float newScale) {
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth);
-    mDrawAnimatedComponent->SetHeight(mHeight);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth);
+        mDrawAnimatedComponent->SetHeight(mHeight);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

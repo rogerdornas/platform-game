@@ -406,256 +406,6 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup id="2" name="Grounds">
-  <object id="6" name="Ground" x="128" y="3200" width="1504" height="960"/>
-  <object id="7" name="Ground" x="1632" y="2912" width="640" height="1248"/>
-  <object id="8" name="Ground" x="2272" y="2400" width="608" height="1760"/>
-  <object id="9" name="Ground" x="3424" y="2400" width="448" height="1760"/>
-  <object id="10" name="Ground" x="0" y="0" width="544" height="2880"/>
-  <object id="11" name="Ground" x="544" y="0" width="8928" height="416"/>
-  <object id="12" name="Ground" x="2880" y="2560" width="544" height="1600"/>
-  <object id="13" name="Ground" x="4992" y="768" width="352" height="3392"/>
-  <object id="14" name="Ground" x="5344" y="928" width="2208" height="608"/>
-  <object id="16" name="Ground" x="5344" y="3456" width="9856" height="704"/>
-  <object id="29" name="Ground" x="8640" y="416" width="832" height="2528"/>
-  <object id="32" name="Ground" x="9472" y="1280" width="2272" height="960"/>
-  <object id="36" name="Ground" x="4000" y="416" width="352" height="1696"/>
-  <object id="43" name="Ground" x="11744" y="1280" width="416" height="1856"/>
-  <object id="53" name="Ground" x="5856" y="2368" width="2784" height="576"/>
-  <object id="57" name="Ground" x="1344" y="3040" width="192" height="32"/>
-  <object id="59" name="Ground" x="1408" y="2624" width="192" height="32"/>
-  <object id="66" name="Ground" x="3872" y="2560" width="608" height="1600"/>
-  <object id="67" name="Ground" x="4480" y="2400" width="512" height="1760"/>
-  <object id="71" name="Spike" x="4576" y="1856" width="416" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="72" name="Spike" x="4576" y="1792" width="416" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="73" name="Ground" x="4576" y="1824" width="416" height="32"/>
-  <object id="74" name="Spike" x="4352" y="1312" width="384" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="75" name="Spike" x="4352" y="1248" width="384" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="76" name="Ground" x="4352" y="1280" width="384" height="32"/>
-  <object id="77" name="Spike" x="4608" y="832" width="384" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="78" name="Spike" x="4608" y="768" width="384" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="79" name="Ground" x="4608" y="800" width="384" height="32"/>
-  <object id="81" name="Ground" x="1312" y="2304" width="192" height="32"/>
-  <object id="83" name="Ground" x="4736" y="1632" width="96" height="32"/>
-  <object id="84" name="Ground" x="4864" y="1408" width="96" height="32"/>
-  <object id="85" name="Ground" x="4736" y="1152" width="96" height="32"/>
-  <object id="88" name="Moving Ground" x="4384" y="2112" width="192" height="32">
-   <properties>
-    <property name="Moving" type="bool" value="false"/>
-    <property name="MovingDuration" type="float" value="4"/>
-    <property name="SpeedX" type="float" value="0"/>
-    <property name="SpeedY" type="float" value="128"/>
-   </properties>
-  </object>
-  <object id="91" name="Ground" x="4704" y="672" width="96" height="32"/>
-  <object id="92" name="Ground" x="5888" y="768" width="192" height="160"/>
-  <object id="94" name="Ground" x="6624" y="768" width="192" height="160"/>
-  <object id="96" name="Ground" x="7136" y="768" width="256" height="160"/>
-  <object id="97" name="Ground" x="7552" y="1408" width="576" height="128"/>
-  <object id="98" name="Ground" x="7552" y="1312" width="416" height="96"/>
-  <object id="99" name="Ground" x="7552" y="1184" width="224" height="128"/>
-  <object id="100" name="Ground" x="7552" y="1024" width="96" height="160"/>
-  <object id="102" name="Ground" x="7488" y="416" width="1152" height="192"/>
-  <object id="103" name="Ground" x="7776" y="608" width="864" height="288"/>
-  <object id="104" name="Ground" x="8000" y="896" width="640" height="160"/>
-  <object id="105" name="Spike" x="7488" y="608" width="288" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="106" name="Spike" x="7776" y="896" width="224" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="107" name="Spike" x="8000" y="1056" width="640" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="108" name="Spike" x="7968" y="1376" width="160" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="109" name="Spike" x="7648" y="1152" width="128" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="110" name="Spike" x="7392" y="896" width="160" height="32">
-   <properties>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="117" name="Moving Ground" x="8160" y="1472" width="384" height="32">
-   <properties>
-    <property name="Moving" type="bool" value="false"/>
-    <property name="MovingDuration" type="float" value="3"/>
-    <property name="SpeedX" type="float" value="0"/>
-    <property name="SpeedY" type="float" value="-128"/>
-   </properties>
-  </object>
-  <object id="119" name="Ground" x="12160" y="2432" width="1888" height="352"/>
-  <object id="127" name="DynamicGround" x="5856" y="1472" width="320" height="1152">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="0"/>
-    <property name="GrowSpeedY" type="float" value="1000"/>
-    <property name="GrowthDirection" type="int" value="0"/>
-    <property name="MinHeight" type="float" value="0"/>
-    <property name="MinWidth" type="float" value="320"/>
-   </properties>
-  </object>
-  <object id="128" name="DynamicGround" x="7392" y="1472" width="320" height="1152">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="0"/>
-    <property name="GrowSpeedY" type="float" value="1000"/>
-    <property name="GrowthDirection" type="int" value="0"/>
-    <property name="MinHeight" type="float" value="0"/>
-    <property name="MinWidth" type="float" value="320"/>
-   </properties>
-  </object>
-  <object id="133" name="Ground" x="6304" y="2112" width="128" height="32"/>
-  <object id="134" name="Ground" x="6720" y="2112" width="128" height="32"/>
-  <object id="135" name="Ground" x="7136" y="2112" width="128" height="32"/>
-  <object id="136" name="Ground" x="6496" y="1856" width="128" height="32"/>
-  <object id="137" name="Ground" x="6944" y="1856" width="128" height="32"/>
-  <object id="148" name="DynamicGround" x="11744" y="2848" width="128" height="640">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="0"/>
-    <property name="GrowSpeedY" type="float" value="1000"/>
-    <property name="GrowthDirection" type="int" value="0"/>
-    <property name="MinHeight" type="float" value="0"/>
-    <property name="MinWidth" type="float" value="160"/>
-   </properties>
-  </object>
-  <object id="149" name="DynamicGround" x="9312" y="2880" width="160" height="608">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="0"/>
-    <property name="GrowSpeedY" type="float" value="1000"/>
-    <property name="GrowthDirection" type="int" value="0"/>
-    <property name="MinHeight" type="float" value="0"/>
-    <property name="MinWidth" type="float" value="160"/>
-   </properties>
-  </object>
-  <object id="160" name="DynamicGround" x="7776" y="3424" width="384" height="32">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="400"/>
-    <property name="GrowSpeedY" type="float" value="0"/>
-    <property name="GrowthDirection" type="int" value="3"/>
-    <property name="MinHeight" type="float" value="32"/>
-    <property name="MinWidth" type="float" value="64"/>
-    <property name="Oscillate" type="bool" value="true"/>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="164" name="DynamicGround" x="7008" y="3424" width="384" height="32">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="400"/>
-    <property name="GrowSpeedY" type="float" value="0"/>
-    <property name="GrowthDirection" type="int" value="3"/>
-    <property name="MinHeight" type="float" value="32"/>
-    <property name="MinWidth" type="float" value="64"/>
-    <property name="Oscillate" type="bool" value="true"/>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="166" name="DynamicGround" x="6240" y="3424" width="384" height="32">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="400"/>
-    <property name="GrowSpeedY" type="float" value="0"/>
-    <property name="GrowthDirection" type="int" value="3"/>
-    <property name="MinHeight" type="float" value="32"/>
-    <property name="MinWidth" type="float" value="64"/>
-    <property name="Oscillate" type="bool" value="true"/>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="162" name="DynamicGround" x="7392" y="3424" width="384" height="32">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="400"/>
-    <property name="GrowSpeedY" type="float" value="0"/>
-    <property name="GrowthDirection" type="int" value="2"/>
-    <property name="MinHeight" type="float" value="32"/>
-    <property name="MinWidth" type="float" value="64"/>
-    <property name="Oscillate" type="bool" value="true"/>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="165" name="DynamicGround" x="6624" y="3424" width="384" height="32">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="400"/>
-    <property name="GrowSpeedY" type="float" value="0"/>
-    <property name="GrowthDirection" type="int" value="2"/>
-    <property name="MinHeight" type="float" value="32"/>
-    <property name="MinWidth" type="float" value="64"/>
-    <property name="Oscillate" type="bool" value="true"/>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="163" name="DynamicGround" x="5856" y="3424" width="384" height="32">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="400"/>
-    <property name="GrowSpeedY" type="float" value="0"/>
-    <property name="GrowthDirection" type="int" value="2"/>
-    <property name="MinHeight" type="float" value="32"/>
-    <property name="MinWidth" type="float" value="64"/>
-    <property name="Oscillate" type="bool" value="true"/>
-    <property name="Spike" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="157" name="Ground" x="6176" y="3296" width="128" height="32"/>
-  <object id="167" name="Ground" x="5344" y="3424" width="512" height="32"/>
-  <object id="168" name="Ground" x="8160" y="3424" width="7040" height="32"/>
-  <object id="159" name="Ground" x="6944" y="3296" width="128" height="32"/>
-  <object id="161" name="Ground" x="7712" y="3296" width="128" height="32"/>
-  <object id="175" name="Ground" x="15200" y="2432" width="160" height="1728"/>
-  <object id="184" name="DynamicGround" x="13408" y="2912" width="128" height="576">
-   <properties>
-    <property name="GrowSpeedX" type="float" value="0"/>
-    <property name="GrowSpeedY" type="float" value="1000"/>
-    <property name="GrowthDirection" type="int" value="0"/>
-    <property name="MinHeight" type="float" value="0"/>
-    <property name="MinWidth" type="float" value="160"/>
-   </properties>
-  </object>
-  <object id="187" name="Ground" x="14048" y="2432" width="1152" height="768"/>
-  <object id="190" name="Ground" x="13408" y="2912" width="640" height="288"/>
-  <object id="192" name="Ground" x="12352" y="3104" width="128" height="32"/>
-  <object id="196" name="Moving Ground" x="4384" y="1120" width="192" height="32">
-   <properties>
-    <property name="Moving" type="bool" value="false"/>
-    <property name="MovingDuration" type="float" value="3"/>
-    <property name="SpeedX" type="float" value="0"/>
-    <property name="SpeedY" type="float" value="128"/>
-   </properties>
-  </object>
-  <object id="232" x="0" y="2880" width="128" height="1280"/>
- </objectgroup>
  <objectgroup id="11" name="Camera">
   <object id="217" name="Camera" x="544" y="416" width="1728" height="2784">
    <properties>
@@ -1007,5 +757,255 @@
     <property name="RespawnPositionY" type="float" value="672"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="2" name="Grounds">
+  <object id="6" name="Ground" x="128" y="3200" width="1504" height="960"/>
+  <object id="7" name="Ground" x="1632" y="2912" width="640" height="1248"/>
+  <object id="8" name="Ground" x="2272" y="2400" width="608" height="1760"/>
+  <object id="9" name="Ground" x="3424" y="2400" width="448" height="1760"/>
+  <object id="10" name="Ground" x="0" y="0" width="544" height="2880"/>
+  <object id="11" name="Ground" x="544" y="0" width="8928" height="416"/>
+  <object id="12" name="Ground" x="2880" y="2560" width="544" height="1600"/>
+  <object id="13" name="Ground" x="4992" y="768" width="352" height="3392"/>
+  <object id="14" name="Ground" x="5344" y="928" width="2208" height="608"/>
+  <object id="16" name="Ground" x="5344" y="3456" width="9856" height="704"/>
+  <object id="29" name="Ground" x="8640" y="416" width="832" height="2528"/>
+  <object id="32" name="Ground" x="9472" y="1280" width="2272" height="960"/>
+  <object id="36" name="Ground" x="4000" y="416" width="352" height="1696"/>
+  <object id="43" name="Ground" x="11744" y="1280" width="416" height="1856"/>
+  <object id="53" name="Ground" x="5856" y="2368" width="2784" height="576"/>
+  <object id="57" name="Ground" x="1344" y="3040" width="192" height="32"/>
+  <object id="59" name="Ground" x="1408" y="2624" width="192" height="32"/>
+  <object id="66" name="Ground" x="3872" y="2560" width="608" height="1600"/>
+  <object id="67" name="Ground" x="4480" y="2400" width="512" height="1760"/>
+  <object id="71" name="Spike" x="4576" y="1856" width="416" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="72" name="Spike" x="4576" y="1792" width="416" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="73" name="Ground" x="4576" y="1824" width="416" height="32"/>
+  <object id="74" name="Spike" x="4352" y="1312" width="384" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="75" name="Spike" x="4352" y="1248" width="384" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="76" name="Ground" x="4352" y="1280" width="384" height="32"/>
+  <object id="77" name="Spike" x="4608" y="832" width="384" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="78" name="Spike" x="4608" y="768" width="384" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="79" name="Ground" x="4608" y="800" width="384" height="32"/>
+  <object id="81" name="Ground" x="1312" y="2304" width="192" height="32"/>
+  <object id="83" name="Ground" x="4736" y="1632" width="96" height="32"/>
+  <object id="84" name="Ground" x="4864" y="1408" width="96" height="32"/>
+  <object id="85" name="Ground" x="4736" y="1152" width="96" height="32"/>
+  <object id="88" name="Moving Ground" x="4384" y="2112" width="192" height="32">
+   <properties>
+    <property name="Moving" type="bool" value="false"/>
+    <property name="MovingDuration" type="float" value="4"/>
+    <property name="SpeedX" type="float" value="0"/>
+    <property name="SpeedY" type="float" value="128"/>
+   </properties>
+  </object>
+  <object id="91" name="Ground" x="4704" y="672" width="96" height="32"/>
+  <object id="92" name="Ground" x="5888" y="768" width="192" height="160"/>
+  <object id="94" name="Ground" x="6624" y="768" width="192" height="160"/>
+  <object id="96" name="Ground" x="7136" y="768" width="256" height="160"/>
+  <object id="97" name="Ground" x="7552" y="1408" width="576" height="128"/>
+  <object id="98" name="Ground" x="7552" y="1312" width="416" height="96"/>
+  <object id="99" name="Ground" x="7552" y="1184" width="224" height="128"/>
+  <object id="100" name="Ground" x="7552" y="1024" width="96" height="160"/>
+  <object id="102" name="Ground" x="7488" y="416" width="1152" height="192"/>
+  <object id="103" name="Ground" x="7776" y="608" width="864" height="288"/>
+  <object id="104" name="Ground" x="8000" y="896" width="640" height="160"/>
+  <object id="105" name="Spike" x="7488" y="608" width="288" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="106" name="Spike" x="7776" y="896" width="224" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="107" name="Spike" x="8000" y="1056" width="640" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="108" name="Spike" x="7968" y="1376" width="160" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="109" name="Spike" x="7648" y="1152" width="128" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="110" name="Spike" x="7392" y="896" width="160" height="32">
+   <properties>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="117" name="Moving Ground" x="8160" y="1472" width="384" height="32">
+   <properties>
+    <property name="Moving" type="bool" value="false"/>
+    <property name="MovingDuration" type="float" value="3"/>
+    <property name="SpeedX" type="float" value="0"/>
+    <property name="SpeedY" type="float" value="-128"/>
+   </properties>
+  </object>
+  <object id="119" name="Ground" x="12160" y="2432" width="1888" height="352"/>
+  <object id="127" name="DynamicGround" x="5856" y="1472" width="320" height="1152">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="0"/>
+    <property name="GrowSpeedY" type="float" value="1000"/>
+    <property name="GrowthDirection" type="int" value="0"/>
+    <property name="MinHeight" type="float" value="0"/>
+    <property name="MinWidth" type="float" value="320"/>
+   </properties>
+  </object>
+  <object id="128" name="DynamicGround" x="7392" y="1472" width="320" height="1152">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="0"/>
+    <property name="GrowSpeedY" type="float" value="1000"/>
+    <property name="GrowthDirection" type="int" value="0"/>
+    <property name="MinHeight" type="float" value="0"/>
+    <property name="MinWidth" type="float" value="320"/>
+   </properties>
+  </object>
+  <object id="133" name="Ground" x="6304" y="2112" width="128" height="32"/>
+  <object id="134" name="Ground" x="6720" y="2112" width="128" height="32"/>
+  <object id="135" name="Ground" x="7136" y="2112" width="128" height="32"/>
+  <object id="136" name="Ground" x="6496" y="1856" width="128" height="32"/>
+  <object id="137" name="Ground" x="6944" y="1856" width="128" height="32"/>
+  <object id="148" name="DynamicGround" x="11744" y="2848" width="128" height="640">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="0"/>
+    <property name="GrowSpeedY" type="float" value="1000"/>
+    <property name="GrowthDirection" type="int" value="0"/>
+    <property name="MinHeight" type="float" value="0"/>
+    <property name="MinWidth" type="float" value="160"/>
+   </properties>
+  </object>
+  <object id="149" name="DynamicGround" x="9312" y="2880" width="160" height="608">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="0"/>
+    <property name="GrowSpeedY" type="float" value="1000"/>
+    <property name="GrowthDirection" type="int" value="0"/>
+    <property name="MinHeight" type="float" value="0"/>
+    <property name="MinWidth" type="float" value="160"/>
+   </properties>
+  </object>
+  <object id="160" name="DynamicGround" x="7776" y="3424" width="384" height="32">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="400"/>
+    <property name="GrowSpeedY" type="float" value="0"/>
+    <property name="GrowthDirection" type="int" value="3"/>
+    <property name="MinHeight" type="float" value="32"/>
+    <property name="MinWidth" type="float" value="64"/>
+    <property name="Oscillate" type="bool" value="true"/>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="164" name="DynamicGround" x="7008" y="3424" width="384" height="32">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="400"/>
+    <property name="GrowSpeedY" type="float" value="0"/>
+    <property name="GrowthDirection" type="int" value="3"/>
+    <property name="MinHeight" type="float" value="32"/>
+    <property name="MinWidth" type="float" value="64"/>
+    <property name="Oscillate" type="bool" value="true"/>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="166" name="DynamicGround" x="6240" y="3424" width="384" height="32">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="400"/>
+    <property name="GrowSpeedY" type="float" value="0"/>
+    <property name="GrowthDirection" type="int" value="3"/>
+    <property name="MinHeight" type="float" value="32"/>
+    <property name="MinWidth" type="float" value="64"/>
+    <property name="Oscillate" type="bool" value="true"/>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="162" name="DynamicGround" x="7392" y="3424" width="384" height="32">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="400"/>
+    <property name="GrowSpeedY" type="float" value="0"/>
+    <property name="GrowthDirection" type="int" value="2"/>
+    <property name="MinHeight" type="float" value="32"/>
+    <property name="MinWidth" type="float" value="64"/>
+    <property name="Oscillate" type="bool" value="true"/>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="165" name="DynamicGround" x="6624" y="3424" width="384" height="32">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="400"/>
+    <property name="GrowSpeedY" type="float" value="0"/>
+    <property name="GrowthDirection" type="int" value="2"/>
+    <property name="MinHeight" type="float" value="32"/>
+    <property name="MinWidth" type="float" value="64"/>
+    <property name="Oscillate" type="bool" value="true"/>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="163" name="DynamicGround" x="5856" y="3424" width="384" height="32">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="400"/>
+    <property name="GrowSpeedY" type="float" value="0"/>
+    <property name="GrowthDirection" type="int" value="2"/>
+    <property name="MinHeight" type="float" value="32"/>
+    <property name="MinWidth" type="float" value="64"/>
+    <property name="Oscillate" type="bool" value="true"/>
+    <property name="Spike" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="157" name="Ground" x="6176" y="3296" width="128" height="32"/>
+  <object id="167" name="Ground" x="5344" y="3424" width="512" height="32"/>
+  <object id="168" name="Ground" x="8160" y="3424" width="7040" height="32"/>
+  <object id="159" name="Ground" x="6944" y="3296" width="128" height="32"/>
+  <object id="161" name="Ground" x="7712" y="3296" width="128" height="32"/>
+  <object id="175" name="Ground" x="15200" y="2432" width="160" height="1728"/>
+  <object id="184" name="DynamicGround" x="13408" y="2912" width="128" height="576">
+   <properties>
+    <property name="GrowSpeedX" type="float" value="0"/>
+    <property name="GrowSpeedY" type="float" value="1000"/>
+    <property name="GrowthDirection" type="int" value="0"/>
+    <property name="MinHeight" type="float" value="0"/>
+    <property name="MinWidth" type="float" value="160"/>
+   </properties>
+  </object>
+  <object id="187" name="Ground" x="14048" y="2432" width="1152" height="768"/>
+  <object id="190" name="Ground" x="13408" y="2912" width="640" height="288"/>
+  <object id="192" name="Ground" x="12352" y="3104" width="128" height="32"/>
+  <object id="196" name="Moving Ground" x="4384" y="1120" width="192" height="32">
+   <properties>
+    <property name="Moving" type="bool" value="false"/>
+    <property name="MovingDuration" type="float" value="3"/>
+    <property name="SpeedX" type="float" value="0"/>
+    <property name="SpeedY" type="float" value="128"/>
+   </properties>
+  </object>
+  <object id="232" x="0" y="2880" width="128" height="1280"/>
  </objectgroup>
 </map>

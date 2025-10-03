@@ -106,7 +106,9 @@ void HookEnemy::OnUpdate(float deltaTime) {
     mKnockBackTimer += deltaTime;
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0 && mHookEnemyState != State::DiagonalAttack) {
-            // mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                // mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mFlashTimer += deltaTime;
     }
@@ -140,7 +142,9 @@ void HookEnemy::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 
     if (mHealthPoints <= mMaxHealthPoints / 2) {
         mStopDuration = 1.0f;
@@ -339,10 +343,12 @@ void HookEnemy::Stop(float deltaTime) {
                 mHookEnd = nearestHookPoint->GetPosition();
                 mHookAnimProgress = 0.0f;
                 mIsHookAnimating = true;
-                mDrawRopeComponent->SetIsVisible(true);
+                if (mDrawRopeComponent) {
+                    mDrawRopeComponent->SetIsVisible(true);
 
-                mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-                mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+                    mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+                    mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+                }
             }
         }
         else {
@@ -387,10 +393,14 @@ void HookEnemy::Hook(float deltaTime) {
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            mDrawRopeComponent->SetIsVisible(false);
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetIsVisible(false);
+            }
         }
-        mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-        mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        if (mDrawRopeComponent) {
+            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        }
         if (mHookPoint) {
             mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
         }
@@ -527,8 +537,10 @@ void HookEnemy::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth( mWidth * 1.35f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 1.35f * 0.73f);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth( mWidth * 1.35f);
+        mDrawAnimatedComponent->SetHeight(mWidth * 1.35f * 0.73f);
+    }
 
     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
         obb->Update(0);

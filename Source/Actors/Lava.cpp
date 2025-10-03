@@ -84,7 +84,9 @@ void Lava::ResolvePlayerCollision() {
         if (!player->Died()) {
             player->GetComponent<AABBComponent>()->SetActive(false);
             player->SetInvulnerableTimer(-1.0f);
-            player->GetComponent<DrawAnimatedComponent>()->SetAnimation("hurt");
+            if (player->GetComponent<DrawAnimatedComponent>()) {
+                player->GetComponent<DrawAnimatedComponent>()->SetAnimation("hurt");
+            }
             player->SetState(ActorState::Paused);
             mGame->InitCrossFade(1.5f);
             mGame->SetHitByLava();
@@ -124,7 +126,7 @@ void Lava::ResolveEnemyCollision() {
 
 void Lava::ResolveSwordCollision() {
     Sword* sword = mGame->GetPlayer()->GetSword();
-    if (!sword->GetComponent<DrawAnimatedComponent>()->IsVisible()) {
+    if (sword->GetComponent<DrawAnimatedComponent>() && !sword->GetComponent<DrawAnimatedComponent>()->IsVisible()) {
         mSwordHitLava = false;
     }
     if (sword->GetComponent<ColliderComponent>()->Intersect(*mAABBComponent)) {

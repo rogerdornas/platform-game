@@ -379,7 +379,7 @@ void Trigger::GameTrigger() {
         case Event::ChangeScene:
             mGame->GetAudio()->StopAllSounds();
             mGame->SetPlayerStartPositionId(mPlayerStartPositionId);
-            mGame->SetGameScene(mScene, 0.8f);
+            mGame->SetGameScene(mScene, 0.5f);
             mGame->SetGoingToNextLevel();
             break;
 

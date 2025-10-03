@@ -374,7 +374,9 @@ void Game::ChangeScene()
 
         // Volta player
         if (mPlayer) {
-            mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(true);
+            if (mPlayer->GetComponent<DrawAnimatedComponent>()) {
+                mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(true);
+            }
             if (mPlayer->GetComponent<DrawPolygonComponent>()) {
                 mPlayer->GetComponent<DrawPolygonComponent>()->SetIsVisible(true);
             }
@@ -386,7 +388,9 @@ void Game::ChangeScene()
     else {
         // Se está no menu, pausa draw de player
         if (mPlayer) {
-            mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(false);
+            if (mPlayer->GetComponent<DrawAnimatedComponent>()) {
+                mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(false);
+            }
             if (mPlayer->GetComponent<DrawPolygonComponent>()) {
                 mPlayer->GetComponent<DrawPolygonComponent>()->SetIsVisible(false);
             }
@@ -818,12 +822,7 @@ void Game::LoadPauseMenu() {
     mPauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         LoadLevelSelectMenu();
-        // ResetGameScene(0.2f);
-        // mPlayer->ResetHealthPoints();
-        // mPlayer->ResetMana();
-        // mPlayer->ResetHealCount();
-        // mPlayer->SetMoney(mCheckPointMoney);
-        //
+
         mPauseMenu->Close();
         if (mStore->StoreOpened()) {
             mStore->CloseStore();
@@ -894,12 +893,6 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Prologue, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   1 - FLORESTA";
@@ -908,12 +901,6 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level1, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   2 - FOGO";
@@ -922,12 +909,6 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level2, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   3 - PÂNTANO";
@@ -936,12 +917,6 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level3, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   4 - NEVE";
@@ -950,12 +925,6 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level4, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   5 - FINAL";
@@ -964,12 +933,6 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Level5, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   TESTE";
@@ -978,12 +941,6 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::LevelTeste, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
         });
 
     name = "   COLISEU";
@@ -992,12 +949,14 @@ void Game::LoadLevelSelectMenu() {
         [this]()
         {
             SetGameScene(GameScene::Coliseu, 0.5f);
-            // delete mPlayer;
-            // mPlayer = nullptr;
-            // mPlayerDeathCounter = 0;
-            // delete mStore;
-            // mStore = nullptr;
-            // mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
+        });
+
+    name = "   ROOM 0";
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 18 * 35) * mScale,
+        buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        [this]()
+        {
+            SetGameScene(GameScene::Room0, 0.5f);
         });
 
     name = "VOLTAR";

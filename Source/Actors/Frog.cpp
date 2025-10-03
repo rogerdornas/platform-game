@@ -193,7 +193,9 @@ void Frog::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 
     if (mHealthPoints <= mMaxHealthPoints / 2) {
         mStopDuration = 1.0;
@@ -615,9 +617,10 @@ void Frog::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
-    mDrawAnimatedComponent->SetHeight(mHeight * 1.5f / 1.2f);
-
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f / 1.2f);
+    }
     Vector2 v1(-mHeight / 2, -mHeight / 2);
     Vector2 v2(mHeight / 2, -mHeight / 2);
     Vector2 v3(mHeight / 2, mHeight / 2);

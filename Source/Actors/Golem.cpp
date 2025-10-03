@@ -110,7 +110,9 @@ Golem::Golem(Game *game)
 void Golem::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0 && mGolemState != State::Punch) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mFlashTimer += deltaTime;
     }
@@ -164,7 +166,9 @@ void Golem::OnUpdate(float deltaTime) {
         }
     }
 
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 
     if (mHealthPoints <= 0.65f * mMaxHealthPoints) {
         mStopDuration = 1.0f;
@@ -254,7 +258,9 @@ void Golem::RunForward(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
 
     if (Math::Abs(dist) < mDistToPunch) {
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         if (GetRotation() == 0) {
             mPunchDirectionRight = true;
         }
@@ -611,8 +617,10 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.73f);
-    mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.73f);
+        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
+    }
 
     Vector2 v1;
     Vector2 v2;

@@ -14,7 +14,7 @@ public:
     DashEffectActor(Game* game, Actor* owner, float duration);
 
     void OnUpdate(float deltaTime) override;
-    void StartDashEffect() { mEffectTimer = 0; mDrawAnimatedComponent->ResetAnimationTimer(); }
+    void StartDashEffect();
     void StopDash() { mEffectTimer = mEffectDuration; }
 
     void ChangeResolution(float oldScale, float newScale) override;

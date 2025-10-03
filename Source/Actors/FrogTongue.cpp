@@ -231,8 +231,10 @@ void FrogTongue::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth);
-    mDrawAnimatedComponent->SetHeight(mHeight);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth);
+        mDrawAnimatedComponent->SetHeight(mHeight);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

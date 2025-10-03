@@ -90,7 +90,9 @@ void FlyingGolem::OnUpdate(float deltaTime) {
             mFlyingGolemState != State::TeleportIn &&
             mFlyingGolemState != State::TeleportOut)
         {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mFlashTimer += deltaTime;
     }
@@ -111,7 +113,9 @@ void FlyingGolem::OnUpdate(float deltaTime) {
         float dist = (GetPosition() - mGame->GetPlayer()->GetPosition()).Length();
         if (dist >= mDistToTeleport) {
             mFlyingGolemState = State::TeleportIn;
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
     }
 
@@ -136,7 +140,9 @@ void FlyingGolem::OnUpdate(float deltaTime) {
         circleBlur->SetEffect(TargetEffect::Circle);
         circleBlur->EnemyDestroyed();
     }
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 }
 
 void FlyingGolem::MovementAfterPlayerSpotted(float deltaTime) {
@@ -245,7 +251,9 @@ void FlyingGolem::FlyForward(float deltaTime) {
 
     float dist = (GetPosition() - player->GetPosition()).Length();
     if (dist <= mDistToAttack) {
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
             mAttackDirectionRight = false;
         }
@@ -265,7 +273,9 @@ void FlyingGolem::Attack(float deltaTime) {
     if (mAttackTimer >= mAttackDuration) {
         mAttackTimer = 0;
         mFlyingGolemState = State::TeleportIn;
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
     }
 
     Vector2 v1;
@@ -327,7 +337,9 @@ void FlyingGolem::TeleportIn(float deltaTime) {
 
         mTeleportInTimer = 0;
         mFlyingGolemState = State::TeleportOut;
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         return;
     }
 
@@ -411,8 +423,10 @@ void FlyingGolem::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 2.0f);
-    mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 2.0f);
+        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
+    }
 
     Vector2 v1;
     Vector2 v2;

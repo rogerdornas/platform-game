@@ -508,7 +508,9 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            mDrawRopeComponent->SetIsVisible(false);
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetIsVisible(false);
+            }
         }
     }
 
@@ -578,7 +580,9 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     // Sword
     // Detecta borda de descida da tecla K e cooldown pronto
     if (sword && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration) {
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
         mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         // Ativa a espada
         mSword->SetState(ActorState::Active);
@@ -613,7 +617,9 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                     mIsFireAttacking = true;
                     mStopInAirFireBallTimer = 0;
                     mFireballAnimationTimer = 0;
-                    mDrawAnimatedComponent->ResetAnimationTimer();
+                    if (mDrawAnimatedComponent) {
+                        mDrawAnimatedComponent->ResetAnimationTimer();
+                    }
                     mMana -= mFireballManaCost;
                     break;
                 }
@@ -694,15 +700,19 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             mHookEnd = nearestHookPoint->GetPosition();
             mHookAnimProgress = 0.0f;
             mIsHookAnimating = true;
-            mDrawRopeComponent->SetIsVisible(true);
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetIsVisible(true);
+            }
 
             // Resetar dash no ar
             mDashComponent->SetHasDashedInAir(false);
             // RESET DO CONTADOR DE PULO
             mJumpCountInAir = 0;
 
-            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+                mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+            }
         }
         mPrevHookPressed = hook;
     }
@@ -735,10 +745,14 @@ void Player::OnUpdate(float deltaTime) {
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            mDrawRopeComponent->SetIsVisible(false);
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetIsVisible(false);
+            }
         }
-        mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-        mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        if (mDrawRopeComponent) {
+            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        }
         if (mHookPoint) {
             mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
         }
@@ -778,7 +792,9 @@ void Player::OnUpdate(float deltaTime) {
 
     if (mIsHealing) {
         if (mHealAnimationTimer == 0) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mHealAnimationTimer += deltaTime;
     }
@@ -1307,7 +1323,9 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
         mHealthPoints -= damage;
         mIsInvulnerable = true;
         mHurtTimer = 0;
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
 
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         if (vel.Length() > 0) {
@@ -1355,7 +1373,9 @@ bool Player::Died() {
     if (mHealthPoints <= 0) {
         if (mIsDead == false) {
             mIsDead = true;
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         return true;
     }
@@ -1400,8 +1420,10 @@ void Player::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 4.93f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 4.93f * 1.11f);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 4.93f);
+        mDrawAnimatedComponent->SetHeight(mWidth * 4.93f * 1.11f);
+    }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);

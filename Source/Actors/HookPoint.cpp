@@ -63,13 +63,19 @@ HookPoint::~HookPoint() {
 void HookPoint::OnUpdate(float deltaTime) {
     switch (mHookPointState) {
         case HookPointState::OutRange:
-            mDrawAnimatedComponent->SetAnimation("idle");
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->SetAnimation("idle");
+            }
             break;
         case HookPointState::InRange:
-            mDrawAnimatedComponent->SetAnimation("illuminated");
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->SetAnimation("illuminated");
+            }
             break;
         case HookPointState::Hooked:
-            mDrawAnimatedComponent->SetAnimation("hooked");
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->SetAnimation("hooked");
+            }
             break;
     }
 

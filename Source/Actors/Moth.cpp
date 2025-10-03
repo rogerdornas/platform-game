@@ -98,7 +98,9 @@ Moth::Moth(Game *game)
 void Moth::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0 && !mAttackAnimation && mMothState != State::BoostUp) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            if (mDrawAnimatedComponent) {
+                mDrawAnimatedComponent->ResetAnimationTimer();
+            }
         }
         mFlashTimer += deltaTime;
     }
@@ -155,7 +157,9 @@ void Moth::OnUpdate(float deltaTime) {
 
     ChangeGround(deltaTime);
 
-    ManageAnimations();
+    if (mDrawAnimatedComponent) {
+        ManageAnimations();
+    }
 }
 
 void Moth::MovementBeforePlayerSpotted() {
@@ -202,7 +206,9 @@ void Moth::Stop(float deltaTime) {
 
         if (!mAlreadyBoosted) {
             if (mHealthPoints <= 0.5f * mMaxHealthPoints) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
+                if (mDrawAnimatedComponent) {
+                    mDrawAnimatedComponent->ResetAnimationTimer();
+                }
                 mAlreadyBoosted = true;
                 mMothState = State::BoostUp;
                 return;
@@ -280,7 +286,9 @@ void Moth::Stop(float deltaTime) {
 
 void Moth::Projectiles(float deltaTime) {
     if (mAttackTimer == 0) {
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
     }
     mAttackTimer += deltaTime;
     if (mAttackTimer < mAttackDuration) {
@@ -341,7 +349,9 @@ void Moth::Projectiles(float deltaTime) {
 void Moth::SlowMotionProjectiles(float deltaTime) {
     mGame->SetIsSlowMotion(true);
     if (mAttackTimer == 0) {
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
     }
     mAttackTimer += deltaTime;
     if (mAttackTimer < mAttackDuration) {
@@ -411,7 +421,9 @@ void Moth::CircleProjectiles(float deltaTime) {
     }
 
     if (mAttackTimer == 0) {
-        mDrawAnimatedComponent->ResetAnimationTimer();
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->ResetAnimationTimer();
+        }
     }
     mAttackTimer += deltaTime;
     if (mAttackTimer < mAttackDuration) {
@@ -638,8 +650,10 @@ void Moth::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
-    mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    }
 
     Vector2 v1(-mHeight / 2, -mHeight / 2);
     Vector2 v2(mHeight / 2, -mHeight / 2);

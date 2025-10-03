@@ -34,9 +34,7 @@ Fairy::Fairy(Game *game, float width, float height)
     vertices.emplace_back(v4);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {255, 255, 255, 255});
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Fairy/Fairy1.png",
-    //                                                 static_cast<int>(mWidth * 1.8),
-    //                                                 static_cast<int>(mHeight * 1.8));
+
     mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/FinalBoss/FinalBoss.png", "../Assets/Sprites/FinalBoss/FinalBoss.json", 500);
     std::vector idle = {53, 54, 55, 56, 57, 58, 59, 60};
     mDrawAnimatedComponent->AddAnimation("idle", idle);

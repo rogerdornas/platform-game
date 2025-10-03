@@ -59,7 +59,6 @@ Projectile::Projectile(class Game *game, ProjectileType type, float width, float
     vertices.emplace_back(v4);
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
-    // mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Koopa/Shell.png", mWidth * 1.2, mHeight * 1.2);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3);

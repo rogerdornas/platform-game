@@ -33,21 +33,35 @@ DashEffectActor::DashEffectActor(Game *game, Actor* owner, float duration)
 void DashEffectActor::OnUpdate(float deltaTime) {
     mEffectTimer += deltaTime;
     if (mEffectTimer >= mEffectDuration) {
-        mDrawAnimatedComponent->SetIsVisible(false);
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->SetIsVisible(false);
+        }
     }
     else if (mOwner->GetState() == ActorState::Active) {
-        mDrawAnimatedComponent->SetIsVisible(true);
+        if (mDrawAnimatedComponent) {
+            mDrawAnimatedComponent->SetIsVisible(true);
+        }
         SetPosition(mOwner->GetPosition() - (Vector2(mOwner->GetWidth() * 1.5, 0) * GetForward().x));
     }
 }
+
+void DashEffectActor::StartDashEffect() {
+    mEffectTimer = 0;
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->ResetAnimationTimer();
+    }
+}
+
 
 void DashEffectActor::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth);
-    mDrawAnimatedComponent->SetHeight(mHeight);
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mWidth);
+        mDrawAnimatedComponent->SetHeight(mHeight);
+    }
 }
 
 
@@ -73,7 +87,9 @@ void DashComponent::InitDashEffect() {
 
 bool DashComponent::UseDash(bool isOnGround) {
     if (mDashCooldownTimer <= 0 && !mIsDashing && (isOnGround || !mHasDashedInAir)) {
-        mOwner->GetComponent<DrawAnimatedComponent>()->ResetAnimationTimer();
+        if (mOwner->GetComponent<DrawAnimatedComponent>()) {
+            mOwner->GetComponent<DrawAnimatedComponent>()->ResetAnimationTimer();
+        }
         mOwner->GetGame()->GetAudio()->PlayVariantSound("Dash/Dash.wav", 3);
         mIsDashing = true;
         mDashTimer = 0.0f;
