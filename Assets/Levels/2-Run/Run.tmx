@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="490" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="234">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="490" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="239">
  <editorsettings>
   <export target="Run.json" format="json"/>
  </editorsettings>
@@ -410,7 +410,7 @@
   <object id="217" name="Camera" x="544" y="416" width="1728" height="2784">
    <properties>
     <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="70000"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="8800"/>
     <property name="LimitMaxCameraPositionY" type="float" value="3320"/>
     <property name="LimitMinCameraPositionX" type="float" value="448"/>
     <property name="LimitMinCameraPositionY" type="float" value="288"/>
@@ -480,7 +480,7 @@
   <object id="224" name="Camera" x="2336" y="416" width="224" height="1984">
    <properties>
     <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="70000"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="8800"/>
     <property name="LimitMaxCameraPositionY" type="float" value="3008"/>
     <property name="LimitMinCameraPositionX" type="float" value="448"/>
     <property name="LimitMinCameraPositionY" type="float" value="288"/>
@@ -720,7 +720,7 @@
   <object id="197" name="FlyingGolem" x="6208" y="3040" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="18" name="Player" x="512" y="3168" width="32" height="32">
+  <object id="18" name="Player" x="544" y="3168" width="32" height="32">
    <properties>
     <property name="StartPositionId" type="int" value="0"/>
    </properties>
@@ -1007,5 +1007,32 @@
    </properties>
   </object>
   <object id="232" x="0" y="2880" width="128" height="1280"/>
+ </objectgroup>
+ <objectgroup id="12" name="Decorations">
+  <object id="234" x="3552" y="2144" width="128" height="256">
+   <properties>
+    <property name="Path" value="Sprites/Objects_Fire/Threes/1.png"/>
+   </properties>
+  </object>
+  <object id="235" x="1792" y="2816" width="96" height="96">
+   <properties>
+    <property name="Path" value="Sprites/Objects_Fire/Rocks/6.png"/>
+   </properties>
+  </object>
+  <object id="236" x="5920" y="672" width="96" height="96">
+   <properties>
+    <property name="Path" value="Sprites/Objects_Fire/Grass/11.png"/>
+   </properties>
+  </object>
+  <object id="237" x="1056" y="3104" width="96" height="96">
+   <properties>
+    <property name="Path" value="Sprites/Objects_Fire/Grass/11.png"/>
+   </properties>
+  </object>
+  <object id="238" x="1152" y="3104" width="96" height="96">
+   <properties>
+    <property name="Path" value="Sprites/Objects_Fire/Grass/9.png"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

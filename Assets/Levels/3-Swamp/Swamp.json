@@ -1196,6 +1196,17 @@
         }, 
         {
          "draworder":"topdown",
+         "id":12,
+         "name":"Decorations",
+         "objects":[],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":11,
          "name":"Camera",
          "objects":[
@@ -3438,7 +3449,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":12,
+ "nextlayerid":13,
  "nextobjectid":315,
  "orientation":"orthogonal",
  "renderorder":"right-down",

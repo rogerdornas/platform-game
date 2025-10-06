@@ -1,10 +1,10 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 17968.0,
-            "y": 16608.0
+            "x": 1952.0,
+            "y": 4352.0
         },
-        "scene": "LevelTeste"
+        "scene": "Prologue"
     },
     "player": {
         "can_dash": false,
@@ -13,7 +13,7 @@
         "can_wallslide": false,
         "death_counter": 0,
         "max_jumps_in_air": 0,
-        "money": 24
+        "money": 0
     },
     "upgrades": {
         "fireball": false,

@@ -8,9 +8,10 @@
 Camera::Camera(class Game* game, Vector2 startPosition)
     :mPos(startPosition)
     ,mGame(game)
-    ,mCameraLerpSpeed(6.0f)
-    ,mNormalSpeed(6.0f)
-    ,mSlowTransitionSpeed(2.0f)
+    ,mCameraLerpSpeed(6.0f * mGame->GetScale())
+    ,mNormalSpeed(6.0f * mGame->GetScale())
+    ,mSlowTransitionSpeed(2.0f * mGame->GetScale())
+    ,mInitPositionSpeed(20.0 * mGame->GetScale())
     ,mTransitionDuration(0.0f)
     ,mTransitionTimer(mTransitionDuration)
     ,mCameraMode(CameraMode::FollowPlayer)
@@ -18,6 +19,8 @@ Camera::Camera(class Game* game, Vector2 startPosition)
     ,mLimitMinCameraPosition(Vector2(-1, -1))
     ,mLimitMaxCameraPosition(Vector2(-1, -1))
     ,mCurrentOffsetX(0.0f)
+    ,mInitPositionTimer(0.1f)
+    ,mIsAdjustingInitialPosition(true)
     ,mDistMove(200 * mGame->GetScale())
     ,mIsShaking(false)
     ,mShakeDuration(1.0f)
@@ -64,16 +67,32 @@ void Camera::SetLimitMaxCameraPosition(Vector2 pos) {
 
 
 void Camera::Update(float deltaTime) {
+    // Ajuste rápido de câmera no início de cenas
+    if (mInitPositionTimer > 0) {
+        mInitPositionTimer -= deltaTime;
+        mCameraLerpSpeed = mInitPositionSpeed;
+        mIsAdjustingInitialPosition = true;
+    }
+    else {
+        mIsAdjustingInitialPosition = false;
+    }
+
     if (mCameraMode == CameraMode::FollowPlayerLimited) {
         // Atualiza limites suavizados
-        mCurrentLimitMinPosition = Vector2::Lerp(mCurrentLimitMinPosition, mLimitMinCameraPosition, mSlowTransitionSpeed * deltaTime);
-        mCurrentLimitMaxPosition = Vector2::Lerp(mCurrentLimitMaxPosition, mLimitMaxCameraPosition, mSlowTransitionSpeed * deltaTime);
+        if (!mIsAdjustingInitialPosition) {
+            mCameraLerpSpeed = mSlowTransitionSpeed;
+        }
+        mCurrentLimitMinPosition = Vector2::Lerp(mCurrentLimitMinPosition, mLimitMinCameraPosition, mCameraLerpSpeed * deltaTime);
+        mCurrentLimitMaxPosition = Vector2::Lerp(mCurrentLimitMaxPosition, mLimitMaxCameraPosition, mCameraLerpSpeed * deltaTime);
 
         // OFFSET HORIZONTAL BASEADO NA ROTAÇÃO
         float desiredOffsetX = mGame->GetPlayer()->GetWidth() * 2.5f * mGame->GetPlayer()->GetForward().x;
 
         // Suaviza a transição do offset
-        mCurrentOffsetX = Math::Lerp(mCurrentOffsetX, desiredOffsetX, mSlowTransitionSpeed * deltaTime);
+        if (!mIsAdjustingInitialPosition) {
+            mCameraLerpSpeed = mSlowTransitionSpeed;
+        }
+        mCurrentOffsetX = Math::Lerp(mCurrentOffsetX, desiredOffsetX, mCameraLerpSpeed * deltaTime);
 
         // Calcula posição alvo do player
         Vector2 playerPos = mGame->GetPlayer()->GetPosition();
@@ -95,7 +114,10 @@ void Camera::Update(float deltaTime) {
         }
 
         // Interpola da posição atual até a posição alvo (já limitada)
-        mPos = Vector2::Lerp(mPos, playerPosOffset, mNormalSpeed * deltaTime);
+        if (!mIsAdjustingInitialPosition) {
+            mCameraLerpSpeed = mNormalSpeed;
+        }
+        mPos = Vector2::Lerp(mPos, playerPosOffset, mCameraLerpSpeed * deltaTime);
 
         // Camera Shake
         if (mShakeTimer < mShakeDuration) {
@@ -514,6 +536,9 @@ void Camera::ChangeResolution(float oldScale, float newScale) {
     mDistMove = mDistMove / oldScale * newScale;
     mShakeStrength = mShakeStrength / oldScale * newScale;
     mCameraSpeed = mCameraSpeed / oldScale * newScale;
+    mNormalSpeed = mNormalSpeed / oldScale * newScale;
+    mSlowTransitionSpeed = mSlowTransitionSpeed / oldScale * newScale;
+    mInitPositionSpeed = mInitPositionSpeed / oldScale * newScale;
     mCurrentOffsetX = mCurrentOffsetX / oldScale * newScale;
     mFixedCameraPosition.x = mFixedCameraPosition.x / oldScale * newScale;
     mFixedCameraPosition.y = mFixedCameraPosition.y / oldScale * newScale;

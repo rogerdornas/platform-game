@@ -75,7 +75,6 @@ void Checkpoint::OnUpdate(float deltaTime) {
         mGame->SetCheckPointPosition(GetPosition());
         mGame->SetCheckpointGameScene(mGame->GetGameScene());
         mGame->SetCheckPointMoney(player->GetMoney());
-        mGame->SetCheckpointStartCameraPosition(mCameraStartPosition);
         player->ResetHealthPoints();
         player->ResetMana();
         player->ResetHealCount();
@@ -100,8 +99,6 @@ void Checkpoint::OnUpdate(float deltaTime) {
 void Checkpoint::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
-    mCameraStartPosition.x = mCameraStartPosition.x / oldScale * newScale;
-    mCameraStartPosition.y = mCameraStartPosition.y / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
     if (mDrawAnimatedComponent) {

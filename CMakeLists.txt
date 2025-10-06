@@ -149,6 +149,8 @@ add_executable(${PROJECT_NAME}
         Source/SaveData.h
         Source/SaveManager.cpp
         Source/SaveManager.h
+        Source/Actors/Decorations.cpp
+        Source/Actors/Decorations.h
 )
 
 

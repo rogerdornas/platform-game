@@ -1273,6 +1273,51 @@
         }, 
         {
          "draworder":"topdown",
+         "id":12,
+         "name":"Decorations",
+         "objects":[
+                {
+                 "height":96,
+                 "id":54,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Path",
+                         "type":"string",
+                         "value":"Sprites\/Objects_Fire\/Rocks\/6.png"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":2144,
+                 "y":4928
+                }, 
+                {
+                 "height":256,
+                 "id":55,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Path",
+                         "type":"string",
+                         "value":"Sprites\/Objects_Fire\/Threes\/1.png"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":2304,
+                 "y":4768
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":10,
          "name":"HookPoints",
          "objects":[],
@@ -1282,8 +1327,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":12,
- "nextobjectid":54,
+ "nextlayerid":16,
+ "nextobjectid":56,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

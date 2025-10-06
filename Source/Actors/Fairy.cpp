@@ -10,7 +10,6 @@
 #include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Components/AABBComponent.h"
 
-
 Fairy::Fairy(Game *game, float width, float height)
     :Actor(game)
     ,mWidth(width * mGame->GetScale())

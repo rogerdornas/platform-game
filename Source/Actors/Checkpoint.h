@@ -14,16 +14,11 @@ public:
 
     void OnProcessInput(const Uint8* keyState, SDL_GameController &controller) override;
     void OnUpdate(float deltaTime) override;
-    void SetCameraStartPosition(Vector2 pos) { mCameraStartPosition = pos * mGame->GetScale(); };
-    Vector2 GetCameraStartPosition() const { return mCameraStartPosition; }
-
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
     float mWidth;
     float mHeight;
-
-    Vector2 mCameraStartPosition;
 
     bool mStoreOpened;
     bool mStoreMessageOpened;

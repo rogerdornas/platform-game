@@ -443,7 +443,7 @@
                         {
                          "name":"LimitMaxCameraPositionX",
                          "type":"float",
-                         "value":70000
+                         "value":8800
                         }, 
                         {
                          "name":"LimitMaxCameraPositionY",
@@ -737,7 +737,7 @@
                         {
                          "name":"LimitMaxCameraPositionX",
                          "type":"float",
-                         "value":70000
+                         "value":8800
                         }, 
                         {
                          "name":"LimitMaxCameraPositionY",
@@ -1890,7 +1890,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":512,
+                 "x":544,
                  "y":3168
                 }],
          "opacity":1,
@@ -3380,9 +3380,105 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":12,
+         "name":"Decorations",
+         "objects":[
+                {
+                 "height":256,
+                 "id":234,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Path",
+                         "type":"string",
+                         "value":"Sprites\/Objects_Fire\/Threes\/1.png"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":3552,
+                 "y":2144
+                }, 
+                {
+                 "height":96,
+                 "id":235,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Path",
+                         "type":"string",
+                         "value":"Sprites\/Objects_Fire\/Rocks\/6.png"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":1792,
+                 "y":2816
+                }, 
+                {
+                 "height":96,
+                 "id":236,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Path",
+                         "type":"string",
+                         "value":"Sprites\/Objects_Fire\/Grass\/11.png"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":5920,
+                 "y":672
+                }, 
+                {
+                 "height":96,
+                 "id":237,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Path",
+                         "type":"string",
+                         "value":"Sprites\/Objects_Fire\/Grass\/11.png"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":1056,
+                 "y":3104
+                }, 
+                {
+                 "height":96,
+                 "id":238,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Path",
+                         "type":"string",
+                         "value":"Sprites\/Objects_Fire\/Grass\/9.png"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":1152,
+                 "y":3104
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":12,
- "nextobjectid":234,
+ "nextlayerid":13,
+ "nextobjectid":239,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

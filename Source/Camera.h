@@ -65,6 +65,7 @@ private:
     float mCameraLerpSpeed;
     float mNormalSpeed;
     float mSlowTransitionSpeed;
+    float mInitPositionSpeed;
     float mTransitionDuration;
     float mTransitionTimer;
     CameraMode mCameraMode;
@@ -74,6 +75,8 @@ private:
     Vector2 mCurrentLimitMinPosition;
     Vector2 mCurrentLimitMaxPosition;
     float mCurrentOffsetX;
+    float mInitPositionTimer;
+    bool mIsAdjustingInitialPosition;
 
     float mDistMove;
 

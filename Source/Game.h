@@ -21,7 +21,7 @@ class Game
 {
 public:
     const int DEAD_ZONE = 20000;
-    const float mTransitionTime = 0.2f;
+    const float mTransitionTime = 0.1f;
 
     // Estados de movimento do analógico vertical
     enum class StickState {
@@ -223,7 +223,6 @@ public:
     GameScene GetCheckpointGameScene() const { return mCheckpointGameScene; }
     void SetCheckPointMoney(int money) { mCheckPointMoney = money; }
     int GetCheckPointMoney() const { return mCheckPointMoney; }
-    void SetCheckpointStartCameraPosition(Vector2 pos) { mCheckpointStartCameraPosition = pos; }
     void SetGoingToNextLevel() { mGoingToNextLevel = true; }
     void SetCurrentCutscene(Cutscene* cutscene) { mCurrentCutscene = cutscene; }
     void SetHitByLava() { mHitByLava = true; }
@@ -326,7 +325,6 @@ private:
     Vector2 mCheckpointPosition;
     GameScene mCheckpointGameScene;
     int mCheckPointMoney;
-    Vector2 mCheckpointStartCameraPosition;
     bool mGoingToNextLevel;
     Vector2 mLavaRespawnPosition;
     bool mHitByLava;

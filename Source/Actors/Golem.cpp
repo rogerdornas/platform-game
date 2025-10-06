@@ -53,11 +53,11 @@ Golem::Golem(Game *game)
     ,mFireballSpeed(1400 * mGame->GetScale())
     ,mFireballDamage(15)
 
-    ,mFireballRainIntervalDuration(0.8f)
+    ,mFireballRainIntervalDuration(0.6f)
     ,mFireballRainIntervalTimer(0.0f)
     ,mFireballRainWidth(70 * mGame->GetScale())
     ,mFireballRainHeight(70 * mGame->GetScale())
-    ,mFireballRainSpeed(700 * mGame->GetScale())
+    ,mFireballRainSpeed(850 * mGame->GetScale())
     ,mFireballRainDamage(15)
     ,mFireballRainPositionYOffset(30 * mGame->GetScale())
 

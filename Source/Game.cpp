@@ -20,6 +20,7 @@
 #include "SaveManager.h"
 #include "Actors/BushMonster.h"
 #include "Actors/Checkpoint.h"
+#include "Actors/Decorations.h"
 #include "Actors/DragonFly.h"
 #include "UIElements/UIScreen.h"
 #include "Actors/DynamicGround.h"
@@ -103,7 +104,6 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mPlayerDeathCounter(0)
     ,mCheckpointPosition(Vector2::Zero)
     ,mCheckpointGameScene(GameScene::Prologue)
-    ,mCheckpointStartCameraPosition(Vector2::Zero)
     ,mLavaRespawnPosition(Vector2::Zero)
     ,mHitByLava(false)
     ,mPlayerStartPositionId(0)
@@ -136,7 +136,7 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mConfirmQuitGameMenu(nullptr)
     ,mLoadGameMenu(nullptr)
     ,mSceneManagerState(SceneManagerState::None)
-    ,mFadeDuration(0.5f)
+    ,mFadeDuration(0.4f)
     ,mSceneManagerTimer(0.0f)
     ,mFadeAlpha(0)
     ,mGameScene(GameScene::MainMenu)
@@ -625,16 +625,12 @@ void Game::LoadMainMenu() {
         LoadLoadGameMenu();
     });
 
-    name = "SELECIONAR FASE";
-    mMainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
-        [this]() { LoadLevelSelectMenu(); });
-
     name = "OPÇÕES";
-    mMainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() { LoadOptionsMenu(); });
 
     name = "SAIR";
-    mMainMenu->AddButton(name, buttonPos + Vector2(0, 8 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mMainMenu->SetIsVisible(false);
         LoadConfirmQuitGameMenu();
@@ -1419,6 +1415,26 @@ void Game::LoadObjects(const std::string &fileName) {
                 }
             }
         }
+        if (layer["name"] == "Decorations") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+                std::string imagePath;
+
+                if (obj.contains("properties")) {
+                    for (const auto &prop: obj["properties"]) {
+                        std::string propName = prop["name"];
+                        if (propName == "Path") {
+                            imagePath = prop["value"];
+                        }
+                    }
+                }
+                auto* decoration = new Decorations(this, width, height, imagePath);
+                decoration->SetPosition(Vector2(x + width / 2, y + height / 2));
+            }
+        }
         if (layer["name"] == "Lava") {
             for (const auto &obj: layer["objects"]) {
                 float x = static_cast<float>(obj["x"]) * mScale;
@@ -1850,7 +1866,6 @@ void Game::LoadObjects(const std::string &fileName) {
                     }
                 }
                 auto checkpoint = new Checkpoint(this, width, height, Vector2(x + width / 2, y + height / 2));
-                checkpoint->SetCameraStartPosition(cameraPosition);
             }
         }
 

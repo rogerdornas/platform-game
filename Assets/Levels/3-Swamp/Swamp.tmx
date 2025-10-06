@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="376" height="172" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="315">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="376" height="172" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="315">
  <editorsettings>
   <export target="Swamp.json" format="json"/>
  </editorsettings>
@@ -684,6 +684,7 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup id="12" name="Decorations"/>
  <objectgroup id="11" name="Camera">
   <object id="298" name="Camera" x="1280" y="1280" width="1984" height="864">
    <properties>
