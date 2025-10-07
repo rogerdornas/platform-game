@@ -1,0 +1,20 @@
+{
+    "maps": [
+        {
+            "fileName": "2-Run/Run.tmx",
+            "height": 4160,
+            "width": 15680,
+            "x": 160,
+            "y": 800
+        },
+        {
+            "fileName": "1-Musgo/Musgo.tmx",
+            "height": 8960,
+            "width": 34560,
+            "x": -34208,
+            "y": -768
+        }
+    ],
+    "onlyShowAdjacentMaps": false,
+    "type": "world"
+}

@@ -71,9 +71,8 @@ void LittleBat::OnUpdate(float deltaTime) {
 
     // Se morreu
     if (Died()) {
-        SetState(ActorState::Destroy);
-        mGame->GetCamera()->StartCameraShake(0.3, mCameraShakeStrength);
     }
+
     if (mDrawAnimatedComponent) {
         ManageAnimations();
     }

@@ -154,29 +154,11 @@ void Fox::OnUpdate(float deltaTime) {
 }
 
 void Fox::TriggerBossDefeat() {
-    SetState(ActorState::Destroy);
-    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
-
     // Player ganha pulo duplo
     if (mGame->GetPlayer()->GetMaxJumpsInAir() == 0) {
         auto* skill = new Skill(mGame, Skill::SkillType::DoubleJump);
         skill->SetPosition(GetPosition());
     }
-
-    auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
-    blood->SetPosition(GetPosition());
-    blood->SetEmitDirection(Vector2::UnitY);
-    blood->SetParticleSpeedScale(1.4);
-    blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
-    blood->SetParticleGravity(true);
-
-    auto* circleBlur = new Effect(mGame);
-    circleBlur->SetDuration(1.0);
-    circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
-    circleBlur->SetEnemy(*this);
-    circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
-    circleBlur->SetEffect(TargetEffect::Circle);
-    circleBlur->EnemyDestroyed();
 
     mGame->StopBossMusic();
 }

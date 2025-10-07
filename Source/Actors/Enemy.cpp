@@ -83,82 +83,103 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
 }
 
 bool Enemy::Died() {
+    if (mHealthPoints > 0) {
+        return false;
+    }
     if (mHealthPoints <= 0) {
+        SetState(ActorState::Destroy);
+
         if (IsOnScreen()) {
             mGame->GetAudio()->PlaySound("KillEnemy/KillEnemy1.wav");
-        }
 
-        std::vector<Money*> moneys = mGame->GetMoneys();
+            mGame->GetCamera()->StartCameraShake(0.3, mCameraShakeStrength);
 
-        // Primeiro dropa 1 dinheiro de cada
-        if (mMoneyDrop >= 1) {
-            for (Money* m: moneys) {
-                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Small) {
-                    m->SetState(ActorState::Active);
-                    m->SetPosition(GetPosition());
-                    mMoneyDrop -= 1;
-                    break;
+            auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
+            blood->SetPosition(GetPosition());
+            blood->SetEmitDirection(Vector2::UnitY);
+            blood->SetParticleSpeedScale(1.4);
+            blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
+            blood->SetParticleGravity(true);
+
+            auto* circleBlur = new Effect(mGame);
+            circleBlur->SetDuration(1.0);
+            circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
+            circleBlur->SetEnemy(*this);
+            circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
+            circleBlur->SetEffect(TargetEffect::Circle);
+            circleBlur->EnemyDestroyed();
+
+            std::vector<Money*> moneys = mGame->GetMoneys();
+
+            // Primeiro dropa 1 dinheiro de cada
+            if (mMoneyDrop >= 1) {
+                for (Money* m: moneys) {
+                    if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Small) {
+                        m->SetState(ActorState::Active);
+                        m->SetPosition(GetPosition());
+                        mMoneyDrop -= 1;
+                        break;
+                    }
                 }
             }
-        }
-        if (mMoneyDrop >= 5) {
-            for (Money* m: moneys) {
-                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Medium) {
-                    m->SetState(ActorState::Active);
-                    m->SetPosition(GetPosition());
-                    mMoneyDrop -= 5;
-                    break;
+            if (mMoneyDrop >= 5) {
+                for (Money* m: moneys) {
+                    if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Medium) {
+                        m->SetState(ActorState::Active);
+                        m->SetPosition(GetPosition());
+                        mMoneyDrop -= 5;
+                        break;
+                    }
                 }
             }
-        }
-        if (mMoneyDrop >= 10) {
-            for (Money* m: moneys) {
-                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Large) {
-                    m->SetState(ActorState::Active);
-                    m->SetPosition(GetPosition());
-                    mMoneyDrop -= 10;
-                    break;
+            if (mMoneyDrop >= 10) {
+                for (Money* m: moneys) {
+                    if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Large) {
+                        m->SetState(ActorState::Active);
+                        m->SetPosition(GetPosition());
+                        mMoneyDrop -= 10;
+                        break;
+                    }
                 }
             }
-        }
 
-        // Cria grandes
-        while (mMoneyDrop >= 10) {
-            for (Money* m: moneys) {
-                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Large) {
-                    m->SetState(ActorState::Active);
-                    m->SetPosition(GetPosition());
-                    mMoneyDrop -= 10;
-                    break;
+            // Cria grandes
+            while (mMoneyDrop >= 10) {
+                for (Money* m: moneys) {
+                    if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Large) {
+                        m->SetState(ActorState::Active);
+                        m->SetPosition(GetPosition());
+                        mMoneyDrop -= 10;
+                        break;
+                    }
                 }
             }
-        }
 
-        // Cria médios
-        while (mMoneyDrop >= 5) {
-            for (Money* m: moneys) {
-                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Medium) {
-                    m->SetState(ActorState::Active);
-                    m->SetPosition(GetPosition());
-                    mMoneyDrop -= 5;
-                    break;
+            // Cria médios
+            while (mMoneyDrop >= 5) {
+                for (Money* m: moneys) {
+                    if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Medium) {
+                        m->SetState(ActorState::Active);
+                        m->SetPosition(GetPosition());
+                        mMoneyDrop -= 5;
+                        break;
+                    }
                 }
             }
-        }
 
-        // Cria pequenos
-        while (mMoneyDrop >= 1) {
-            for (Money* m: moneys) {
-                if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Small) {
-                    m->SetState(ActorState::Active);
-                    m->SetPosition(GetPosition());
-                    mMoneyDrop -= 1;
-                    break;
+            // Cria pequenos
+            while (mMoneyDrop >= 1) {
+                for (Money* m: moneys) {
+                    if (m->GetState() == ActorState::Paused && m->GetMoneyType() == Money::MoneyType::Small) {
+                        m->SetState(ActorState::Active);
+                        m->SetPosition(GetPosition());
+                        mMoneyDrop -= 1;
+                        break;
+                    }
                 }
             }
+            return true;
         }
-
-        return true;
     }
     return false;
 }

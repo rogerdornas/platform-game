@@ -439,7 +439,7 @@
     <property name="Waves" value="Waves1"/>
    </properties>
   </object>
-  <object id="46" x="128" y="2560" width="96" height="192">
+  <object id="46" x="96" y="2560" width="320" height="192">
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>

@@ -663,12 +663,12 @@
   </object>
  </objectgroup>
  <objectgroup id="12" name="Camera">
-  <object id="223" name="Camera" x="1984" y="3584" width="2944" height="768">
+  <object id="223" name="Camera" x="1600" y="3584" width="3328" height="768">
    <properties>
     <property name="Event" value="FollowPlayerLimited"/>
     <property name="LimitMaxCameraPositionX" type="float" value="7264"/>
     <property name="LimitMaxCameraPositionY" type="float" value="4512"/>
-    <property name="LimitMinCameraPositionX" type="float" value="1824"/>
+    <property name="LimitMinCameraPositionX" type="float" value="1888"/>
     <property name="LimitMinCameraPositionY" type="float" value="3432"/>
     <property name="Target" value="Camera"/>
    </properties>
@@ -946,8 +946,10 @@
   </object>
  </objectgroup>
  <objectgroup id="3" name="Player">
-  <object id="1" x="2080" y="4320" width="32" height="32">
+  <object id="1" x="1824" y="4320" width="32" height="32">
    <properties>
+    <property name="EnteringLevelSpeedX" type="float" value="700"/>
+    <property name="EnteringLevelSpeedY" type="float" value="0"/>
     <property name="StartPositionId" type="int" value="0"/>
    </properties>
   </object>

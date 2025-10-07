@@ -1079,7 +1079,7 @@
                         {
                          "name":"LimitMinCameraPositionX",
                          "type":"float",
-                         "value":1824
+                         "value":1888
                         }, 
                         {
                          "name":"LimitMinCameraPositionY",
@@ -1094,8 +1094,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":2944,
-                 "x":1984,
+                 "width":3328,
+                 "x":1600,
                  "y":3584
                 }, 
                 {
@@ -2311,6 +2311,16 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"EnteringLevelSpeedX",
+                         "type":"float",
+                         "value":700
+                        }, 
+                        {
+                         "name":"EnteringLevelSpeedY",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
                          "name":"StartPositionId",
                          "type":"int",
                          "value":0
@@ -2319,7 +2329,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":2080,
+                 "x":1824,
                  "y":4320
                 }, 
                 {

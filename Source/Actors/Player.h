@@ -96,6 +96,8 @@ public:
     void SetPrevFireBallPressed(bool f) { mPrevFireBallPressed = f; }
     void SetPrevSwordPressed(bool s) { mPrevSwordPressed = s; }
 
+    void SetIsEnteringLevel(Vector2 velocity);
+
     bool Died();
 
     void ChangeResolution(float oldScale, float newScale) override;
@@ -233,6 +235,10 @@ private:
     float mRunningSoundIntervalTimer;
 
     int mDeathCounter;
+
+    bool mIsEnteringLevel;
+    float mEnteringLevelDuration;
+    float mEnteringLevelTimer;
 
     float mDeathAnimationDuration;
     float mDeathAnimationTimer;

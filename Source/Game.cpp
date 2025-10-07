@@ -331,7 +331,8 @@ void Game::ChangeScene()
     mIsAccelerated = false;
 
     if (mGamePlayState != GamePlayState::Cutscene) {
-        mAudio->StopAllSounds();
+        // mAudio->StopAllSounds();
+        mAudio->StopSound(mMusicHandle);
     }
 
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
@@ -1823,7 +1824,7 @@ void Game::LoadObjects(const std::string &fileName) {
                                 MaxPosX = static_cast<float>(prop["value"]) * mScale;
                             }
                             else if (propName == "MinPosY") {
-                                MinPosY =static_cast<float>(prop["value"]) * mScale;
+                                MinPosY = static_cast<float>(prop["value"]) * mScale;
                             }
                             else if (propName == "MaxPosY") {
                                 MaxPosY = static_cast<float>(prop["value"]) * mScale;
@@ -1874,12 +1875,19 @@ void Game::LoadObjects(const std::string &fileName) {
                 float x = static_cast<float>(obj["x"]) * mScale;
                 float y = static_cast<float>(obj["y"]) * mScale;
                 int playerStartPositionId = 0;
+                Vector2 enteringLevelVelocity(Vector2::Zero);
 
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
                         if (propName == "StartPositionId") {
                             playerStartPositionId = prop["value"];
+                        }
+                        if (propName == "EnteringLevelSpeedX") {
+                            enteringLevelVelocity.x = static_cast<float>(prop["value"]) * mScale;
+                        }
+                        if (propName == "EnteringLevelSpeedY") {
+                            enteringLevelVelocity.y = static_cast<float>(prop["value"]) * mScale;
                         }
                     }
                 }
@@ -1901,6 +1909,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     mPlayer->SetState(ActorState::Active);
                     mPlayer->SetPosition(Vector2(x, y));
                     mPlayer->GetComponent<AABBComponent>()->SetActive(true);
+                    mPlayer->SetIsEnteringLevel(enteringLevelVelocity);
 
                     // Faz isso para o player ser sempre o último a ser atualizado a cada frame
                     RemoveActor(mPlayer);

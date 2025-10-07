@@ -546,35 +546,17 @@ void Moth::ChangeGround(float deltaTime) {
 void Moth::TriggerBossDefeat() {
     for (int id : {51}) {
         Ground *g = mGame->GetGroundById(id);
-        DynamicGround* dynamicGround = dynamic_cast<DynamicGround*>(g);
+        auto* dynamicGround = dynamic_cast<DynamicGround*>(g);
         if (dynamicGround) {
             dynamicGround->SetIsGrowing(true);
         }
     }
 
-    SetState(ActorState::Destroy);
     mGame->SetIsSlowMotion(false);
-
-    mGame->GetCamera()->StartCameraShake(0.5, mCameraShakeStrength);
 
     // Player ganha controle sobre o tempo
     auto* skill = new Skill(mGame, Skill::SkillType::TimeControl);
     skill->SetPosition(GetPosition());
-
-    auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
-    blood->SetPosition(GetPosition());
-    blood->SetEmitDirection(Vector2::UnitY);
-    blood->SetParticleSpeedScale(1.4);
-    blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
-    blood->SetParticleGravity(true);
-
-    auto* circleBlur = new Effect(mGame);
-    circleBlur->SetDuration(1.0);
-    circleBlur->SetSize((GetWidth() + GetHeight()) / 2 * 5.5f);
-    circleBlur->SetEnemy(*this);
-    circleBlur->SetColor(SDL_Color{226, 90, 70, 150});
-    circleBlur->SetEffect(TargetEffect::Circle);
-    circleBlur->EnemyDestroyed();
 
     mGame->StopBossMusic();
 }

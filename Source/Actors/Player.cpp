@@ -148,6 +148,10 @@ Player::Player(Game* game)
     ,mDeathAnimationTimer(0.0f)
     ,mIsDead(false)
 
+    ,mIsEnteringLevel(false)
+    ,mEnteringLevelDuration(0.35f)
+    ,mEnteringLevelTimer(0.0f)
+
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
@@ -273,6 +277,18 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     mTryingLeavingWallSlideLeft = 0;
     mTryingLeavingWallSlideRight = 0;
     mIsRunning = false;
+
+    if (mIsEnteringLevel) {
+        if (mRigidBodyComponent->GetVelocity().x > 0) {
+            mIsRunning = true;
+            SetRotation(0);
+        }
+        if (mRigidBodyComponent->GetVelocity().x < 0) {
+            mIsRunning = true;
+            SetRotation(Math::Pi);
+        }
+        return;
+    }
 
     // bool left = (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_LCTRL]) ||
     //             SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
@@ -719,6 +735,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 }
 
 void Player::OnUpdate(float deltaTime) {
+    if (mIsEnteringLevel) {
+        mEnteringLevelTimer += deltaTime;
+        if (mEnteringLevelTimer >= mEnteringLevelDuration) {
+            mIsEnteringLevel = false;
+        }
+    }
+
     if (mSwordCooldownTimer < mSwordCooldownDuration) {
         mSwordCooldownTimer += deltaTime;
     }
@@ -924,7 +947,8 @@ void Player::OnUpdate(float deltaTime) {
         mKnockBackTimer = mKnockBackDuration;
         mInvulnerableTimer = mInvulnerableDuration;
         mIsHealing = false;
-        mGame->GetAudio()->StopAllSounds();
+        // mGame->GetAudio()->StopAllSounds();
+        mGame->GetAudio()->StopSound(mGame->GetMusicHandle());
         if (mDeathAnimationTimer >= mDeathAnimationDuration) {
             mDeathCounter++;
             mDeathAnimationTimer = 0;
@@ -1220,8 +1244,9 @@ void Player::ResolveEnemyCollision() {
                     swordHitEnemy = true;
                 }
                 if (mSword->GetRotation() == Math::Pi / 2) {
-                    if (!mDashComponent->GetIsDashing())
+                    if (!mDashComponent->GetIsDashing()) {
                         mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                    }
                     // Resetar dash no ar
                     mDashComponent->SetHasDashedInAir(false);
                     // RESET DO CONTADOR DE PULO
@@ -1380,6 +1405,21 @@ bool Player::Died() {
         return true;
     }
     return false;
+}
+
+void Player::SetIsEnteringLevel(Vector2 velocity) {
+    mIsEnteringLevel = true;
+    mEnteringLevelTimer = 0;
+
+    mRigidBodyComponent->SetVelocity(velocity);
+    if (velocity.x > 0) {
+        mIsRunning = true;
+        SetRotation(0);
+    }
+    if (velocity.x < 0) {
+        mIsRunning = true;
+        SetRotation(Math::Pi);
+    }
 }
 
 void Player::ChangeResolution(float oldScale, float newScale) {
