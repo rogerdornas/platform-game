@@ -1058,7 +1058,7 @@
                  "y":5024
                 }, 
                 {
-                 "height":160,
+                 "height":384,
                  "id":3,
                  "name":"",
                  "rotation":0,
@@ -1340,7 +1340,7 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":4736,
+                 "x":4480,
                  "y":4256
                 }, 
                 {
@@ -1353,6 +1353,28 @@
                  "width":32,
                  "x":5408,
                  "y":3808
+                }, 
+                {
+                 "height":32,
+                 "id":61,
+                 "name":"Snake",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":2976,
+                 "y":4992
+                }, 
+                {
+                 "height":32,
+                 "id":62,
+                 "name":"Snake",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":5056,
+                 "y":4256
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1527,7 +1549,7 @@
          "y":0
         }],
  "nextlayerid":16,
- "nextobjectid":61,
+ "nextobjectid":63,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

@@ -43,6 +43,7 @@
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
 #include "Actors/Projectile.h"
+#include "Actors/Snake.h"
 #include "Components/AABBComponent.h"
 #include "Components/DashComponent.h"
 #include "Components/DrawComponents/DrawAnimatedComponent.h"
@@ -1760,6 +1761,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     auto* littleBat = new LittleBat(this);
                     littleBat->SetPosition(Vector2(x, y));
                     littleBat->SetId(id);
+                }
+                else if (name == "Snake") {
+                    auto* snake = new Snake(this);
+                    snake->SetPosition(Vector2(x, y));
+                    snake->SetId(id);
                 }
                 else if (name == "Fox") {
                     if (obj.contains("properties")) {

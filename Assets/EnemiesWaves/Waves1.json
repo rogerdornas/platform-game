@@ -37,6 +37,12 @@
           "delay": 2.5
         },
         { 
+          "actionType": "SpawnEnemy", 
+          "type": "Snake", 
+          "id": "CenterBot", 
+          "delay": 2.5
+        },
+        { 
           "actionType": "SpawnHookPoint", 
           "id": "LeftMid", 
           "delay": 2.0 

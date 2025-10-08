@@ -19,6 +19,7 @@
 #include "Actors/HookEnemy.h"
 #include "Actors/LittleBat.h"
 #include "Actors/Mantis.h"
+#include "Actors/Snake.h"
 #include "Actors/Spawner.h"
 
 WaveManager::WaveManager(Game *game)
@@ -344,6 +345,12 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
         littleBat->SetPosition(pos);
         littleBat->SetSpottedPlayer(true);
         a.enemy = littleBat;
+    }
+    if (a.enemyType == "Snake") {
+        auto* snake = new Snake(mGame);
+        snake->SetPosition(pos);
+        snake->SetSpottedPlayer(true);
+        a.enemy = snake;
     }
 }
 

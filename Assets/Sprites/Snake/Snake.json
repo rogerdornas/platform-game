@@ -1,0 +1,390 @@
+{
+  "frames": [
+    {
+      "filename": "Attack00.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Attack01.png",
+      "frame": {
+        "x": 1,
+        "y": 27,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Attack02.png",
+      "frame": {
+        "x": 69,
+        "y": 1,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Attack03.png",
+      "frame": {
+        "x": 1,
+        "y": 53,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Attack04.png",
+      "frame": {
+        "x": 69,
+        "y": 27,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Attack05.png",
+      "frame": {
+        "x": 137,
+        "y": 1,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Hurt00.png",
+      "frame": {
+        "x": 1,
+        "y": 79,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle01.png",
+      "frame": {
+        "x": 69,
+        "y": 53,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle02.png",
+      "frame": {
+        "x": 137,
+        "y": 27,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle03.png",
+      "frame": {
+        "x": 1,
+        "y": 105,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk01.png",
+      "frame": {
+        "x": 69,
+        "y": 79,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk02.png",
+      "frame": {
+        "x": 137,
+        "y": 53,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk03.png",
+      "frame": {
+        "x": 69,
+        "y": 105,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle00.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk00.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 66,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 24
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Snake.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 204,
+      "h": 130
+    },
+    "scale": 1
+  }
+}

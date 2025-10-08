@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="210" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="61">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="210" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="63">
  <editorsettings>
   <export target="Room0.json" format="json"/>
  </editorsettings>
@@ -557,7 +557,7 @@
  <objectgroup id="5" name="Grounds">
   <object id="1" x="896" y="5408" width="1248" height="544"/>
   <object id="2" x="2144" y="5024" width="1632" height="928"/>
-  <object id="3" x="1568" y="5248" width="256" height="160"/>
+  <object id="3" x="1568" y="5248" width="256" height="384"/>
   <object id="4" x="3072" y="4832" width="128" height="32"/>
   <object id="5" x="3392" y="4544" width="128" height="32"/>
   <object id="10" x="512" y="3712" width="384" height="2240"/>
@@ -584,8 +584,10 @@
  <objectgroup id="7" name="Enemies">
   <object id="8" name="Enemy Simple" x="2720" y="4256" width="32" height="32"/>
   <object id="9" name="Flying Enemy" x="2368" y="3744" width="32" height="32"/>
-  <object id="16" name="Enemy Simple" x="4736" y="4256" width="32" height="32"/>
+  <object id="16" name="Enemy Simple" x="4480" y="4256" width="32" height="32"/>
   <object id="18" name="Flying Enemy" x="5408" y="3808" width="32" height="32"/>
+  <object id="61" name="Snake" x="2976" y="4992" width="32" height="32"/>
+  <object id="62" name="Snake" x="5056" y="4256" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="8" name="Levers"/>
  <objectgroup id="9" name="Player">
