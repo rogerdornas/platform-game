@@ -318,68 +318,6 @@
  <objectgroup id="7" name="HookPoints"/>
  <objectgroup id="8" name="Levers"/>
  <objectgroup id="9" name="Enemies"/>
- <objectgroup id="10" name="SpawnPoint">
-  <object id="16" x="3456" y="3136" width="32" height="32">
-   <properties>
-    <property name="id" value="RightBot"/>
-   </properties>
-  </object>
-  <object id="17" x="2400" y="3136" width="32" height="32">
-   <properties>
-    <property name="id" value="LeftBot"/>
-   </properties>
-  </object>
-  <object id="18" x="3456" y="2464" width="32" height="32">
-   <properties>
-    <property name="id" value="RightMid"/>
-   </properties>
-  </object>
-  <object id="19" x="2400" y="2464" width="32" height="32">
-   <properties>
-    <property name="id" value="LeftMid"/>
-   </properties>
-  </object>
-  <object id="24" x="2912" y="3136" width="32" height="32">
-   <properties>
-    <property name="id" value="CenterBot"/>
-   </properties>
-  </object>
-  <object id="26" x="2912" y="2464" width="32" height="32">
-   <properties>
-    <property name="id" value="CenterMid"/>
-   </properties>
-  </object>
-  <object id="32" x="2400" y="1920" width="32" height="32">
-   <properties>
-    <property name="id" value="LeftTop"/>
-   </properties>
-  </object>
-  <object id="33" x="2912" y="1920" width="32" height="32">
-   <properties>
-    <property name="id" value="CenterTop"/>
-   </properties>
-  </object>
-  <object id="34" x="3456" y="1920" width="32" height="32">
-   <properties>
-    <property name="id" value="RightTop"/>
-   </properties>
-  </object>
-  <object id="35" x="2400" y="2784" width="32" height="32">
-   <properties>
-    <property name="id" value="LeftMid1"/>
-   </properties>
-  </object>
-  <object id="36" x="2912" y="2784" width="32" height="32">
-   <properties>
-    <property name="id" value="CenterMid1"/>
-   </properties>
-  </object>
-  <object id="37" x="3456" y="2784" width="32" height="32">
-   <properties>
-    <property name="id" value="RightMid1"/>
-   </properties>
-  </object>
- </objectgroup>
  <objectgroup id="11" name="Camera">
   <object id="42" name="Camera" x="96" y="2560" width="1856" height="640">
    <properties>
@@ -542,6 +480,68 @@
   <object id="51" x="416" y="2752" width="224" height="64"/>
   <object id="52" x="800" y="2752" width="224" height="64"/>
   <object id="53" x="1152" y="2752" width="224" height="64"/>
+ </objectgroup>
+ <objectgroup id="10" name="SpawnPoint">
+  <object id="16" x="3456" y="3136" width="32" height="32">
+   <properties>
+    <property name="id" value="RightBot"/>
+   </properties>
+  </object>
+  <object id="17" x="2400" y="3136" width="32" height="32">
+   <properties>
+    <property name="id" value="LeftBot"/>
+   </properties>
+  </object>
+  <object id="18" x="3456" y="2464" width="32" height="32">
+   <properties>
+    <property name="id" value="RightMid"/>
+   </properties>
+  </object>
+  <object id="19" x="2400" y="2464" width="32" height="32">
+   <properties>
+    <property name="id" value="LeftMid"/>
+   </properties>
+  </object>
+  <object id="24" x="2912" y="3136" width="32" height="32">
+   <properties>
+    <property name="id" value="CenterBot"/>
+   </properties>
+  </object>
+  <object id="26" x="2912" y="2464" width="32" height="32">
+   <properties>
+    <property name="id" value="CenterMid"/>
+   </properties>
+  </object>
+  <object id="32" x="2400" y="1920" width="32" height="32">
+   <properties>
+    <property name="id" value="LeftTop"/>
+   </properties>
+  </object>
+  <object id="33" x="2912" y="1920" width="32" height="32">
+   <properties>
+    <property name="id" value="CenterTop"/>
+   </properties>
+  </object>
+  <object id="34" x="3456" y="1920" width="32" height="32">
+   <properties>
+    <property name="id" value="RightTop"/>
+   </properties>
+  </object>
+  <object id="35" x="2400" y="2784" width="32" height="32">
+   <properties>
+    <property name="id" value="LeftMid1"/>
+   </properties>
+  </object>
+  <object id="36" x="2912" y="2784" width="32" height="32">
+   <properties>
+    <property name="id" value="CenterMid1"/>
+   </properties>
+  </object>
+  <object id="37" x="3456" y="2784" width="32" height="32">
+   <properties>
+    <property name="id" value="RightMid1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="2" name="Player">
   <object id="1" x="224" y="3168" width="32" height="32">

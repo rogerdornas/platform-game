@@ -58,6 +58,22 @@
       "actions": [
         { 
           "actionType": "SpawnEnemy", 
+          "type": "Mushroom", 
+          "id": "LeftBot", 
+          "delay": 2.5
+        },
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "Snake", 
+          "id": "RightBot", 
+          "delay": 2.5
+        }
+      ]
+    },
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
           "type": "FlyingGolem", 
           "id": "LeftMid", 
           "delay": 2.5

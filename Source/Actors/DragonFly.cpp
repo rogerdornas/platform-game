@@ -28,7 +28,6 @@ DragonFly::DragonFly(Game *game)
     ,mIsCharging(false)
 
     ,mHitDuration(0.3f)
-    ,mHitTimer(0.0f)
 
     ,mAttackStraightDuration(0.3f)
     ,mAttackStraightTimer(0.0f)

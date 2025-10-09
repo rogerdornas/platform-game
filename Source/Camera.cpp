@@ -363,7 +363,7 @@ Vector2 Camera::ScrollRight(float deltaTime, float speed) {
         targetPos.y = playerPos.y - mGame->GetLogicalWindowHeight() / 2;
 
         if (playerPos.x < targetPos.x - 50 * mGame->GetScale()) {
-            mGame->SetResetLevel();
+            mGame->SetBackToCheckpoint();
             mGame->GetAudio()->StopAllSounds();
             mGame->GetPlayer()->SetState(ActorState::Paused);
             mFixedCameraPosition = mPos - Vector2(mGame->GetLogicalWindowWidth() / 2, 0);
@@ -382,7 +382,7 @@ Vector2 Camera::ScrollUp(float deltaTime, float speed) {
 
 
         if (playerPos.y > targetPos.y + mGame->GetLogicalWindowHeight() + 50 * mGame->GetScale()) {
-            mGame->SetResetLevel();
+            mGame->SetBackToCheckpoint();
             mGame->GetAudio()->StopAllSounds();
             mGame->GetPlayer()->SetState(ActorState::Paused);
             mFixedCameraPosition = mPos + Vector2(0, mGame->GetLogicalWindowHeight() / 2);

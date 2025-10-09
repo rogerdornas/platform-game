@@ -42,6 +42,7 @@
 #include "Actors/Mantis.h"
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
+#include "Actors/Mushroom.h"
 #include "Actors/Projectile.h"
 #include "Actors/Snake.h"
 #include "Components/AABBComponent.h"
@@ -66,7 +67,7 @@ std::vector<int> ParseIntList(const std::string& str) {
 }
 
 Game::Game(int windowWidth, int windowHeight, int FPS)
-    :mResetLevel(false)
+    :mBackToCheckpoint(false)
     ,mWindow(nullptr)
     ,mRenderer(nullptr)
     ,mWindowWidth(windowWidth)
@@ -334,6 +335,7 @@ void Game::ChangeScene()
     if (mGamePlayState != GamePlayState::Cutscene) {
         // mAudio->StopAllSounds();
         mAudio->StopSound(mMusicHandle);
+        mAudio->StopSound(mBossMusic);
     }
 
     const std::string backgroundAssets = "../Assets/Sprites/Background/";
@@ -890,6 +892,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Prologue, 0.5f);
         });
 
@@ -898,6 +901,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Level1, 0.5f);
         });
 
@@ -906,6 +910,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Level2, 0.5f);
         });
 
@@ -914,6 +919,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Level3, 0.5f);
         });
 
@@ -922,6 +928,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Level4, 0.5f);
         });
 
@@ -930,6 +937,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Level5, 0.5f);
         });
 
@@ -938,6 +946,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::LevelTeste, 0.5f);
         });
 
@@ -946,6 +955,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Coliseu, 0.5f);
         });
 
@@ -954,6 +964,7 @@ void Game::LoadLevelSelectMenu() {
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
+            mGoingToNextLevel = true;
             SetGameScene(GameScene::Room0, 0.5f);
         });
 
@@ -1767,6 +1778,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     snake->SetPosition(Vector2(x, y));
                     snake->SetId(id);
                 }
+                else if (name == "Mushroom") {
+                    auto* mushroom = new Mushroom(this);
+                    mushroom->SetPosition(Vector2(x, y));
+                    mushroom->SetId(id);
+                }
                 else if (name == "Fox") {
                     if (obj.contains("properties")) {
                         for (const auto &prop: obj["properties"]) {
@@ -1902,10 +1918,6 @@ void Game::LoadObjects(const std::string &fileName) {
                     continue;
                 }
 
-                if (mGoingToNextLevel) {
-                    mGoingToNextLevel = false;
-                }
-
                 if (mPlayer) {
                     mPlayer->SetSword();
                     mPlayer->SetJumpEffects();
@@ -1913,9 +1925,15 @@ void Game::LoadObjects(const std::string &fileName) {
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
                     mPlayer->SetIsDead(false);
                     mPlayer->SetState(ActorState::Active);
-                    mPlayer->SetPosition(Vector2(x, y));
                     mPlayer->GetComponent<AABBComponent>()->SetActive(true);
-                    mPlayer->SetIsEnteringLevel(enteringLevelVelocity);
+                    if (mGoingToNextLevel) {
+                        mPlayer->SetPosition(Vector2(x, y));
+                        mPlayer->SetIsEnteringLevel(enteringLevelVelocity);
+                        mGoingToNextLevel = false;
+                    }
+                    else {
+                        mPlayer->SetPosition(mCheckpointPosition);
+                    }
 
                     // Faz isso para o player ser sempre o último a ser atualizado a cada frame
                     RemoveActor(mPlayer);
@@ -2592,14 +2610,14 @@ void Game::UpdateGame()
         }
     }
 
-    if (mResetLevel) {
+    if (mBackToCheckpoint) {
         mStore->CloseStoreMessage();
-        ResetGameScene(1.5f);
+        SetGameScene(mCheckpointGameScene, 1.5f);
         mPlayer->ResetHealthPoints();
         mPlayer->ResetMana();
         mPlayer->ResetHealCount();
         mPlayer->SetMoney(mCheckPointMoney);
-        mResetLevel = false;
+        mBackToCheckpoint = false;
     }
 
     UpdateCamera(deltaTime);

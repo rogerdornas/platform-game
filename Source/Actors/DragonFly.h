@@ -55,7 +55,6 @@ private:
     bool mIsCharging;
 
     float mHitDuration;
-    float mHitTimer;
 
     float mAttackStraightDuration;
     float mAttackStraightTimer;

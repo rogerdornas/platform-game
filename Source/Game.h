@@ -151,7 +151,7 @@ public:
     std::vector<class Enemy*> &GetEnemies() { return mEnemies; }
     Enemy* GetEnemyById(int id);
 
-    void SetResetLevel() { mResetLevel = true; }
+    void SetBackToCheckpoint() { mBackToCheckpoint = true; }
     void InitCrossFade(float duration);
 
     int **GetLevelData() const { return mLevelData; }
@@ -289,7 +289,7 @@ private:
     int mFPS;
 
     bool mIsPaused;
-    bool mResetLevel;
+    bool mBackToCheckpoint;
     bool mIsCrossFading;
     float mCrossFadeDuration;
     float mCrossFadeTimer;

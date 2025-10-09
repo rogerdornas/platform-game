@@ -27,7 +27,7 @@ Snake::Snake(Game *game)
 {
     mWidth = 100 * mGame->GetScale();
     mHeight = 42 * mGame->GetScale();
-    mMoveSpeed = 250 * mGame->GetScale();
+    mMoveSpeed = 300 * mGame->GetScale();
     mHealthPoints = 60;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 15;
@@ -212,7 +212,7 @@ void Snake::Attack(float deltaTime) {
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
-        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2.5f, mRigidBodyComponent->GetVelocity().y));
+        mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2.0f, mRigidBodyComponent->GetVelocity().y));
     }
 
     if (mAttackTimer > 0.45f * mAttackDuration && mAttackTimer < 0.9f * mAttackDuration) {

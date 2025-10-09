@@ -11,9 +11,9 @@
         "can_fireball": true,
         "can_hook": true,
         "can_wallslide": true,
-        "death_counter": 17,
+        "death_counter": 29,
         "max_jumps_in_air": 1,
-        "money": 8291
+        "money": 9204
     },
     "upgrades": {
         "fireball": true,

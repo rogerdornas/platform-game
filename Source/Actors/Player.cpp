@@ -7,6 +7,7 @@
 #include "Checkpoint.h"
 #include "Effect.h"
 #include "HookPoint.h"
+#include "Mushroom.h"
 #include "../Game.h"
 #include "../Actors/Sword.h"
 #include "../Actors/JumpEffect.h"
@@ -949,10 +950,11 @@ void Player::OnUpdate(float deltaTime) {
         mIsHealing = false;
         // mGame->GetAudio()->StopAllSounds();
         mGame->GetAudio()->StopSound(mGame->GetMusicHandle());
+        mGame->GetAudio()->StopSound(mGame->GetBossMusicHandle());
         if (mDeathAnimationTimer >= mDeathAnimationDuration) {
             mDeathCounter++;
             mDeathAnimationTimer = 0;
-            mGame->SetResetLevel();
+            mGame->SetBackToCheckpoint();
             SetState(ActorState::Paused);
         }
     }
@@ -1142,7 +1144,7 @@ void Player::ResolveGroundCollision() {
                                     break;
 
                                 default:
-                                    color = {80, 148, 45, 255};
+                                    color = {102, 114, 145, 255};
                                     break;
                             }
                             grass->SetParticleColor(color);
@@ -1242,15 +1244,25 @@ void Player::ResolveEnemyCollision() {
                 if (!mSwordHitEnemy) {
                     e->ReceiveHit(mSword->GetDamage(), mSword->GetForward());
                     swordHitEnemy = true;
-                }
-                if (mSword->GetRotation() == Math::Pi / 2) {
-                    if (!mDashComponent->GetIsDashing()) {
-                        mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                    if (mSword->GetRotation() == Math::Pi / 2) {
+                        if (!mDashComponent->GetIsDashing()) {
+                            if (auto* mushroom = dynamic_cast<Mushroom*>(e)) {
+                                if (mushroom->GetMushroomState() != Mushroom::State::Attack) {
+                                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce * 1.75f));
+                                }
+                                else {
+                                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                                }
+                            }
+                            else {
+                                mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, mJumpForce));
+                            }
+                        }
+                        // Resetar dash no ar
+                        mDashComponent->SetHasDashedInAir(false);
+                        // RESET DO CONTADOR DE PULO
+                        mJumpCountInAir = 0;
                     }
-                    // Resetar dash no ar
-                    mDashComponent->SetHasDashedInAir(false);
-                    // RESET DO CONTADOR DE PULO
-                    mJumpCountInAir = 0;
                 }
             }
         }
