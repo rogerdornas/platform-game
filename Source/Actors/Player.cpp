@@ -325,7 +325,6 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                      (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000 &&
                      SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
 
-
     // bool lookUp = (state[SDL_SCANCODE_UP] && state[SDL_SCANCODE_LCTRL]) ||
     //                SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) < -28000;
 
@@ -337,7 +336,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     // bool lodDown = (state[SDL_SCANCODE_DOWN] && state[SDL_SCANCODE_LCTRL]) ||
     //                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) > 28000;
 
-    bool lodDown = (!right && !rightSlow && !left && !leftSlow && mIsOnGround) &&
+    bool lookDown = (!right && !rightSlow && !left && !leftSlow && mIsOnGround) &&
                    ((mGame->IsActionPressed(Game::Action::Down, state, &controller) &&
                    mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
                    SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) > 28000);
@@ -355,7 +354,6 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     bool down = mGame->IsActionPressed(Game::Action::Down, state, &controller) ||
           SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTY) > 22000;
-
 
     // bool jump = state[SDL_SCANCODE_Z] ||
     //             SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_A);
@@ -493,7 +491,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         mGame->GetCamera()->SetLookUp();
     }
 
-    if (lodDown) {
+    if (lookDown) {
         mGame->GetCamera()->SetLookDown();
     }
 

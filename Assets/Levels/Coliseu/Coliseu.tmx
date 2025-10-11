@@ -386,7 +386,7 @@
     <property name="Target" value="Game"/>
    </properties>
   </object>
-  <object id="47" x="448" y="2560" width="160" height="192">
+  <object id="47" x="448" y="2560" width="256" height="192">
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>

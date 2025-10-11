@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1080" height="280" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="253">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1080" height="280" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="254">
  <editorsettings>
   <export target="Musgo.json" format="json"/>
  </editorsettings>
@@ -599,25 +599,6 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="6" name="Enemies">
-  <object id="53" name="Enemy Simple" x="12992" y="3680" width="32" height="32"/>
-  <object id="66" name="Flying Enemy" x="12992" y="2880" width="32" height="32"/>
-  <object id="68" name="Enemy Simple" x="10784" y="2528" width="32" height="32"/>
-  <object id="69" name="FlyingShooterEnemy" x="10944" y="3520" width="32" height="32"/>
-  <object id="70" name="FlyingShooterEnemy" x="10784" y="2880" width="32" height="32"/>
-  <object id="71" name="Flying Enemy" x="10912" y="2880" width="32" height="32"/>
-  <object id="84" name="FlyingShooterEnemy" x="15424" y="2784" width="32" height="32"/>
-  <object id="85" name="Enemy Simple" x="15424" y="3136" width="32" height="32"/>
-  <object id="96" name="Flying Enemy" x="16768" y="2656" width="32" height="32"/>
-  <object id="100" name="FlyingShooterEnemy" x="17504" y="2656" width="32" height="32"/>
-  <object id="120" name="FlyingShooterEnemy" x="19008" y="2656" width="32" height="32"/>
-  <object id="121" name="Flying Enemy" x="19488" y="2656" width="32" height="32"/>
-  <object id="134" name="Flying Enemy" x="20288" y="2656" width="32" height="32"/>
-  <object id="152" name="Mantis" x="10528" y="4320" width="32" height="32"/>
-  <object id="153" name="Mantis" x="11776" y="4320" width="32" height="32"/>
-  <object id="173" name="BushMonster" x="26784" y="7072" width="32" height="32"/>
-  <object id="221" name="FlyingSpawnerEnemy" x="22944" y="4896" width="32" height="32"/>
- </objectgroup>
  <objectgroup id="7" name="Levers">
   <object id="51" x="10656" y="2496" width="64" height="64">
    <properties>
@@ -1187,5 +1168,24 @@
   <object id="184" name="Ground" x="29504" y="6176" width="2560" height="2112"/>
   <object id="188" x="28512" y="6336" width="160" height="64"/>
   <object id="250" x="704" y="4064" width="896" height="1152"/>
+ </objectgroup>
+ <objectgroup id="6" name="Enemies">
+  <object id="53" name="Enemy Simple" x="12992" y="3680" width="32" height="32"/>
+  <object id="66" name="Flying Enemy" x="12992" y="2880" width="32" height="32"/>
+  <object id="68" name="Enemy Simple" x="10784" y="2528" width="32" height="32"/>
+  <object id="69" name="FlyingShooterEnemy" x="10944" y="3520" width="32" height="32"/>
+  <object id="70" name="FlyingShooterEnemy" x="10784" y="2880" width="32" height="32"/>
+  <object id="71" name="Flying Enemy" x="10912" y="2880" width="32" height="32"/>
+  <object id="84" name="FlyingShooterEnemy" x="15424" y="2784" width="32" height="32"/>
+  <object id="85" name="Enemy Simple" x="15424" y="3136" width="32" height="32"/>
+  <object id="96" name="Flying Enemy" x="16768" y="2656" width="32" height="32"/>
+  <object id="100" name="FlyingShooterEnemy" x="17504" y="2656" width="32" height="32"/>
+  <object id="120" name="FlyingShooterEnemy" x="19008" y="2656" width="32" height="32"/>
+  <object id="121" name="Flying Enemy" x="19488" y="2656" width="32" height="32"/>
+  <object id="134" name="Flying Enemy" x="20288" y="2656" width="32" height="32"/>
+  <object id="152" name="Mantis" x="10528" y="4320" width="32" height="32"/>
+  <object id="153" name="Mantis" x="11776" y="4320" width="32" height="32"/>
+  <object id="173" name="BushMonster" x="26784" y="7072" width="32" height="32"/>
+  <object id="221" name="FlyingSpawnerEnemy" x="22944" y="4896" width="32" height="32"/>
  </objectgroup>
 </map>

@@ -6,6 +6,7 @@
 #include "Game.h"
 #include <fstream>
 #include "Json.h"
+#include "Actors/CloneEnemy.h"
 #include "Actors/DragonFly.h"
 #include "Actors/DynamicGround.h"
 #include "Actors/EnemySimple.h"
@@ -358,6 +359,12 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
         mushroom->SetPosition(pos);
         mushroom->SetSpottedPlayer(true);
         a.enemy = mushroom;
+    }
+    if (a.enemyType == "CloneEnemy") {
+        auto* cloneEnemy = new CloneEnemy(mGame);
+        cloneEnemy->SetPosition(pos);
+        cloneEnemy->SetSpottedPlayer(true);
+        a.enemy = cloneEnemy;
     }
 }
 

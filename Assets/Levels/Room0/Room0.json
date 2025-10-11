@@ -905,7 +905,7 @@
                 {
                  "height":192,
                  "id":29,
-                 "name":"Level1",
+                 "name":"",
                  "properties":[
                         {
                          "name":"Destroy",
@@ -1375,6 +1375,17 @@
                  "width":32,
                  "x":5056,
                  "y":4256
+                }, 
+                {
+                 "height":32,
+                 "id":63,
+                 "name":"CloneEnemy",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":2016,
+                 "y":5376
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1549,7 +1560,7 @@
          "y":0
         }],
  "nextlayerid":16,
- "nextobjectid":63,
+ "nextobjectid":64,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

@@ -20,6 +20,7 @@
 #include "SaveManager.h"
 #include "Actors/BushMonster.h"
 #include "Actors/Checkpoint.h"
+#include "Actors/CloneEnemy.h"
 #include "Actors/Decorations.h"
 #include "Actors/DragonFly.h"
 #include "UIElements/UIScreen.h"
@@ -1782,6 +1783,11 @@ void Game::LoadObjects(const std::string &fileName) {
                     auto* mushroom = new Mushroom(this);
                     mushroom->SetPosition(Vector2(x, y));
                     mushroom->SetId(id);
+                }
+                else if (name == "CloneEnemy") {
+                    auto* cloneEnemy = new CloneEnemy(this);
+                    cloneEnemy->SetPosition(Vector2(x, y));
+                    cloneEnemy->SetId(id);
                 }
                 else if (name == "Fox") {
                     if (obj.contains("properties")) {

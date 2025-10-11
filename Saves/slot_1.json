@@ -1,19 +1,19 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 688.0,
-            "y": 3104.0
+            "x": 848.0,
+            "y": 5856.0
         },
-        "scene": "Coliseu"
+        "scene": "Level4"
     },
     "player": {
         "can_dash": true,
         "can_fireball": true,
         "can_hook": true,
         "can_wallslide": true,
-        "death_counter": 29,
+        "death_counter": 42,
         "max_jumps_in_air": 1,
-        "money": 9204
+        "money": 11397
     },
     "upgrades": {
         "fireball": true,

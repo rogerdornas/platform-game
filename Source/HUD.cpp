@@ -37,11 +37,13 @@ HUD::HUD(class Game* game, const std::string& fontName)
 
     mHPBar = {HPBarX, HPBarY,HPBarWidth,HPBarHeight};
     mDamageTakenBar = mHPBar;
+    mDamageTakenBar.w = 0;
     mHPRemainingBar = mHPBar;
     mHPGrowingBar = mHPBar;
 
     mManaBar = {ManaBarX, ManaBarY, ManaBarWidth, ManaBarHeight};
     mManaUsedBar = mManaBar;
+    mManaUsedBar.w = 0;
     mManaRemainingBar = mManaBar;
 
     mBossHPBar = {bossHPBarX, bossHPBarY,bossHPBarWidth,bossHPBarHeight};

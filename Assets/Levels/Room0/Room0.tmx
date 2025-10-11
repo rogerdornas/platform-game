@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="210" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="63">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="210" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="64">
  <editorsettings>
   <export target="Room0.json" format="json"/>
  </editorsettings>
@@ -525,7 +525,7 @@
   </object>
  </objectgroup>
  <objectgroup id="3" name="Triggers">
-  <object id="29" name="Level1" x="6304" y="4416" width="320" height="192">
+  <object id="29" x="6304" y="4416" width="320" height="192">
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
@@ -588,6 +588,7 @@
   <object id="18" name="Flying Enemy" x="5408" y="3808" width="32" height="32"/>
   <object id="61" name="Mushroom" x="2976" y="4992" width="32" height="32"/>
   <object id="62" name="Snake" x="5056" y="4256" width="32" height="32"/>
+  <object id="63" name="CloneEnemy" x="2016" y="5376" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="8" name="Levers"/>
  <objectgroup id="9" name="Player">

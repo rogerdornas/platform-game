@@ -155,6 +155,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Snake.h
         Source/Actors/Mushroom.cpp
         Source/Actors/Mushroom.h
+        Source/Actors/CloneEnemy.cpp
+        Source/Actors/CloneEnemy.h
 )
 
 
