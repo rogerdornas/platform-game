@@ -32,7 +32,7 @@ DrawAnimatedComponent::~DrawAnimatedComponent()
 void DrawAnimatedComponent::LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath)
 {
     // Load sprite sheet texture
-    mSpriteSheetSurface = mOwner->GetGame()->LoadTexture(texturePath);
+    // mSpriteSheetSurface = mOwner->GetGame()->LoadTexture(texturePath);
 
     // Load sprite sheet data
     std::ifstream spriteSheetFile(dataPath);
