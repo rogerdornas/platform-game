@@ -42,7 +42,8 @@ public:
         Level3,
         Level4,
         Level5,
-        Room0
+        Room0,
+        MirrorBoss
     };
 
     enum class SceneManagerState {
@@ -142,6 +143,7 @@ public:
 
     void AddSpawnPoint(const std::string& id, const Vector2& pos);
     Vector2 GetSpawnPointPosition(const std::string& id) const;
+    std::vector<Vector2> GetSpawnPointsPositions();
 
     void CreateWaveManager(std::string wavesFilePath);
     void RemoveWaveManager() { delete mWaveManager; mWaveManager = nullptr; }

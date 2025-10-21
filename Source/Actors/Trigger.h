@@ -19,6 +19,7 @@ public:
         Enemy,
         Dialogue,
         Cutscene,
+        Player,
         Nothing
     };
 
@@ -50,7 +51,10 @@ public:
 
         StartDialogue,
 
-        StartCutscene
+        StartCutscene,
+
+        InvertControls,
+        RevertControls
     };
 
     Trigger(class Game *game, float width, float height);
@@ -80,6 +84,7 @@ protected:
     virtual void EnemyTrigger();
     void DialogueTrigger();
     void CutsceneTrigger();
+    void PlayerTrigger();
 
     float mWidth;
     float mHeight;

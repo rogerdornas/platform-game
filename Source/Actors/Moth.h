@@ -26,8 +26,8 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
-    void MovementAfterPlayerSpotted(float deltaTime);
     void MovementBeforePlayerSpotted();
+    void MovementAfterPlayerSpotted(float deltaTime);
 
     void TriggerBossDefeat();
 
@@ -67,6 +67,7 @@ private:
     float mProjectileWidth;
     float mProjectileHeight;
     float mProjectileSpeed;
+    float mProjectileDamage;
     int mMaxProjectiles;
     int mCountProjectiles;
     float mDurationBetweenProjectiles;

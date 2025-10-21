@@ -64,6 +64,10 @@ void Trigger::SetTarget(std::string target) {
         mTarget = Target::Cutscene;
         return;
     }
+    if (target == "Player") {
+        mTarget = Target::Player;
+        return;
+    }
 }
 
 void Trigger::SetEvent(std::string event) {
@@ -161,6 +165,16 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::StartCutscene;
         return;
     }
+
+    if (event == "InvertControls") {
+        mEvent = Event::InvertControls;
+        return;
+    }
+
+    if (event == "RevertControls") {
+        mEvent = Event::RevertControls;
+        return;
+    }
 }
 
 void Trigger::SetScene(std::string scene) {
@@ -170,6 +184,10 @@ void Trigger::SetScene(std::string scene) {
     }
     if (scene == "Room0") {
         mScene = Game::GameScene::Room0;
+        return;
+    }
+    if (scene == "MirrorBoss") {
+        mScene = Game::GameScene::MirrorBoss;
         return;
     }
     if (scene == "Coliseu") {
@@ -233,6 +251,10 @@ void Trigger::OnUpdate(float deltaTime) {
 
             case Target::Cutscene:
                 CutsceneTrigger();
+                break;
+
+            case Target::Player:
+                PlayerTrigger();
                 break;
 
             default:
@@ -418,6 +440,22 @@ void Trigger::CutsceneTrigger() {
     cutscene->Start();
     mGame->SetCurrentCutscene(cutscene);
     mGame->SetGamePlayState(Game::GamePlayState::Cutscene);
+}
+
+void Trigger::PlayerTrigger() {
+    auto* player = mGame->GetPlayer();
+    switch (mEvent) {
+        case Event::InvertControls:
+            player->SetInvertControls(true);
+            break;
+
+        case Event::RevertControls:
+            player->SetInvertControls(false);
+            break;
+
+        default:
+            break;
+    }
 }
 
 

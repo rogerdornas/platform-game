@@ -23,10 +23,10 @@ DrawAnimatedComponent::DrawAnimatedComponent(Actor* owner, float width, float he
 
 DrawAnimatedComponent::~DrawAnimatedComponent()
 {
-    for (const auto &rect: mSpriteSheetData) {
-        delete rect;
-    }
-    mSpriteSheetData.clear();
+    // for (const auto &rect: mSpriteSheetData) {
+    //     delete rect;
+    // }
+    // mSpriteSheetData.clear();
 }
 
 void DrawAnimatedComponent::LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath)
@@ -38,13 +38,13 @@ void DrawAnimatedComponent::LoadSpriteSheet(const std::string &texturePath, cons
     std::ifstream spriteSheetFile(dataPath);
     nlohmann::json spriteSheetData = nlohmann::json::parse(spriteSheetFile);
 
-    SDL_Rect* rect = nullptr;
+    // SDL_Rect* rect = nullptr;
     for (const auto &frame: spriteSheetData["frames"]) {
         int x = frame["frame"]["x"].get<int>();
         int y = frame["frame"]["y"].get<int>();
         int w = frame["frame"]["w"].get<int>();
         int h = frame["frame"]["h"].get<int>();
-        rect = new SDL_Rect({x, y, w, h});
+        SDL_Rect rect = SDL_Rect({x, y, w, h});
 
         mSpriteSheetData.emplace_back(rect);
     }
@@ -58,7 +58,7 @@ void DrawAnimatedComponent::Draw(SDL_Renderer* renderer)
 
     int spriteIdx = mAnimations[mAnimName][static_cast<int>(mAnimTimer)];
 
-    SDL_Rect* srcRect = mSpriteSheetData[spriteIdx];
+    SDL_Rect srcRect = mSpriteSheetData[spriteIdx];
 
     // Calcula a posição na tela
     SDL_Rect dstRect;
@@ -94,7 +94,7 @@ void DrawAnimatedComponent::Draw(SDL_Renderer* renderer)
 
     SDL_SetTextureBlendMode(mSpriteSheetSurface, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(mSpriteSheetSurface, mTransparency);
-    SDL_RenderCopyEx(renderer, mSpriteSheetSurface, srcRect, &dstRect, angle, nullptr, mFlip);
+    SDL_RenderCopyEx(renderer, mSpriteSheetSurface, &srcRect, &dstRect, angle, nullptr, mFlip);
 }
 
 void DrawAnimatedComponent::Update(float deltaTime) {

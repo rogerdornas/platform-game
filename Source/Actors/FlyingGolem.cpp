@@ -329,7 +329,6 @@ void FlyingGolem::TeleportIn(float deltaTime) {
     if (mTeleportInTimer > 0.5f * mTeleportDuration) {
         mColliderComponent->SetActive(false);
     }
-
 }
 
 void FlyingGolem::TeleportOut(float deltaTime) {

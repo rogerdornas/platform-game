@@ -98,6 +98,9 @@ public:
 
     void SetIsEnteringLevel(Vector2 velocity);
 
+    void SetInvertControls(bool invert) { mInvertControls = invert; }
+    bool GetIsInvertControls() { return mInvertControls; }
+
     bool Died();
 
     void ChangeResolution(float oldScale, float newScale) override;
@@ -245,6 +248,8 @@ private:
     bool mIsDead;
 
     bool mWasOnGround;
+
+    bool mInvertControls;
 
     class DrawPolygonComponent* mDrawPolygonComponent;
     class DrawSpriteComponent* mDrawSpriteComponent;

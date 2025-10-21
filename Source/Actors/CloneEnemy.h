@@ -111,7 +111,6 @@ private:
     float mStopRunningDuration; // Para não bugar a anamiação de correr
     float mStopRunningTimer;
     float mHurtDuration;
-    float mHurtTimer;
     bool mBlink;
     float mBlinkDuration;
     float mBlinkTimer;

@@ -17,9 +17,13 @@ Projectile::Projectile(class Game *game, ProjectileType type, float width, float
     ,mWidth(width)
     ,mHeight(height)
     ,mSpeed(speed)
-    ,mDamage(damage)
     ,mDuration(3.0f)
     ,mDurationTimer(mDuration)
+    ,mDamage(damage)
+    ,mMaxBounce(0)
+    ,mBounceCount(0)
+    ,mCollisionCooldownDuration(0.1f)
+    ,mCollisionCooldownTimer(0.0f)
     ,mDrawPolygonComponent(nullptr)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
@@ -71,6 +75,10 @@ Projectile::~Projectile() {
 }
 
 void Projectile::OnUpdate(float deltaTime) {
+    if (mCollisionCooldownTimer < mCollisionCooldownDuration) {
+        mCollisionCooldownTimer += deltaTime;
+    }
+
     mDurationTimer += deltaTime;
     if (mDurationTimer >= mDuration) {
         Deactivate();
@@ -135,7 +143,10 @@ void Projectile::Activate() {
 void Projectile::Deactivate() {
     SetState(ActorState::Paused);
     mRigidBodyComponent->SetVelocity(Vector2::Zero);
+    mDuration = 3.0f;
     mDurationTimer = 0;
+    mMaxBounce = 0;
+    mBounceCount = 0;
     mAABBComponent->SetActive(false); // desativa colisão
     ExplosionEffect();
 
@@ -151,12 +162,33 @@ void Projectile::Deactivate() {
 }
 
 void Projectile::ResolveGroundCollision() {
+    Vector2 collisionNormal;
     std::vector<Ground*> grounds;
     grounds = mGame->GetGrounds();
     if (!grounds.empty()) {
         for (Ground* g : grounds) {
             if (mAABBComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
-                Deactivate();
+                if (mBounceCount < mMaxBounce) {
+                    if (mCollisionCooldownTimer >= mCollisionCooldownDuration) {
+                        collisionNormal = mAABBComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
+
+                        // Colidiu Top ou Bot
+                        if (collisionNormal == Vector2::NegUnitY || collisionNormal == Vector2::UnitY) {
+                            SetRotation(-GetRotation());
+                        }
+
+                        // Colidiu Left ou Right
+                        if (collisionNormal == Vector2::NegUnitX || collisionNormal == Vector2::UnitX) {
+                            SetRotation(Math::Pi - GetRotation());
+                        }
+
+                        mBounceCount++;
+                        mCollisionCooldownTimer = 0;
+                    }
+                }
+                else {
+                    Deactivate();
+                }
             }
         }
     }

@@ -12,7 +12,8 @@ class Lever : public Trigger
 public:
     enum class LeverType {
         Lever,
-        Crystal
+        Crystal,
+        Mirror
     };
 
     Lever(class Game *game, float width = 64, float height = 64.0f, LeverType leverType = LeverType::Lever);

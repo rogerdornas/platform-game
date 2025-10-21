@@ -20,6 +20,7 @@
 #include "Actors/HookEnemy.h"
 #include "Actors/LittleBat.h"
 #include "Actors/Mantis.h"
+#include "Actors/MirrorBoss.h"
 #include "Actors/Mushroom.h"
 #include "Actors/Snake.h"
 #include "Actors/Spawner.h"
@@ -365,6 +366,14 @@ void WaveManager::SpawnEnemy(WaveAction& a) {
         cloneEnemy->SetPosition(pos);
         cloneEnemy->SetSpottedPlayer(true);
         a.enemy = cloneEnemy;
+    }
+    if (a.enemyType == "MirrorBoss") {
+        auto* mirrorBoss = new MirrorBoss(mGame);
+        mirrorBoss->SetPosition(pos);
+        mirrorBoss->SetSpottedPlayer(true);
+        mirrorBoss->SetArenaMinPos(Vector2(a.arenaMinPos.x, a.arenaMinPos.y));
+        mirrorBoss->SetArenaMaxPos(Vector2(a.arenaMaxPos.x, a.arenaMaxPos.y));
+        a.enemy = mirrorBoss;
     }
 }
 

@@ -148,6 +148,7 @@ Player::Player(Game* game)
     ,mDeathAnimationDuration(1.0f)
     ,mDeathAnimationTimer(0.0f)
     ,mIsDead(false)
+    ,mInvertControls(false)
 
     ,mIsEnteringLevel(false)
     ,mEnteringLevelDuration(0.35f)
@@ -385,6 +386,11 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     //         SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
 
     bool hook = mGame->IsActionPressed(Game::Action::Hook, state, &controller);
+
+    if (mInvertControls) {
+        std::swap(left, right);
+        std::swap(leftSlow, rightSlow);
+    }
 
     if (right) {
         mIsGoingRight = true;

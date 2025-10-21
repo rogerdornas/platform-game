@@ -37,6 +37,7 @@ FlyingShooterEnemy::FlyingShooterEnemy(Game* game)
     ,mProjectileWidth(50 * mGame->GetScale())
     ,mProjectileHeight(55 * mGame->GetScale())
     ,mProjectileSpeed(800 * mGame->GetScale())
+    ,mProjectileDamage(10)
 {
     mWidth = 70 * mGame->GetScale();
     mHeight = 70 * mGame->GetScale();
@@ -198,7 +199,7 @@ void FlyingShooterEnemy::Shoot(float deltaTime) {
                 p->SetWidth(mProjectileWidth);
                 p->SetHeight(mProjectileHeight);
                 p->SetSpeed(mProjectileSpeed);
-                p->SetDamage(10);
+                p->SetDamage(mProjectileDamage);
                 if (GetRotation() == 0) {
                     p->SetPosition(GetPosition() + Vector2(mWidth / 2,0));
                 }

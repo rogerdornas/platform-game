@@ -41,6 +41,7 @@
 #include "Actors/Lava.h"
 #include "Actors/LittleBat.h"
 #include "Actors/Mantis.h"
+#include "Actors/MirrorBoss.h"
 #include "Actors/Money.h"
 #include "Actors/Moth.h"
 #include "Actors/Mushroom.h"
@@ -302,7 +303,8 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime) {
             scene == GameScene::Level3 ||
             scene == GameScene::Level4 ||
             scene == GameScene::Level5 ||
-            scene == GameScene::Room0) {
+            scene == GameScene::Room0 ||
+            scene == GameScene::MirrorBoss) {
             mNextScene = scene;
             mSceneManagerState = SceneManagerState::Entering;
             mSceneManagerTimer = transitionTime;
@@ -581,6 +583,21 @@ void Game::ChangeScene()
         mUseParallaxBackground = true;
 
         LoadLevel(levelsAssets + "Room0/Room0.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
+        mBossMusic.Reset();
+    }
+    else if (mNextScene == GameScene::MirrorBoss) {
+        mUseParallaxBackground = true;
+
+        LoadLevel(levelsAssets + "MirrorBoss/MirrorBoss.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -1873,6 +1890,30 @@ void Game::LoadObjects(const std::string &fileName) {
                     hookEnemy->SetPosition(Vector2(x, y));
                     hookEnemy->SetId(id);
                 }
+                else if (name == "MirrorBoss") {
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "MinPosX") {
+                                MinPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosX") {
+                                MaxPosX = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MinPosY") {
+                                MinPosY = static_cast<float>(prop["value"]) * mScale;
+                            }
+                            else if (propName == "MaxPosY") {
+                                MaxPosY = static_cast<float>(prop["value"]) * mScale;
+                            }
+                        }
+                    }
+                    auto* mirrorBoss = new MirrorBoss(this);
+                    mirrorBoss->SetPosition(Vector2(x, y));
+                    mirrorBoss->SetId(id);
+                    mirrorBoss->SetArenaMinPos(Vector2(MinPosX, MinPosY));
+                    mirrorBoss->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
+                }
             }
         }
         if (layer["name"] == "Checkpoint") {
@@ -1931,6 +1972,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
                     mPlayer->SetIsDead(false);
                     mPlayer->SetState(ActorState::Active);
+                    mPlayer->SetInvertControls(false);
                     mPlayer->GetComponent<AABBComponent>()->SetActive(true);
                     if (mGoingToNextLevel) {
                         mPlayer->SetPosition(Vector2(x, y));
@@ -2779,6 +2821,16 @@ Vector2 Game::GetSpawnPointPosition(const std::string &id) const {
     throw std::runtime_error("SpawnPoint não encontrado: " + id);
 }
 
+std::vector<Vector2> Game::GetSpawnPointsPositions() {
+    std::vector<Vector2> positions;
+
+    for (const auto& par : mSpawnPoints) {
+        positions.emplace_back(par.second);
+    }
+
+    return positions;
+}
+
 void Game::CreateWaveManager(std::string wavesFilePath) {
     if (!mWaveManager) {
         mWaveManager = new WaveManager(this);
@@ -3060,7 +3112,11 @@ void Game::GenerateOutput()
 
                 case GameScene::Room0:
                     DrawParallaxLayers(mBackgroundLayersLevel2);
-                break;
+                    break;
+
+                case GameScene::MirrorBoss:
+                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    break;
 
                 default:
                     break;
@@ -3229,6 +3285,10 @@ void Game::UnloadScene()
 
     SDL_DestroyTexture(mTileSheet);
     mTileSheet = nullptr;
+
+    mTileSheetData.clear();
+
+    mSpawnPoints.clear();
 
     if (mBackGroundTexture) {
         SDL_DestroyTexture(mBackGroundTexture);

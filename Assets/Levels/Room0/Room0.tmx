@@ -543,12 +543,12 @@
     <property name="Target" value="Game"/>
    </properties>
   </object>
-  <object id="49" name="Forest" x="512" y="3264" width="128" height="448">
+  <object id="49" x="512" y="3264" width="128" height="448">
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
     <property name="PlayerStartPositionId" type="int" value="0"/>
-    <property name="Scene" value="LevelTeste"/>
+    <property name="Scene" value="MirrorBoss"/>
     <property name="Target" value="Game"/>
    </properties>
   </object>

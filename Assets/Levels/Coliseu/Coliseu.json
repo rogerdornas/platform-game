@@ -326,28 +326,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":5,
-         "name":"Checkpoint",
-         "objects":[
-                {
-                 "height":192,
-                 "id":2,
-                 "name":"Checkpoint",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":416,
-                 "x":480,
-                 "y":3008
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":7,
          "name":"HookPoints",
          "objects":[],
@@ -554,7 +532,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -1116,6 +1094,28 @@
                  "width":224,
                  "x":1152,
                  "y":2752
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Checkpoint",
+         "objects":[
+                {
+                 "height":192,
+                 "id":2,
+                 "name":"Checkpoint",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":416,
+                 "x":480,
+                 "y":3008
                 }],
          "opacity":1,
          "type":"objectgroup",

@@ -18,6 +18,8 @@ FireBall::FireBall(class Game* game)
     ,mSpeed(1800.0f * mGame->GetScale())
     ,mDuration(3.0f)
     ,mDurationTimer(mDuration)
+    ,mThrowingWidth(mWidth)
+    ,mExplodingWidth(mWidth * 1.3f)
     ,mFireballState(State::Exploding)
     ,mFireballOffscreenLimit(0.2f)
     ,mDeactivateDuration(0.3f)
@@ -90,8 +92,8 @@ void FireBall::OnUpdate(float deltaTime) {
                     mDrawAnimatedComponent->ResetAnimationTimer();
                     mDrawAnimatedComponent->SetAnimation("explosion");
                 }
-                mWidth *= 1.5;
-                mHeight *= 1.5;
+                mWidth = mExplodingWidth;
+                mHeight = mExplodingWidth;
                 if (mDrawAnimatedComponent) {
                     mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
                     mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
@@ -108,8 +110,8 @@ void FireBall::OnUpdate(float deltaTime) {
                     mDrawAnimatedComponent->ResetAnimationTimer();
                     mDrawAnimatedComponent->SetAnimation("explosion");
                 }
-                mWidth *= 1.5;
-                mHeight *= 1.5;
+                mWidth = mExplodingWidth;
+                mHeight = mExplodingWidth;
                 if (mDrawAnimatedComponent) {
                     mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
                     mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
@@ -229,8 +231,8 @@ void FireBall::ResolveGroundCollision() {
                     mDrawAnimatedComponent->SetAnimation("explosion");
                 }
                 mFireballState = State::Exploding;
-                mWidth *= 1.5;
-                mHeight *= 1.5;
+                mWidth = mExplodingWidth;
+                mHeight = mExplodingWidth;
                 if (mDrawAnimatedComponent) {
                     mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
                     mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
@@ -261,8 +263,8 @@ void FireBall::ResolveEnemyCollision() {
                         mDrawAnimatedComponent->SetAnimation("explosion");
                     }
                     mFireballState = State::Exploding;
-                    mWidth *= 1.5;
-                    mHeight *= 1.5;
+                    mWidth = mExplodingWidth;
+                    mHeight = mExplodingWidth;
                     if (mDrawAnimatedComponent) {
                         mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
                         mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
@@ -292,8 +294,8 @@ void FireBall::ResolvePlayerCollision() {
                 mDrawAnimatedComponent->SetAnimation("explosion");
             }
             mFireballState = State::Exploding;
-            mWidth *= 1.5;
-            mHeight *= 1.5;
+            mWidth = mExplodingWidth;
+            mHeight = mExplodingWidth;
             if (mDrawAnimatedComponent) {
                 mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
                 mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);

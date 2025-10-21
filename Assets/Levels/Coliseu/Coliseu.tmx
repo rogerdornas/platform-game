@@ -312,13 +312,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="5" name="Checkpoint">
-  <object id="2" name="Checkpoint" x="480" y="3008" width="416" height="192"/>
- </objectgroup>
  <objectgroup id="7" name="HookPoints"/>
  <objectgroup id="8" name="Levers"/>
  <objectgroup id="9" name="Enemies"/>
- <objectgroup id="11" name="Camera">
+ <objectgroup id="11" name="Camera" visible="0">
   <object id="42" name="Camera" x="96" y="2560" width="1856" height="640">
    <properties>
     <property name="Event" value="FollowPlayerLimited"/>
@@ -414,7 +411,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="Grounds">
+ <objectgroup id="4" name="Grounds" visible="0">
   <object id="3" x="3744" y="960" width="736" height="3200"/>
   <object id="4" x="0" y="960" width="96" height="3200"/>
   <object id="5" x="96" y="960" width="1920" height="1600"/>
@@ -480,6 +477,9 @@
   <object id="51" x="416" y="2752" width="224" height="64"/>
   <object id="52" x="800" y="2752" width="224" height="64"/>
   <object id="53" x="1152" y="2752" width="224" height="64"/>
+ </objectgroup>
+ <objectgroup id="5" name="Checkpoint">
+  <object id="2" name="Checkpoint" x="480" y="3008" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="10" name="SpawnPoint">
   <object id="16" x="3456" y="3136" width="32" height="32">

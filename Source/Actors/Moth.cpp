@@ -44,6 +44,7 @@ Moth::Moth(Game *game)
     ,mProjectileWidth(60 * mGame->GetScale())
     ,mProjectileHeight(60 * mGame->GetScale())
     ,mProjectileSpeed(1400 * mGame->GetScale())
+    ,mProjectileDamage(15)
     ,mMaxProjectiles(15)
     ,mCountProjectiles(0)
     ,mDurationBetweenProjectiles(0.2f)
@@ -336,7 +337,7 @@ void Moth::Projectiles(float deltaTime) {
                 else {
                     p->SetSpeed(mProjectileSpeed);
                 }
-                p->SetDamage(15);
+                p->SetDamage(mProjectileDamage);
                 p->SetPosition(GetPosition());
                 p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                 break;
@@ -394,7 +395,7 @@ void Moth::SlowMotionProjectiles(float deltaTime) {
                 p->SetWidth(mProjectileWidth);
                 p->SetHeight(mProjectileHeight);
                 p->SetSpeed(mProjectileSpeed * 2);
-                p->SetDamage(15);
+                p->SetDamage(mProjectileDamage);
                 p->SetPosition(GetPosition());
                 p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                 break;
@@ -448,7 +449,7 @@ void Moth::CircleProjectiles(float deltaTime) {
                 else {
                     p->SetSpeed(mCircleProjectileSpeed);
                 }
-                p->SetDamage(15);
+                p->SetDamage(mProjectileDamage);
                 p->SetPosition(GetPosition());
                 p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                 break;

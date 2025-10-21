@@ -53,4 +53,5 @@ private:
     float mProjectileWidth;
     float mProjectileHeight;
     float mProjectileSpeed;
+    float mProjectileDamage;
 };

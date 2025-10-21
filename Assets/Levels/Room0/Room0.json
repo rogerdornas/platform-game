@@ -979,7 +979,7 @@
                 {
                  "height":448,
                  "id":49,
-                 "name":"Forest",
+                 "name":"",
                  "properties":[
                         {
                          "name":"Destroy",
@@ -999,7 +999,7 @@
                         {
                          "name":"Scene",
                          "type":"string",
-                         "value":"LevelTeste"
+                         "value":"MirrorBoss"
                         }, 
                         {
                          "name":"Target",

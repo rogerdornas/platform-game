@@ -76,7 +76,6 @@ CloneEnemy::CloneEnemy(Game *game)
     ,mStopRunningDuration(0.05f)
     ,mStopRunningTimer(0.0f)
     ,mHurtDuration(0.2f)
-    ,mHurtTimer(mHurtDuration)
     ,mBlink(false)
     ,mBlinkDuration(0.03f)
     ,mBlinkTimer(mBlinkDuration)
@@ -91,10 +90,11 @@ CloneEnemy::CloneEnemy(Game *game)
     mMoveSpeed = 700 * mGame->GetScale();
     mSwordWidth = mWidth * 3.0f;
     mSwordHeight = mHeight * 1.3f;
-    mHealthPoints = 200;
+    mFlashTimer = mHurtDuration;
+    mHealthPoints = 40;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 15;
-    mMoneyDrop = 20;
+    mMoneyDrop = 0;
     mKnockBackSpeed = 700.0f * mGame->GetScale();
     mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
@@ -156,10 +156,10 @@ CloneEnemy::CloneEnemy(Game *game)
     mSword = new Sword(mGame, this, mSwordWidth, mSwordHeight, 0.15f, mSwordDamage);
 
     // Pool de Jump Effects
-    for (int i = 0; i < 5; i++) {
-        auto* jumpEffect = new JumpEffect(mGame, this, 0.3f);
-        mJumpEffects.emplace_back(jumpEffect);
-    }
+    // for (int i = 0; i < 5; i++) {
+    //     auto* jumpEffect = new JumpEffect(mGame, this, 0.3f);
+    //     mJumpEffects.emplace_back(jumpEffect);
+    // }
 }
 
 void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &controller) {

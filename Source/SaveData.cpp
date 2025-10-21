@@ -100,6 +100,7 @@ std::string SaveData::GameSceneToString(Game::GameScene scene) {
         case Game::GameScene::Level4: return "Level4";
         case Game::GameScene::Level5: return "Level5";
         case Game::GameScene::Room0: return "Room0";
+        case Game::GameScene::MirrorBoss: return "MirrorBoss";
         default: return "Unknown";
     }
 }
@@ -114,6 +115,7 @@ Game::GameScene SaveData::StringToGameScene(const std::string &str) {
     if (str == "Level4") return Game::GameScene::Level4;
     if (str == "Level5") return Game::GameScene::Level5;
     if (str == "Room0") return Game::GameScene::Room0;
+    if (str == "MirrorBoss") return Game::GameScene::MirrorBoss;
     return Game::GameScene::Level1; // fallback
 }
 

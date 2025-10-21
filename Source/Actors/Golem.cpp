@@ -27,8 +27,8 @@ Golem::Golem(Game *game)
 
     ,mIsInvulnerable(false)
     ,mAlreadySpawnedCrystal(false)
-    ,mCrystalWidth(108)
-    ,mCrystalHeight(72)
+    ,mCrystalWidth(108 * mGame->GetScale())
+    ,mCrystalHeight(72 * mGame->GetScale())
 
     ,mStopDuration(1.2f)
     ,mStopTimer(0.0f)
@@ -574,6 +574,8 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
     mWidth = mWidth / oldScale * newScale;
     mHeight = mHeight / oldScale * newScale;
     mMoveSpeed = mMoveSpeed / oldScale * newScale;
+    mCrystalWidth = mCrystalWidth / oldScale * newScale;
+    mCrystalHeight = mCrystalHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
     mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
     mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;

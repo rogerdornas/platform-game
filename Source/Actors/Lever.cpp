@@ -24,7 +24,6 @@ Lever::Lever(class Game* game, float width, float height, LeverType leverType)
     ,mActivatingTimer(0.0f)
     ,mDrawSpriteComponent(nullptr)
     ,mDrawAnimatedComponent(nullptr)
-
 {
     mDrawPolygonComponent = nullptr;
 
@@ -49,6 +48,10 @@ Lever::Lever(class Game* game, float width, float height, LeverType leverType)
     }
     else if (mLeverType == LeverType::Crystal) {
         mHealthPoints = 50;
+        mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Crystal/Crystal2.png", mWidth, mHeight);
+    }
+    else if (mLeverType == LeverType::Mirror) {
+        mHealthPoints = 1;
         mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Crystal/Crystal2.png", mWidth, mHeight);
     }
 }
@@ -111,6 +114,10 @@ void Lever::OnUpdate(float deltaTime) {
                     EnemyTrigger();
                 break;
 
+                case Target::Player:
+                    PlayerTrigger();
+                break;
+
                 default:
                     break;
             }
@@ -133,6 +140,12 @@ void Lever::OnUpdate(float deltaTime) {
             }
         }
         if (mLeverType == LeverType::Crystal) {
+            if (mDrawSpriteComponent) {
+                mDrawSpriteComponent->SetIsVisible(false);
+                SetState(ActorState::Destroy);
+            }
+        }
+        if (mLeverType == LeverType::Mirror) {
             if (mDrawSpriteComponent) {
                 mDrawSpriteComponent->SetIsVisible(false);
                 SetState(ActorState::Destroy);

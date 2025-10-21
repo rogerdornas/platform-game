@@ -23,7 +23,9 @@ public:
     void SetWidth(float w) { mWidth = w; }
     void SetHeight(float h) { mHeight = h; }
     void SetSpeed(float s) { mSpeed = s; }
+    void SetDuration(float duration) { mDuration = duration; }
     void SetDamage(float d) { mDamage = d; }
+    void SetMaxBounce(int numBounces) { mMaxBounce = numBounces; }
 
     ProjectileType GetProjectileType() const { return mProjectileType; }
 
@@ -46,6 +48,11 @@ private:
     float mDurationTimer;
 
     float mDamage;
+
+    int mMaxBounce;
+    int mBounceCount;
+    float mCollisionCooldownDuration;
+    float mCollisionCooldownTimer;
 
     class DrawPolygonComponent *mDrawPolygonComponent;
     class DrawSpriteComponent *mDrawSpriteComponent;

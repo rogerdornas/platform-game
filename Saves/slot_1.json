@@ -1,19 +1,19 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 848.0,
-            "y": 5856.0
+            "x": 1904.0,
+            "y": 1728.0
         },
-        "scene": "Level4"
+        "scene": "Level3"
     },
     "player": {
         "can_dash": true,
         "can_fireball": true,
         "can_hook": true,
         "can_wallslide": true,
-        "death_counter": 42,
+        "death_counter": 144,
         "max_jumps_in_air": 1,
-        "money": 11397
+        "money": 14444
     },
     "upgrades": {
         "fireball": true,

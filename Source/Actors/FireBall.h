@@ -23,8 +23,8 @@ public:
     void OnUpdate(float deltaTime) override;
 
     float GetWidth() override { return mWidth; }
-    void SetWidth(float w) { mWidth = w; }
-    void SetHeight(float h) { mHeight = h; }
+    void SetWidth(float w) { mWidth = w; mThrowingWidth = w; mExplodingWidth = w * 1.3f; }
+    void SetHeight(float h) { mHeight = h; mThrowingWidth = h; mExplodingWidth = h * 1.3f; }
     void SetSpeed(float s) { mSpeed = s; }
     float GetSpeed() const { return mSpeed; }
     void SetDamage(float damage) { mDamage = damage; }
@@ -53,6 +53,8 @@ private:
     float mSpeed;
     float mDuration;
     float mDurationTimer;
+    float mThrowingWidth;
+    float mExplodingWidth;
 
     State mFireballState;
     float mFireballOffscreenLimit;
