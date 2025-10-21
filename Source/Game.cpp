@@ -3115,7 +3115,7 @@ void Game::GenerateOutput()
                     break;
 
                 case GameScene::MirrorBoss:
-                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    DrawParallaxLayers(mBackgroundLayersLevel2);
                     break;
 
                 default:

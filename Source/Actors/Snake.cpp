@@ -38,6 +38,7 @@ Snake::Snake(Game *game)
     mIdleWidth = mWidth;
     mAttackSpriteWidth = mWidth * 1.8f;
     mAttackOffsetHitBox = mWidth * 0.4f;
+    mEnemyCollision = false;
 
     SetSize(mWidth, mHeight);
 

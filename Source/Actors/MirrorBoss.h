@@ -6,6 +6,7 @@
 
 #include "Actor.h"
 #include "Enemy.h"
+#include <unordered_set>
 
 class MirrorBoss : public Enemy
 {
@@ -29,6 +30,13 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
+    enum class Enemies {
+        Snake,
+        FlyingEnemySimple,
+        FlyingShooterEnemy,
+        EnemySimple
+    };
+
     void MovementBeforePlayerSpotted();
     void MovementAfterPlayerSpotted(float deltaTime);
 
@@ -80,6 +88,9 @@ private:
     class CloneEnemy* mCloneEnemy;
     bool mCloneEnemyDied;
     std::vector<Vector2> mSpawnPoints;
+
+    int mNumSpawnEnemies;
+    std::unordered_set<int> mSpawnIndexes;
 
     float mTeleportDuration;
     float mTeleportDurationFast;

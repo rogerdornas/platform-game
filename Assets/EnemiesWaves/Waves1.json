@@ -17,18 +17,6 @@
         {
           "actionType": "SpawnEnemy", 
           "type": "FlyingShooterEnemy", 
-          "id": "RightMid", 
-          "delay": 2.0
-        },
-        {
-          "actionType": "SpawnEnemy", 
-          "type": "FlyingShooterEnemy", 
-          "id": "LeftMid", 
-          "delay": 2.5
-        },
-        {
-          "actionType": "SpawnEnemy", 
-          "type": "FlyingShooterEnemy", 
           "id": "CenterMid", 
           "delay": 3.0
         }

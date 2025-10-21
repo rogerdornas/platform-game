@@ -3,11 +3,15 @@
 //
 
 #include "MirrorBoss.h"
-
 #include "CloneEnemy.h"
+#include "EnemySimple.h"
+#include "FlyingEnemySimple.h"
+#include "FlyingShooterEnemy.h"
 #include "Lever.h"
+#include "Mushroom.h"
 #include "Projectile.h"
 #include "Skill.h"
+#include "Snake.h"
 #include "Spawner.h"
 #include "../Game.h"
 #include "../HUD.h"
@@ -32,14 +36,14 @@ MirrorBoss::MirrorBoss(Game *game)
 
     ,mProjectileWidth(80 * mGame->GetScale())
     ,mProjectileHeight(80 * mGame->GetScale())
-    ,mProjectileSpeed(1200 * mGame->GetScale())
+    ,mProjectileSpeed(1000 * mGame->GetScale())
     ,mProjectileDamage(10)
     ,mProjectileDuration(8.0f)
-    ,mProjectileSpread(Math::Pi / 3)
-    ,mNumProjectileBounces(7)
-    ,mMaxProjectiles(7)
+    ,mProjectileSpread(Math::Pi / 2)
+    ,mNumProjectileBounces(5)
+    ,mMaxProjectiles(5)
     ,mCountProjectiles(0)
-    ,mDurationBetweenProjectiles(0.7f)
+    ,mDurationBetweenProjectiles(0.25f)
     ,mTimerBetweenProjectiles(0.0f)
 
     ,mMirrorWidth(100 * mGame->GetScale())
@@ -53,18 +57,20 @@ MirrorBoss::MirrorBoss(Game *game)
     ,mCloneEnemy(nullptr)
     ,mCloneEnemyDied(false)
 
+    ,mNumSpawnEnemies(2)
+
     ,mTeleportDuration(0.6f)
     ,mTeleportDurationFast(0.2f)
     ,mTeleportDurationNormal(0.6f)
     ,mTeleportInTimer(0.0f)
     ,mTeleportOutTimer(0.0f)
-    ,mDistFromPlayerToStartTeleport(600.0f * mGame->GetScale())
-    ,mDistFromPlayerToEndTeleport(700.0f * mGame->GetScale())
+    ,mDistFromPlayerToStartTeleport(550.0f * mGame->GetScale())
+    ,mDistFromPlayerToEndTeleport(650.0f * mGame->GetScale())
 {
     mWidth = 120 * mGame->GetScale();
     mHeight = 250 * mGame->GetScale();
     mMoveSpeed = 500 * mGame->GetScale();
-    mHealthPoints = 1000;
+    mHealthPoints = 700;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 20;
     mMoneyDrop = 200;
@@ -206,9 +212,17 @@ void MirrorBoss::Stop(float deltaTime) {
             }
         }
 
-        if (mHealthPoints >= mMaxHealthPoints * 0.4f && mHealthPoints < mMaxHealthPoints * 0.7f) {
+        if (mHealthPoints >= mMaxHealthPoints * 0.45f && mHealthPoints < mMaxHealthPoints * 0.7f) {
             if (mAlreadySpawnedEnemy) {
                 float dist = (mGame->GetPlayer()->GetPosition() - GetPosition()).Length();
+                std::vector<FireBall* > fireBalls = mGame->GetFireBalls();
+                for (FireBall* f: fireBalls) {
+                    if (f->GetState() == ActorState::Active) {
+                        float fireBallDist = (f->GetPosition() - GetPosition()).Length();
+                        dist = std::min(dist, fireBallDist);
+                    }
+                }
+
                 if (dist <= mDistFromPlayerToStartTeleport) {
                     mBossState = State::TeleportIn;
                 }
@@ -219,7 +233,40 @@ void MirrorBoss::Stop(float deltaTime) {
             else if (Random::GetFloat() < 0.25) {
                 mBossState = State::Projectiles;
             }
-            else if (Random::GetFloat() < 0.12) {
+            else if (Random::GetFloat() < 0.25) {
+                mBossState = State::SpawnCloneEnemy;
+            }
+            else {
+                mBossState = State::InvertControl;
+            }
+        }
+        if (mHealthPoints < mMaxHealthPoints * 0.45f) {
+            if (mAlreadySpawnedEnemy) {
+                float dist = (mGame->GetPlayer()->GetPosition() - GetPosition()).Length();
+                std::vector<FireBall* > fireBalls = mGame->GetFireBalls();
+                for (FireBall* f: fireBalls) {
+                    if (f->GetState() == ActorState::Active) {
+                        float fireBallDist = (f->GetPosition() - GetPosition()).Length();
+                        dist = std::min(dist, fireBallDist);
+                    }
+                }
+
+                if (dist <= mDistFromPlayerToStartTeleport) {
+                    mBossState = State::TeleportIn;
+                }
+                else {
+                    if (Random::GetFloat() < 0.1) {
+                        mBossState = State::Projectiles;
+                    }
+                }
+            }
+            else if (Random::GetFloat() < 0.25) {
+                mBossState = State::TeleportIn;
+            }
+            else if (Random::GetFloat() < 0.25) {
+                mBossState = State::Projectiles;
+            }
+            else if (Random::GetFloat() < 0.25) {
                 mBossState = State::SpawnCloneEnemy;
             }
             else {
@@ -309,12 +356,78 @@ void MirrorBoss::InvertControl(float deltaTime) {
 }
 
 void MirrorBoss::SpawnEnemy(float deltaTime) {
+    if (mSpawnPortalTimer == 0) {
+        mSpawnPoints = mGame->GetSpawnPointsPositions();
+        mSpawnIndexes.clear();
 
+        while (mSpawnIndexes.size() < mNumSpawnEnemies) {
+            mSpawnIndexes.insert(Random::GetIntRange(0, mSpawnPoints.size() - 1));
+        }
+        for (int index : mSpawnIndexes) {
+            Vector2 position = mSpawnPoints[index];
+            auto* spawner = new Spawner(mGame);
+            spawner->SetPosition(position);
+        }
+    }
+
+    mSpawnPortalTimer += deltaTime;
+
+    if (mSpawnPortalTimer >= mSpawnPortalDuration) {
+        // Coloca todos os inimigos possíveis em um vetor
+        std::vector<Enemies> allEnemies = {
+            Enemies::Snake,
+            Enemies::FlyingEnemySimple,
+            Enemies::FlyingShooterEnemy,
+            Enemies::EnemySimple
+        };
+
+        // Embaralha a ordem
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::shuffle(allEnemies.begin(), allEnemies.end(), gen);
+
+        // Pega os 3 primeiros (distintos e aleatórios)
+        std::vector<Enemies> chosen(allEnemies.begin(), std::next(allEnemies.begin(), 3));
+
+        int i = 0;
+        for (int index : mSpawnIndexes) {
+            Vector2 position = mSpawnPoints[index];
+            if (chosen[i] == Enemies::Snake) {
+                auto* snake = new Snake(mGame);
+                snake->SetPosition(position);
+                snake->SetSpottedPlayer(true);
+            }
+            if (chosen[i] == Enemies::FlyingEnemySimple) {
+                auto* flyingEnemySimple = new FlyingEnemySimple(mGame);
+                flyingEnemySimple->SetPosition(position);
+                flyingEnemySimple->SetSpottedPlayer(true);
+            }
+            if (chosen[i] == Enemies::FlyingShooterEnemy) {
+                auto* flyingShooterEnemy = new FlyingShooterEnemy(mGame);
+                flyingShooterEnemy->SetPosition(position);
+                flyingShooterEnemy->SetSpottedPlayer(true);
+            }
+            if (chosen[i] == Enemies::EnemySimple) {
+                auto* enemySimple = new EnemySimple(mGame);
+                enemySimple->SetPosition(position);
+                enemySimple->SetSpottedPlayer(true);
+            }
+            i++;
+        }
+        mSpawnPortalTimer = 0;
+        mBossState = State::Stop;
+        return;
+    }
 }
 
 void MirrorBoss::SpawnCloneEnemy(float deltaTime) {
     if (mAlreadySpawnedEnemy) {
-        mBossState = State::Stop;
+        if (mHealthPoints < mMaxHealthPoints * 0.4f) {
+            mBossState = State::SpawnEnemy;
+        }
+        else {
+            mBossState = State::Stop;
+        }
         return;
     }
 
@@ -338,7 +451,13 @@ void MirrorBoss::SpawnCloneEnemy(float deltaTime) {
         mCloneEnemy->SetSpottedPlayer(true);
         mAlreadySpawnedEnemy = true;
         mCloneEnemyDied = false;
-        mBossState = State::Stop;
+        mSpawnPortalTimer = 0;
+        if (mHealthPoints < mMaxHealthPoints * 0.4f) {
+            mBossState = State::SpawnEnemy;
+        }
+        else {
+            mBossState = State::Stop;
+        }
         return;
     }
 
@@ -351,7 +470,12 @@ void MirrorBoss::SpawnCloneEnemy(float deltaTime) {
         mSpawnEnemyTimer = 0;
         mAlreadySpawnedEnemy = false;
         mCloneEnemyDied = false;
-        mBossState = State::Stop;
+        if (mHealthPoints < mMaxHealthPoints * 0.4f) {
+            mBossState = State::SpawnEnemy;
+        }
+        else {
+            mBossState = State::Stop;
+        }
     }
 }
 
@@ -411,7 +535,11 @@ void MirrorBoss::TeleportOut(float deltaTime) {
 }
 
 void MirrorBoss::TriggerBossDefeat() {
+    if (mCloneEnemy && mAlreadySpawnedEnemy) {
+        mCloneEnemy->SetState(ActorState::Destroy);
+    }
 
+    mGame->StopBossMusic();
 }
 
 void MirrorBoss::ManageAnimations() {
@@ -426,5 +554,58 @@ void MirrorBoss::ManageAnimations() {
 }
 
 void MirrorBoss::ChangeResolution(float oldScale, float newScale) {
+    mWidth = mWidth / oldScale * newScale;
+    mHeight = mHeight / oldScale * newScale;
+    mMoveSpeed = mMoveSpeed / oldScale * newScale;
+    SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
+    mKnockBackSpeed = mKnockBackSpeed / oldScale * newScale;
+    mCameraShakeStrength = mCameraShakeStrength / oldScale * newScale;
+    mProjectileWidth = mProjectileWidth / oldScale * newScale;
+    mProjectileHeight = mProjectileHeight / oldScale * newScale;
+    mProjectileSpeed = mProjectileSpeed / oldScale * newScale;
+    mMirrorWidth = mMirrorWidth / oldScale * newScale;
+    mMirrorHeight = mMirrorHeight / oldScale * newScale;
+    mDistFromPlayerToStartTeleport = mDistFromPlayerToStartTeleport / oldScale * newScale;
+    mDistFromPlayerToEndTeleport = mDistFromPlayerToEndTeleport / oldScale * newScale;
+    mArenaMinPos.x = mArenaMinPos.x / oldScale * newScale;
+    mArenaMinPos.y = mArenaMinPos.y / oldScale * newScale;
+    mArenaMaxPos.x = mArenaMaxPos.x / oldScale * newScale;
+    mArenaMaxPos.y = mArenaMaxPos.y / oldScale * newScale;
+    mSpawnPosition.x = mSpawnPosition.x / oldScale * newScale;
+    mSpawnPosition.y = mSpawnPosition.y / oldScale * newScale;
 
+    for (Vector2& pos : mSpawnPoints) {
+        pos.x = pos.x / oldScale * newScale;
+        pos.y = pos.y / oldScale * newScale;
+    }
+
+    mTeleportTargetPosition.x = mTeleportTargetPosition.x / oldScale * newScale;
+    mTeleportTargetPosition.y = mTeleportTargetPosition.y / oldScale * newScale;
+
+    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
+
+    if (mDrawAnimatedComponent) {
+        mDrawAnimatedComponent->SetWidth(mHeight * 1.8f * 0.667f);
+        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+    }
+
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
+
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
+
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mColliderComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
+
+    if (mDrawPolygonComponent) {
+        mDrawPolygonComponent->SetVertices(vertices);
+    }
 }

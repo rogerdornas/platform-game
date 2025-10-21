@@ -1473,7 +1473,7 @@
                 {
                  "height":32,
                  "id":53,
-                 "name":"",
+                 "name":"Player",
                  "properties":[
                         {
                          "name":"EnteringLevelSpeedX",

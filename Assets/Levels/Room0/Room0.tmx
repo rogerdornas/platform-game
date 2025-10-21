@@ -609,7 +609,7 @@
     <property name="StartPositionId" type="int" value="2"/>
    </properties>
   </object>
-  <object id="53" x="6240" y="4576" width="32" height="32">
+  <object id="53" name="Player" x="6240" y="4576" width="32" height="32">
    <properties>
     <property name="EnteringLevelSpeedX" type="float" value="-700"/>
     <property name="EnteringLevelSpeedY" type="float" value="0"/>

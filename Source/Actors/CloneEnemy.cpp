@@ -98,6 +98,7 @@ CloneEnemy::CloneEnemy(Game *game)
     mKnockBackSpeed = 700.0f * mGame->GetScale();
     mKnockBackDuration = 0.1f;
     mKnockBackTimer = mKnockBackDuration;
+    mEnemyCollision = false;
 
     SetSize(mWidth, mHeight);
 
