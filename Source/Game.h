@@ -231,6 +231,9 @@ public:
     void SetLavaRespawnPosition(Vector2 lavaRespawnPosition) { mLavaRespawnPosition = lavaRespawnPosition; }
     void SetPlayerStartPositionId(int id) { mPlayerStartPositionId = id; }
 
+    void SetTotalPlayTime(float totalPlayTime) { mTotalPlayTime = totalPlayTime; }
+    float GetTotalPlayTime() const { return mTotalPlayTime; }
+
     // Converte uma Action para sua representação em string
     std::string ActionToString(Action action);
     Action StringToAction(const std::string& str);
@@ -335,6 +338,7 @@ private:
     int mSaveSlot;
     class SaveData* mSaveData;
     class SaveManager* mSaveManager;
+    float mTotalPlayTime;
 
     // Level data
     int **mLevelData;

@@ -2671,6 +2671,10 @@ void Game::UpdateGame()
     UpdateCamera(deltaTime);
 
     UpdateSceneManager(deltaTime);
+
+    if (mGamePlayState != GamePlayState::Paused && mGamePlayState != GamePlayState::Menu) {
+        mTotalPlayTime += deltaTime;
+    }
 }
 
 void Game::UpdateSceneManager(float deltaTime)

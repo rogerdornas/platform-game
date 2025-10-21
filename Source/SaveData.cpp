@@ -10,6 +10,7 @@ SaveData::SaveData(class Game *game)
     :mGame(game)
     ,mGameScene(Game::GameScene::Prologue)
     ,mLastCheckpointPosition(Vector2(1952, 4352))
+    ,mTotalPlayTime(0.0f)
     ,mMoney(0)
     ,mCanDash(false)
     ,mCanFireBall(false)
@@ -32,6 +33,7 @@ void SaveData::Save(const std::string &filename) {
 
     j["game"]["scene"] = GameSceneToString(mGameScene);
     j["game"]["last_checkpoint"] = { {"x", mLastCheckpointPosition.x}, {"y", mLastCheckpointPosition.y} };
+    j["game"]["total_play_time"] = mTotalPlayTime;
 
     j["player"] = {
         {"can_dash", mCanDash},
@@ -69,6 +71,7 @@ bool SaveData::Load(const std::string &filename) {
     mGameScene = StringToGameScene(j["game"]["scene"]);
     mLastCheckpointPosition.x = j["game"]["last_checkpoint"]["x"];
     mLastCheckpointPosition.y = j["game"]["last_checkpoint"]["y"];
+    mTotalPlayTime = j["game"]["total_play_time"];
 
     mMoney = j["player"]["money"];
     mCanDash = j["player"]["can_dash"];
@@ -121,6 +124,7 @@ Game::GameScene SaveData::StringToGameScene(const std::string &str) {
 
 void SaveData::ApplyToGame() {
     mGame->SetGameScene(mGameScene, 0.5f);
+    mGame->SetTotalPlayTime(mTotalPlayTime);
 }
 
 void SaveData::ApplyToPlayer() {
@@ -164,6 +168,8 @@ void SaveData::CaptureFromGame() {
     mGameScene = mGame->GetCheckpointGameScene();
     mLastCheckpointPosition.x = mGame->GetCheckPointPosition().x / mGame->GetScale();
     mLastCheckpointPosition.y = mGame->GetCheckPointPosition().y / mGame->GetScale();
+    mTotalPlayTime = mGame->GetTotalPlayTime();
+
     mMoney = player->GetMoney();
     mCanDash = player->GetCanDash();
     mMaxJumpsInAir = player->GetMaxJumpsInAir();

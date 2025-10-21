@@ -1,10 +1,11 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 656.0,
-            "y": 2176.0
+            "x": 4752.0,
+            "y": 2304.0
         },
-        "scene": "MirrorBoss"
+        "scene": "Level2",
+        "total_play_time": 34.05015182495117
     },
     "player": {
         "can_dash": true,
@@ -13,7 +14,7 @@
         "can_wallslide": true,
         "death_counter": 150,
         "max_jumps_in_air": 1,
-        "money": 15197
+        "money": 15230
     },
     "upgrades": {
         "fireball": true,

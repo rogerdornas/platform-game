@@ -1,27 +1,28 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 848.0,
-            "y": 4672.0
+            "x": 1952.0,
+            "y": 4352.0
         },
-        "scene": "Level5"
+        "scene": "Prologue",
+        "total_play_time": 0.0
     },
     "player": {
-        "can_dash": true,
-        "can_fireball": true,
+        "can_dash": false,
+        "can_fireball": false,
         "can_hook": false,
-        "can_wallslide": true,
+        "can_wallslide": false,
         "death_counter": 0,
-        "max_jumps_in_air": 1,
-        "money": 348
+        "max_jumps_in_air": 0,
+        "money": 0
     },
     "upgrades": {
-        "fireball": true,
-        "heal_count": true,
-        "health_points": true,
-        "mana": true,
-        "sword_damage": true,
-        "sword_range": true,
-        "sword_speed": true
+        "fireball": false,
+        "heal_count": false,
+        "health_points": false,
+        "mana": false,
+        "sword_damage": false,
+        "sword_range": false,
+        "sword_speed": false
     }
 }

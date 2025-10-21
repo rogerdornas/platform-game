@@ -26,6 +26,7 @@ private:
 
     class Game* mGame;
     Game::GameScene mGameScene;
+    float mTotalPlayTime;
 
     Vector2 mLastCheckpointPosition;
     int mMoney;
