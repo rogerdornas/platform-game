@@ -35,6 +35,8 @@ void SaveData::Save(const std::string &filename) {
     j["game"]["last_checkpoint"] = { {"x", mLastCheckpointPosition.x}, {"y", mLastCheckpointPosition.y} };
     j["game"]["total_play_time"] = mTotalPlayTime;
 
+    j["world_state"] = mWorldState;
+
     j["player"] = {
         {"can_dash", mCanDash},
         {"money", mMoney},
@@ -72,6 +74,8 @@ bool SaveData::Load(const std::string &filename) {
     mLastCheckpointPosition.x = j["game"]["last_checkpoint"]["x"];
     mLastCheckpointPosition.y = j["game"]["last_checkpoint"]["y"];
     mTotalPlayTime = j["game"]["total_play_time"];
+
+    mWorldState = j["world_state"];
 
     mMoney = j["player"]["money"];
     mCanDash = j["player"]["can_dash"];
@@ -163,12 +167,19 @@ void SaveData::ApplyToPlayer() {
     }
 }
 
+void SaveData::ApplyWorldState() {
+    mGame->SetWorldState(mWorldState);
+}
+
+
 void SaveData::CaptureFromGame() {
     Player* player = mGame->GetPlayer();
     mGameScene = mGame->GetCheckpointGameScene();
     mLastCheckpointPosition.x = mGame->GetCheckPointPosition().x / mGame->GetScale();
     mLastCheckpointPosition.y = mGame->GetCheckPointPosition().y / mGame->GetScale();
     mTotalPlayTime = mGame->GetTotalPlayTime();
+
+    mWorldState = mGame->GetWorldState();
 
     mMoney = player->GetMoney();
     mCanDash = player->GetCanDash();

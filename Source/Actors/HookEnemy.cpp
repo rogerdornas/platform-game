@@ -459,6 +459,7 @@ void HookEnemy::TriggerBossDefeat() {
         skill->SetPosition(GetPosition());
     }
 
+    mGame->SetWorldFlag("HookEnemyDefeated", true);
     mGame->StopBossMusic();
 }
 

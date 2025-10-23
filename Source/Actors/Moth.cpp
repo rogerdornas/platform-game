@@ -559,6 +559,7 @@ void Moth::TriggerBossDefeat() {
     auto* skill = new Skill(mGame, Skill::SkillType::TimeControl);
     skill->SetPosition(GetPosition());
 
+    mGame->SetWorldFlag("MothDefeated", true);
     mGame->StopBossMusic();
 }
 

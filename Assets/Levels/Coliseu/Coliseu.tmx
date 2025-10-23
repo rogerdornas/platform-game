@@ -315,7 +315,7 @@
  <objectgroup id="7" name="HookPoints"/>
  <objectgroup id="8" name="Levers"/>
  <objectgroup id="9" name="Enemies"/>
- <objectgroup id="11" name="Camera" visible="0">
+ <objectgroup id="11" name="Camera">
   <object id="42" name="Camera" x="96" y="2560" width="1856" height="640">
    <properties>
     <property name="Event" value="FollowPlayerLimited"/>
@@ -411,7 +411,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="Grounds" visible="0">
+ <objectgroup id="4" name="Grounds">
   <object id="3" x="3744" y="960" width="736" height="3200"/>
   <object id="4" x="0" y="960" width="96" height="3200"/>
   <object id="5" x="96" y="960" width="1920" height="1600"/>

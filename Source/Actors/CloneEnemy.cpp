@@ -67,7 +67,7 @@ CloneEnemy::CloneEnemy(Game *game)
     ,mFireballAnimationDuration(0.2f)
     ,mFireballAnimationTimer(mFireballAnimationDuration)
 
-    ,mHealAmount(5.0f)
+    ,mHealAmount(30.0f)
     ,mIsHealing(false)
     ,mHealAnimationDuration(0.8f)
     ,mHealAnimationTimer(0.0f)
@@ -91,7 +91,7 @@ CloneEnemy::CloneEnemy(Game *game)
     mSwordWidth = mWidth * 3.0f;
     mSwordHeight = mHeight * 1.3f;
     mFlashTimer = mHurtDuration;
-    mHealthPoints = 40;
+    mHealthPoints = 60;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 15;
     mMoneyDrop = 0;

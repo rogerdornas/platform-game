@@ -711,8 +711,7 @@ void Game::LoadLoadGameMenu() {
             mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
 
             mSaveSlot = 1;
-            mSaveData = mSaveManager->LoadGame(mSaveSlot);
-            mSaveData->ApplyToGame();
+            LoadGame();
         });
 
     name = "   SLOT 2";
@@ -728,8 +727,7 @@ void Game::LoadLoadGameMenu() {
             mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
 
             mSaveSlot = 2;
-            mSaveData = mSaveManager->LoadGame(mSaveSlot);
-            mSaveData->ApplyToGame();
+            LoadGame();
         });
 
     name = "   SLOT 3";
@@ -745,8 +743,7 @@ void Game::LoadLoadGameMenu() {
             mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
 
             mSaveSlot = 3;
-            mSaveData = mSaveManager->LoadGame(mSaveSlot);
-            mSaveData->ApplyToGame();
+            LoadGame();
         });
 
     name = "   SLOT 4";
@@ -762,8 +759,7 @@ void Game::LoadLoadGameMenu() {
             mStore = new Store(this, "../Assets/Fonts/K2D-Bold.ttf");
 
             mSaveSlot = 4;
-            mSaveData = mSaveManager->LoadGame(mSaveSlot);
-            mSaveData->ApplyToGame();
+            LoadGame();
         });
 
     buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.20f, 50 * mScale);
@@ -875,9 +871,7 @@ void Game::LoadConfirmBackToMenu() {
     int buttonPointSize = static_cast<int>(34 * mScale);
     mConfirmBackToMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
-        mSaveData->CaptureFromGame();
-        mSaveManager->SaveGame(mSaveData, mSaveSlot);
-        // mSaveData->Save("../Saves/slot_1.json");
+        SaveGame();
         SetGameScene(GameScene::MainMenu, 0.5f);
         mConfirmBackToMenu->Close();
         mPauseMenu->Close();
@@ -1329,7 +1323,6 @@ void Game::LoadObjects(const std::string &fileName) {
     }
     nlohmann::json mapData;
     file >> mapData;
-    Ground* ground;
     for (const auto &layer: mapData["layers"]) {
         if (layer["name"] == "Grounds") {
             for (const auto &obj: layer["objects"]) {
@@ -1356,6 +1349,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float minHeight = 0.0f;
                 float minWidth = 0.0f;
                 bool isOscillating = false;
+                std::string condition;
 
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
@@ -1399,7 +1393,14 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "Oscillate") {
                             isOscillating = static_cast<float>(prop["value"]);
                         }
+                        else if (propName == "Condition") {
+                            condition = prop["value"];
+                        }
                     }
+                }
+
+                if (!ShouldLoadObject(condition)) {
+                    continue;
                 }
 
                 if (name == "DynamicGround") {
@@ -1437,7 +1438,7 @@ void Game::LoadObjects(const std::string &fileName) {
                     dynamicGround->SetTilesIndex(widthOriginal, heightOriginal, xOriginal, yOriginal);
                 }
                 else {
-                    ground = new Ground(this, width, height, isSpike, isMoving, movingDuration, Vector2(speedX, speedY));
+                    auto* ground = new Ground(this, width, height, isSpike, isMoving, movingDuration, Vector2(speedX, speedY));
                     ground->SetId(id);
                     ground->SetPosition(Vector2(x + width / 2, y + height / 2));
                     ground->SetRespawPosition(Vector2(respawnPositionX, respawnPositionY));
@@ -1527,8 +1528,11 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::string scene;
                 int playerStartPositionId = 0;
                 std::string wavePath;
+                std::string worldState;
+                bool worldStateFlag = false;
                 std::string dialoguePath;
                 std::string cutsceneId;
+                std::string condition;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
@@ -1574,14 +1578,28 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "Waves") {
                             wavePath = prop["value"];
                         }
+                        else if (propName == "WorldState") {
+                            worldState = prop["value"];
+                        }
+                        else if (propName == "WorldStateFlag") {
+                            worldStateFlag = prop["value"];
+                        }
                         else if (propName == "FilePath") {
                             dialoguePath = prop["value"];
                         }
                         else if (propName == "CutsceneId") {
                             cutsceneId = prop["value"];
                         }
+                        else if (propName == "Condition") {
+                            condition = prop["value"];
+                        }
                     }
                 }
+
+                if (!ShouldLoadObject(condition)) {
+                    continue;
+                }
+
                 groundsIds = ParseIntList(grounds);
                 enemiesIds = ParseIntList(enemies);
 
@@ -1598,6 +1616,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetScene(scene);
                 trigger->SetPlayerStartPositionId(playerStartPositionId);
                 trigger->SetWavesPath(wavePath);
+                trigger->SetWorldState(worldState);
+                trigger->SetWorldStateFlag(worldStateFlag);
                 trigger->SetDialoguePath(dialoguePath);
                 trigger->SetCutsceneId(cutsceneId);
             }
@@ -1615,6 +1635,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float fixedCameraPositionY = 0;
                 Vector2 limitMinCameraPosition(Vector2::Zero);
                 Vector2 limitMaxCameraPosition(Vector2::Zero);
+                std::string condition;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
@@ -1645,7 +1666,14 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "LimitMaxCameraPositionY") {
                             limitMaxCameraPosition.y = prop["value"];
                         }
+                        else if (propName == "Condition") {
+                            condition = prop["value"];
+                        }
                     }
+                }
+
+                if (!ShouldLoadObject(condition)) {
+                    continue;
                 }
 
                 auto* trigger = new Trigger(this, width, height);
@@ -1672,6 +1700,9 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::vector<int> enemiesIds;
                 float fixedCameraPositionX = 0;
                 float fixedCameraPositionY = 0;
+                std::string worldState;
+                bool worldStateFlag = false;
+                std::string condition;
                 if (obj.contains("properties")) {
                     for (const auto &prop: obj["properties"]) {
                         std::string propName = prop["name"];
@@ -1693,8 +1724,18 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "FixedCameraPositionY") {
                             fixedCameraPositionY = prop["value"];
                         }
+                        else if (propName == "WorldState") {
+                            worldState = prop["value"];
+                        }
+                        else if (propName == "WorldStateFlag") {
+                            worldStateFlag = prop["value"];
+                        }
+                        else if (propName == "Condition") {
+                            condition = prop["value"];
+                        }
                     }
                 }
+
                 if ((target == "DynamicGround" || target == "Ground") && !grounds.empty()) {
                     groundsIds = ParseIntList(grounds);
                 }
@@ -1708,6 +1749,12 @@ void Game::LoadObjects(const std::string &fileName) {
                 lever->SetGroundsIds(groundsIds);
                 lever->SetEnemiesIds(enemiesIds);
                 lever->SetFixedCameraPosition(Vector2(fixedCameraPositionX, fixedCameraPositionY));
+                lever->SetWorldState(worldState);
+                lever->SetWorldStateFlag(worldStateFlag);
+
+                if (!ShouldLoadObject(condition)) {
+                    lever->Activate();
+                }
             }
         }
 
@@ -1751,6 +1798,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 float MaxPosY = 0;
                 std::string grounds;
                 std::vector<int> ids;
+                std::string condition;
                 if (name == "Enemy Simple") {
                     auto* enemySimple = new EnemySimple(this);
                     enemySimple->SetPosition(Vector2(x, y));
@@ -1810,11 +1858,16 @@ void Game::LoadObjects(const std::string &fileName) {
                     if (obj.contains("properties")) {
                         for (const auto &prop: obj["properties"]) {
                             std::string propName = prop["name"];
-                            if (propName == "UnlockGrounds") {
-                                grounds = prop["value"];
+                            if (propName == "Condition") {
+                                condition = prop["value"];
                             }
                         }
                     }
+
+                    if (!ShouldLoadObject(condition)) {
+                        continue;
+                    }
+
                     ids = ParseIntList(grounds);
                     auto* fox = new Fox(this);
                     fox->SetPosition(Vector2(x, y));
@@ -1839,8 +1892,16 @@ void Game::LoadObjects(const std::string &fileName) {
                             else if (propName == "UnlockGrounds") {
                                 grounds = prop["value"];
                             }
+                            else if (propName == "Condition") {
+                                condition = prop["value"];
+                            }
                         }
                     }
+
+                    if (!ShouldLoadObject(condition)) {
+                        continue;
+                    }
+
                     ids = ParseIntList(grounds);
                     auto* frog = new Frog(this);
                     frog->SetPosition(Vector2(x, y));
@@ -1849,11 +1910,37 @@ void Game::LoadObjects(const std::string &fileName) {
                     frog->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                 }
                 else if (name == "Moth") {
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "Condition") {
+                                condition = prop["value"];
+                            }
+                        }
+                    }
+
+                    if (!ShouldLoadObject(condition)) {
+                        continue;
+                    }
+
                     auto* moth = new Moth(this);
                     moth->SetPosition(Vector2(x, y));
                     moth->SetId(id);
                 }
                 else if (name == "BushMonster") {
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "Condition") {
+                                condition = prop["value"];
+                            }
+                        }
+                    }
+
+                    if (!ShouldLoadObject(condition)) {
+                        continue;
+                    }
+
                     auto* bushMonster = new BushMonster(this);
                     bushMonster->SetPosition(Vector2(x, y));
                     bushMonster->SetId(id);
@@ -1877,8 +1964,16 @@ void Game::LoadObjects(const std::string &fileName) {
                             else if (propName == "UnlockGrounds") {
                                 grounds = prop["value"];
                             }
+                            else if (propName == "Condition") {
+                                condition = prop["value"];
+                            }
                         }
                     }
+
+                    if (!ShouldLoadObject(condition)) {
+                        continue;
+                    }
+
                     auto* golem = new Golem(this);
                     golem->SetPosition(Vector2(x, y));
                     golem->SetId(id);
@@ -1886,6 +1981,19 @@ void Game::LoadObjects(const std::string &fileName) {
                     golem->SetArenaMaxPos(Vector2(MaxPosX, MaxPosY));
                 }
                 else if (name == "HookEnemy") {
+                    if (obj.contains("properties")) {
+                        for (const auto &prop: obj["properties"]) {
+                            std::string propName = prop["name"];
+                            if (propName == "Condition") {
+                                condition = prop["value"];
+                            }
+                        }
+                    }
+
+                    if (!ShouldLoadObject(condition)) {
+                        continue;
+                    }
+
                     auto* hookEnemy = new HookEnemy(this);
                     hookEnemy->SetPosition(Vector2(x, y));
                     hookEnemy->SetId(id);
@@ -1906,8 +2014,16 @@ void Game::LoadObjects(const std::string &fileName) {
                             else if (propName == "MaxPosY") {
                                 MaxPosY = static_cast<float>(prop["value"]) * mScale;
                             }
+                            else if (propName == "Condition") {
+                                condition = prop["value"];
+                            }
                         }
                     }
+
+                    if (!ShouldLoadObject(condition)) {
+                        continue;
+                    }
+
                     auto* mirrorBoss = new MirrorBoss(this);
                     mirrorBoss->SetPosition(Vector2(x, y));
                     mirrorBoss->SetId(id);
@@ -1977,6 +2093,10 @@ void Game::LoadObjects(const std::string &fileName) {
                     if (mGoingToNextLevel) {
                         mPlayer->SetPosition(Vector2(x, y));
                         mPlayer->SetIsEnteringLevel(enteringLevelVelocity);
+
+                        // Salva jogo
+                        SaveGame();
+
                         mGoingToNextLevel = false;
                     }
                     else {
@@ -2089,6 +2209,15 @@ void Game::LoadLevel(const std::string &fileName) {
     LoadObjects(fileName);
 }
 
+bool Game::ShouldLoadObject(const std::string &condition) {
+    if (condition.empty()) return true;
+
+    bool negate = condition[0] == '!';
+    std::string flag = negate ? condition.substr(1) : condition;
+
+    bool value = mWorldState[flag];
+    return negate ? !value : value;
+}
 
 void Game::RunLoop()
 {
@@ -2524,6 +2653,10 @@ void Game::UpdateGame()
 
     mTicksCount = SDL_GetTicks();
 
+    if (mGamePlayState != GamePlayState::Paused && mGamePlayState != GamePlayState::Menu) {
+        mTotalPlayTime += deltaTime;
+    }
+
     // testes para alterar velocidade do jogo
     if (mIsSlowMotion) {
         deltaTime *= 0.5;
@@ -2671,10 +2804,6 @@ void Game::UpdateGame()
     UpdateCamera(deltaTime);
 
     UpdateSceneManager(deltaTime);
-
-    if (mGamePlayState != GamePlayState::Paused && mGamePlayState != GamePlayState::Menu) {
-        mTotalPlayTime += deltaTime;
-    }
 }
 
 void Game::UpdateSceneManager(float deltaTime)
@@ -2919,6 +3048,28 @@ void Game::StopBossMusic() {
     mAudio->ResumeSound(mMusicHandle);
 }
 
+void Game::SaveGame() {
+    mSaveData->CaptureFromGame();
+    mSaveManager->SaveGame(mSaveData, mSaveSlot);
+}
+
+void Game::LoadGame() {
+    mSaveData = mSaveManager->LoadGame(mSaveSlot);
+    mSaveData->ApplyToGame();
+    mSaveData->ApplyWorldState();
+}
+
+void Game::SetWorldFlag(const std::string &key, bool value) {
+    mWorldState[key] = value;
+}
+
+bool Game::GetWorldFlag(const std::string &key) const {
+    auto it = mWorldState.find(key);
+    if (it != mWorldState.end())
+        return it->second;
+    return false; // padrão se não existe
+}
+
 void Game::PlayFinalGoodCutscene() {
     if (mCutsceneIndex > 0) {
         mPlayer->SetPosition(Vector2(-100, -100));
@@ -2938,7 +3089,7 @@ void Game::PlayFinalGoodCutscene() {
     else {
         if (mCurrentCutscene == nullptr) {
             SetGameScene(GameScene::MainMenu, 1.5f);
-            mGoingToNextLevel = true;
+            // mGoingToNextLevel = true;
             mIsPlayingFinalCutscene = false;
         }
     }

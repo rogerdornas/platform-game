@@ -247,6 +247,7 @@ void BushMonster::TriggerBossDefeat() {
         skill->SetPosition(GetPosition());
     }
 
+    mGame->SetWorldFlag("BushMonsterDefeated", true);
     mGame->StopBossMusic();
 }
 

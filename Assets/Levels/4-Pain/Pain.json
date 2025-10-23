@@ -431,7 +431,7 @@
          "name":"DynamicGrounds",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":345,
          "x":0,
          "y":0
@@ -660,7 +660,7 @@
          "objects":[],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -5217,6 +5217,11 @@
                  "name":"DynamicGround",
                  "properties":[
                         {
+                         "name":"Condition",
+                         "type":"string",
+                         "value":"!FoxDefeated"
+                        }, 
+                        {
                          "name":"GrowSpeedX",
                          "type":"float",
                          "value":0
@@ -5254,6 +5259,11 @@
                  "name":"DynamicGround",
                  "properties":[
                         {
+                         "name":"Condition",
+                         "type":"string",
+                         "value":"!FoxDefeated"
+                        }, 
+                        {
                          "name":"GrowSpeedX",
                          "type":"float",
                          "value":0
@@ -5290,6 +5300,11 @@
                  "id":329,
                  "name":"DynamicGround",
                  "properties":[
+                        {
+                         "name":"Condition",
+                         "type":"string",
+                         "value":"!FoxDefeated"
+                        }, 
                         {
                          "name":"GrowSpeedX",
                          "type":"float",
@@ -5428,246 +5443,6 @@
                  "width":128,
                  "x":8000,
                  "y":640
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":7,
-         "name":"Triggers",
-         "objects":[
-                {
-                 "height":224,
-                 "id":256,
-                 "name":"Close Wall",
-                 "properties":[
-                        {
-                         "name":"Destroy",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"SetIsGrowing"
-                        }, 
-                        {
-                         "name":"Grounds",
-                         "type":"string",
-                         "value":"255,258"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"DynamicGround"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":128,
-                 "x":6944,
-                 "y":4384
-                }, 
-                {
-                 "height":928,
-                 "id":406,
-                 "name":"Close Wall",
-                 "properties":[
-                        {
-                         "name":"Destroy",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"SetIsGrowing"
-                        }, 
-                        {
-                         "name":"Grounds",
-                         "type":"string",
-                         "value":"329,436,440"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"DynamicGround"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":128,
-                 "x":9888,
-                 "y":288
-                }, 
-                {
-                 "height":640,
-                 "id":267,
-                 "name":"Make Spike",
-                 "properties":[
-                        {
-                         "name":"Destroy",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"SetIsGrowing"
-                        }, 
-                        {
-                         "name":"Grounds",
-                         "type":"string",
-                         "value":"266"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"DynamicGround"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1088,
-                 "x":7072,
-                 "y":3648
-                }, 
-                {
-                 "height":992,
-                 "id":268,
-                 "name":"Kill Enemies",
-                 "properties":[
-                        {
-                         "name":"Enemies",
-                         "type":"string",
-                         "value":"269,270,271,272,273,274,275"
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"SetIsDecreasingAfterKillingEnemies"
-                        }, 
-                        {
-                         "name":"Grounds",
-                         "type":"string",
-                         "value":"255,258,266"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"DynamicGround"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1088,
-                 "x":7072,
-                 "y":3584
-                }, 
-                {
-                 "height":224,
-                 "id":409,
-                 "name":"Spot Player",
-                 "properties":[
-                        {
-                         "name":"Destroy",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Enemies",
-                         "type":"string",
-                         "value":"407"
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"SpotPlayer"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"Enemy"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1280,
-                 "x":8160,
-                 "y":992
-                }, 
-                {
-                 "height":288,
-                 "id":434,
-                 "name":"Level5",
-                 "properties":[
-                        {
-                         "name":"Destroy",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"ChangeScene"
-                        }, 
-                        {
-                         "name":"PlayerStartPositionId",
-                         "type":"int",
-                         "value":0
-                        }, 
-                        {
-                         "name":"Scene",
-                         "type":"string",
-                         "value":"Level5"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"Game"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":256,
-                 "x":6880,
-                 "y":352
-                }, 
-                {
-                 "height":864,
-                 "id":454,
-                 "name":"Boss Battle",
-                 "properties":[
-                        {
-                         "name":"Enemies",
-                         "type":"string",
-                         "value":"407"
-                        }, 
-                        {
-                         "name":"Event",
-                         "type":"string",
-                         "value":"SetIsDecreasingAfterKillingEnemies"
-                        }, 
-                        {
-                         "name":"Grounds",
-                         "type":"string",
-                         "value":"329,436,440"
-                        }, 
-                        {
-                         "name":"Target",
-                         "type":"string",
-                         "value":"DynamicGround"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":2532,
-                 "x":8160,
-                 "y":352
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6402,6 +6177,261 @@
         }, 
         {
          "draworder":"topdown",
+         "id":7,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":224,
+                 "id":256,
+                 "name":"Close Wall",
+                 "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsGrowing"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"255,258"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":6944,
+                 "y":4384
+                }, 
+                {
+                 "height":928,
+                 "id":406,
+                 "name":"Close Wall",
+                 "properties":[
+                        {
+                         "name":"Condition",
+                         "type":"string",
+                         "value":"!FoxDefeated"
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsGrowing"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"329,436,440"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":9888,
+                 "y":288
+                }, 
+                {
+                 "height":640,
+                 "id":267,
+                 "name":"Make Spike",
+                 "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsGrowing"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"266"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1088,
+                 "x":7072,
+                 "y":3648
+                }, 
+                {
+                 "height":992,
+                 "id":268,
+                 "name":"Kill Enemies",
+                 "properties":[
+                        {
+                         "name":"Enemies",
+                         "type":"string",
+                         "value":"269,270,271,272,273,274,275"
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsDecreasingAfterKillingEnemies"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"255,258,266"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1088,
+                 "x":7072,
+                 "y":3584
+                }, 
+                {
+                 "height":224,
+                 "id":409,
+                 "name":"Spot Player",
+                 "properties":[
+                        {
+                         "name":"Condition",
+                         "type":"string",
+                         "value":"!FoxDefeated"
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Enemies",
+                         "type":"string",
+                         "value":"407"
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SpotPlayer"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Enemy"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1280,
+                 "x":8160,
+                 "y":992
+                }, 
+                {
+                 "height":288,
+                 "id":434,
+                 "name":"Level5",
+                 "properties":[
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"ChangeScene"
+                        }, 
+                        {
+                         "name":"PlayerStartPositionId",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"Scene",
+                         "type":"string",
+                         "value":"Level5"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Game"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":256,
+                 "x":6880,
+                 "y":352
+                }, 
+                {
+                 "height":864,
+                 "id":454,
+                 "name":"Boss Battle",
+                 "properties":[
+                        {
+                         "name":"Condition",
+                         "type":"string",
+                         "value":"!FoxDefeated"
+                        }, 
+                        {
+                         "name":"Enemies",
+                         "type":"string",
+                         "value":"407"
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"SetIsDecreasingAfterKillingEnemies"
+                        }, 
+                        {
+                         "name":"Grounds",
+                         "type":"string",
+                         "value":"329,436,440"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"DynamicGround"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":2532,
+                 "x":8160,
+                 "y":352
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":5,
          "name":"Checkpoint",
          "objects":[
@@ -6624,6 +6654,12 @@
                  "height":32,
                  "id":407,
                  "name":"Fox",
+                 "properties":[
+                        {
+                         "name":"Condition",
+                         "type":"string",
+                         "value":"!FoxDefeated"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

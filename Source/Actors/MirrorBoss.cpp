@@ -40,8 +40,8 @@ MirrorBoss::MirrorBoss(Game *game)
     ,mProjectileDamage(10)
     ,mProjectileDuration(8.0f)
     ,mProjectileSpread(Math::Pi / 2)
-    ,mNumProjectileBounces(5)
-    ,mMaxProjectiles(5)
+    ,mNumProjectileBounces(7)
+    ,mMaxProjectiles(6)
     ,mCountProjectiles(0)
     ,mDurationBetweenProjectiles(0.25f)
     ,mTimerBetweenProjectiles(0.0f)
@@ -57,7 +57,7 @@ MirrorBoss::MirrorBoss(Game *game)
     ,mCloneEnemy(nullptr)
     ,mCloneEnemyDied(false)
 
-    ,mNumSpawnEnemies(2)
+    ,mNumSpawnEnemies(3)
 
     ,mTeleportDuration(0.6f)
     ,mTeleportDurationFast(0.2f)
@@ -77,6 +77,7 @@ MirrorBoss::MirrorBoss(Game *game)
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
+    mEnemyCollision = false;
 
     SetSize(mWidth, mHeight);
 
@@ -201,7 +202,7 @@ void MirrorBoss::Stop(float deltaTime) {
         // mBossState = State::Projectiles;
 
         if (mHealthPoints >= mMaxHealthPoints * 0.7f) {
-            if (Random::GetFloat() < 0.33) {
+            if (Random::GetFloat() < 0.4) {
                 mBossState = State::Projectiles;
             }
             else if (Random::GetFloat() < 0.25) {
@@ -228,12 +229,12 @@ void MirrorBoss::Stop(float deltaTime) {
                 }
             }
             else if (Random::GetFloat() < 0.25) {
-                mBossState = State::TeleportIn;
-            }
-            else if (Random::GetFloat() < 0.25) {
                 mBossState = State::Projectiles;
             }
             else if (Random::GetFloat() < 0.25) {
+                mBossState = State::TeleportIn;
+            }
+            else if (Random::GetFloat() < 0.4) {
                 mBossState = State::SpawnCloneEnemy;
             }
             else {
@@ -261,12 +262,12 @@ void MirrorBoss::Stop(float deltaTime) {
                 }
             }
             else if (Random::GetFloat() < 0.25) {
-                mBossState = State::TeleportIn;
-            }
-            else if (Random::GetFloat() < 0.25) {
                 mBossState = State::Projectiles;
             }
             else if (Random::GetFloat() < 0.25) {
+                mBossState = State::TeleportIn;
+            }
+            else if (Random::GetFloat() < 0.4) {
                 mBossState = State::SpawnCloneEnemy;
             }
             else {
@@ -539,6 +540,7 @@ void MirrorBoss::TriggerBossDefeat() {
         mCloneEnemy->SetState(ActorState::Destroy);
     }
 
+    mGame->SetWorldFlag("MirrorBossDefeated", true);
     mGame->StopBossMusic();
 }
 

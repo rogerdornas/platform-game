@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Game.h"
+#include <unordered_map>
 
 class SaveData
 {
@@ -16,6 +17,7 @@ public:
     // injeta dados do save no jogo
     void ApplyToGame();
     void ApplyToPlayer();
+    void ApplyWorldState();
 
     // captura dados atuais do jogo para o save
     void CaptureFromGame();
@@ -23,6 +25,8 @@ public:
 private:
     std::string GameSceneToString(Game::GameScene scene);
     Game::GameScene StringToGameScene(const std::string& str);
+
+    std::unordered_map<std::string, bool> mWorldState;
 
     class Game* mGame;
     Game::GameScene mGameScene;

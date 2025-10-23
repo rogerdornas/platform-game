@@ -78,6 +78,7 @@ void Checkpoint::OnUpdate(float deltaTime) {
         player->ResetHealthPoints();
         player->ResetMana();
         player->ResetHealCount();
+        mGame->SaveGame();
 
         if (!mGame->GetStore()->StoreMessageOpened()) {
             mGame->GetStore()->LoadStoreMessage();

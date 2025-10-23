@@ -220,6 +220,7 @@ void Frog::TriggerBossDefeat() {
         }
     }
 
+    mGame->SetWorldFlag("FrogDefeated", true);
     mGame->StopBossMusic();
 }
 

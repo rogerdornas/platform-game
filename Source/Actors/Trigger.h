@@ -45,6 +45,7 @@ public:
 
         ChangeScene,
         StartArena,
+        ChangeWorldState,
 
         SpotPlayer,
         GolemVulnerable,
@@ -70,6 +71,8 @@ public:
     void SetScene(std::string scene);
     void SetPlayerStartPositionId(int id) { mPlayerStartPositionId = id; }
     void SetWavesPath(const std::string &wavesPath);
+    void SetWorldState(std::string worldState) { mWorldState = worldState; }
+    void SetWorldStateFlag(bool worldStateFlag) { mWorldStateFlag = worldStateFlag; }
     void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
     void SetCutsceneId(const std::string &cutsceneId) { mCutsceneId = cutsceneId; }
 
@@ -100,6 +103,8 @@ protected:
     Game::GameScene mScene;
     int mPlayerStartPositionId;
     std::string mWavesPath;
+    std::string mWorldState;
+    bool mWorldStateFlag;
 
     std::string mDialoguePath;
     std::string mCutsceneId;

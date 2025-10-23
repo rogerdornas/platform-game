@@ -561,129 +561,6 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="5" name="Triggers">
-  <object id="202" name="Kill Enemies" x="3584" y="2336" width="928" height="448">
-   <properties>
-    <property name="Enemies" value="200"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="80"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="226" name="Kill Enemies" x="4992" y="3264" width="928" height="192">
-   <properties>
-    <property name="Enemies" value="224,225"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="223"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="270" name="Kill Enemies" x="7136" y="3552" width="704" height="544">
-   <properties>
-    <property name="Enemies" value="262,268"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="251"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="271" name="Kill Enemies" x="7136" y="2912" width="704" height="512">
-   <properties>
-    <property name="Enemies" value="256,261,267"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="252"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="272" name="Kill Enemies" x="7136" y="2272" width="704" height="512">
-   <properties>
-    <property name="Enemies" value="257,258,266"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="253"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="273" name="Kill Enemies" x="7136" y="1632" width="704" height="512">
-   <properties>
-    <property name="Enemies" value="259,260,264,265"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="254"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="232" name="Close Wall" x="3584" y="2528" width="192" height="256">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="80"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="233" name="Close Wall" x="6432" y="3264" width="128" height="192">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="223"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="234" name="Close Wall" x="4448" y="3840" width="544" height="384">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="227,229,236,237"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="269" name="Close Wall" x="7008" y="3840" width="128" height="384">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="251,252,253,254"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="282" name="Close Wall" x="8448" y="1632" width="256" height="128">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="280,281"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="284" name="Level4" x="9088" y="992" width="256" height="288">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="ChangeScene"/>
-    <property name="PlayerStartPositionId" type="int" value="0"/>
-    <property name="Scene" value="Level4"/>
-    <property name="Target" value="Game"/>
-   </properties>
-  </object>
-  <object id="288" name="Fixed Camera" x="8448" y="2368" width="1792" height="192">
-   <properties>
-    <property name="Event" value="Fixed"/>
-    <property name="FixedCameraPositionX" type="float" value="8384"/>
-    <property name="FixedCameraPositionY" type="float" value="1568"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="291" x="8448" y="2336" width="1792" height="224">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Enemies" value="283"/>
-    <property name="Event" value="SpotPlayer"/>
-    <property name="Target" value="Enemy"/>
-   </properties>
-  </object>
-  <object id="296" name="Boss Battle" x="8448" y="1632" width="1792" height="928">
-   <properties>
-    <property name="Enemies" value="283"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="280,281"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
- </objectgroup>
  <objectgroup id="12" name="Decorations"/>
  <objectgroup id="11" name="Camera">
   <object id="298" name="Camera" x="1280" y="1280" width="1984" height="864">
@@ -857,6 +734,123 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup id="5" name="Triggers">
+  <object id="202" name="Kill Enemies" x="3584" y="2336" width="928" height="448">
+   <properties>
+    <property name="Enemies" value="200"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="80"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="226" name="Kill Enemies" x="4992" y="3264" width="928" height="192">
+   <properties>
+    <property name="Enemies" value="224,225"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="223"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="270" name="Kill Enemies" x="7136" y="3552" width="704" height="544">
+   <properties>
+    <property name="Enemies" value="262,268"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="251"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="271" name="Kill Enemies" x="7136" y="2912" width="704" height="512">
+   <properties>
+    <property name="Enemies" value="256,261,267"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="252"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="272" name="Kill Enemies" x="7136" y="2272" width="704" height="512">
+   <properties>
+    <property name="Enemies" value="257,258,266"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="253"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="273" name="Kill Enemies" x="7136" y="1632" width="704" height="512">
+   <properties>
+    <property name="Enemies" value="259,260,264,265"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="254"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="232" name="Close Wall" x="3584" y="2528" width="192" height="256">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="80"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="233" name="Close Wall" x="6432" y="3264" width="128" height="192">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="223"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="234" name="Close Wall" x="4448" y="3840" width="544" height="384">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="227,229,236,237"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="269" name="Close Wall" x="7008" y="3840" width="128" height="384">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="251,252,253,254"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="282" name="Close Wall" x="8448" y="1632" width="256" height="128">
+   <properties>
+    <property name="Condition" value="!FrogDefeated"/>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="280,281"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="284" name="Level4" x="9088" y="992" width="256" height="288">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="ChangeScene"/>
+    <property name="PlayerStartPositionId" type="int" value="0"/>
+    <property name="Scene" value="Level4"/>
+    <property name="Target" value="Game"/>
+   </properties>
+  </object>
+  <object id="291" x="8448" y="2336" width="1792" height="224">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Enemies" value="283"/>
+    <property name="Event" value="SpotPlayer"/>
+    <property name="Target" value="Enemy"/>
+   </properties>
+  </object>
+  <object id="296" name="Boss Battle" x="8448" y="1632" width="1792" height="928">
+   <properties>
+    <property name="Condition" value="!FrogDefeated"/>
+    <property name="Enemies" value="283"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="280,281"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="6" name="Enemies">
   <object id="22" name="FlyingShooterEnemy" x="5120" y="1632" width="32" height="32"/>
   <object id="197" name="Enemy Simple" x="2656" y="2112" width="32" height="32"/>
@@ -880,6 +874,7 @@
   <object id="264" name="Flying Enemy" x="7520" y="1984" width="32" height="32"/>
   <object id="283" name="Frog" x="9632" y="2528" width="32" height="32">
    <properties>
+    <property name="Condition" value="!FrogDefeated"/>
     <property name="MaxPosX" type="float" value="10240"/>
     <property name="MaxPosY" type="float" value="2560"/>
     <property name="MinPosX" type="float" value="8448"/>
@@ -976,6 +971,7 @@
   </object>
   <object id="280" name="DynamicGround" x="8384" y="1504" width="352" height="128">
    <properties>
+    <property name="Condition" value="!FrogDefeated"/>
     <property name="GrowSpeedX" type="float" value="500"/>
     <property name="GrowSpeedY" type="float" value="0"/>
     <property name="GrowthDirection" type="int" value="3"/>
@@ -985,6 +981,7 @@
   </object>
   <object id="281" name="DynamicGround" x="10240" y="1600" width="320" height="1024">
    <properties>
+    <property name="Condition" value="!FrogDefeated"/>
     <property name="GrowSpeedX" type="float" value="0"/>
     <property name="GrowSpeedY" type="float" value="700"/>
     <property name="GrowthDirection" type="int" value="1"/>

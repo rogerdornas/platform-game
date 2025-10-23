@@ -444,6 +444,7 @@ void Golem::TriggerBossDefeat() {
         skill->SetPosition(GetPosition());
     }
 
+    mGame->SetWorldFlag("GolemDefeated", true);
     mGame->StopBossMusic();
 }
 

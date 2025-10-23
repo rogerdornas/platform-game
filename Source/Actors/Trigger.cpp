@@ -146,6 +146,10 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::StartArena;
         return;
     }
+    if (event == "ChangeWorldState") {
+        mEvent = Event::ChangeWorldState;
+        return;
+    }
 
     if (event == "SpotPlayer") {
         mEvent = Event::SpotPlayer;
@@ -407,6 +411,10 @@ void Trigger::GameTrigger() {
 
         case Event::StartArena:
             mGame->CreateWaveManager(mWavesPath);
+            break;
+
+        case Event::ChangeWorldState:
+            mGame->SetWorldFlag(mWorldState, mWorldStateFlag);
             break;
 
         default:

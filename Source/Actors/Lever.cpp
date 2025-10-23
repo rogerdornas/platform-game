@@ -97,6 +97,9 @@ void Lever::OnUpdate(float deltaTime) {
 
         if (mHealthPoints <= 0) {
             mActivate = true;
+            if (!mWorldState.empty()) {
+                mGame->SetWorldFlag(mWorldState, mWorldStateFlag);
+            }
             switch (mTarget) {
                 case Target::Camera:
                     CameraTrigger();

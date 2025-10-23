@@ -246,7 +246,7 @@
   </object>
  </objectgroup>
  <objectgroup id="7" name="Enemies">
-  <object id="41" name="MirrorBoss" x="2688" y="1792" width="32" height="32">
+  <object id="41" name="MirrorBoss" x="2656" y="1728" width="32" height="32">
    <properties>
     <property name="MaxPosX" type="float" value="3552"/>
     <property name="MaxPosY" type="float" value="2240"/>

@@ -20,6 +20,8 @@ public:
 
     void OnUpdate(float deltaTime) override;
 
+    void Activate() { mActivate = true; }
+
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:

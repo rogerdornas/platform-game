@@ -234,6 +234,13 @@ public:
     void SetTotalPlayTime(float totalPlayTime) { mTotalPlayTime = totalPlayTime; }
     float GetTotalPlayTime() const { return mTotalPlayTime; }
 
+    void SaveGame();
+    void LoadGame();
+    void SetWorldState(const std::unordered_map<std::string, bool> &worldState) { mWorldState = worldState; }
+    std::unordered_map<std::string, bool> GetWorldState() { return mWorldState; }
+    void SetWorldFlag(const std::string& key, bool value);
+    bool GetWorldFlag(const std::string& key) const;
+
     // Converte uma Action para sua representação em string
     std::string ActionToString(Action action);
     Action StringToAction(const std::string& str);
@@ -250,6 +257,7 @@ private:
     // Load Level
     void LoadObjects(const std::string &fileName);
     void LoadLevel(const std::string &fileName);
+    bool ShouldLoadObject(const std::string& condition);
 
     void LoadMainMenu();
     void LoadPauseMenu();
@@ -339,6 +347,9 @@ private:
     class SaveData* mSaveData;
     class SaveManager* mSaveManager;
     float mTotalPlayTime;
+
+    // World State
+    std::unordered_map<std::string, bool> mWorldState;
 
     // Level data
     int **mLevelData;

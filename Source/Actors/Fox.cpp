@@ -160,6 +160,7 @@ void Fox::TriggerBossDefeat() {
         skill->SetPosition(GetPosition());
     }
 
+    mGame->SetWorldFlag("FoxDefeated", true);
     mGame->StopBossMusic();
 }
 
