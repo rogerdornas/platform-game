@@ -8,6 +8,7 @@ Actor::Actor(Game* game)
     ,mState(ActorState::Active)
     ,mPosition(Vector2::Zero)
     ,mScale(1.0f)
+    ,mTransformRotation(0.0f)
     ,mRotation(0.0f)
 {
     mGame->AddActor(this);

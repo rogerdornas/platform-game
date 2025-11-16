@@ -4,6 +4,8 @@
 
 #include "UIText.h"
 #include "UIFont.h"
+#include "../Renderer/Renderer.h"
+#include "../Renderer/Texture.h"
 
 UIText::UIText(const std::string &text, class UIFont* font, int pointSize, const unsigned wrapLength,
                const Vector2 &pos, const Vector2 &size, const Vector3 &color)
@@ -18,35 +20,48 @@ UIText::UIText(const std::string &text, class UIFont* font, int pointSize, const
 
 UIText::~UIText()
 {
-    if (mTextTexture) {
-        SDL_DestroyTexture(mTextTexture);
+    if (mTextTexture)
+    {
+        mTextTexture->Unload();
+        delete mTextTexture;
         mTextTexture = nullptr;
     }
 }
 
 void UIText::SetText(const std::string &text)
 {
-    if (mTextTexture != nullptr) {
-        SDL_DestroyTexture(mTextTexture);
+    if (mTextTexture)
+    {
+        // mTextTexture->Unload();
+        delete mTextTexture;
         mTextTexture = nullptr;
     }
-    mTextTexture = mFont->RenderText(text, mColor, mPointSize, mWrapLength);
+
+    mTextTexture = mFont->RenderText(text, mColor, static_cast<int>(mPointSize), mWrapLength);
     mText = text;
 
-    int texWidth, texHeight;
-    SDL_QueryTexture(mTextTexture, nullptr, nullptr, &texWidth, &texHeight);
-    SetSize(Vector2(texWidth, texHeight));
+    if (mTextTexture)
+    {
+        SetSize(Vector2(static_cast<float>(mTextTexture->GetWidth()),
+                        static_cast<float>(mTextTexture->GetHeight())));
+    }
 }
 
-void UIText::Draw(SDL_Renderer *renderer, const Vector2 &screenPos)
+void UIText::Draw(Renderer *renderer, const Vector2 &screenPos)
 {
-    SDL_Rect titleQuad;
-    titleQuad.x = mPosition.x + screenPos.x;
-    titleQuad.y = mPosition.y + screenPos.y;
-    titleQuad.w = mSize.x;
-    titleQuad.h = mSize.y;
+    if (!mTextTexture)
+        return;
 
-    SDL_RenderCopyEx(renderer, mTextTexture, nullptr, &titleQuad, 0.0, nullptr, SDL_FLIP_NONE);
+    Vector2 pos = mPosition + screenPos;
+    renderer->DrawTexture(pos, mSize, 0.0f, mColor, mTextTexture);
+
+    // SDL_Rect titleQuad;
+    // titleQuad.x = mPosition.x + screenPos.x;
+    // titleQuad.y = mPosition.y + screenPos.y;
+    // titleQuad.w = mSize.x;
+    // titleQuad.h = mSize.y;
+    //
+    // SDL_RenderCopyEx(renderer, mTextTexture, nullptr, &titleQuad, 0.0, nullptr, SDL_FLIP_NONE);
 }
 
 void UIText::ChangeResolution(float oldScale, float newScale) {

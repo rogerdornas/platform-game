@@ -48,8 +48,9 @@ private:
     float mHoverDuration;
     float mHoverTimer;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawSpriteComponent* mDrawSpriteComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
+
     class RigidBodyComponent* mRigidBodyComponent;
     class ColliderComponent* mAABBComponent;
 };

@@ -9,9 +9,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Mantis::Mantis(Game *game)
     :Enemy(game)
@@ -43,18 +42,20 @@ Mantis::Mantis(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, 1.35f * mWidth, 1.35f * mHeight, "../Assets/Sprites/Mantis/Mantis.png", "../Assets/Sprites/Mantis/Mantis.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Mantis/Mantis.png",
+                                                    "../Assets/Sprites/Mantis/Mantis.json",
+                                                    1.35f * mWidth, 1.35f * mHeight, 998);
     std::vector walk = {8, 9, 10, 11};
-    mDrawAnimatedComponent->AddAnimation("walk", walk);
+    mDrawComponent->AddAnimation("walk", walk);
 
     std::vector attack = {1, 2, 3, 4, 5, 6, 7};
-    mDrawAnimatedComponent->AddAnimation("attack", attack);
+    mDrawComponent->AddAnimation("attack", attack);
 
     std::vector hit = {0};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("walk");
-    mDrawAnimatedComponent->SetAnimFPS(7.0f);
+    mDrawComponent->SetAnimation("walk");
+    mDrawComponent->SetAnimFPS(7.0f);
 }
 
 void Mantis::OnUpdate(float deltaTime) {
@@ -72,8 +73,8 @@ void Mantis::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->SetAnimFPS(10.0f);
+        if (mDrawComponent) {
+            mDrawComponent->SetAnimFPS(10.0f);
         }
         MovementAfterPlayerSpotted(deltaTime);
     }
@@ -90,7 +91,7 @@ void Mantis::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -99,6 +100,7 @@ void Mantis::MovementBeforePlayerSpotted() {
     Player* player = GetGame()->GetPlayer();
     if (mWalkingAroundTimer > mWalkingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mWalkingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -138,9 +140,11 @@ void Mantis::WalkForward(float deltaTime) {
 
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
@@ -155,9 +159,9 @@ void Mantis::WalkForward(float deltaTime) {
             mWaitToAttackTimer = 0;
             mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 4, mJumpForce));
             mMantisState = State::Attack;
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
             mGame->GetAudio()->PlaySound("Jump/Jump1.wav");
         }
     }
@@ -172,9 +176,11 @@ void Mantis::WalkBack(float deltaTime) {
 
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mMoveSpeed * 2, mRigidBodyComponent->GetVelocity().y));
@@ -204,14 +210,14 @@ void Mantis::Attack(float deltaTime) {
 
 void Mantis::ManageAnimations() {
     if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimation("hit");
     }
     else if (mMantisState == State::Attack) {
-        mDrawAnimatedComponent->SetAnimFPS(10.0f);
-        mDrawAnimatedComponent->SetAnimation("attack");
+        mDrawComponent->SetAnimFPS(10.0f);
+        mDrawComponent->SetAnimation("attack");
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("walk");
+        mDrawComponent->SetAnimation("walk");
     }
 }
 
@@ -230,10 +236,10 @@ void Mantis::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.35f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.35f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.35f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.35f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -251,9 +257,9 @@ void Mantis::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }
 
 

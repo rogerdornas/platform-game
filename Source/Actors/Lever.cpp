@@ -9,9 +9,8 @@
 #include "../Actors/Sword.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Actors/Ground.h"
 #include "../Actors/DynamicGround.h"
 
@@ -22,37 +21,39 @@ Lever::Lever(class Game* game, float width, float height, LeverType leverType)
     ,mActivate(false)
     ,mActivatingDuration(0.4f)
     ,mActivatingTimer(0.0f)
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
 {
-    mDrawPolygonComponent = nullptr;
+    // mDrawPolygonComponent = nullptr;
 
     if (mLeverType == LeverType::Lever) {
         mHealthPoints = 1;
-        mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight,
-                                           "../Assets/Sprites/Lever/Lever.png",
-                                           "../Assets/Sprites/Lever/Lever.json", 150);
+        mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Lever/Lever.png",
+                                           "../Assets/Sprites/Lever/Lever.json",
+                                            mWidth, mHeight, 150);
 
         std::vector off = {0};
-        mDrawAnimatedComponent->AddAnimation("off", off);
+        mDrawComponent->AddAnimation("off", off);
 
         std::vector activating = {0, 1, 2, 3, 4, 5, 6, 6, 6, 6};
-        mDrawAnimatedComponent->AddAnimation("activating", activating);
+        mDrawComponent->AddAnimation("activating", activating);
 
         std::vector on = {6};
-        mDrawAnimatedComponent->AddAnimation("on", on);
+        mDrawComponent->AddAnimation("on", on);
 
-        mDrawAnimatedComponent->SetAnimation("off");
+        mDrawComponent->SetAnimation("off");
         const float fps = 7.0f / mActivatingDuration;
-        mDrawAnimatedComponent->SetAnimFPS(fps);
+        mDrawComponent->SetAnimFPS(fps);
     }
     else if (mLeverType == LeverType::Crystal) {
         mHealthPoints = 50;
-        mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Crystal/Crystal2.png", mWidth, mHeight);
+        mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Crystal/Crystal2.png", "",
+                                                    mWidth, mHeight);
     }
     else if (mLeverType == LeverType::Mirror) {
         mHealthPoints = 1;
-        mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Crystal/Crystal2.png", mWidth, mHeight);
+        mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Crystal/Crystal2.png", "",
+                                                    mWidth, mHeight);
     }
 }
 
@@ -131,26 +132,26 @@ void Lever::OnUpdate(float deltaTime) {
     if (mActivate) {
         if (mLeverType == LeverType::Lever) {
             if (mActivatingTimer < mActivatingDuration) {
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetAnimation("activating");
+                if (mDrawComponent) {
+                    mDrawComponent->SetAnimation("activating");
                 }
                 mActivatingTimer += deltaTime;
             }
             else {
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetAnimation("on");
+                if (mDrawComponent) {
+                    mDrawComponent->SetAnimation("on");
                 }
             }
         }
         if (mLeverType == LeverType::Crystal) {
-            if (mDrawSpriteComponent) {
-                mDrawSpriteComponent->SetIsVisible(false);
+            if (mDrawComponent) {
+                mDrawComponent->SetVisible(false);
                 SetState(ActorState::Destroy);
             }
         }
         if (mLeverType == LeverType::Mirror) {
-            if (mDrawSpriteComponent) {
-                mDrawSpriteComponent->SetIsVisible(false);
+            if (mDrawComponent) {
+                mDrawComponent->SetVisible(false);
                 SetState(ActorState::Destroy);
             }
         }
@@ -194,15 +195,10 @@ void Lever::ChangeResolution(float oldScale, float newScale) {
     mFixedCameraPosition.x = mFixedCameraPosition.x / oldScale * newScale;
     mFixedCameraPosition.y = mFixedCameraPosition.y / oldScale * newScale;
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth);
-        mDrawAnimatedComponent->SetHeight(mHeight);
-    }
-
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth);
-        mDrawSpriteComponent->SetHeight(mHeight);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth);
+    //     mDrawAnimatedComponent->SetHeight(mHeight);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -220,7 +216,7 @@ void Lever::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

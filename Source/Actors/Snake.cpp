@@ -7,9 +7,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Snake::Snake(Game *game)
     :Enemy(game)
@@ -42,21 +41,23 @@ Snake::Snake(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.0f, mWidth * 3.0f * 0.36f, "../Assets/Sprites/Snake/Snake.png", "../Assets/Sprites/Snake/Snake.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Snake/Snake.png",
+                                                        "../Assets/Sprites/Snake/Snake.json",
+                                                        mWidth * 3.0f, mWidth * 3.0f * 0.36f, 998);
     std::vector walk = {14, 10, 11, 12};
-    mDrawAnimatedComponent->AddAnimation("walk", walk);
+    mDrawComponent->AddAnimation("walk", walk);
 
     std::vector idle = {13, 7, 8, 9};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector attack = {0, 1, 2, 3, 4, 5};
-    mDrawAnimatedComponent->AddAnimation("attack", attack);
+    mDrawComponent->AddAnimation("attack", attack);
 
     std::vector hit = {6};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("walk");
-    mDrawAnimatedComponent->SetAnimFPS(7.0f);
+    mDrawComponent->SetAnimation("walk");
+    mDrawComponent->SetAnimFPS(7.0f);
 }
 
 void Snake::OnUpdate(float deltaTime) {
@@ -74,8 +75,8 @@ void Snake::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->SetAnimFPS(10.0f);
+        if (mDrawComponent) {
+            mDrawComponent->SetAnimFPS(10.0f);
         }
         MovementAfterPlayerSpotted(deltaTime);
     }
@@ -92,7 +93,7 @@ void Snake::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -101,6 +102,7 @@ void Snake::MovementBeforePlayerSpotted() {
     Player* player = GetGame()->GetPlayer();
     if (mWalkingAroundTimer > mWalkingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mWalkingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -140,9 +142,11 @@ void Snake::WalkForward(float deltaTime) {
 
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
@@ -150,9 +154,9 @@ void Snake::WalkForward(float deltaTime) {
 
     if (Math::Abs(dist) < mDistToAttack) {
         mSnakeState = State::Attack;
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
     }
 }
 
@@ -161,9 +165,11 @@ void Snake::Stop(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -203,8 +209,10 @@ void Snake::Attack(float deltaTime) {
             aabb->SetMax(v3);
         }
 
-        if (mDrawPolygonComponent) {
-            mDrawPolygonComponent->SetVertices(vertices);
+        if (mRectComponent) {
+            // mDrawPolygonComponent->SetVertices(vertices);
+            mRectComponent->SetWidth(mWidth);
+            mRectComponent->SetHeight(mHeight);
         }
 
         mAttackTimer = 0;
@@ -252,23 +260,25 @@ void Snake::Attack(float deltaTime) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
     }
 }
 
 void Snake::ManageAnimations() {
     if (mSnakeState == State::Attack) {
-        mDrawAnimatedComponent->SetAnimation("attack");
+        mDrawComponent->SetAnimation("attack");
     }
     else if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimation("hit");
     }
     else if (mSnakeState == State::Stop) {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation("idle");
     }
     else if (mSnakeState == State::WalkForward) {
-        mDrawAnimatedComponent->SetAnimation("walk");
+        mDrawComponent->SetAnimation("walk");
     }
 }
 
@@ -289,10 +299,10 @@ void Snake::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 3.0f);
-        mDrawAnimatedComponent->SetHeight(mWidth * 3.0f * 0.36f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 3.0f);
+    //     mDrawAnimatedComponent->SetHeight(mWidth * 3.0f * 0.36f);
+    // }
 
     Vector2 v1;
     Vector2 v2;
@@ -331,7 +341,7 @@ void Snake::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

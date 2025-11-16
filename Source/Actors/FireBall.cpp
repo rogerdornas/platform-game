@@ -3,13 +3,14 @@
 //
 
 #include "FireBall.h"
+
+#include "Light.h"
 #include "ParticleSystem.h"
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 FireBall::FireBall(class Game* game)
     :Actor(game)
@@ -26,10 +27,9 @@ FireBall::FireBall(class Game* game)
     ,mDeactivateTimer(mDeactivateDuration)
     ,mDamage(20)
     ,mIsFromEnemy(false)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
-
+    ,mLight(nullptr)
+    ,mRectComponent(nullptr)
+    ,mDrawComponent(nullptr)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -44,25 +44,34 @@ FireBall::FireBall(class Game* game)
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {37, 218, 255, 255});
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mHeight * 1.8f, "../Assets/Sprites/Fireball2/Fireball.png", "../Assets/Sprites/Fireball2/Fireball.json", 1001);
+    mDrawComponent = new AnimatorComponent(this,
+                                            "../Assets/Sprites/Fireball2/Fireball.png",
+                                            "../Assets/Sprites/Fireball2/Fireball.json",
+                                             mWidth * 1.8f, mHeight * 1.8f, 1001);
 
     std::vector<int> firing = {0, 1, 2, 3};
-    mDrawAnimatedComponent->AddAnimation("firing", firing);
+    mDrawComponent->AddAnimation("firing", firing);
 
     std::vector<int> explosion = {5, 6, 7, 8, 4, 4};
-    mDrawAnimatedComponent->AddAnimation("explosion", explosion);
+    mDrawComponent->AddAnimation("explosion", explosion);
 
     const std::vector end = {4};
-    mDrawAnimatedComponent->AddAnimation("end", end);
+    mDrawComponent->AddAnimation("end", end);
 
-    mDrawAnimatedComponent->SetAnimation("firing");
+    mDrawComponent->SetAnimation("firing");
     const float fps = 4.0f / mDeactivateDuration;
-    mDrawAnimatedComponent->SetAnimFPS(fps);
-    mDrawAnimatedComponent->UseRotation(true);
+    mDrawComponent->SetAnimFPS(fps);
+    // mDrawAnimatedComponent->UseRotation(true);
 
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 1800);
     mAABBComponent = new AABBComponent(this, v1, v3);
+
+    // mLight = new Light(mGame);
+    // mLight->SetRadius(100.0f);
+    // mLight->SetIntensity(0.95f);
+    // mLight->SetColor(Vector3(0.92f, 0.37f, 0.37f));
+    // mLight->SetActivate(false);
 
     mGame->AddFireBall(this);
 }
@@ -88,15 +97,15 @@ void FireBall::OnUpdate(float deltaTime) {
                         mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
                     }
                 }
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->ResetAnimationTimer();
-                    mDrawAnimatedComponent->SetAnimation("explosion");
+                if (mDrawComponent) {
+                    // mDrawAnimatedComponent->ResetAnimationTimer();
+                    mDrawComponent->SetAnimation("explosion");
                 }
                 mWidth = mExplodingWidth;
                 mHeight = mExplodingWidth;
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                if (mDrawComponent) {
+                    mDrawComponent->SetWidth(mWidth * 1.8f);
+                    mDrawComponent->SetHeight(mHeight * 1.8f);
                 }
                 mFireballState = State::Exploding;
             }
@@ -106,15 +115,15 @@ void FireBall::OnUpdate(float deltaTime) {
 
             // Verifica se fireball está fora da tela mais um intervalo
             if (!IsOnScreen()) {
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->ResetAnimationTimer();
-                    mDrawAnimatedComponent->SetAnimation("explosion");
+                if (mDrawComponent) {
+                    // mDrawAnimatedComponent->ResetAnimationTimer();
+                    mDrawComponent->SetAnimation("explosion");
                 }
                 mWidth = mExplodingWidth;
                 mHeight = mExplodingWidth;
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                if (mDrawComponent) {
+                    mDrawComponent->SetWidth(mWidth * 1.8f);
+                    mDrawComponent->SetHeight(mHeight * 1.8f);
                 }
                 mFireballState = State::Exploding;
             }
@@ -127,7 +136,14 @@ void FireBall::OnUpdate(float deltaTime) {
             if (mDeactivateTimer >= mDeactivateDuration) {
                 Deactivate();
             }
+            if (mLight) {
+                // mLight->SetActivate(false);
+                mLight->Deactivate(0.5f);
+            }
             break;
+    }
+    if (mLight) {
+        mLight->SetPosition(GetPosition());
     }
 }
 
@@ -142,10 +158,10 @@ void FireBall::ExplosionEffect() {
 }
 
 bool FireBall::IsOnScreen() {
-    return (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth()  + mGame->GetLogicalWindowWidth() * mFireballOffscreenLimit &&
-            GetPosition().x > mGame->GetCamera()->GetPosCamera().x  - mGame->GetLogicalWindowWidth() * mFireballOffscreenLimit &&
-            GetPosition().y > mGame->GetCamera()->GetPosCamera().y - mGame->GetLogicalWindowHeight() * mFireballOffscreenLimit &&
-            GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight() + mGame->GetLogicalWindowHeight() * mFireballOffscreenLimit);
+    return (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetRenderer()->GetZoomedWidth()  + mGame->GetRenderer()->GetZoomedWidth() * mFireballOffscreenLimit &&
+            GetPosition().x > mGame->GetCamera()->GetPosCamera().x  - mGame->GetRenderer()->GetZoomedWidth() * mFireballOffscreenLimit &&
+            GetPosition().y > mGame->GetCamera()->GetPosCamera().y - mGame->GetRenderer()->GetZoomedHeight() * mFireballOffscreenLimit &&
+            GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetRenderer()->GetZoomedHeight() + mGame->GetRenderer()->GetZoomedHeight() * mFireballOffscreenLimit);
 }
 
 
@@ -167,26 +183,33 @@ void FireBall::Activate() {
     }
 
     mAABBComponent->SetActive(true); // reativa colisão
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-        mDrawPolygonComponent->SetIsVisible(true);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
+        mRectComponent->SetVisible(true);
     }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.8f);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.8f);
-        mDrawSpriteComponent->SetIsVisible(true);
-    }
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
-        mDrawAnimatedComponent->SetIsVisible(true);
-        mDrawAnimatedComponent->SetAnimation("firing");
+    if (mDrawComponent) {
+        mDrawComponent->SetWidth(mWidth * 1.8f);
+        mDrawComponent->SetHeight(mHeight * 1.8f);
+        mDrawComponent->SetVisible(true);
+        mDrawComponent->SetAnimation("firing");
     }
     mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
     if (!mSound.IsValid()) {
         mSound = mGame->GetAudio()->PlaySound("FireBall/ShootFireBall.wav");
     }
     mFireballState = State::Throwing;
+
+    if (!mLight) {
+        mLight = new Light(mGame);
+        mLight->SetRadius(250.0f);
+        mLight->SetMaxIntensity(0.95f);
+        mLight->SetColor(Vector3(0.72f, 0.37f, 0.37f));
+    }
+    if (mLight) {
+        mLight->Activate(0.2f);
+    }
 }
 
 void FireBall::Deactivate() {
@@ -198,18 +221,18 @@ void FireBall::Deactivate() {
     mDeactivateTimer = 0;
     mDamage = 20;
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetIsVisible(false);
+    if (mRectComponent) {
+        mRectComponent->SetVisible(false);
     }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetIsVisible(false);
-    }
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetIsVisible(false);
-        mDrawAnimatedComponent->SetAnimation("end");
+    if (mDrawComponent) {
+        mDrawComponent->SetVisible(false);
+        mDrawComponent->SetAnimation("end");
     }
     SetState(ActorState::Paused);
     mSound.Reset();
+    if (mLight) {
+        mLight->Deactivate();
+    }
 }
 
 void FireBall::ResolveGroundCollision() {
@@ -226,16 +249,16 @@ void FireBall::ResolveGroundCollision() {
                         mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
                     }
                 }
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->ResetAnimationTimer();
-                    mDrawAnimatedComponent->SetAnimation("explosion");
+                if (mDrawComponent) {
+                    // mDrawAnimatedComponent->ResetAnimationTimer();
+                    mDrawComponent->SetAnimation("explosion");
                 }
                 mFireballState = State::Exploding;
                 mWidth = mExplodingWidth;
                 mHeight = mExplodingWidth;
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                    mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                if (mDrawComponent) {
+                    mDrawComponent->SetWidth(mWidth * 1.8f);
+                    mDrawComponent->SetHeight(mHeight * 1.8f);
                 }
             }
         }
@@ -258,16 +281,16 @@ void FireBall::ResolveEnemyCollision() {
                             mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
                         }
                     }
-                    if (mDrawAnimatedComponent) {
-                        mDrawAnimatedComponent->ResetAnimationTimer();
-                        mDrawAnimatedComponent->SetAnimation("explosion");
+                    if (mDrawComponent) {
+                        // mDrawAnimatedComponent->ResetAnimationTimer();
+                        mDrawComponent->SetAnimation("explosion");
                     }
                     mFireballState = State::Exploding;
                     mWidth = mExplodingWidth;
                     mHeight = mExplodingWidth;
-                    if (mDrawAnimatedComponent) {
-                        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+                    if (mDrawComponent) {
+                        mDrawComponent->SetWidth(mWidth * 1.8f);
+                        mDrawComponent->SetHeight(mHeight * 1.8f);
                     }
                 }
             }
@@ -289,16 +312,16 @@ void FireBall::ResolvePlayerCollision() {
                     mGame->GetAudio()->PlaySound("FireBall/ExplodeFireBall.wav");
                 }
             }
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-                mDrawAnimatedComponent->SetAnimation("explosion");
+            if (mDrawComponent) {
+                // mDrawAnimatedComponent->ResetAnimationTimer();
+                mDrawComponent->SetAnimation("explosion");
             }
             mFireballState = State::Exploding;
             mWidth = mExplodingWidth;
             mHeight = mExplodingWidth;
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+            if (mDrawComponent) {
+                mDrawComponent->SetWidth(mWidth * 1.8f);
+                mDrawComponent->SetHeight(mHeight * 1.8f);
             }
         }
     }
@@ -316,10 +339,10 @@ void FireBall::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -337,7 +360,7 @@ void FireBall::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

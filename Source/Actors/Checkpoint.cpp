@@ -5,8 +5,8 @@
 #include "Checkpoint.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../UIElements/UIScreen.h"
 
 Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 position)
@@ -15,8 +15,8 @@ Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 posi
     ,mHeight(height)
     ,mStoreOpened(false)
     ,mStoreMessageOpened(false)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
+    ,mRectComponent(nullptr)
+    ,mDrawComponent(nullptr)
 {
     SetPosition(position);
 
@@ -34,14 +34,15 @@ Checkpoint::Checkpoint(class Game *game, float width, float height, Vector2 posi
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
     mAABBComponent = new AABBComponent(this, v1, v3);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.1f, mHeight * 1.1f,
-                                            "../Assets/Sprites/CheckPoint/CheckPoint.png", "../Assets/Sprites/CheckPoint/CheckPoint.json", 1);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/CheckPoint/CheckPoint.png", \
+                                            "../Assets/Sprites/CheckPoint/CheckPoint.json",
+                                            mWidth * 1.1f, mHeight * 1.1f, 1);
 
     std::vector<int> idle = {0, 1, 2, 3, 4, 5};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(10.0f);
 }
 
 
@@ -102,10 +103,10 @@ void Checkpoint::ChangeResolution(float oldScale, float newScale) {
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.1f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.1f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.1f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.1f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -123,9 +124,9 @@ void Checkpoint::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }
 
 

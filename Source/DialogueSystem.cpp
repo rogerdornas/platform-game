@@ -80,7 +80,7 @@ void DialogueSystem::LoadDialogueFile(const std::string &dialogueFilePath) {
         // Definir cor do texto
         Vector3 color;
         if (speaker == "Esquilo") {
-            color = Vector3(0.65, 0.37, 0.33);
+            color = Vector3(0.65f, 0.37f, 0.33f);
         }
         if (speaker == "Bicho") {
             // color = Vector3(0.25, 0.55, 0.14);

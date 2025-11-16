@@ -23,8 +23,9 @@ private:
     bool mStoreOpened;
     bool mStoreMessageOpened;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
+
     class ColliderComponent* mAABBComponent;
 };
 

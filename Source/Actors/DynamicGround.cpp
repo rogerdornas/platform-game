@@ -7,8 +7,9 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawDynamicGroundSpritesComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
+#include "../Components/Drawing/TileMapComponent.h"
 
 DynamicGround::DynamicGround(Game* game, float width, float height, bool isSpike, bool isMoving,
                              float movingDuration, Vector2 velocity)
@@ -20,27 +21,33 @@ DynamicGround::DynamicGround(Game* game, float width, float height, bool isSpike
     ,mIsDecreasing(false)
     ,mIsOscillating(false)
     ,mGrowthDirection(GrowthDirection::Centered)
-    ,mDrawDynamicGroundSpritesComponent(nullptr)
 {
-    RemoveComponent(mDrawGroundSpritesComponent);
-    delete mDrawGroundSpritesComponent;
-    mDrawGroundSpritesComponent = nullptr;
-
-    mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 100);
+    mDrawComponent->SetDrawOrder(100);
+    // RemoveComponent(mDrawGroundSpritesComponent);
+    // delete mDrawGroundSpritesComponent;
+    // mDrawGroundSpritesComponent = nullptr;
+    //
+    // mDrawDynamicGroundSpritesComponent = new DrawDynamicGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 100);
 }
 
 void DynamicGround::OnUpdate(float deltaTime) {
     if ((mWidth == 0 || mHeight == 0)) {
-        if (mDrawPolygonComponent) {
-            mDrawPolygonComponent->SetIsVisible(false);
+        if (mRectComponent) {
+            mRectComponent->SetVisible(false);
+        }
+        if (mDrawComponent) {
+            mDrawComponent->SetVisible(false);
         }
         if (mAABBComponent) {
             mAABBComponent->SetActive(false);
         }
     }
     else {
-        if (mDrawPolygonComponent) {
-            mDrawPolygonComponent->SetIsVisible(true);
+        if (mRectComponent) {
+            mRectComponent->SetVisible(true);
+        }
+        if (mDrawComponent) {
+            mDrawComponent->SetVisible(true);
         }
         if (mAABBComponent) {
             mAABBComponent->SetActive(true);
@@ -112,8 +119,15 @@ void DynamicGround::OnUpdate(float deltaTime) {
             aabb->SetMin(v1);
             aabb->SetMax(v3);
         }
-        if (mDrawPolygonComponent) {
-            mDrawPolygonComponent->SetVertices(vertices);
+        if (mRectComponent) {
+            // mDrawPolygonComponent->SetVertices(vertices);
+            mRectComponent->SetWidth(mWidth);
+            mRectComponent->SetHeight(mHeight);
+        }
+
+        if (mDrawComponent) {
+            mDrawComponent->SetCurrentWidth(mWidth);
+            mDrawComponent->SetCurrentHeight(mHeight);
         }
 
         switch (mGrowthDirection) {
@@ -166,9 +180,9 @@ void DynamicGround::SetSprites() {
             }
         }
     }
-    mDrawDynamicGroundSpritesComponent->SetSpriteOffsetMap(spriteOffsetMap);
-    mDrawDynamicGroundSpritesComponent->SetWidth(mGame->GetTileSize());
-    mDrawDynamicGroundSpritesComponent->SetHeight(mGame->GetTileSize());
+    // mDrawDynamicGroundSpritesComponent->SetSpriteOffsetMap(spriteOffsetMap);
+    // mDrawDynamicGroundSpritesComponent->SetWidth(mGame->GetTileSize());
+    // mDrawDynamicGroundSpritesComponent->SetHeight(mGame->GetTileSize());
 }
 
 void DynamicGround::SetTilesIndex(float width, float height, float x, float y) {
@@ -194,7 +208,12 @@ void DynamicGround::SetTilesIndex(float width, float height, float x, float y) {
         }
     }
 
-    mDrawDynamicGroundSpritesComponent->SetTilesIndex(mTilesIndex);
+    // Define e bakeia os tiles
+    if (mDrawComponent) {
+        mDrawComponent->SetTilesIndex(mTilesIndex);
+        mDrawComponent->BakeTilesToTexture(GetGame()->GetRenderer());
+        mDrawComponent->SetGrowDirection(mGrowthDirection);
+    }
 }
 
 void DynamicGround::ChangeResolution(float oldScale, float newScale) {
@@ -234,7 +253,7 @@ void DynamicGround::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

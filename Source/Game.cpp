@@ -1,8 +1,7 @@
 #include <algorithm>
 #include <vector>
 #include "Game.h"
-// #include "Components/DrawComponent.h"
-#include "Components/DrawComponents/DrawComponent.h"
+#include "Components/Drawing/DrawComponent.h"
 #include "Components/RigidBodyComponent.h"
 #include "Random.h"
 #include "Actors/ParticleSystem.h"
@@ -49,10 +48,8 @@
 #include "Actors/Snake.h"
 #include "Components/AABBComponent.h"
 #include "Components/DashComponent.h"
-#include "Components/DrawComponents/DrawAnimatedComponent.h"
-#include "Components/DrawComponents/DrawPolygonComponent.h"
-#include "Components/DrawComponents/DrawRopeComponent.h"
-
+#include "Components/Drawing/AnimatorComponent.h"
+#include "Components/Drawing/RectComponent.h"
 
 std::vector<int> ParseIntList(const std::string& str) {
     std::vector<int> result;
@@ -143,8 +140,8 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeDuration(0.4f)
     ,mSceneManagerTimer(0.0f)
     ,mFadeAlpha(0)
-    ,mGameScene(GameScene::MainMenu)
-    ,mNextScene(GameScene::MainMenu)
+    ,mGameScene(GameScene::Room0)
+    ,mNextScene(GameScene::Room0)
 {
 }
 
@@ -156,26 +153,26 @@ bool Game::Initialize()
         return false;
     }
 
+    // Init SDL Image
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags))
+    {
+        SDL_Log("Unable to initialize SDL_image: %s", IMG_GetError());
+        return false;
+    }
+
     mWindow = SDL_CreateWindow("Echoes of Elementum", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                mWindowWidth, mWindowHeight,
                                // SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-                               SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
+                               SDL_WINDOW_RESIZABLE | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL);
 
     if (!mWindow) {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return false;
     }
 
-    mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!mRenderer) {
-        SDL_Log("Failed to create renderer: %s", SDL_GetError());
-        return false;
-    }
-
-    if (IMG_Init(IMG_INIT_PNG) == 0) {
-        SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
-        return false;
-    }
+    mRenderer = new Renderer(mWindow);
+    mRenderer->Initialize(mWindowWidth, mWindowHeight);
 
     // Initialize SDL_ttf
     if (TTF_Init() != 0)
@@ -190,22 +187,31 @@ bool Game::Initialize()
         return false;
     }
 
-    if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
-        mLogicalWindowWidth = static_cast<float>(mWindowWidth);
-        mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
-        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
-        float ratio = mOriginalWindowWidth / static_cast<float>(mLogicalWindowWidth);
-        int tileSize = static_cast<int>(mOriginalTileSize / ratio);
-        mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+    // Informe o renderer sobre a mudança
+    if (mRenderer) // 'mRenderer' é seu objeto Renderer
+    {
+        mRenderer->OnWindowResize(mWindowWidth, mWindowHeight);
     }
-    else {
-        mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
-        mLogicalWindowHeight = static_cast<float>(mWindowHeight);
-        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
-        float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
-        int tileSize = static_cast<int>(mOriginalTileSize / ratio);
-        mScale = static_cast<float>(tileSize) / mOriginalTileSize;
-    }
+
+    mLogicalWindowWidth = mRenderer->GetVirtualWidth();
+    mLogicalWindowHeight = mRenderer->GetVirtualHeight();
+
+    // if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
+    //     mLogicalWindowWidth = static_cast<float>(mWindowWidth);
+    //     mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
+    //     SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+    //     float ratio = mOriginalWindowWidth / static_cast<float>(mLogicalWindowWidth);
+    //     int tileSize = static_cast<int>(mOriginalTileSize / ratio);
+    //     mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+    // }
+    // else {
+    //     mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
+    //     mLogicalWindowHeight = static_cast<float>(mWindowHeight);
+    //     SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+    //     float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
+    //     int tileSize = static_cast<int>(mOriginalTileSize / ratio);
+    //     mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+    // }
 
 
     // Esconde o cursor
@@ -247,27 +253,42 @@ bool Game::Initialize()
     // mBackGroundTextureLevel3 = LoadTexture(backgroundAssets + "fundoCortadoEspichado.png");
     // mBackGroundTextureLevel4 = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art4.png");
 
-    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/7.png"));
-    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/6.png"));
-    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/5.png"));
-    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/4.png"));
-    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/3.png"));
-    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/2.png"));
-    mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/1.png"));
+    // mRenderer->GetTexture(backgroundAssets + "Level2/6.png");
+    // mRenderer->GetTexture(backgroundAssets + "Level2/5.png");
+    // mRenderer->GetTexture(backgroundAssets + "Level2/4.png");
+    // mRenderer->GetTexture(backgroundAssets + "Level2/3.png");
+    // mRenderer->GetTexture(backgroundAssets + "Level2/2.png");
+    // mRenderer->GetTexture(backgroundAssets + "Level2/1.png");
 
-    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/1.png"));
-    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/2.png"));
-    // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/3.png"));
-    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/4.png"));
-    mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/5.png"));
+    // mBackgroundLayersLevel2.emplace_back(mRenderer->GetTexture(backgroundAssets + "Level2/7.png"));
+    // mBackgroundLayersLevel2.emplace_back(mRenderer->GetTexture(backgroundAssets + "Level2/6.png"));
+    // mBackgroundLayersLevel2.emplace_back(mRenderer->GetTexture(backgroundAssets + "Level2/5.png"));
+    // mBackgroundLayersLevel2.emplace_back(mRenderer->GetTexture(backgroundAssets + "Level2/4.png"));
+    // mBackgroundLayersLevel2.emplace_back(mRenderer->GetTexture(backgroundAssets + "Level2/3.png"));
+    // mBackgroundLayersLevel2.emplace_back(mRenderer->GetTexture(backgroundAssets + "Level2/2.png"));
+    // mBackgroundLayersLevel2.emplace_back(mRenderer->GetTexture(backgroundAssets + "Level2/1.png"));
 
-    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
-    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/2.png"));
-    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/3.png"));
-    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/4.png"));
-    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/5.png"));
-    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/6.png"));
-    mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/7.png"));
+    // mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/7.png"));
+    // mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/6.png"));
+    // mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/5.png"));
+    // mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/4.png"));
+    // mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/3.png"));
+    // mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/2.png"));
+    // mBackgroundLayersLevel2.emplace_back(LoadTexture(backgroundAssets + "Level2/1.png"));
+    //
+    // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/1.png"));
+    // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/2.png"));
+    // // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/3.png"));
+    // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/4.png"));
+    // mBackgroundLayersLevel3.emplace_back(LoadTexture(backgroundAssets + "Level3/5.png"));
+    //
+    // mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/1.png"));
+    // mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/2.png"));
+    // mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/3.png"));
+    // mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/4.png"));
+    // mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/5.png"));
+    // mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/6.png"));
+    // mBackgroundLayersLevel4.emplace_back(LoadTexture(backgroundAssets + "Level4/7.png"));
 
     mTicksCount = SDL_GetTicks();
 
@@ -376,16 +397,16 @@ void Game::ChangeScene()
 
         // não carrega companheiro na última fase
         if (mNextScene != GameScene::Level5) {
-            auto* fairy = new Fairy(this, 40, 40);
+            // auto* fairy = new Fairy(this, 40, 40);
         }
 
         // Volta player
         if (mPlayer) {
-            if (mPlayer->GetComponent<DrawAnimatedComponent>()) {
-                mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(true);
+            if (mPlayer->GetComponent<AnimatorComponent>()) {
+                mPlayer->GetComponent<AnimatorComponent>()->SetVisible(true);
             }
-            if (mPlayer->GetComponent<DrawPolygonComponent>()) {
-                mPlayer->GetComponent<DrawPolygonComponent>()->SetIsVisible(true);
+            if (mPlayer->GetComponent<RectComponent>()) {
+                mPlayer->GetComponent<RectComponent>()->SetVisible(true);
             }
         }
 
@@ -395,21 +416,21 @@ void Game::ChangeScene()
     else {
         // Se está no menu, pausa draw de player
         if (mPlayer) {
-            if (mPlayer->GetComponent<DrawAnimatedComponent>()) {
-                mPlayer->GetComponent<DrawAnimatedComponent>()->SetIsVisible(false);
+            if (mPlayer->GetComponent<AnimatorComponent>()) {
+                mPlayer->GetComponent<AnimatorComponent>()->SetVisible(false);
             }
-            if (mPlayer->GetComponent<DrawPolygonComponent>()) {
-                mPlayer->GetComponent<DrawPolygonComponent>()->SetIsVisible(false);
+            if (mPlayer->GetComponent<RectComponent>()) {
+                mPlayer->GetComponent<RectComponent>()->SetVisible(false);
             }
-            if (mPlayer->GetComponent<DrawRopeComponent>()) {
-                mPlayer->GetComponent<DrawRopeComponent>()->SetIsVisible(false);
-            }
+            // if (mPlayer->GetComponent<DrawRopeComponent>()) {
+            //     mPlayer->GetComponent<DrawRopeComponent>()->SetVisible(false);
+            // }
         }
         // Delete map
-        if (mMap) {
-            delete mMap;
-            mMap = nullptr;
-        }
+        // if (mMap) {
+        //     delete mMap;
+        //     mMap = nullptr;
+        // }
     }
 
     // Reset gameplay state
@@ -422,7 +443,7 @@ void Game::ChangeScene()
         mUseParallaxBackground = false;
         mGamePlayState = GamePlayState::Menu;
         mCutsceneIndex = 0;
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Menu6.png");
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Menu6.png");
 
         // Initialize main menu actors
         LoadMainMenu();
@@ -466,7 +487,7 @@ void Game::ChangeScene()
     else if (mNextScene == GameScene::Prologue) {
         mUseParallaxBackground = false;
         // mUseParallaxBackground = true;
-        mBackGroundTexture = LoadTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
         LoadLevel(levelsAssets + "0-Prologue/Prologue.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -580,7 +601,10 @@ void Game::ChangeScene()
         mBossMusic.Reset();
     }
     else if (mNextScene == GameScene::Room0) {
-        mUseParallaxBackground = true;
+        mUseParallaxBackground = false;
+        // mUseParallaxBackground = true;
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+        // mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Level2/4.png");
 
         LoadLevel(levelsAssets + "Room0/Room0.json");
 
@@ -595,9 +619,10 @@ void Game::ChangeScene()
         mBossMusic.Reset();
     }
     else if (mNextScene == GameScene::MirrorBoss) {
-        mUseParallaxBackground = true;
-
         LoadLevel(levelsAssets + "MirrorBoss/MirrorBoss.json");
+
+        mUseParallaxBackground = false;
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -634,25 +659,29 @@ void Game::ChangeScene()
 }
 
 void Game::LoadMainMenu() {
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
+
     mMainMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 5, 50 * mScale);
-    mMainMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
-    mMainMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
-    Vector2 buttonPos = Vector2((mMainMenu->GetSize().x - buttonSize.x) / 2, 0);
+    const Vector2 buttonSize = Vector2(virtualWidth / 5, 0.046f * virtualHeight);
+    mMainMenu->SetSize(Vector2(virtualWidth / 3, virtualHeight / 3));
+    mMainMenu->SetPosition(Vector2(virtualWidth / 3, 2 * virtualHeight / 3));
+    Vector2 buttonPos = Vector2((mMainMenu->GetSize().x - buttonSize.x) / 2, 0.0f);
+    float distanceBetweenButtons = 0.064f * virtualHeight;
 
     std::string name = "INICIAR JOGO";
-    int buttonPointSize = static_cast<int>(34 * mScale);
-    mMainMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    int buttonPointSize = static_cast<int>(0.031f * virtualHeight);
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 1 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         LoadLoadGameMenu();
     });
 
     name = "OPÇÕES";
-    mMainMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 2 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() { LoadOptionsMenu(); });
 
     name = "SAIR";
-    mMainMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mMainMenu->AddButton(name, buttonPos + Vector2(0, 3 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mMainMenu->SetIsVisible(false);
         LoadConfirmQuitGameMenu();
@@ -661,23 +690,24 @@ void Game::LoadMainMenu() {
 
 void Game::LoadConfirmQuitGameMenu() {
     mConfirmQuitGameMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 5, 50 * mScale);
+    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 5, 0.046f * mLogicalWindowHeight);
     mConfirmQuitGameMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
     mConfirmQuitGameMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
     Vector2 buttonPos = Vector2((mConfirmQuitGameMenu->GetSize().x - buttonSize.x) / 2, mConfirmQuitGameMenu->GetSize().y * 0.30f);
+    float distanceBetweenButtons = 0.064f * mLogicalWindowHeight;
 
-    UIText* text = mConfirmQuitGameMenu->AddText("SAIR DO JOGO?", Vector2::Zero, Vector2::Zero, 38 * mScale);
-    text->SetPosition(Vector2((mConfirmQuitGameMenu->GetSize().x - text->GetSize().x) / 2, 0));
+    UIText* text = mConfirmQuitGameMenu->AddText("SAIR DO JOGO?", Vector2::Zero, Vector2::Zero, 0.035f * mWindowHeight);
+    text->SetPosition(Vector2((mConfirmQuitGameMenu->GetSize().x - text->GetSize().x) / 2, 0.0f));
 
     std::string name = "SIM";
-    int buttonPointSize = static_cast<int>(34 * mScale);
+    int buttonPointSize = static_cast<int>(0.031f * mLogicalWindowHeight);
     mConfirmQuitGameMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         Quit();
     });
 
     name = "NÃO";
-    mConfirmQuitGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mConfirmQuitGameMenu->AddButton(name, buttonPos + Vector2(0, 1 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mConfirmQuitGameMenu->Close();
         mMainMenu->SetIsVisible(true);
@@ -689,14 +719,15 @@ void Game::LoadLoadGameMenu() {
     mLoadGameMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
     mLoadGameMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
 
-    auto buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.65f, 150 * mScale);
-    auto buttonPointSize = static_cast<int>(36 * mScale);
+    auto buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.65f, 0.14f * mLogicalWindowHeight);
+    auto buttonPointSize = static_cast<int>(0.033f * mLogicalWindowHeight);
     auto buttonPos = Vector2(mLoadGameMenu->GetSize().x * 0.05f, mLoadGameMenu->GetSize().y * 0.2f);
+    float distanceBetweenButtons = 0.16f * mLogicalWindowHeight;
 
-    mLoadGameMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mLoadGameMenu->GetSize());
+    mLoadGameMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", mLoadGameMenu->GetSize() / 2, mLoadGameMenu->GetSize());
 
-    UIText* text = mLoadGameMenu->AddText("SELECIONAR PERFIL", Vector2::Zero, Vector2::Zero, 50 * mScale);
-    text->SetPosition(Vector2((mLoadGameMenu->GetSize().x - text->GetSize().x) / 2, mLoadGameMenu->GetSize().y * 0.05f));
+    UIText* text = mLoadGameMenu->AddText("SELECIONAR PERFIL", Vector2::Zero, Vector2::Zero, 0.046f * mLogicalWindowHeight);
+    text->SetPosition(Vector2(mLoadGameMenu->GetSize().x / 2, mLoadGameMenu->GetSize().y * 0.05f));
 
     std::string name = "   SLOT 1";
     mLoadGameMenu->AddButton(name, buttonPos,
@@ -715,7 +746,7 @@ void Game::LoadLoadGameMenu() {
         });
 
     name = "   SLOT 2";
-    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * 85) * mScale,
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 1 * distanceBetweenButtons),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -731,7 +762,7 @@ void Game::LoadLoadGameMenu() {
         });
 
     name = "   SLOT 3";
-    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 4 * 85) * mScale,
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * distanceBetweenButtons),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -747,7 +778,7 @@ void Game::LoadLoadGameMenu() {
         });
 
     name = "   SLOT 4";
-    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 6 * 85) * mScale,
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 3 * distanceBetweenButtons),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -762,7 +793,7 @@ void Game::LoadLoadGameMenu() {
             LoadGame();
         });
 
-    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.20f, 50 * mScale);
+    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.20f, 0.046f * mLogicalWindowHeight);
     buttonPos = Vector2(mLoadGameMenu->GetSize().x * 0.75f, mLoadGameMenu->GetSize().y * 0.25f);
 
     name = "DELETAR SAVE";
@@ -774,7 +805,7 @@ void Game::LoadLoadGameMenu() {
         });
 
     name = "DELETAR SAVE";
-    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * 85) * mScale,
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 1 * distanceBetweenButtons),
         buttonSize, buttonPointSize, UIButton::TextPos::Center,
         [this]()
         {
@@ -782,7 +813,7 @@ void Game::LoadLoadGameMenu() {
         });
 
     name = "DELETAR SAVE";
-    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 4 * 85) * mScale,
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 2 * distanceBetweenButtons),
         buttonSize, buttonPointSize, UIButton::TextPos::Center,
         [this]()
         {
@@ -790,15 +821,15 @@ void Game::LoadLoadGameMenu() {
         });
 
     name = "DELETAR SAVE";
-    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 6 * 85) * mScale,
+    mLoadGameMenu->AddButton(name, buttonPos + Vector2(0, 3 * distanceBetweenButtons),
         buttonSize, buttonPointSize, UIButton::TextPos::Center,
         [this]()
         {
             mSaveManager->DeleteSave(4);
         });
 
-    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.2f, 50 * mScale);
-    buttonPos = Vector2((mLoadGameMenu->GetSize().x - buttonSize.x) / 2, mLoadGameMenu->GetSize().y - 60 * mScale);
+    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.2f, 0.046f * mLogicalWindowHeight);
+    buttonPos = Vector2((mLoadGameMenu->GetSize().x - buttonSize.x) / 2, mLoadGameMenu->GetSize().y - 0.056f * mLogicalWindowHeight);
     name = "VOLTAR";
     mLoadGameMenu->AddButton(name, buttonPos,
         buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -810,16 +841,17 @@ void Game::LoadLoadGameMenu() {
 
 void Game::LoadPauseMenu() {
     mPauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.22f, 50 * mScale);
+    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.22f, 0.046f * mLogicalWindowHeight);
     mPauseMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
     mPauseMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
-    Vector2 buttonPos = Vector2((mPauseMenu->GetSize().x - buttonSize.x) / 2, 0);
+    Vector2 buttonPos = Vector2((mPauseMenu->GetSize().x - buttonSize.x) / 2, 0.0f);
+    float distanceBetweenButtons = 0.064f * mLogicalWindowHeight;
 
-    auto* background = mPauseMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", -1.2 * mPauseMenu->GetPosition(), Vector2(mLogicalWindowWidth, mLogicalWindowHeight) * 1.5f);
+    auto* background = mPauseMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", mPauseMenu->GetSize() / 2, Vector2(mLogicalWindowWidth, mLogicalWindowHeight) * 1.5f);
     background->SetTransparency(128);
 
     std::string name = "CONTINUAR";
-    int buttonPointSize = static_cast<int>(34 * mScale);
+    int buttonPointSize = static_cast<int>(0.031f * mLogicalWindowHeight);
     mPauseMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         TogglePause();
@@ -827,17 +859,16 @@ void Game::LoadPauseMenu() {
     });
 
     name = "OPÇÕES";
-    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 1 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         LoadOptionsMenu();
     });
 
     name = "SELECIONAR FASE";
-    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 2 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         LoadLevelSelectMenu();
 
-        mPauseMenu->Close();
         if (mStore->StoreOpened()) {
             mStore->CloseStore();
         }
@@ -847,7 +878,7 @@ void Game::LoadPauseMenu() {
     });
 
     name = "VOLTAR AO MENU";
-    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mPauseMenu->AddButton(name, buttonPos + Vector2(0, 3 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mPauseMenu->SetIsVisible(false);
         LoadConfirmBackToMenu();
@@ -865,7 +896,7 @@ void Game::LoadConfirmBackToMenu() {
     background->SetTransparency(128);
 
     UIText* text = mConfirmBackToMenu->AddText("VOLTAR AO MENU?", Vector2::Zero, Vector2::Zero, 38 * mScale);
-    text->SetPosition(Vector2((mConfirmBackToMenu->GetSize().x - text->GetSize().x) / 2, 0));
+    text->SetPosition(Vector2((mConfirmBackToMenu->GetSize().x - text->GetSize().x) / 2, 0.0f));
 
     std::string name = "SIM";
     int buttonPointSize = static_cast<int>(34 * mScale);
@@ -895,7 +926,7 @@ void Game::LoadLevelSelectMenu() {
 
     const auto buttonSize = Vector2(mLevelSelectMenu->GetSize().x * 0.8f, 50 * mScale);
     const auto buttonPointSize = static_cast<int>(34 * mScale);
-    const auto buttonPos = Vector2(mLevelSelectMenu->GetSize().x * 0.1f, 0);
+    const auto buttonPos = Vector2(mLevelSelectMenu->GetSize().x * 0.1f, 0.0f);
 
     mLevelSelectMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mLevelSelectMenu->GetSize());
 
@@ -981,7 +1012,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "VOLTAR";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, mLevelSelectMenu->GetSize().y - buttonSize.y * 1.2f),
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0.0f, mLevelSelectMenu->GetSize().y - buttonSize.y * 1.2f),
         buttonSize, buttonPointSize, UIButton::TextPos::Center,
         [this]() { mLevelSelectMenu->Close(); });
 }
@@ -991,21 +1022,21 @@ void Game::LoadOptionsMenu() {
     mOptionsMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
     mOptionsMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
     Vector2 buttonSize = Vector2(mOptionsMenu->GetSize().x * 0.8f, 50 * mScale);
-    Vector2 buttonPos = Vector2(mOptionsMenu->GetSize().x * 0.1f, 0);
+    Vector2 buttonPos = Vector2(mOptionsMenu->GetSize().x * 0.1f, 0.0f);
 
     mOptionsMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mOptionsMenu->GetSize());
 
     UIText* text;
     std::string name;
     int buttonPointSize = static_cast<int>(34 * mScale);
-    Vector2 textPos = Vector2(buttonSize.x * 0.05f, 0);
+    Vector2 textPos = Vector2(buttonSize.x * 0.05f, 0.0f);
     std::string optionValue;
     float optionPosX = mOptionsMenu->GetSize().x * 0.6f;
     UIButton* button;
 
     if (SDL_GetWindowFlags(mWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
         name = "FULL SCREEN";
-        button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 1.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0.0f, buttonSize.y * 1.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]() {
             SDL_SetWindowFullscreen(mWindow, 0);
             mOptionsMenu->Close();
@@ -1017,9 +1048,23 @@ void Game::LoadOptionsMenu() {
     }
     else {
         name = "FULL SCREEN";
-        button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 1.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+        button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0.0f, buttonSize.y * 1.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]() {
-            SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+            Uint32 flags = SDL_GetWindowFlags(mWindow);
+
+            // Alterna o bit de fullscreen
+            if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
+            {
+                SDL_SetWindowFullscreen(mWindow, 0);
+            }
+            else
+            {
+                SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+            }
+            // int w, h;
+            // SDL_GL_GetDrawableSize(mWindow, &w, &h);
+            // mRenderer->OnWindowResize(static_cast<float>(w), static_cast<float>(h));
+            
             mOptionsMenu->Close();
             LoadOptionsMenu();
         }, textPos);
@@ -1048,19 +1093,19 @@ void Game::LoadOptionsMenu() {
     // text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
 
     name = "TECLADO";
-    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 3.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0.0f, buttonSize.y * 3.0f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         LoadKeyBoardMenu2();
     }, textPos);
 
     name = "CONTROLE";
-    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0, buttonSize.y * 4.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    button = mOptionsMenu->AddButton(name, buttonPos + Vector2(0.0f, buttonSize.y * 4.5f), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
         LoadControlMenu();
     }, textPos);
 
     name = "VOLTAR";
-    mOptionsMenu->AddButton(name, buttonPos + Vector2(0, mOptionsMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mOptionsMenu->AddButton(name, buttonPos + Vector2(0.0f, mOptionsMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mOptionsMenu->Close();
     });
@@ -1071,7 +1116,7 @@ void Game::LoadControlMenu() {
     mControlMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
     mControlMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
     Vector2 buttonSize = Vector2(mControlMenu->GetSize().x * 0.8f, 50 * mScale);
-    Vector2 buttonPos = Vector2(mControlMenu->GetSize().x * 0.1f, 0);
+    Vector2 buttonPos = Vector2(mControlMenu->GetSize().x * 0.1f, 0.0f);
 
     mControlMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mControlMenu->GetSize());
     mControlMenu->AddImage("../Assets/Sprites/Menus/Control2.png", Vector2::Zero, Vector2(mControlMenu->GetSize().x, mControlMenu->GetSize().x / 1.9f));
@@ -1080,7 +1125,7 @@ void Game::LoadControlMenu() {
     int buttonPointSize = static_cast<int>(34 * mScale);
 
     name = "VOLTAR";
-    mControlMenu->AddButton(name, buttonPos + Vector2(0, mControlMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mControlMenu->AddButton(name, buttonPos + Vector2(0.0f, mControlMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mControlMenu->Close();
     });
@@ -1091,17 +1136,17 @@ void Game::LoadKeyBoardMenu() {
     mKeyboardMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
     mKeyboardMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
     Vector2 buttonSize = Vector2(mKeyboardMenu->GetSize().x * 0.8f, 50 * mScale);
-    Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0);
+    Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0.0f);
 
     mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mKeyboardMenu->GetSize());
-    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Keyboard4.png", Vector2(mKeyboardMenu->GetSize().x * 0.125f, 0), Vector2(mKeyboardMenu->GetSize().y * 1.4f, mKeyboardMenu->GetSize().y * 1.4f / 1.52f));
+    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Keyboard4.png", Vector2(mKeyboardMenu->GetSize().x * 0.125f, 0.0f), Vector2(mKeyboardMenu->GetSize().y * 1.4f, mKeyboardMenu->GetSize().y * 1.4f / 1.52f));
 
     std::string name;
     int buttonPointSize = static_cast<int>(34 * mScale);
 
 
     name = "VOLTAR";
-    mKeyboardMenu->AddButton(name, buttonPos + Vector2(0, mKeyboardMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mKeyboardMenu->AddButton(name, buttonPos + Vector2(0.0f, mKeyboardMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mKeyboardMenu->Close();
     });
@@ -1115,7 +1160,7 @@ void Game::LoadKeyBoardMenu2() {
     Vector2 buttonSize = Vector2(mKeyboardMenu2->GetSize().x * 0.47f, 60 * mScale);
     Vector2 buttonPos = Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale);
     int buttonPointSize = static_cast<int>(40 * mScale);
-    Vector2 textPos = Vector2(buttonSize.x / 20, 0);
+    Vector2 textPos = Vector2(buttonSize.x / 20, 0.0f);
 
     mKeyboardMenu2->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mKeyboardMenu2->GetSize());
 
@@ -2084,6 +2129,7 @@ void Game::LoadObjects(const std::string &fileName) {
                 if (mPlayer) {
                     mPlayer->SetSword();
                     mPlayer->SetJumpEffects();
+                    mPlayer->InitLight();
                     mPlayer->GetComponent<DashComponent>()->InitDashEffect();
                     mPlayer->GetComponent<RigidBodyComponent>()->SetVelocity(Vector2::Zero);
                     mPlayer->SetIsDead(false);
@@ -2138,10 +2184,10 @@ void Game::LoadLevel(const std::string &fileName) {
 
     if (mGoingToNextLevel) {
         // Delete map
-        if (mMap) {
-            delete mMap;
-            mMap = nullptr;
-        }
+        // if (mMap) {
+        //     delete mMap;
+        //     mMap = nullptr;
+        // }
     }
     // Lê matrizes de tiles
     for (const auto& layer : mapData["layers"]) {
@@ -2175,7 +2221,7 @@ void Game::LoadLevel(const std::string &fileName) {
                         matrix[i][j] = data[i * width + j];
                     }
                 }
-                mMap = new Map(this, matrix, mLevelWidth, mLevelHeight);
+                // mMap = new Map(this, matrix, mLevelWidth, mLevelHeight);
             }
         }
     }
@@ -2183,13 +2229,18 @@ void Game::LoadLevel(const std::string &fileName) {
     // Load tilesheet texture
     size_t pos = fileName.rfind(".json");
     std::string tileSheetTexturePath = fileName.substr(0, pos) + ".png";
-    mTileSheet = LoadTexture(tileSheetTexturePath);
+    // mTileSheet = LoadTexture(tileSheetTexturePath);
+    mTileSheet = mRenderer->GetTexture(tileSheetTexturePath);
+
 
     // Load tilesheet data
     std::string tileSheetDataPath = fileName.substr(0, pos) + "TileSet.json";
     std::ifstream tileSheetFile(tileSheetDataPath);
 
     nlohmann::json tileSheetData = nlohmann::json::parse(tileSheetFile);
+
+    int textureWidth = mTileSheet->GetWidth();
+    int textureHeight = mTileSheet->GetHeight();
 
     for (const auto &tile: tileSheetData["sprites"]) {
         std::string tileFileName = tile["fileName"];
@@ -2200,9 +2251,15 @@ void Game::LoadLevel(const std::string &fileName) {
 
         size_t dotPos = tileFileName.find('.');
         std::string numberStr = tileFileName.substr(0, dotPos);
-        int index = std::stoi(numberStr); // converte para inteiro
+        int index = std::stoi(numberStr);
 
-        mTileSheetData[index] = SDL_Rect{x, y, w, h};
+        // Normaliza para [0, 1]
+        float u = static_cast<float>(x) / textureWidth;
+        float v = static_cast<float>(y) / textureHeight;
+        float uw = static_cast<float>(w) / textureWidth;
+        float vh = static_cast<float>(h) / textureHeight;
+
+        mTileSheetData[index] = Vector4(u, v, uw, vh);
     }
 
     // Cria objetos
@@ -2241,36 +2298,52 @@ void Game::ProcessInput()
                 break;
 
             case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED ||
+                    event.window.event == SDL_WINDOWEVENT_RESIZED) 
+                {
                     float oldScale = mScale;
                     mWindowWidth = event.window.data1;
                     mWindowHeight = event.window.data2;
-                    if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
-                        // Comenta essa parte para tirar o zoom do mapa
-                        mLogicalWindowWidth = static_cast<float>(mWindowWidth);
-                        mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
-                        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
 
-                        float ratio = mOriginalWindowWidth / static_cast<float>(mLogicalWindowWidth);
-                        mScale = 1 / ratio;
-                        // int tileSize = static_cast<int>(mOriginalTileSize / ratio);
-                        // mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+                    // Pega o NOVO tamanho em PIXELS
+                    int newWidth, newHeight;
+                    SDL_GL_GetDrawableSize(mWindow, &newWidth, &newHeight);
+                    
+                    // Avisa o Renderer
+                    if (mRenderer)
+                    {
+                        mRenderer->OnWindowResize(static_cast<float>(newWidth), 
+                                                static_cast<float>(newHeight));
                     }
-                    else {
-                        // Comenta essa parte para tirar o zoom do mapa
-                        mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
-                        mLogicalWindowHeight = static_cast<float>(mWindowHeight);
-                        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
 
-                        float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
-                        mScale = 1 / ratio;
-                        // int tileSize = static_cast<int>(mOriginalTileSize / ratio);
-                        // mScale = static_cast<float>(tileSize) / mOriginalTileSize;
-                    }
+                    mLogicalWindowWidth = mRenderer->GetVirtualWidth();
+                    mLogicalWindowHeight = mRenderer->GetVirtualHeight();
+                    // if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
+                    //     // Comenta essa parte para tirar o zoom do mapa
+                    //     mLogicalWindowWidth = static_cast<float>(mWindowWidth);
+                    //     mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
+                    //     SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+                    //
+                    //     float ratio = mOriginalWindowWidth / static_cast<float>(mLogicalWindowWidth);
+                    //     mScale = 1 / ratio;
+                    //     // int tileSize = static_cast<int>(mOriginalTileSize / ratio);
+                    //     // mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+                    // }
+                    // else {
+                    //     // Comenta essa parte para tirar o zoom do mapa
+                    //     mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
+                    //     mLogicalWindowHeight = static_cast<float>(mWindowHeight);
+                    //     SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+                    //
+                    //     float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
+                    //     mScale = 1 / ratio;
+                    //     // int tileSize = static_cast<int>(mOriginalTileSize / ratio);
+                    //     // mScale = static_cast<float>(tileSize) / mOriginalTileSize;
+                    // }
                     // const float ratio = mOriginalWindowHeight / static_cast<float>(mLogicalWindowHeight);
                     // const int tileSize = static_cast<int>(32 / ratio);
                     // mScale = static_cast<float>(tileSize) / 32.0f;
-                    ChangeResolution(oldScale);
+                    // ChangeResolution(oldScale);
                 }
                 break;
 
@@ -2317,8 +2390,10 @@ void Game::ProcessInput()
                     // }
 
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        if (!mShowMap &&
-                            mGameScene != GameScene::MainMenu &&
+                        // if (!mShowMap &&
+                        //     mGameScene != GameScene::MainMenu &&
+                        //     mGamePlayState != GamePlayState::Cutscene)
+                        if (mGameScene != GameScene::MainMenu &&
                             mGamePlayState != GamePlayState::Cutscene)
                         {
                             if (mIsPaused) {
@@ -2353,12 +2428,12 @@ void Game::ProcessInput()
 
                     if (SDL_GetScancodeFromKey(event.key.keysym.sym) == mInputBindings[Action::Map].key) {
                     // if (event.key.keysym.sym == SDLK_m) {
-                        if (mMap) {
-                            if (!mIsPaused || (mIsPaused && mShowMap)) {
-                                mShowMap = !mShowMap;
-                                // TogglePause();
-                            }
-                        }
+                        // if (mMap) {
+                        //     if (!mIsPaused || (mIsPaused && mShowMap)) {
+                        //         mShowMap = !mShowMap;
+                        //         // TogglePause();
+                        //     }
+                        // }
                     }
 
                     if (event.key.keysym.sym == SDLK_8) {
@@ -2373,6 +2448,16 @@ void Game::ProcessInput()
                     if (event.key.keysym.sym == SDLK_6) {
                         mIsAccelerated = !mIsAccelerated;
                         mIsSlowMotion = false;
+                    }
+
+                    if (event.key.keysym.sym == SDLK_1) {
+                        mCamera->SetZoom(2.0f);
+                    }
+                    if (event.key.keysym.sym == SDLK_2) {
+                        mCamera->SetZoom(0.5f);
+                    }
+                    if (event.key.keysym.sym == SDLK_3) {
+                        mCamera->SetZoom(1.0f);
                     }
                 }
                 break;
@@ -2403,8 +2488,10 @@ void Game::ProcessInput()
                     // }
 
                     if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
-                        if (!mShowMap &&
-                            mGameScene != GameScene::MainMenu &&
+                        // if (!mShowMap &&
+                        //     mGameScene != GameScene::MainMenu &&
+                        //     mGamePlayState != GamePlayState::Cutscene)
+                        if (mGameScene != GameScene::MainMenu &&
                             mGamePlayState != GamePlayState::Cutscene)
                         {
                             if (mIsPaused) {
@@ -2470,12 +2557,12 @@ void Game::ProcessInput()
                     }
 
                     if (event.cbutton.button == mInputBindings[Action::Map].btn) {
-                        if (mMap) {
-                            if (!mIsPaused || (mIsPaused && mShowMap)) {
-                                mShowMap = !mShowMap;
-                                // TogglePause();
-                            }
-                        }
+                        // if (mMap) {
+                        //     if (!mIsPaused || (mIsPaused && mShowMap)) {
+                        //         mShowMap = !mShowMap;
+                        //         // TogglePause();
+                        //     }
+                        // }
                     }
                 }
                 break;
@@ -2554,7 +2641,14 @@ void Game::ProcessInput()
 
                     // Handle mouse for UI screens
                     if (!mUIStack.empty()) {
-                        mUIStack.back()->HandleMouse(event);
+                        // 1. Obter coordenadas da tela (física)
+                        Vector2 screenPos(static_cast<float>(event.button.x), static_cast<float>(event.button.y));
+
+                        // 2. Converter para coordenadas virtuais
+                        Vector2 virtualPos = mRenderer->ScreenToVirtual(screenPos);
+
+                        // 3. Passar as coordenadas limpas para a UI
+                        mUIStack.back()->HandleMousePress(virtualPos);
                     }
                 }
                 break;
@@ -2567,7 +2661,14 @@ void Game::ProcessInput()
 
                 // Handle mouse for UI screens
                 if (!mUIStack.empty()) {
-                    mUIStack.back()->HandleMouse(event);
+                    // 1. Obter coordenadas da tela (física)
+                    Vector2 screenPos(static_cast<float>(event.motion.x), static_cast<float>(event.motion.y));
+
+                    // 2. Converter para coordenadas virtuais
+                    Vector2 virtualPos = mRenderer->ScreenToVirtual(screenPos);
+
+                    // 3. Passar as coordenadas limpas para a UI
+                    mUIStack.back()->HandleMouseMotion(virtualPos);
                 }
                 break;
 
@@ -2665,12 +2766,12 @@ void Game::UpdateGame()
         deltaTime *= 1.5;
     }
 
-    if (mMap && mGamePlayState == GamePlayState::Playing) {
-        mMap->Update(deltaTime);
-    }
+    // if (mMap && mGamePlayState == GamePlayState::Playing) {
+    //     mMap->Update(deltaTime);
+    // }
 
-    SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255); // Usado para deixar as bordas em preto
-    SDL_RenderClear(mRenderer);
+    // SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255); // Usado para deixar as bordas em preto
+    // SDL_RenderClear(mRenderer);
 
     // Update all actors and pending actors
     if (!mIsPaused) {
@@ -3016,16 +3117,17 @@ void Game::RemoveActor(Actor* actor) {
     }
 }
 
-void Game::AddDrawable(class DrawComponent* drawable) {
+void Game::AddDrawable(class DrawComponent *drawable)
+{
     mDrawables.emplace_back(drawable);
 
-    std::sort(mDrawables.begin(), mDrawables.end(), [](const DrawComponent* a, const DrawComponent* b)
-    {
+    std::sort(mDrawables.begin(), mDrawables.end(),[](DrawComponent* a, DrawComponent* b) {
         return a->GetDrawOrder() < b->GetDrawOrder();
     });
 }
 
-void Game::RemoveDrawable(class DrawComponent* drawable) {
+void Game::RemoveDrawable(class DrawComponent *drawable)
+{
     auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
     mDrawables.erase(iter);
 }
@@ -3232,13 +3334,13 @@ bool Game::IsActionPressed(Action action, const Uint8 *keyboardState, SDL_GameCo
 void Game::GenerateOutput()
 {
     // Clear back buffer
-    SDL_RenderClear(mRenderer);
+    mRenderer->Clear();
 
     if (mCamera) {
         if (mUseParallaxBackground) {
             switch (mGameScene) {
                 case GameScene::LevelTeste:
-                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    // DrawParallaxLayers(mBackgroundLayersLevel3);
                 break;
 
                 case GameScene::Coliseu:
@@ -3246,23 +3348,23 @@ void Game::GenerateOutput()
                 break;
 
                 case GameScene::Level1:
-                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    // DrawParallaxLayers(mBackgroundLayersLevel3);
                     break;
 
                 case GameScene::Level2:
-                    DrawParallaxLayers(mBackgroundLayersLevel2);
+                    // DrawParallaxLayers(mBackgroundLayersLevel2);
                     break;
 
                 case GameScene::Level3:
-                    DrawParallaxLayers(mBackgroundLayersLevel3);
+                    // DrawParallaxLayers(mBackgroundLayersLevel3);
                     break;
 
                 case GameScene::Level4:
-                    DrawParallaxLayers(mBackgroundLayersLevel4);
+                    // DrawParallaxLayers(mBackgroundLayersLevel4);
                     break;
 
                 case GameScene::Level5:
-                    DrawParallaxLayers(mBackgroundLayersLevel4);
+                    // DrawParallaxLayers(mBackgroundLayersLevel4);
                     break;
 
                 case GameScene::Room0:
@@ -3278,23 +3380,22 @@ void Game::GenerateOutput()
             }
         }
         else {
-            DrawParallaxBackground(mBackGroundTexture); // desenha o fundo com repetição horizontal
+            // DrawParallaxBackground(mBackGroundTexture); // desenha o fundo com repetição horizontal
+            mRenderer->DrawTexture(Vector2(33000, 3200),
+                       Vector2(66000, 6400), 0.0f, Color::White,
+                       mBackGroundTexture, Vector4::UnitRect, mCamera->GetPosCamera());
         }
-        // Ordem de desenho: mais distantes primeiro
-        // DrawParallaxLayer(mSky,        0.1f, 0, mWindowHeight / 2);  // camada mais distante
-        // DrawParallaxLayer(mMountains,  0.3f, mWindowHeight / 4, mWindowHeight / 3);  // montanhas ao fundo
-        // DrawParallaxLayer(mTreesBack,  0.5f, mWindowHeight / 3, mWindowHeight / 2);  // árvores distantes
-        // DrawParallaxLayer(mTreesFront, 0.7f, mWindowHeight / 2, mWindowHeight / 2);  // árvores próximas
-    }
-    else {
-        SDL_Rect dest = {
-            0,
-            0,
-            static_cast<int>(mLogicalWindowWidth),
-            static_cast<int>(mLogicalWindowHeight)
-        };
-        SDL_RenderCopy(mRenderer, mBackGroundTexture, nullptr, &dest);
-    }
+        //     // Ordem de desenho: mais distantes primeiro
+        //     // DrawParallaxLayer(mSky,        0.1f, 0, mWindowHeight / 2);  // camada mais distante
+        //     // DrawParallaxLayer(mMountains,  0.3f, mWindowHeight / 4, mWindowHeight / 3);  // montanhas ao fundo
+        //     // DrawParallaxLayer(mTreesBack,  0.5f, mWindowHeight / 3, mWindowHeight / 2);  // árvores distantes
+        //     // DrawParallaxLayer(mTreesFront, 0.7f, mWindowHeight / 2, mWindowHeight / 2);  // árvores próximas
+        }
+        else {
+            mRenderer->DrawTexture(Vector2(mWindowWidth / 2, mWindowHeight / 2),
+                                   Vector2(mWindowWidth, mWindowHeight), 0.0f, Color::White,
+                                   mBackGroundTexture, Vector4::UnitRect);
+        }
 
     for (auto drawable: mDrawables)
         drawable->Draw(mRenderer);
@@ -3304,70 +3405,47 @@ void Game::GenerateOutput()
     {
         ui->Draw(mRenderer);
     }
+    //
+    // if (mShowMap) {
+    //     mMap->Draw(mRenderer);
+    // }
+    //
 
-    if (mShowMap) {
-        mMap->Draw(mRenderer);
+    if (mSceneManagerState == SceneManagerState::Entering ||
+        mSceneManagerState == SceneManagerState::Exiting ||
+        mIsCrossFading)
+    {
+        mRenderer->DrawFade(mFadeAlpha / 255.0f);
     }
-
-    if (mSceneManagerState == SceneManagerState::Entering || mSceneManagerState == SceneManagerState::Exiting) {
-        SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
-        // Define a cor preta (RGBA)
-        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, mFadeAlpha);
-
-        // Cria o retângulo cobrindo toda a tela
-        SDL_Rect fullScreenRect = { 0, 0, mWindowWidth, mWindowHeight };
-
-        // Desenha o retângulo preenchido
-        SDL_RenderFillRect(mRenderer, &fullScreenRect);
-    }
-
-    if (mSceneManagerState == SceneManagerState::Active) {
-        // Define a cor preta (RGBA)
-        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
-
-        // Cria o retângulo cobrindo toda a tela
-        SDL_Rect fullScreenRect = { 0, 0, mWindowWidth, mWindowHeight };
-
-        // Desenha o retângulo preenchido
-        SDL_RenderFillRect(mRenderer, &fullScreenRect);
-    }
-
-    if (mIsCrossFading) {
-        SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
-        // Define a cor preta (RGBA)
-        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, mFadeAlpha);
-
-        // Cria o retângulo cobrindo toda a tela
-        SDL_Rect fullScreenRect = { 0, 0, mWindowWidth, mWindowHeight };
-
-        // Desenha o retângulo preenchido
-        SDL_RenderFillRect(mRenderer, &fullScreenRect);
+    else if (mSceneManagerState == SceneManagerState::Active)
+    {
+        mRenderer->DrawFade(1.0f);
     }
 
     // Swap front buffer and back buffer
-    SDL_RenderPresent(mRenderer);
+    mRenderer->Present();
 }
 
-SDL_Texture* Game::LoadTexture(const std::string &texturePath)
-{
-    SDL_Surface* surface = IMG_Load(texturePath.c_str());
-    if (!surface)
-    {
-        SDL_Log("Falha ao carregar imagem %s: %s", texturePath.c_str(), IMG_GetError());
-        return nullptr;
-    }
-
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
-    SDL_FreeSurface(surface); // Libera a superfície, já não é mais necessária
-    surface = nullptr;
-
-    if (!texture)
-    {
-        SDL_Log("Falha ao criar textura a partir de %s: %s", texturePath.c_str(), SDL_GetError());
-        return nullptr;
-    }
-    return texture;
-}
+// SDL_Texture* Game::LoadTexture(const std::string &texturePath)
+// {
+//     SDL_Surface* surface = IMG_Load(texturePath.c_str());
+//     if (!surface)
+//     {
+//         SDL_Log("Falha ao carregar imagem %s: %s", texturePath.c_str(), IMG_GetError());
+//         return nullptr;
+//     }
+//
+//     SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+//     SDL_FreeSurface(surface); // Libera a superfície, já não é mais necessária
+//     surface = nullptr;
+//
+//     if (!texture)
+//     {
+//         SDL_Log("Falha ao criar textura a partir de %s: %s", texturePath.c_str(), SDL_GetError());
+//         return nullptr;
+//     }
+//     return texture;
+// }
 
 UIFont* Game::LoadFont(const std::string& fileName)
 {
@@ -3438,17 +3516,24 @@ void Game::UnloadScene()
     delete[] mLevelDataDynamicGrounds;
     mLevelDataDynamicGrounds = nullptr;
 
-    SDL_DestroyTexture(mTileSheet);
-    mTileSheet = nullptr;
+    // SDL_DestroyTexture(mTileSheet);
 
     mTileSheetData.clear();
 
     mSpawnPoints.clear();
 
+    // if (mBackGroundTexture) {
+    //     SDL_DestroyTexture(mBackGroundTexture);
+    //     mBackGroundTexture = nullptr;
+    // }
     if (mBackGroundTexture) {
-        SDL_DestroyTexture(mBackGroundTexture);
+        // mBackGroundTexture->Unload();
+        // delete mBackGroundTexture;
         mBackGroundTexture = nullptr;
     }
+
+    mRenderer->UnloadAllTextures();
+    mRenderer->ClearLights();
 
     delete mCamera;
     mCamera = nullptr;
@@ -3466,10 +3551,10 @@ void Game::Shutdown()
     mStore = nullptr;
 
     // Delete map
-    if (mMap) {
-        delete mMap;
-        mMap = nullptr;
-    }
+    // if (mMap) {
+    //     delete mMap;
+    //     mMap = nullptr;
+    // }
 
     UnloadScene();
 
@@ -3493,12 +3578,12 @@ void Game::Shutdown()
         SDL_DestroyTexture(mBackGroundTextureLevel1);
         mBackGroundTextureLevel1 = nullptr;
     }
-    for (SDL_Texture*& t : mBackgroundLayersLevel2) {
-        if (t) {
-            SDL_DestroyTexture(t);
-            t = nullptr;
-        }
-    }
+    // for (SDL_Texture*& t : mBackgroundLayersLevel2) {
+    //     if (t) {
+    //         SDL_DestroyTexture(t);
+    //         t = nullptr;
+    //     }
+    // }
     mBackgroundLayersLevel2.clear();
 
     for (SDL_Texture*& t : mBackgroundLayersLevel3) {
@@ -3540,19 +3625,21 @@ void Game::Shutdown()
     TTF_Quit();
     IMG_Quit();
 
-    SDL_DestroyRenderer(mRenderer);
+    mRenderer->Shutdown();
+    delete mRenderer;
+    mRenderer = nullptr;
+
     SDL_DestroyWindow(mWindow);
     SDL_Quit();
 }
 
-void Game::DrawParallaxBackground(SDL_Texture* background)
+void Game::DrawParallaxBackground(Texture* background)
 {
     float parallaxFactor = 0.55f; // fundo se move mais devagar que a câmera
 
-    int bgWidth, bgHeight;
-    SDL_QueryTexture(background, nullptr, nullptr, &bgWidth, &bgHeight);
-    bgWidth *= mScale;
-    bgHeight *= mScale;
+    int bgWidth = background->GetWidth();
+    int bgHeight = background->GetHeight();
+
     // Calcula o offset horizontal com base na câmera
     int offsetX = static_cast<int>(mCamera->GetPosCamera().x * parallaxFactor) % bgWidth;
     if (offsetX < 0) offsetX += bgWidth;
@@ -3560,42 +3647,66 @@ void Game::DrawParallaxBackground(SDL_Texture* background)
     // Desenha blocos horizontais suficientes para cobrir a largura da janela
     for (int x = -offsetX; x < mLogicalWindowWidth; x += bgWidth)
     {
-        SDL_Rect dest = {
-            x,
-            0,
-            bgWidth,
-            static_cast<int>(mLogicalWindowHeight)
-        };
+        Vector2 position(x + bgWidth / 2, mLogicalWindowHeight / 2);
+        Vector2 size(bgWidth, static_cast<int>(mLogicalWindowHeight));
 
-        SDL_RenderCopy(mRenderer, background, nullptr, &dest);
+        // Desenho via renderer — sem influência da câmera (passamos offset manualmente)
+        mRenderer->DrawTexture(
+            position,          // posição
+            size,              // tamanho
+            0.0f,              // sem rotação
+            Vector3(1.0f, 1.0f, 1.0f), // cor normal
+            background,        // textura
+            Vector4::UnitRect,
+            // GetCamera()->GetPosCamera(),
+            Vector2(0.0f, 0.0f), // cameraPos = 0 para não aplicar deslocamento do Renderer
+            Vector2(1.0f, 1.0f),
+            1.0f               // textureFactor
+        );
     }
 }
 
-void Game::DrawParallaxLayer(SDL_Texture* texture, float parallaxFactor, int y, int h)
+void Game::DrawParallaxLayer(Texture* texture, float parallaxFactor, int y, int h)
 {
-    int texW, texH;
-    SDL_QueryTexture(texture, nullptr, nullptr, &texW, &texH);
-    texW *= mScale;
-    texH *= mScale;
+    if (!texture) return;
+
+    int texW = texture->GetWidth();
+    int texH = texture->GetHeight();
 
     int offsetX = static_cast<int>(mCamera->GetPosCamera().x * parallaxFactor) % texW;
     if (offsetX < 0) offsetX += texW;
 
+    // Cor branca (sem alteração)
+    Vector3 color(1.0f, 1.0f, 1.0f);
+    // Nenhum recorte de textura (usar textura inteira)
+    Vector4 texRect(0.0f, 0.0f, 1.0f, 1.0f);
+    // Nenhuma rotação
+    float rotation = 0.0f;
+    // Escala padrão (já está aplicado em texW/texH)
+    Vector2 scale(1.0f, 1.0f);
+    // Fator de textura 1.0 (mostrar textura normalmente)
+    float textureFactor = 1.0f;
+
     for (int x = -offsetX; x < mLogicalWindowWidth; x += texW)
     {
-        SDL_Rect dest = {
-            x,
-            y,
-            texW,
-            h
-            // static_cast<int>(mLogicalWindowHeight)
-        };
+        Vector2 pos(static_cast<float>(x + texW / 2), static_cast<float>(y + h / 2));
+        Vector2 size(static_cast<float>(texW), static_cast<float>(h));
 
-        SDL_RenderCopy(mRenderer, texture, nullptr, &dest);
+        mRenderer->DrawTexture(
+            pos,                 // posição central do quad
+            size,                // tamanho
+            rotation,            // sem rotação
+            color,               // cor
+            texture,             // textura a desenhar
+            texRect,             // retângulo completo da textura
+            mCamera->GetPosCamera(), // posição da câmera para paralaxe
+            scale,               // escala padrão
+            textureFactor        // fator de textura
+        );
     }
 }
 
-void Game::DrawParallaxLayers(std::vector<SDL_Texture*> backgroundLayers)
+void Game::DrawParallaxLayers(std::vector<Texture*> backgroundLayers)
 {
     const int numLayers = static_cast<int>(backgroundLayers.size());
     if (numLayers == 0) {
@@ -3611,7 +3722,7 @@ void Game::DrawParallaxLayers(std::vector<SDL_Texture*> backgroundLayers)
         float t = static_cast<float>(i) / (numLayers - 1); // varia de 0 a 1
         float parallaxFactor = minFactor + t * (maxFactor - minFactor);
 
-        SDL_Texture* texture = backgroundLayers[i];
+        Texture* texture = backgroundLayers[i];
 
         // Defina altura Y e altura H conforme necessário
         // Exemplo: tela inteira vertical
@@ -3622,44 +3733,44 @@ void Game::DrawParallaxLayers(std::vector<SDL_Texture*> backgroundLayers)
     }
 }
 
-void Game::ChangeResolution(float oldScale)
-{
-    mCheckpointPosition.x = mCheckpointPosition.x / oldScale * mScale;
-    mCheckpointPosition.y = mCheckpointPosition.y / oldScale * mScale;
-    mLavaRespawnPosition.x = mLavaRespawnPosition.x / oldScale * mScale;
-    mLavaRespawnPosition.y = mLavaRespawnPosition.y / oldScale * mScale;
-
-    for (auto& [key, value] : mSpawnPoints) {
-        value.x = value.x / oldScale * mScale;
-        value.y = value.y / oldScale * mScale;
-    }
-
-    mTileSize = mTileSize / oldScale * mScale;
-
-    for (auto actor : mActors) {
-        actor->ChangeResolution(oldScale, mScale);
-    }
-
-    if (mCamera) {
-        mCamera->ChangeResolution(oldScale, mScale);
-    }
-
-    for (auto UIScreen : mUIStack) {
-        UIScreen->ChangeResolution(oldScale, mScale);
-    }
-
-    if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
-        mLogicalWindowWidth = static_cast<float>(mWindowWidth);
-        mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
-        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
-    }
-    else {
-        mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
-        mLogicalWindowHeight = static_cast<float>(mWindowHeight);
-        SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
-    }
-
-    if (mMap) {
-        mMap->ChangeResolution(oldScale, mScale);
-    }
-}
+// void Game::ChangeResolution(float oldScale)
+// {
+//     mCheckpointPosition.x = mCheckpointPosition.x / oldScale * mScale;
+//     mCheckpointPosition.y = mCheckpointPosition.y / oldScale * mScale;
+//     mLavaRespawnPosition.x = mLavaRespawnPosition.x / oldScale * mScale;
+//     mLavaRespawnPosition.y = mLavaRespawnPosition.y / oldScale * mScale;
+//
+//     for (auto& [key, value] : mSpawnPoints) {
+//         value.x = value.x / oldScale * mScale;
+//         value.y = value.y / oldScale * mScale;
+//     }
+//
+//     mTileSize = mTileSize / oldScale * mScale;
+//
+//     for (auto actor : mActors) {
+//         actor->ChangeResolution(oldScale, mScale);
+//     }
+//
+//     if (mCamera) {
+//         mCamera->ChangeResolution(oldScale, mScale);
+//     }
+//
+//     for (auto UIScreen : mUIStack) {
+//         UIScreen->ChangeResolution(oldScale, mScale);
+//     }
+//
+//     if (static_cast<float>(mWindowWidth) / static_cast<float>(mWindowHeight) < mOriginalWindowWidth / mOriginalWindowHeight) {
+//         mLogicalWindowWidth = static_cast<float>(mWindowWidth);
+//         mLogicalWindowHeight = static_cast<float>(mWindowWidth) / (mOriginalWindowWidth / mOriginalWindowHeight);
+//         SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+//     }
+//     else {
+//         mLogicalWindowWidth = static_cast<float>(mWindowHeight) * (mOriginalWindowWidth / mOriginalWindowHeight);
+//         mLogicalWindowHeight = static_cast<float>(mWindowHeight);
+//         SDL_RenderSetLogicalSize(mRenderer, mLogicalWindowWidth, mLogicalWindowHeight);
+//     }
+//
+//     if (mMap) {
+//         mMap->ChangeResolution(oldScale, mScale);
+//     }
+// }

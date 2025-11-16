@@ -4,7 +4,7 @@
 
 #include "JumpEffect.h"
 #include "../Game.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
 
 JumpEffect::JumpEffect(Game *game, Actor *owner, float duration)
     :Actor(game)
@@ -13,67 +13,68 @@ JumpEffect::JumpEffect(Game *game, Actor *owner, float duration)
     ,mEffectDuration(duration)
     ,mEffectTimer(mEffectDuration)
     ,mOwner(owner)
-    ,mDrawAnimatedComponent(nullptr)
+    ,mDrawComponent(nullptr)
 {
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight,
-                                           "../Assets/Sprites/Jump2/Jump.png",
-                                           "../Assets/Sprites/Jump2/Jump.json", 1002);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Jump2/Jump.png",
+                                           "../Assets/Sprites/Jump2/Jump.json",
+                                           mWidth, mHeight, 1002);
 
     std::vector TakeOff = {12, 13, 14, 15, 16, 17, 18, 18};
-    mDrawAnimatedComponent->AddAnimation("TakeOff", TakeOff);
+    mDrawComponent->AddAnimation("TakeOff", TakeOff);
 
     std::vector Land = {4, 5, 6, 7, 8, 9, 10, 11, 11};
-    mDrawAnimatedComponent->AddAnimation("Land", Land);
+    mDrawComponent->AddAnimation("Land", Land);
 
     std::vector DoubleJump = {0, 1, 2, 3, 3};
-    mDrawAnimatedComponent->AddAnimation("DoubleJump", DoubleJump);
+    mDrawComponent->AddAnimation("DoubleJump", DoubleJump);
 
-    mDrawAnimatedComponent->SetAnimation("TakeOff");
+    mDrawComponent->SetAnimation("TakeOff");
     const float fps = 7.0f / mEffectDuration;
-    mDrawAnimatedComponent->SetAnimFPS(fps);
+    mDrawComponent->SetAnimFPS(fps);
 
-    mDrawAnimatedComponent->SetTransparency(100);
+    // mDrawAnimatedComponent->SetTransparency(100);
 }
 
 void JumpEffect::OnUpdate(float deltaTime) {
     mEffectTimer += deltaTime;
     if (mEffectTimer >= mEffectDuration) {
-        mDrawAnimatedComponent->SetIsVisible(false);
+        mDrawComponent->SetVisible(false);
         mState = ActorState::Paused;
     }
     else {
-        mDrawAnimatedComponent->SetIsVisible(true);
+        mDrawComponent->SetVisible(true);
     }
 }
 
 void JumpEffect::StartEffect(EffectType type) {
     mEffectTimer = 0;
-    mDrawAnimatedComponent->ResetAnimationTimer();
-    mDrawAnimatedComponent->SetWidth(mWidth);
-    mDrawAnimatedComponent->SetHeight(mHeight);
+    // mDrawAnimatedComponent->ResetAnimationTimer();
+    mDrawComponent->SetWidth(mWidth);
+    mDrawComponent->SetHeight(mHeight);
     float fps;
     switch (type) {
         case EffectType::TakeOff:
             SetRotation(mOwner->GetRotation());
-            mDrawAnimatedComponent->SetAnimation("TakeOff");
+            SetScale(Vector2(mOwner->GetForward().x, 1));
+            mDrawComponent->SetAnimation("TakeOff");
             fps = 7.0f / mEffectDuration;
-            mDrawAnimatedComponent->SetAnimFPS(fps);
+            mDrawComponent->SetAnimFPS(fps);
             SetPosition(mOwner->GetPosition() + Vector2(mOwner->GetWidth() * 0.7f * -GetForward().x, mOwner->GetHeight() * 0.2f));
             break;
 
         case EffectType::Land:
-            mDrawAnimatedComponent->SetAnimation("Land");
+            mDrawComponent->SetAnimation("Land");
             fps = 8.0f / mEffectDuration;
-            mDrawAnimatedComponent->SetAnimFPS(fps);
+            mDrawComponent->SetAnimFPS(fps);
             SetPosition(mOwner->GetPosition() + Vector2(0, mOwner->GetHeight() * 0.2f));
             break;
 
         case EffectType::DoubleJump:
-            mDrawAnimatedComponent->SetAnimation("DoubleJump");
+            mDrawComponent->SetAnimation("DoubleJump");
             fps = 4.0f / mEffectDuration;
-            mDrawAnimatedComponent->SetAnimFPS(fps);
-            mDrawAnimatedComponent->SetWidth(mWidth * 1.6f);
-            mDrawAnimatedComponent->SetHeight(mHeight * 1.6f);
+            mDrawComponent->SetAnimFPS(fps);
+            mDrawComponent->SetWidth(mWidth * 1.6f);
+            mDrawComponent->SetHeight(mHeight * 1.6f);
             SetPosition(mOwner->GetPosition() + Vector2(0, mOwner->GetHeight() * 0.2f));
             break;
     }
@@ -90,6 +91,6 @@ void JumpEffect::ChangeResolution(float oldScale, float newScale) {
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
-    mDrawAnimatedComponent->SetWidth(mWidth);
-    mDrawAnimatedComponent->SetHeight(mHeight);
+    // mDrawAnimatedComponent->SetWidth(mWidth);
+    // mDrawAnimatedComponent->SetHeight(mHeight);
 }

@@ -23,7 +23,7 @@ private:
 
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBComponent* mAABBComponent;
-    class DrawPolygonComponent *mDrawPolygonComponent;
-    class DrawSpriteComponent *mDrawSpriteComponent;
-    class DrawAnimatedComponent *mDrawAnimatedComponent;
+
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
 };

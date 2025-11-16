@@ -13,13 +13,12 @@
 #include "../Actors/JumpEffect.h"
 #include "../Actors/FireBall.h"
 #include "../Actors/ParticleSystem.h"
+#include "../Actors/Light.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/DashComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawRopeComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Player::Player(Game* game)
     :Actor(game)
@@ -150,14 +149,14 @@ Player::Player(Game* game)
     ,mIsDead(false)
     ,mInvertControls(false)
 
+    ,mLight(nullptr)
+
     ,mIsEnteringLevel(false)
     ,mEnteringLevelDuration(0.35f)
     ,mEnteringLevelTimer(0.0f)
 
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
-    ,mDrawRopeComponent(nullptr)
+    ,mRectComponent(nullptr)
+    ,mDrawComponent(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -198,59 +197,63 @@ Player::Player(Game* game)
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.png",
     //                                                    "../Assets/Sprites/Esquilo/Esquilo.json", 1000);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 4.93f, mWidth * 4.93f * 1.11f,
-                                                   "../Assets/Sprites/Esquilo5/Esquilo.png",
-                                                   "../Assets/Sprites/Esquilo5/Esquilo.json", 1002);
+    mDrawComponent = new AnimatorComponent(this,
+                                           "../Assets/Sprites/Esquilo5/Esquilo.png",
+                                           "../Assets/Sprites/Esquilo5/Esquilo.json",
+                                           mWidth * 4.93f, mWidth * 4.93f * 1.11f, 1002);
 
     std::vector idle = {21, 22, 23, 24};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector attackFront = {21, 2, 3};
-    mDrawAnimatedComponent->AddAnimation("attackFront", attackFront);
+    mDrawComponent->AddAnimation("attackFront", attackFront);
 
     std::vector attackUp = {21, 4, 5};
-    mDrawAnimatedComponent->AddAnimation("attackUp", attackUp);
+    mDrawComponent->AddAnimation("attackUp", attackUp);
 
     std::vector attackDown = {21, 0, 1};
-    mDrawAnimatedComponent->AddAnimation("attackDown", attackDown);
+    mDrawComponent->AddAnimation("attackDown", attackDown);
 
     std::vector fireball = {12, 13};
-    mDrawAnimatedComponent->AddAnimation("fireball", fireball);
+    mDrawComponent->AddAnimation("fireball", fireball);
 
     std::vector dash = {6, 7, 7, 7, 8};
-    mDrawAnimatedComponent->AddAnimation("dash", dash);
+    mDrawComponent->AddAnimation("dash", dash);
 
     std::vector run = {28, 29, 30, 31, 32, 33};
-    mDrawAnimatedComponent->AddAnimation("run", run);
+    mDrawComponent->AddAnimation("run", run);
 
     std::vector heal = {14, 15, 16, 17, 18, 18, 17, 16, 15, 14};
-    mDrawAnimatedComponent->AddAnimation("heal", heal);
+    mDrawComponent->AddAnimation("heal", heal);
 
     std::vector wallSlide = {34};
-    mDrawAnimatedComponent->AddAnimation("wallSlide", wallSlide);
+    mDrawComponent->AddAnimation("wallSlide", wallSlide);
 
     std::vector hurt = {19, 20};
-    mDrawAnimatedComponent->AddAnimation("hurt", hurt);
+    mDrawComponent->AddAnimation("hurt", hurt);
 
     std::vector die = {19, 9, 10, 11, 11, 11};
-    mDrawAnimatedComponent->AddAnimation("die", die);
+    mDrawComponent->AddAnimation("die", die);
 
     std::vector jumpUp = {25};
-    mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
+    mDrawComponent->AddAnimation("jumpUp", jumpUp);
 
     std::vector jumpApex = {26};
-    mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
+    mDrawComponent->AddAnimation("jumpApex", jumpApex);
 
     std::vector falling = {27};
-    mDrawAnimatedComponent->AddAnimation("falling", falling);
+    mDrawComponent->AddAnimation("falling", falling);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(10.0f);
 
-    mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
-    mDrawRopeComponent->SetNumSegments(mHookSegments);
-    mDrawRopeComponent->SetAmplitude(mHookAmplitude);
-    mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+    // mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
+    // mDrawRopeComponent->SetNumSegments(mHookSegments);
+    // mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+    // mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+
+    // mRectComponent = new RectComponent(this, mWidth, mHeight, RendererMode::LINES);
+    // mRectComponent->SetColor(Vector3(255, 255, 0));
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {255, 255, 0, 255});
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 1600 * mGame->GetScale());
@@ -259,11 +262,9 @@ Player::Player(Game* game)
 
     mSword = new Sword(mGame, this, mSwordWidth, mSwordHeight, 0.15f, mSwordDamage);
 
-    // Pool de Jump Effects
-    for (int i = 0; i < 5; i++) {
-        auto* jumpEffect = new JumpEffect(mGame, this, 0.3f);
-        mJumpEffects.emplace_back(jumpEffect);
-    }
+    InitLight();
+
+    SetJumpEffects();
 }
 
 void Player::SetJumpEffects() {
@@ -274,6 +275,12 @@ void Player::SetJumpEffects() {
     }
 }
 
+void Player::InitLight() {
+    mLight = new Light(mGame);
+    mLight->SetRadius(300.0f);
+    mLight->SetMaxIntensity(0.85f);
+    mLight->Activate();
+}
 
 void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller) {
     mTryingLeavingWallSlideLeft = 0;
@@ -284,10 +291,12 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         if (mRigidBodyComponent->GetVelocity().x > 0) {
             mIsRunning = true;
             SetRotation(0);
+            SetScale(Vector2(1, 1));
         }
         if (mRigidBodyComponent->GetVelocity().x < 0) {
             mIsRunning = true;
             SetRotation(Math::Pi);
+            SetScale(Vector2(-1, 1));
         }
         return;
     }
@@ -401,12 +410,13 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
         !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
-        mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
+        mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
     }
     else {
         if (left && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime) &&
             (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(Math::Pi);
+            SetScale(Vector2(-1.0f, 1.0f));
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideLeft = 1;
@@ -429,6 +439,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         if (leftSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime) &&
             (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(Math::Pi);
+            SetScale(Vector2(-1.0f, 1.0f));
             mSwordDirection = Math::Pi;
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideLeft = 1;
@@ -451,6 +462,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         if (right && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)
             && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(0);
+            SetScale(Vector2(1.0f, 1.0f));
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideRight = 1;
@@ -473,6 +485,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         if (rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)
             && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
             SetRotation(0);
+            SetScale(Vector2(1.0f, 1.0f));
             mSwordDirection = 0;
             if (mIsWallSliding && !mIsOnGround) {
                 mTryingLeavingWallSlideRight = 1;
@@ -529,9 +542,9 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetIsVisible(false);
-            }
+            // if (mDrawRopeComponent) {
+            //     mDrawRopeComponent->SetIsVisible(false);
+            // }
         }
     }
 
@@ -560,10 +573,12 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 if (mWallSlideSide == WallSlideSide::left) {
                     mRigidBodyComponent->SetVelocity(Vector2(-mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
                     SetRotation(Math::Pi);
+                    SetScale(Vector2(-1, 1));
                 }
                 else if (mWallSlideSide == WallSlideSide::right) {
                     mRigidBodyComponent->SetVelocity(Vector2(mMoveSpeed, mJumpForce) + mMovingGroundVelocity);
                     SetRotation(0);
+                    SetScale(Vector2(1, 1));
                 }
 
                 mIsJumping = true;
@@ -601,13 +616,14 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     // Sword
     // Detecta borda de descida da tecla K e cooldown pronto
     if (sword && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
         // Ativa a espada
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
+        mSword->SetTransformRotation(mSwordDirection);
         mSword->SetPosition(GetPosition());
         mSwordHitEnemy = false;
         mSwordHitGround = false;
@@ -630,6 +646,8 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 if (f->GetState() == ActorState::Paused) {
                     f->SetState(ActorState::Active);
                     f->SetRotation(GetRotation());
+                    f->SetTransformRotation(0.0f);
+                    f->SetScale(Vector2(GetForward().x, 1));
                     f->SetWidth(mFireballWidth);
                     f->SetHeight(mFireBallHeight);
                     f->SetSpeed(mFireballSpeed);
@@ -638,9 +656,9 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                     mIsFireAttacking = true;
                     mStopInAirFireBallTimer = 0;
                     mFireballAnimationTimer = 0;
-                    if (mDrawAnimatedComponent) {
-                        mDrawAnimatedComponent->ResetAnimationTimer();
-                    }
+                    // if (mDrawAnimatedComponent) {
+                    //     mDrawAnimatedComponent->ResetAnimationTimer();
+                    // }
                     mMana -= mFireballManaCost;
                     break;
                 }
@@ -721,19 +739,19 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             mHookEnd = nearestHookPoint->GetPosition();
             mHookAnimProgress = 0.0f;
             mIsHookAnimating = true;
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetIsVisible(true);
-            }
+            // if (mDrawRopeComponent) {
+            //     mDrawRopeComponent->SetIsVisible(true);
+            // }
 
             // Resetar dash no ar
             mDashComponent->SetHasDashedInAir(false);
             // RESET DO CONTADOR DE PULO
             mJumpCountInAir = 0;
 
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-                mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-            }
+            // if (mDrawRopeComponent) {
+            //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+            // }
         }
         mPrevHookPressed = hook;
     }
@@ -773,14 +791,14 @@ void Player::OnUpdate(float deltaTime) {
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetIsVisible(false);
-            }
+            // if (mDrawRopeComponent) {
+            //     mDrawRopeComponent->SetIsVisible(false);
+            // }
         }
-        if (mDrawRopeComponent) {
-            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-        }
+        // if (mDrawRopeComponent) {
+        //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+        //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        // }
         if (mHookPoint) {
             mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
         }
@@ -820,9 +838,9 @@ void Player::OnUpdate(float deltaTime) {
 
     if (mIsHealing) {
         if (mHealAnimationTimer == 0) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mHealAnimationTimer += deltaTime;
     }
@@ -855,7 +873,7 @@ void Player::OnUpdate(float deltaTime) {
     }
 
     if (mIsFireAttacking) {
-        mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0) + mMovingGroundVelocity);
+        mRigidBodyComponent->SetVelocity(Vector2(-GetForward().x * mFireballRecoil, 0.0f) + mMovingGroundVelocity);
     }
 
     if (mIsJumping) {
@@ -963,8 +981,16 @@ void Player::OnUpdate(float deltaTime) {
         }
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mGame->GetGoingToNextLevel()) {
+        mRigidBodyComponent->SetVelocity(Vector2::Zero);
+    }
+
+    if (mDrawComponent) {
         ManageAnimations();
+    }
+
+    if (mLight) {
+        mLight->SetPosition(GetPosition());
     }
 }
 
@@ -1006,12 +1032,10 @@ void Player::ResolveGroundCollision() {
                 // colidiu bot
                 if (collisionNormal == Vector2::UnitY) {
                     mJumpTimer = mMaxJumpTime;
-                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 1));
+                    mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, 1.0f));
                     if (g->GetIsMoving()) {
                         if (g->GetComponent<RigidBodyComponent>()->GetVelocity().y > 0) {
-                            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
-                                                                     g->GetComponent<RigidBodyComponent>()->
-                                                                        GetVelocity().y * 1.5));
+                            mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x, g->GetComponent<RigidBodyComponent>()->GetVelocity().y * 1.5f));
                             // Para não grudar quando pular por baixo de uma plataforma movel
                         }
                     }
@@ -1277,84 +1301,88 @@ void Player::ResolveEnemyCollision() {
 }
 
 void Player::ManageAnimations() {
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
-    mDrawAnimatedComponent->UseFlip(false);
+    mDrawComponent->SetAnimFPS(10.0f);
+    // mDrawAnimatedComponent->UseFlip(false);
     if (mIsDead) {
-        mDrawAnimatedComponent->SetAnimation("die");
-        mDrawAnimatedComponent->SetAnimFPS(4.0f / mDeathAnimationDuration);
+        mDrawComponent->SetAnimation("die");
+        mDrawComponent->SetAnimFPS(4.0f / mDeathAnimationDuration);
     }
     else if (mHurtTimer < mHurtDuration) {
-        mDrawAnimatedComponent->SetAnimation("hurt");
+        mDrawComponent->SetAnimation("hurt");
     }
     else if (mDashComponent->GetIsDashing()) {
-        mDrawAnimatedComponent->SetAnimation("dash");
+        mDrawComponent->SetAnimation("dash");
     }
     else if (mSword->GetState() == ActorState::Active) {
         if (mSword->GetRotation() == 3 * Math::Pi / 2) {
-            mDrawAnimatedComponent->SetAnimation("attackUp");
+            mDrawComponent->SetAnimation("attackUp");
         }
         if (mSword->GetRotation() == Math::Pi / 2) {
-            mDrawAnimatedComponent->SetAnimation("attackDown");
+            mDrawComponent->SetAnimation("attackDown");
         }
         if (mSword->GetRotation() == 0 || mSword->GetRotation() == Math::Pi) {
             SetRotation(mSword->GetRotation());
-            mDrawAnimatedComponent->SetAnimation("attackFront");
+            SetScale(Vector2(mSword->GetForward().x, 1));
+            mDrawComponent->SetAnimation("attackFront");
         }
-        mDrawAnimatedComponent->SetAnimFPS(3.0f / 0.15f);
+        mDrawComponent->SetAnimFPS(3.0f / 0.15f);
     }
     else if (mFireballAnimationTimer < mFireballAnimationDuration) {
-        mDrawAnimatedComponent->SetAnimation("fireball");
-        mDrawAnimatedComponent->SetAnimFPS(2.0f / mFireballAnimationDuration);
+        mDrawComponent->SetAnimation("fireball");
+        mDrawComponent->SetAnimFPS(2.0f / mFireballAnimationDuration);
     }
     else if ((!mIsOnMovingGround && !mIsOnGround && mIsWallSliding &&
                mRigidBodyComponent->GetVelocity().y > 0) ||
               (mIsOnMovingGround && !mIsOnGround && mIsWallSliding &&
                mRigidBodyComponent->GetVelocity().y - mMovingGroundVelocity.y > 0))
     {
-        mDrawAnimatedComponent->UseFlip(true);
+        // mDrawAnimatedComponent->UseFlip(true);
         if (mWallSlideSide == WallSlideSide::left) {
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
         }
         else if (mWallSlideSide == WallSlideSide::right) {
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
         }
-        mDrawAnimatedComponent->SetAnimation("wallSlide");
+        mDrawComponent->SetAnimation("wallSlide");
     }
     else if (mIsRunning && mIsOnGround) {
-        mDrawAnimatedComponent->SetAnimation("run");
+        mDrawComponent->SetAnimation("run");
     }
     else if (!mIsOnGround) {
         if (mRigidBodyComponent->GetVelocity().y < -200 * mGame->GetScale()) {
-            mDrawAnimatedComponent->SetAnimation("jumpUp");
+            mDrawComponent->SetAnimation("jumpUp");
         }
         if (mRigidBodyComponent->GetVelocity().y > 200 * mGame->GetScale()) {
-            mDrawAnimatedComponent->SetAnimation("falling");
+            mDrawComponent->SetAnimation("falling");
         }
         if (mRigidBodyComponent->GetVelocity().y > -200 * mGame->GetScale() &&
             mRigidBodyComponent->GetVelocity().y < 200 * mGame->GetScale())
         {
-            mDrawAnimatedComponent->SetAnimation("jumpApex");
+            mDrawComponent->SetAnimation("jumpApex");
         }
     }
     else if (mIsHealing) {
-        mDrawAnimatedComponent->SetAnimation("heal");
-        mDrawAnimatedComponent->SetAnimFPS(10.0f / (mHealAnimationDuration));
+        mDrawComponent->SetAnimation("heal");
+        mDrawComponent->SetAnimFPS(10.0f / (mHealAnimationDuration));
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("idle");
-        mDrawAnimatedComponent->SetAnimFPS(6.0f);
+        mDrawComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimFPS(6.0f);
     }
 
     if (mIsInvulnerable && mHurtTimer > mHurtDuration) {
         if (mBlink) {
-            mDrawAnimatedComponent->SetTransparency(100);
+            // mDrawAnimatedComponent->SetTransparency(100);
+            mDrawComponent->SetAlpha(0.45f);
         }
         else {
-            mDrawAnimatedComponent->SetTransparency(255);
+            // mDrawAnimatedComponent->SetTransparency(255);
+            mDrawComponent->SetAlpha(1.0f);
         }
     }
     else {
-        mDrawAnimatedComponent->SetTransparency(255);
+        // mDrawAnimatedComponent->SetTransparency(255);
+        mDrawComponent->SetAlpha(1.0f);
     }
 }
 
@@ -1364,9 +1392,9 @@ void Player::ReceiveHit(float damage, Vector2 knockBackDirection) {
         mHealthPoints -= damage;
         mIsInvulnerable = true;
         mHurtTimer = 0;
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
 
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         if (vel.Length() > 0) {
@@ -1414,9 +1442,9 @@ bool Player::Died() {
     if (mHealthPoints <= 0) {
         if (mIsDead == false) {
             mIsDead = true;
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         return true;
     }
@@ -1431,10 +1459,12 @@ void Player::SetIsEnteringLevel(Vector2 velocity) {
     if (velocity.x > 0) {
         mIsRunning = true;
         SetRotation(0);
+        SetScale(Vector2(1, 1));
     }
     if (velocity.x < 0) {
         mIsRunning = true;
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
 }
 
@@ -1464,11 +1494,11 @@ void Player::ChangeResolution(float oldScale, float newScale) {
     mHookEnd.x = mHookEnd.x / oldScale * newScale;
     mHookEnd.y = mHookEnd.y / oldScale * newScale;
 
-    if (mDrawRopeComponent) {
-        mDrawRopeComponent->SetNumSegments(mHookSegments);
-        mDrawRopeComponent->SetAmplitude(mHookAmplitude);
-        mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
-    }
+    // if (mDrawRopeComponent) {
+    //     mDrawRopeComponent->SetNumSegments(mHookSegments);
+    //     mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+    //     mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+    // }
 
     mRigidBodyComponent->SetMaxSpeedX(mRigidBodyComponent->GetMaxSpeedX() / oldScale * newScale);
     mRigidBodyComponent->SetMaxSpeedY(mRigidBodyComponent->GetMaxSpeedY() / oldScale * newScale);
@@ -1476,10 +1506,10 @@ void Player::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 4.93f);
-        mDrawAnimatedComponent->SetHeight(mWidth * 4.93f * 1.11f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 4.93f);
+    //     mDrawAnimatedComponent->SetHeight(mWidth * 4.93f * 1.11f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -1497,7 +1527,7 @@ void Player::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

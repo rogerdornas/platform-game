@@ -7,7 +7,7 @@
 #include "../DialogueSystem.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Actors/Ground.h"
 #include "../Actors/DynamicGround.h"
 
@@ -17,7 +17,7 @@ Trigger::Trigger(class Game *game, float width, float height)
     ,mHeight(height)
     ,mTarget(Target::Nothing)
     ,mDestroy(false)
-    ,mDrawPolygonComponent(nullptr)
+    ,mRectComponent(nullptr)
 
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
@@ -30,6 +30,9 @@ Trigger::Trigger(class Game *game, float width, float height)
     vertices.emplace_back(v2);
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
+
+    // mRectComponent = new RectComponent(this, mWidth, mHeight, RendererMode::LINES);
+    // mRectComponent->SetColor(Vector3(160, 32, 240));
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {160, 32, 240, 255});
     mAABBComponent = new AABBComponent(this, v1, v3);
@@ -494,7 +497,7 @@ void Trigger::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

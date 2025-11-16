@@ -74,6 +74,6 @@ private:
 
     float mSpeedIncreaseRate;
 
-    class DrawRopeComponent* mDrawRopeComponent;
+    // class DrawRopeComponent* mDrawRopeComponent;
 };
 

@@ -40,8 +40,6 @@ private:
 
     SDL_Color mColor;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawSpriteComponent* mDrawSpriteComponent;
-    class DrawParticleComponent* mDrawParticleComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
 };

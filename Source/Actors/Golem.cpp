@@ -11,11 +11,10 @@
 #include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Actors/FireBall.h"
 #include "../Random.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
 
 Golem::Golem(Game *game)
     :Enemy(game)
@@ -80,39 +79,41 @@ Golem::Golem(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f * 1.73f, mWidth * 1.8f, "../Assets/Sprites/Golem2/Golem.png", "../Assets/Sprites/Golem2/Golem.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Golem2/Golem.png",
+                                                    "../Assets/Sprites/Golem2/Golem.json",
+                                                    mWidth * 1.8f * 1.73f, mWidth * 1.8f, 998);
     std::vector idle = {54, 22, 23, 24, 55, 25, 58, 26};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector idleInvulnerable = {56, 27, 28, 29, 57, 30, 59, 31};
-    mDrawAnimatedComponent->AddAnimation("idleInvulnerable", idleInvulnerable);
+    mDrawComponent->AddAnimation("idleInvulnerable", idleInvulnerable);
 
     std::vector walk = {32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
-    mDrawAnimatedComponent->AddAnimation("walk", walk);
+    mDrawComponent->AddAnimation("walk", walk);
 
     std::vector walkInvulnerable = {42, 43, 44, 45, 46, 47, 48, 49, 50, 51};
-    mDrawAnimatedComponent->AddAnimation("walkInvulnerable", walkInvulnerable);
+    mDrawComponent->AddAnimation("walkInvulnerable", walkInvulnerable);
 
     std::vector punch = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    mDrawAnimatedComponent->AddAnimation("punch", punch);
+    mDrawComponent->AddAnimation("punch", punch);
 
     std::vector punchInvulnerable = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
-    mDrawAnimatedComponent->AddAnimation("punchInvulnerable", punchInvulnerable);
+    mDrawComponent->AddAnimation("punchInvulnerable", punchInvulnerable);
 
     std::vector hit = {52, 20, 21, 53};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(10.0f);
 
 }
 
 void Golem::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0 && mGolemState != State::Punch) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -124,9 +125,11 @@ void Golem::OnUpdate(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
 
     ResolveGroundCollision();
@@ -166,7 +169,7 @@ void Golem::OnUpdate(float deltaTime) {
         }
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 
@@ -243,9 +246,11 @@ void Golem::RunAway(float deltaTime) {
 
     if (dist > 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
 }
@@ -258,9 +263,9 @@ void Golem::RunForward(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
 
     if (Math::Abs(dist) < mDistToPunch) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         if (GetRotation() == 0) {
             mPunchDirectionRight = true;
         }
@@ -278,9 +283,11 @@ void Golem::Punch(float deltaTime) {
     mRigidBodyComponent->SetVelocity(Vector2(0, 0));
     if (mPunchDirectionRight) {
         SetRotation(0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
 
     if (mPunchTimer >= mPunchDuration) {
@@ -321,8 +328,10 @@ void Golem::Punch(float deltaTime) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
     }
 }
 
@@ -346,6 +355,8 @@ void Golem::Fireball(float deltaTime) {
             if (f->GetState() == ActorState::Paused) {
                 f->SetState(ActorState::Active);
                 f->SetRotation(GetRotation());
+                f->SetTransformRotation(0.0f);
+                f->SetScale(Vector2(GetForward().x, 1));
                 f->SetWidth(mFireballWidth);
                 f->SetHeight(mFireBallHeight);
                 f->SetSpeed(mFireballSpeed);
@@ -372,6 +383,8 @@ void Golem::FireballRain(float deltaTime) {
             if (f->GetState() == ActorState::Paused) {
                 f->SetState(ActorState::Active);
                 f->SetRotation(Math::PiOver2);
+                f->SetTransformRotation(Math::PiOver2);
+                f->SetScale(Vector2(1, 1));
                 f->SetWidth(mFireballRainWidth);
                 f->SetHeight(mFireballRainHeight);
                 f->SetSpeed(mFireballRainSpeed);
@@ -539,35 +552,35 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
 void Golem::ManageAnimations() {
     if (mGolemState == State::Punch) {
         if (mIsInvulnerable) {
-            mDrawAnimatedComponent->SetAnimation("punchInvulnerable");
+            mDrawComponent->SetAnimation("punchInvulnerable");
         }
         else {
-            mDrawAnimatedComponent->SetAnimation("punch");
+            mDrawComponent->SetAnimation("punch");
         }
-        mDrawAnimatedComponent->SetAnimFPS(10.0f / mPunchDuration);
+        mDrawComponent->SetAnimFPS(10.0f / mPunchDuration);
     }
     else if (mGolemState == State::RunForward ||
              mGolemState == State::RunAway) {
         if (mIsInvulnerable) {
-            mDrawAnimatedComponent->SetAnimation("walkInvulnerable");
+            mDrawComponent->SetAnimation("walkInvulnerable");
         }
         else {
-            mDrawAnimatedComponent->SetAnimation("walk");
+            mDrawComponent->SetAnimation("walk");
         }
-        mDrawAnimatedComponent->SetAnimFPS(mMoveSpeed / 40);
+        mDrawComponent->SetAnimFPS(mMoveSpeed / 40);
     }
     else if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
-        mDrawAnimatedComponent->SetAnimFPS(4.0f / mHitDuration);
+        mDrawComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimFPS(4.0f / mHitDuration);
     }
     else {
         if (mIsInvulnerable) {
-            mDrawAnimatedComponent->SetAnimation("idleInvulnerable");
+            mDrawComponent->SetAnimation("idleInvulnerable");
         }
         else {
-            mDrawAnimatedComponent->SetAnimation("idle");
+            mDrawComponent->SetAnimation("idle");
         }
-        mDrawAnimatedComponent->SetAnimFPS(10.0f);
+        mDrawComponent->SetAnimFPS(10.0f);
     }
 }
 
@@ -602,10 +615,10 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.73f);
-        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.8f * 1.73f);
+    //     mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.8f);
+    // }
 
     Vector2 v1;
     Vector2 v2;
@@ -636,7 +649,7 @@ void Golem::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

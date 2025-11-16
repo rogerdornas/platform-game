@@ -11,7 +11,6 @@
 #include <fstream>
 #include <iostream>
 #include "Components/RigidBodyComponent.h"
-#include "Components/DrawComponents/DrawAnimatedComponent.h"
 
 Action::Action(Game* game, const nlohmann::json& actionJson)
     :mGame(game)

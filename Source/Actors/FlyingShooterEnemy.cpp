@@ -10,9 +10,8 @@
 #include "../Random.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 FlyingShooterEnemy::FlyingShooterEnemy(Game* game)
     :Enemy(game)
@@ -52,15 +51,17 @@ FlyingShooterEnemy::FlyingShooterEnemy(Game* game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/Beetle/Beetle.png", "../Assets/Sprites/Beetle/Beetle.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Beetle/Beetle.png",
+                                                    "../Assets/Sprites/Beetle/Beetle.json",
+                                                    mWidth * 2.0f, mHeight * 2.0f, 998);
     std::vector fly = {0, 1, 2, 3};
-    mDrawAnimatedComponent->AddAnimation("fly", fly);
+    mDrawComponent->AddAnimation("fly", fly);
 
     std::vector hit = {4};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("fly");
-    mDrawAnimatedComponent->SetAnimFPS(8.0f);
+    mDrawComponent->SetAnimation("fly");
+    mDrawComponent->SetAnimFPS(8.0f);
 }
 
 void FlyingShooterEnemy::OnUpdate(float deltaTime) {
@@ -78,8 +79,8 @@ void FlyingShooterEnemy::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->SetAnimFPS(15.0f);
+        if (mDrawComponent) {
+            mDrawComponent->SetAnimFPS(15.0f);
         }
         MovementAfterPlayerSpotted(deltaTime);
     }
@@ -91,7 +92,7 @@ void FlyingShooterEnemy::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -100,6 +101,7 @@ void FlyingShooterEnemy::MovementBeforePlayerSpotted() {
     Player *player = GetGame()->GetPlayer();
     if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mFlyingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -196,6 +198,7 @@ void FlyingShooterEnemy::Shoot(float deltaTime) {
             if (p->GetState() == ActorState::Paused && p->GetProjectileType() == Projectile::ProjectileType::Acid) {
                 p->SetState(ActorState::Active);
                 p->SetRotation(Math::Atan2(direction.y, direction.x));
+                p->SetTransformRotation(Math::Atan2(direction.y, direction.x));
                 p->SetWidth(mProjectileWidth);
                 p->SetHeight(mProjectileHeight);
                 p->SetSpeed(mProjectileSpeed);
@@ -217,26 +220,30 @@ void FlyingShooterEnemy::Shoot(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 }
 
 void FlyingShooterEnemy::ManageAnimations() {
     if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-        mDrawAnimatedComponent->UseFlip(true);
-        mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+        SetScale(Vector2(-1,1));
+        // mDrawAnimatedComponent->UseFlip(true);
+        // mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
     }
     else {
-        mDrawAnimatedComponent->UseFlip(false);
+        SetScale(Vector2(1,1));
+        // mDrawAnimatedComponent->UseFlip(false);
     }
 
     if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimation("hit");
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("fly");
+        mDrawComponent->SetAnimation("fly");
     }
 }
 
@@ -258,15 +265,10 @@ void FlyingShooterEnemy::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.28f);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.28f);
-    }
-
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -284,7 +286,7 @@ void FlyingShooterEnemy::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

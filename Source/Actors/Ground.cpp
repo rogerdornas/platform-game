@@ -6,9 +6,10 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawGroundSpritesComponent.h"
+#include "../Components/Drawing/RectComponent.h"
+#include "../Components/Drawing/TileMapComponent.h"
 #include <unordered_map>
+#include "../Components/Drawing/AnimatorComponent.h"
 
 Ground::Ground(Game* game, float width, float height, bool isSpike, bool isMoving, float movingDuration, Vector2 velocity)
     :Actor(game)
@@ -21,8 +22,9 @@ Ground::Ground(Game* game, float width, float height, bool isSpike, bool isMovin
     ,mMovingTimer(movingDuration)
     ,mMovingDuration(movingDuration)
     ,mVelocity(velocity * mGame->GetScale())
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawGroundSpritesComponent(nullptr)
+    ,mRectComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mDesenho(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -42,12 +44,20 @@ Ground::Ground(Game* game, float width, float height, bool isSpike, bool isMovin
     else
         color = SDL_Color{0, 255, 0, 255};
 
+    // mRectComponent = new RectComponent(this, mWidth, mHeight, RendererMode::LINES);
+    // mRectComponent->SetColor(Vector3(color.r, color.g, color.b));
+
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, color);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
-    mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 99);
+    // mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 99);
+    mDrawComponent = new TileMapComponent(this);
+    // mDesenho = new AnimatorComponent(this, "../Assets/Sprites/Lava/Idle01.png",
+                                           // "",
+                                           // mWidth, mHeight, 1000);
+
     if (mIsMoving) {
         mRigidBodyComponent->SetVelocity(mVelocity);
     }
@@ -108,35 +118,40 @@ void Ground::SetSprites() {
             }
         }
     }
-    mDrawGroundSpritesComponent->SetSpriteOffsetMap(spriteOffsetMap);
-    mDrawGroundSpritesComponent->SetWidth(mGame->GetTileSize());
-    mDrawGroundSpritesComponent->SetHeight(mGame->GetTileSize());
+    // mDrawGroundSpritesComponent->SetSpriteOffsetMap(spriteOffsetMap);
+    // mDrawGroundSpritesComponent->SetWidth(mGame->GetTileSize());
+    // mDrawGroundSpritesComponent->SetHeight(mGame->GetTileSize());
 }
 
 void Ground::SetTilesIndex(float width, float height, float x, float y) {
-    int rows = height / mGame->GetOriginalTileSize();
-    int cols = width / mGame->GetOriginalTileSize();
-    mTilesIndex.resize(rows, std::vector<int>(cols));
+    int tileSize = mGame->GetOriginalTileSize();
 
-    float topLeftX = x;
-    float topLeftY = y;
+    int rows = static_cast<int>(height / tileSize);
+    int cols = static_cast<int>(width / tileSize);
+    mTilesIndex.assign(rows, std::vector<int>(cols, 0));
 
-    int minRow = topLeftY / mGame->GetOriginalTileSize();
-    int maxRow = minRow + rows;
-
-    int minCol = topLeftX / mGame->GetOriginalTileSize();
-    int maxCol = minCol + cols;
+    // Convertendo coordenadas de mundo (em pixels) para índices de tile
+    int minCol = static_cast<int>(x / tileSize);
+    int minRow = static_cast<int>(y / tileSize);
 
     int** levelData = mGame->GetLevelData();
 
-    for (int row = 0; row < rows; ++row) {
-        for (int col = 0; col < cols; ++col) {
-            int tile = levelData[row + minRow][col + minCol];
-            mTilesIndex[row][col] = tile;
+    for (int row = 0; row < rows; ++row)
+    {
+        for (int col = 0; col < cols; ++col)
+        {
+            int srcRow = minRow + row;
+            int srcCol = minCol + col;
+
+            mTilesIndex[row][col] = levelData[srcRow][srcCol];
         }
     }
 
-    mDrawGroundSpritesComponent->SetTilesIndex(mTilesIndex);
+    // Define e bakeia os tiles
+    if (mDrawComponent) {
+        mDrawComponent->SetTilesIndex(mTilesIndex);
+        mDrawComponent->BakeTilesToTexture(GetGame()->GetRenderer());
+    }
 }
 
 
@@ -170,7 +185,7 @@ void Ground::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

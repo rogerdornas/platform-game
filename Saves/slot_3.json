@@ -1,11 +1,11 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 1952.0,
-            "y": 4352.0
+            "x": 1328.0,
+            "y": 5312.0
         },
-        "scene": "Prologue",
-        "total_play_time": 0.0
+        "scene": "Room0",
+        "total_play_time": 11.213955879211426
     },
     "player": {
         "can_dash": false,
@@ -24,5 +24,6 @@
         "sword_damage": false,
         "sword_range": false,
         "sword_speed": false
-    }
+    },
+    "world_state": {}
 }

@@ -6,8 +6,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Spawner::Spawner(class Game *game)
     :Actor(game)
@@ -25,8 +25,8 @@ Spawner::Spawner(class Game *game)
     ,mTimer(0.0f)
     ,mRigidBodyComponent(nullptr)
     ,mAABBComponent(nullptr)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
 {
     // Componente visual
     Vector2 v1(-mWidth/2, -mHeight/2);
@@ -45,8 +45,9 @@ Spawner::Spawner(class Game *game)
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 997);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mHeight * 1.8f,
-                                            "../Assets/Sprites/Portal2/Portal.png", "../Assets/Sprites/Portal2/Portal.json", 98);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Portal2/Portal.png",
+                                                        "../Assets/Sprites/Portal2/Portal.json",
+                                                        mWidth * 1.8f, mHeight * 1.8f, 98);
 
     // std::vector appear = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10};
     // mDrawAnimatedComponent->AddAnimation("appear", appear);
@@ -64,17 +65,17 @@ Spawner::Spawner(class Game *game)
     // mDrawAnimatedComponent->AddAnimation("disappear", disappear);
 
     std::vector appear = {0, 1, 2, 3, 4, 5, 6};
-    mDrawAnimatedComponent->AddAnimation("appear", appear);
+    mDrawComponent->AddAnimation("appear", appear);
 
     std::vector open = {0, 1, 2, 3, 4, 5, };
-    mDrawAnimatedComponent->AddAnimation("open", open);
+    mDrawComponent->AddAnimation("open", open);
 
     std::vector disappear = {0, 1, 2, 3, 4, 5, };
-    mDrawAnimatedComponent->AddAnimation("disappear", disappear);
+    mDrawComponent->AddAnimation("disappear", disappear);
 
 
-    mDrawAnimatedComponent->SetAnimation("appear");
-    mDrawAnimatedComponent->SetAnimFPS(11.0f / mAppearDuration);
+    mDrawComponent->SetAnimation("appear");
+    mDrawComponent->SetAnimFPS(11.0f / mAppearDuration);
 }
 
 void Spawner::OnUpdate(float deltaTime) {
@@ -89,10 +90,10 @@ void Spawner::OnUpdate(float deltaTime) {
             mAppearTimer += deltaTime;
             if (mAppearTimer >= mAppearDuration) {
                 mSpawnerState = SpawnerState::Open;
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetAnimation("open");
-                    mDrawAnimatedComponent->SetAnimFPS(13.0f / mOpenDuration);
-                    mDrawAnimatedComponent->ResetAnimationTimer();
+                if (mDrawComponent) {
+                    mDrawComponent->SetAnimation("open");
+                    mDrawComponent->SetAnimFPS(13.0f / mOpenDuration);
+                    // mDrawAnimatedComponent->ResetAnimationTimer();
                 }
             }
 
@@ -113,13 +114,15 @@ void Spawner::OnUpdate(float deltaTime) {
                 aabb->SetMax(v3);
             }
 
-            if (mDrawPolygonComponent) {
-                mDrawPolygonComponent->SetVertices(vertices);
+            if (mRectComponent) {
+                // mDrawPolygonComponent->SetVertices(vertices);
+                mRectComponent->SetWidth(mWidth);
+                mRectComponent->SetHeight(mHeight);
             }
 
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+            if (mDrawComponent) {
+                mDrawComponent->SetWidth(mWidth * 1.8f);
+                mDrawComponent->SetHeight(mHeight * 1.8f);
             }
             break;
 
@@ -127,10 +130,10 @@ void Spawner::OnUpdate(float deltaTime) {
             mOpenTimer += deltaTime;
             if (mOpenTimer >= mOpenDuration) {
                 mSpawnerState = SpawnerState::Disappear;
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->SetAnimation("disappear");
-                    mDrawAnimatedComponent->SetAnimFPS(10.0f / mDisappearDuration);
-                    mDrawAnimatedComponent->ResetAnimationTimer();
+                if (mDrawComponent) {
+                    mDrawComponent->SetAnimation("disappear");
+                    mDrawComponent->SetAnimFPS(10.0f / mDisappearDuration);
+                    // mDrawAnimatedComponent->ResetAnimationTimer();
                 }
             }
             break;
@@ -158,13 +161,15 @@ void Spawner::OnUpdate(float deltaTime) {
                 aabb->SetMax(v3);
             }
 
-            if (mDrawPolygonComponent) {
-                mDrawPolygonComponent->SetVertices(vertices);
-            }
+        if (mRectComponent) {
+            // mDrawPolygonComponent->SetVertices(vertices);
+            mRectComponent->SetWidth(mWidth);
+            mRectComponent->SetHeight(mHeight);
+        }
 
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-                mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+            if (mDrawComponent) {
+                mDrawComponent->SetWidth(mWidth * 1.8f);
+                mDrawComponent->SetHeight(mHeight * 1.8f);
             }
             break;
     }
@@ -192,10 +197,10 @@ void Spawner::ChangeResolution(float oldScale, float newScale) {
     mMaxHeight = mMaxHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -208,9 +213,9 @@ void Spawner::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }
 
 

@@ -210,7 +210,7 @@ void HUD::IncreaseManaBar() {
     mNumOfSubManaBars = mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost();
 }
 
-void HUD::Draw(class SDL_Renderer *renderer) {
+void HUD::Draw(class Renderer *renderer) {
     if (!mIsVisible) {
         return;
     }
@@ -233,7 +233,7 @@ void HUD::Draw(class SDL_Renderer *renderer) {
     }
 }
 
-void HUD::DrawLifeBar(class SDL_Renderer *renderer) {
+void HUD::DrawLifeBar(class Renderer *renderer) {
     SDL_Rect HPBar;
     HPBar.x = static_cast<int>(mHPBar.x);
     HPBar.y = static_cast<int>(mHPBar.y);
@@ -258,20 +258,20 @@ void HUD::DrawLifeBar(class SDL_Renderer *renderer) {
     HPGrowingBar.w = static_cast<int>(mHPGrowingBar.w);
     HPGrowingBar.h = static_cast<int>(mHPGrowingBar.h);
 
-    SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
-    SDL_RenderFillRect(renderer, &HPBar);
-
-    SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
-    SDL_RenderFillRect(renderer, &DamageTakenBar);
-
-    SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
-    SDL_RenderFillRect(renderer, &HPRemainingBar);
-
-    SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
-    SDL_RenderFillRect(renderer, &HPGrowingBar);
+    // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
+    // SDL_RenderFillRect(renderer, &HPBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
+    // SDL_RenderFillRect(renderer, &DamageTakenBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
+    // SDL_RenderFillRect(renderer, &HPRemainingBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
+    // SDL_RenderFillRect(renderer, &HPGrowingBar);
 }
 
-void HUD::DrawManaBar(struct SDL_Renderer *renderer) {
+void HUD::DrawManaBar(struct Renderer *renderer) {
     SDL_Rect ManaBar;
     ManaBar.x = static_cast<int>(mManaBar.x);
     ManaBar.y = static_cast<int>(mManaBar.y);
@@ -291,26 +291,26 @@ void HUD::DrawManaBar(struct SDL_Renderer *renderer) {
     ManaRemainingBar.h = static_cast<int>(mManaRemainingBar.h);
 
 
-    SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
-    SDL_RenderFillRect(renderer, &ManaBar);
-
-    SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
-    SDL_RenderFillRect(renderer, &ManaUsedBar);
-
-    SDL_SetRenderDrawColor(renderer, 65, 188, 217, 255);
-    SDL_RenderFillRect(renderer, &ManaRemainingBar);
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    for (int i = 1; i < mNumOfSubManaBars; i++) {
-        SDL_RenderDrawLine(renderer,
-                    mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
-                    mManaBar.y,
-                    mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
-                    mManaBar.y + mManaBar.h);
-    }
+    // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
+    // SDL_RenderFillRect(renderer, &ManaBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
+    // SDL_RenderFillRect(renderer, &ManaUsedBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 65, 188, 217, 255);
+    // SDL_RenderFillRect(renderer, &ManaRemainingBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    // for (int i = 1; i < mNumOfSubManaBars; i++) {
+    //     SDL_RenderDrawLine(renderer,
+    //                 mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
+    //                 mManaBar.y,
+    //                 mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
+    //                 mManaBar.y + mManaBar.h);
+    // }
 }
 
-void HUD::DrawBossLifeBar(struct SDL_Renderer *renderer) {
+void HUD::DrawBossLifeBar(struct Renderer *renderer) {
     SDL_Rect HPBar;
     HPBar.x = static_cast<int>(mBossHPBar.x);
     HPBar.y = static_cast<int>(mBossHPBar.y);
@@ -335,17 +335,17 @@ void HUD::DrawBossLifeBar(struct SDL_Renderer *renderer) {
     HPGrowingBar.w = static_cast<int>(mBossHPGrowingBar.w);
     HPGrowingBar.h = static_cast<int>(mBossHPGrowingBar.h);
 
-    SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
-    SDL_RenderFillRect(renderer, &HPBar);
-
-    SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
-    SDL_RenderFillRect(renderer, &DamageTakenBar);
-
-    SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
-    SDL_RenderFillRect(renderer, &HPRemainingBar);
-
-    SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
-    SDL_RenderFillRect(renderer, &HPGrowingBar);
+    // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
+    // SDL_RenderFillRect(renderer, &HPBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
+    // SDL_RenderFillRect(renderer, &DamageTakenBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
+    // SDL_RenderFillRect(renderer, &HPRemainingBar);
+    //
+    // SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
+    // SDL_RenderFillRect(renderer, &HPGrowingBar);
 }
 
 

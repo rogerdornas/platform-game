@@ -12,10 +12,9 @@
 #include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Random.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Actors/DynamicGround.h"
 
 Moth::Moth(Game *game)
@@ -76,32 +75,34 @@ Moth::Moth(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/FinalBoss/FinalBoss.png", "../Assets/Sprites/FinalBoss/FinalBoss.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/FinalBoss/FinalBoss.png",
+                                                    "../Assets/Sprites/FinalBoss/FinalBoss.json",
+                                                    mWidth * 2.0f, mHeight * 2.0f, 998);
     std::vector idle = {53, 54, 55, 56, 57, 58, 59, 60};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector attack = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-    mDrawAnimatedComponent->AddAnimation("attack", attack);
+    mDrawComponent->AddAnimation("attack", attack);
 
     std::vector boostUp = {14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
-    mDrawAnimatedComponent->AddAnimation("boostUp", boostUp);
+    mDrawComponent->AddAnimation("boostUp", boostUp);
 
     std::vector die = {36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48};
-    mDrawAnimatedComponent->AddAnimation("die", die);
+    mDrawComponent->AddAnimation("die", die);
 
     std::vector hit = {49, 50, 51, 52};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(10.0f);
 }
 
 void Moth::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0 && !mAttackAnimation && mMothState != State::BoostUp) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -113,9 +114,11 @@ void Moth::OnUpdate(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 
     // Revida bola de fogo
@@ -129,8 +132,9 @@ void Moth::OnUpdate(float deltaTime) {
                         direction.Normalize();
                     }
                     f->SetRotation(Math::Atan2(direction.y, direction.x));
+                    f->SetTransformRotation(Math::Atan2(direction.y, direction.x));
                     f->SetIsFromEnemy();
-                    f->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
+                    // f->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                     f->GetComponent<RigidBodyComponent>()->SetVelocity(f->GetForward() * f->GetSpeed());
                 }
             }
@@ -158,7 +162,7 @@ void Moth::OnUpdate(float deltaTime) {
 
     ChangeGround(deltaTime);
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -207,9 +211,9 @@ void Moth::Stop(float deltaTime) {
 
         if (!mAlreadyBoosted) {
             if (mHealthPoints <= 0.5f * mMaxHealthPoints) {
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->ResetAnimationTimer();
-                }
+                // if (mDrawAnimatedComponent) {
+                //     mDrawAnimatedComponent->ResetAnimationTimer();
+                // }
                 mAlreadyBoosted = true;
                 mMothState = State::BoostUp;
                 return;
@@ -287,9 +291,9 @@ void Moth::Stop(float deltaTime) {
 
 void Moth::Projectiles(float deltaTime) {
     if (mAttackTimer == 0) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
     }
     mAttackTimer += deltaTime;
     if (mAttackTimer < mAttackDuration) {
@@ -329,6 +333,7 @@ void Moth::Projectiles(float deltaTime) {
             if (p->GetState() == ActorState::Paused && p->GetProjectileType() == Projectile::ProjectileType::OrangeBall) {
                 p->SetState(ActorState::Active);
                 p->SetRotation(direction);
+                p->SetTransformRotation(direction);
                 p->SetWidth(mProjectileWidth);
                 p->SetHeight(mProjectileHeight);
                 if (mIsSlowMotion) {
@@ -339,7 +344,7 @@ void Moth::Projectiles(float deltaTime) {
                 }
                 p->SetDamage(mProjectileDamage);
                 p->SetPosition(GetPosition());
-                p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
+                // p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                 break;
             }
         }
@@ -350,9 +355,9 @@ void Moth::Projectiles(float deltaTime) {
 void Moth::SlowMotionProjectiles(float deltaTime) {
     mGame->SetIsSlowMotion(true);
     if (mAttackTimer == 0) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
     }
     mAttackTimer += deltaTime;
     if (mAttackTimer < mAttackDuration) {
@@ -392,12 +397,13 @@ void Moth::SlowMotionProjectiles(float deltaTime) {
             if (p->GetState() == ActorState::Paused && p->GetProjectileType() == Projectile::ProjectileType::OrangeBall) {
                 p->SetState(ActorState::Active);
                 p->SetRotation(direction);
+                p->SetTransformRotation(direction);
                 p->SetWidth(mProjectileWidth);
                 p->SetHeight(mProjectileHeight);
                 p->SetSpeed(mProjectileSpeed * 2);
                 p->SetDamage(mProjectileDamage);
                 p->SetPosition(GetPosition());
-                p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
+                // p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                 break;
             }
         }
@@ -422,9 +428,9 @@ void Moth::CircleProjectiles(float deltaTime) {
     }
 
     if (mAttackTimer == 0) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
     }
     mAttackTimer += deltaTime;
     if (mAttackTimer < mAttackDuration) {
@@ -441,6 +447,7 @@ void Moth::CircleProjectiles(float deltaTime) {
             if (p->GetState() == ActorState::Paused && p->GetProjectileType() == Projectile::ProjectileType::OrangeBall) {
                 p->SetState(ActorState::Active);
                 p->SetRotation(direction);
+                p->SetTransformRotation(direction);
                 p->SetWidth(mCircleProjectileWidth);
                 p->SetHeight(mCircleProjectileHeight);
                 if (mIsSlowMotion) {
@@ -451,7 +458,7 @@ void Moth::CircleProjectiles(float deltaTime) {
                 }
                 p->SetDamage(mProjectileDamage);
                 p->SetPosition(GetPosition());
-                p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
+                // p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                 break;
             }
         }
@@ -565,24 +572,24 @@ void Moth::TriggerBossDefeat() {
 
 void Moth::ManageAnimations() {
     if (mAttackAnimation) {
-        mDrawAnimatedComponent->SetAnimation("attack");
-        mDrawAnimatedComponent->SetAnimFPS(10.0f / mAttackDuration);
+        mDrawComponent->SetAnimation("attack");
+        mDrawComponent->SetAnimFPS(10.0f / mAttackDuration);
     }
     else if (mMothState == State::BoostUp) {
-        mDrawAnimatedComponent->SetAnimation("boostUp");
-        mDrawAnimatedComponent->SetAnimFPS(22.0f / mBoostUpDuration);
+        mDrawComponent->SetAnimation("boostUp");
+        mDrawComponent->SetAnimFPS(22.0f / mBoostUpDuration);
     }
     else if (mMothState == State::Dying) {
-        mDrawAnimatedComponent->SetAnimation("die");
-        mDrawAnimatedComponent->SetAnimFPS(13.0f / mDyingDuration);
+        mDrawComponent->SetAnimation("die");
+        mDrawComponent->SetAnimFPS(13.0f / mDyingDuration);
     }
     else if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
-        mDrawAnimatedComponent->SetAnimFPS(4.0f / mHitDuration);
+        mDrawComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimFPS(4.0f / mHitDuration);
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("idle");
-        mDrawAnimatedComponent->SetAnimFPS(10.0f);
+        mDrawComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimFPS(10.0f);
     }
 
 
@@ -634,10 +641,10 @@ void Moth::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 2.0f);
+    // }
 
     Vector2 v1(-mHeight / 2, -mHeight / 2);
     Vector2 v2(mHeight / 2, -mHeight / 2);
@@ -655,9 +662,9 @@ void Moth::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }
 
 

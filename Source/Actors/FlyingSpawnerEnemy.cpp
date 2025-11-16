@@ -10,9 +10,8 @@
 #include "../Random.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 FlyingSpawnerEnemy::FlyingSpawnerEnemy(Game *game)
     :Enemy(game)
@@ -55,7 +54,7 @@ FlyingSpawnerEnemy::FlyingSpawnerEnemy(Game *game)
     mWidth = 96 * mGame->GetScale();
     mHeight = 96 * mGame->GetScale();
     mMoveSpeed = 400 * mGame->GetScale();
-    mHealthPoints = 100;
+    mHealthPoints = 80;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 10;
     mMoneyDrop = 14;
@@ -67,30 +66,32 @@ FlyingSpawnerEnemy::FlyingSpawnerEnemy(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.0f, mHeight * 2.0f, "../Assets/Sprites/FlyingSpawnerEnemy/FlyingSpawnerEnemy.png", "../Assets/Sprites/FlyingSpawnerEnemy/FlyingSpawnerEnemy.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/FlyingSpawnerEnemy/FlyingSpawnerEnemy.png",
+                                                    "../Assets/Sprites/FlyingSpawnerEnemy/FlyingSpawnerEnemy.json",
+                                                    mWidth * 2.0f, mHeight * 2.0f, 998);
     std::vector fly = {0, 1, 2, 3, 4, 5, 6, 7};
-    mDrawAnimatedComponent->AddAnimation("fly", fly);
+    mDrawComponent->AddAnimation("fly", fly);
 
     std::vector hit = {8, 9, 10, 11};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
     std::vector idle = {12, 13, 14, 15, 16, 17, 18, 19};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector smashStart = {31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42};
-    mDrawAnimatedComponent->AddAnimation("smashStart", smashStart);
+    mDrawComponent->AddAnimation("smashStart", smashStart);
 
     std::vector smashLoop = {28, 29, 30};
-    mDrawAnimatedComponent->AddAnimation("smashLoop", smashLoop);
+    mDrawComponent->AddAnimation("smashLoop", smashLoop);
 
     std::vector smashEnd = {20, 21, 22, 23, 24, 25, 26, 27};
-    mDrawAnimatedComponent->AddAnimation("smashEnd", smashEnd);
+    mDrawComponent->AddAnimation("smashEnd", smashEnd);
 
     std::vector spawn = {43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56};
-    mDrawAnimatedComponent->AddAnimation("spawn", spawn);
+    mDrawComponent->AddAnimation("spawn", spawn);
 
-    mDrawAnimatedComponent->SetAnimation("fly");
-    mDrawAnimatedComponent->SetAnimFPS(12.0f);
+    mDrawComponent->SetAnimation("fly");
+    mDrawComponent->SetAnimFPS(12.0f);
 }
 
 void FlyingSpawnerEnemy::OnUpdate(float deltaTime) {
@@ -103,9 +104,9 @@ void FlyingSpawnerEnemy::OnUpdate(float deltaTime) {
             mEnemyState != State::SmashAttackRecovery &&
             mEnemyState != State::SpawnBat)
         {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -127,7 +128,7 @@ void FlyingSpawnerEnemy::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -141,9 +142,9 @@ void FlyingSpawnerEnemy::ResolveGroundCollision() {
                 if (mColliderComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                     collisionNormal = mColliderComponent->ResolveCollision(*g->GetComponent<ColliderComponent>());
                     if (mEnemyState == State::SmashAttack && collisionNormal == Vector2::NegUnitY) {
-                        if (mDrawAnimatedComponent) {
-                            mDrawAnimatedComponent->ResetAnimationTimer();
-                        }
+                        // if (mDrawAnimatedComponent) {
+                        //     mDrawAnimatedComponent->ResetAnimationTimer();
+                        // }
                         mEnemyState = State::SmashAttackRecovery;
                     }
                 }
@@ -154,9 +155,9 @@ void FlyingSpawnerEnemy::ResolveGroundCollision() {
                     // Colidiu top
                     if (mEnemyState == State::SmashAttack && collisionNormal == Vector2::NegUnitY) {
                         ReceiveHit(10, Vector2::NegUnitY);
-                        if (mDrawAnimatedComponent) {
-                            mDrawAnimatedComponent->ResetAnimationTimer();
-                        }
+                        // if (mDrawAnimatedComponent) {
+                        //     mDrawAnimatedComponent->ResetAnimationTimer();
+                        // }
                         mEnemyState = State::SmashAttackRecovery;
                     }
                     // Colidiu bot
@@ -183,6 +184,7 @@ void FlyingSpawnerEnemy::MovementBeforePlayerSpotted() {
     Player *player = GetGame()->GetPlayer();
     if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mFlyingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -233,9 +235,11 @@ void FlyingSpawnerEnemy::Stop(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -254,9 +258,9 @@ void FlyingSpawnerEnemy::Fly(float deltaTime) {
     if (mFlyTimer >= mFlyDuration) {
         mFlyTimer = 0;
         mTargetSet = false; // reseta alvo da próxima patrulha
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         if (Random::GetFloat() < 0.5) {
             mEnemyState = State::SmashAttackCharge;
         }
@@ -319,9 +323,9 @@ void FlyingSpawnerEnemy::SmashAttackCharge(float deltaTime) {
     mSmashAttackChargeTimer += deltaTime;
     if (mSmashAttackChargeTimer >= mSmashAttachChargeDuration) {
         mSmashAttackChargeTimer = 0;
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         mEnemyState = State::SmashAttack;
     }
 
@@ -343,8 +347,10 @@ void FlyingSpawnerEnemy::SmashAttackCharge(float deltaTime) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -400,8 +406,10 @@ void FlyingSpawnerEnemy::SmashAttackRecovery(float deltaTime) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
     }
 
     mRigidBodyComponent->SetVelocity(Vector2::Zero);
@@ -436,39 +444,41 @@ void FlyingSpawnerEnemy::SpawnBat(float deltaTime) {
 }
 
 void FlyingSpawnerEnemy::ManageAnimations() {
-    mDrawAnimatedComponent->SetAnimFPS(12.0f);
+    mDrawComponent->SetAnimFPS(12.0f);
     if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-        mDrawAnimatedComponent->UseFlip(true);
-        mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+        SetScale(Vector2(-1,1));
+        // mDrawAnimatedComponent->UseFlip(true);
+        // mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
     }
     else {
-        mDrawAnimatedComponent->UseFlip(false);
+        SetScale(Vector2(1,1));
+        // mDrawAnimatedComponent->UseFlip(false);
     }
 
     if (mEnemyState == State::SmashAttackCharge) {
-        mDrawAnimatedComponent->SetAnimation("smashStart");
-        mDrawAnimatedComponent->SetAnimFPS(12.0f / mSmashAttachChargeDuration);
+        mDrawComponent->SetAnimation("smashStart");
+        mDrawComponent->SetAnimFPS(12.0f / mSmashAttachChargeDuration);
     }
     else if (mEnemyState == State::SmashAttack) {
-        mDrawAnimatedComponent->SetAnimation("smashLoop");
+        mDrawComponent->SetAnimation("smashLoop");
     }
     else if (mEnemyState == State::SmashAttackRecovery) {
-        mDrawAnimatedComponent->SetAnimation("smashEnd");
-        mDrawAnimatedComponent->SetAnimFPS(8.0f / mSmashAttackRecoveryDuration);
+        mDrawComponent->SetAnimation("smashEnd");
+        mDrawComponent->SetAnimFPS(8.0f / mSmashAttackRecoveryDuration);
     }
     else if (mEnemyState == State::SpawnBat) {
-        mDrawAnimatedComponent->SetAnimation("spawn");
-        mDrawAnimatedComponent->SetAnimFPS(14.0f / mSpawnBatDuration);
+        mDrawComponent->SetAnimation("spawn");
+        mDrawComponent->SetAnimFPS(14.0f / mSpawnBatDuration);
     }
     else if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
-        mDrawAnimatedComponent->SetAnimFPS(4.0f / mHitDuration);
+        mDrawComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimFPS(4.0f / mHitDuration);
     }
     else if (mEnemyState == State::Stop) {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation("idle");
     }
     else if (mEnemyState == State::Fly || mEnemyState == State::FlyAway) {
-        mDrawAnimatedComponent->SetAnimation("fly");
+        mDrawComponent->SetAnimation("fly");
     }
 }
 
@@ -489,10 +499,10 @@ void FlyingSpawnerEnemy::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
-        mDrawAnimatedComponent->SetHeight(mOriginalHeight * 2.0f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 2.0f);
+    //     mDrawAnimatedComponent->SetHeight(mOriginalHeight * 2.0f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -510,7 +520,7 @@ void FlyingSpawnerEnemy::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

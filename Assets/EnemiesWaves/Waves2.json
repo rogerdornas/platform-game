@@ -1,0 +1,14 @@
+{
+  "waves": [
+    {
+      "actions": [
+        { 
+          "actionType": "SpawnEnemy", 
+          "type": "DragonFly", 
+          "id": "LeftMid", 
+          "delay": 3.0
+        }
+      ]
+    }
+  ]
+}

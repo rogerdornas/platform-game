@@ -11,6 +11,13 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 
+find_package(OpenGL REQUIRED)
+
+set(GLEW_INCLUDE_DIRS "C:/Arquivos de Programas/Glew/include")
+set(GLEW_LIBRARIES "C:/Arquivos de Programas/Glew/lib/Release/x64/glew32.lib")
+include_directories(${GLEW_INCLUDE_DIRS})
+link_libraries(${GLEW_LIBRARIES})
+
 add_executable(${PROJECT_NAME}
         Source/Main.cpp
         Source/Math.cpp
@@ -48,28 +55,14 @@ add_executable(${PROJECT_NAME}
         Source/Actors/FlyingEnemySimple.h
         Source/Json.h
         Source/CSV.h
-        Source/Components/DrawComponents/DrawAnimatedComponent.cpp
-        Source/Components/DrawComponents/DrawAnimatedComponent.h
-        Source/Components/DrawComponents/DrawComponent.cpp
-        Source/Components/DrawComponents/DrawComponent.h
-        Source/Components/DrawComponents/DrawPolygonComponent.cpp
-        Source/Components/DrawComponents/DrawPolygonComponent.h
-        Source/Components/DrawComponents/DrawSpriteComponent.cpp
-        Source/Components/DrawComponents/DrawSpriteComponent.h
-        Source/Components/DrawComponents/DrawGroundSpritesComponent.cpp
-        Source/Components/DrawComponents/DrawGroundSpritesComponent.h
         Source/Actors/Fox.cpp
         Source/Actors/Fox.h
         Source/Actors/Trigger.cpp
         Source/Actors/Trigger.h
         Source/Actors/DynamicGround.cpp
         Source/Actors/DynamicGround.h
-        Source/Components/DrawComponents/DrawDynamicGroundSpritesComponent.cpp
-        Source/Components/DrawComponents/DrawDynamicGroundSpritesComponent.h
         Source/Actors/Lever.cpp
         Source/Actors/Lever.h
-        Source/Components/DrawComponents/DrawParticleComponent.cpp
-        Source/Components/DrawComponents/DrawParticleComponent.h
         Source/Actors/Effect.cpp
         Source/Actors/Effect.h
         Source/Actors/Frog.cpp
@@ -119,8 +112,6 @@ add_executable(${PROJECT_NAME}
         Source/Actors/BushMonster.h
         Source/Actors/HookPoint.cpp
         Source/Actors/HookPoint.h
-        Source/Components/DrawComponents/DrawRopeComponent.cpp
-        Source/Components/DrawComponents/DrawRopeComponent.h
         Source/Actors/FlyingGolem.cpp
         Source/Actors/FlyingGolem.h
         Source/Actors/DragonFly.cpp
@@ -159,10 +150,27 @@ add_executable(${PROJECT_NAME}
         Source/Actors/CloneEnemy.h
         Source/Actors/MirrorBoss.cpp
         Source/Actors/MirrorBoss.h
+        Source/Actors/Light.cpp
+        Source/Actors/Light.h
+        Source/Renderer/Renderer.cpp
+        Source/Renderer/Renderer.h
+        Source/Renderer/VertexArray.h
+        Source/Renderer/VertexArray.cpp
+        Source/Renderer/Texture.cpp
+        Source/Renderer/Texture.h
+        Source/Renderer/Shader.cpp
+        Source/Renderer/Shader.h
+        Source/Components/Drawing/DrawComponent.cpp
+        Source/Components/Drawing/DrawComponent.h
+        Source/Components/Drawing/AnimatorComponent.cpp
+        Source/Components/Drawing/AnimatorComponent.h
+        Source/Components/Drawing/RectComponent.cpp
+        Source/Components/Drawing/RectComponent.h
+        Source/Components/Drawing/TileMapComponent.cpp
+        Source/Components/Drawing/TileMapComponent.h
 )
 
 
 #target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)
-
+target_link_libraries(${PROJECT_NAME} PRIVATE ${GLEW_LIBRARIES} SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer OpenGL::GL)

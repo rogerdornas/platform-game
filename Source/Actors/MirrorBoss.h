@@ -100,4 +100,7 @@ private:
     float mDistFromPlayerToStartTeleport;
     float mDistFromPlayerToEndTeleport;
     Vector2 mTeleportTargetPosition;
+    class Light* mTeleportLight;
+    float mTeleportLightDuration;
+    float mTeleportLightTimer;
 };

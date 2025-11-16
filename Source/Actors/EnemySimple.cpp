@@ -9,9 +9,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 
 EnemySimple::EnemySimple(Game* game)
@@ -36,15 +35,17 @@ EnemySimple::EnemySimple(Game* game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/Slime/Slime.png", "../Assets/Sprites/Slime/Slime.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Slime/Slime.png",
+                                            "../Assets/Sprites/Slime/Slime.json",
+                                            mWidth * 1.5f, mHeight * 1.5f, 998);
     std::vector walk = {0, 1, 2, 3, 4, 6};
-    mDrawAnimatedComponent->AddAnimation("walk", walk);
+    mDrawComponent->AddAnimation("walk", walk);
 
     std::vector hit = {5};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("walk");
-    mDrawAnimatedComponent->SetAnimFPS(8.0f);
+    mDrawComponent->SetAnimation("walk");
+    mDrawComponent->SetAnimFPS(8.0f);
 }
 
 void EnemySimple::OnUpdate(float deltaTime) {
@@ -62,8 +63,8 @@ void EnemySimple::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->SetAnimFPS(15.0f);
+        if (mDrawComponent) {
+            mDrawComponent->SetAnimFPS(15.0f);
         }
         MovementAfterPlayerSpotted();
     }
@@ -80,7 +81,7 @@ void EnemySimple::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -93,9 +94,11 @@ void EnemySimple::MovementAfterPlayerSpotted() {
     // Verifica se o inimigo passou dos limites e deve inverter a direção
     if (enemyX < playerX - mPatrolRadius) {
         SetRotation(0.0); // anda para direita
+        SetScale(Vector2(1, 1));
     }
     else if (enemyX > playerX + mPatrolRadius) {
         SetRotation(Math::Pi); // anda para esquerda
+        SetScale(Vector2(-1, 1));
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -107,6 +110,7 @@ void EnemySimple::MovementBeforePlayerSpotted() {
     Player* player = GetGame()->GetPlayer();
     if (mWalkingAroundTimer > mWalkingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mWalkingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -126,10 +130,10 @@ void EnemySimple::MovementBeforePlayerSpotted() {
 
 void EnemySimple::ManageAnimations() {
     if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimation("hit");
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("walk");
+        mDrawComponent->SetAnimation("walk");
     }
 }
 
@@ -148,15 +152,10 @@ void EnemySimple::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.5f);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.5f);
-    }
-
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -174,7 +173,7 @@ void EnemySimple::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

@@ -4,15 +4,15 @@
 
 #include "Decorations.h"
 #include "../Game.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Decorations::Decorations(Game *game, float width, float height, std::string imagePath)
     :Actor(game)
     ,mWidth(width)
     ,mHeight(height)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
 {
     mImagePath = "../Assets/" + imagePath;
 
@@ -29,7 +29,7 @@ Decorations::Decorations(Game *game, float width, float height, std::string imag
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {0, 255, 0, 255});
 
-    mDrawSpriteComponent = new DrawSpriteComponent(this, mImagePath, mWidth, mHeight, 200);
+    mDrawComponent = new AnimatorComponent(this, mImagePath, "", mWidth, mHeight, 200);
 }
 
 void Decorations::OnUpdate(float deltaTime) {
@@ -41,10 +41,10 @@ void Decorations::ChangeResolution(float oldScale, float newScale) {
     mHeight = mHeight / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth);
-        mDrawSpriteComponent->SetHeight(mHeight);
-    }
+    // if (mDrawSpriteComponent) {
+    //     mDrawSpriteComponent->SetWidth(mWidth);
+    //     mDrawSpriteComponent->SetHeight(mHeight);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -57,7 +57,7 @@ void Decorations::ChangeResolution(float oldScale, float newScale) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

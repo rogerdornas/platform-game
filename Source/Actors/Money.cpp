@@ -6,8 +6,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Random.h"
 
 Money::Money(class Game *game, MoneyType type)
@@ -25,8 +25,8 @@ Money::Money(class Game *game, MoneyType type)
     ,mHoverDuration(0.5f)
     ,mHoverTimer(0.0f)
 
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawPolygonComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
 {
 
     switch (mMoneyType) {
@@ -34,21 +34,24 @@ Money::Money(class Game *game, MoneyType type)
             mValue = 10;
             mWidth = 36.0f * mGame->GetScale();
             mHeight = 63.0f * mGame->GetScale();
-            mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Money/CristalLarge.png", mWidth, mHeight, 5000);
+            mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Money/CristalLarge.png", "",
+                                                            mWidth, mHeight, 5000);
             break;
 
         case MoneyType::Medium:
             mValue = 5;
             mWidth = 26.0f * mGame->GetScale();
             mHeight = 45.5f * mGame->GetScale();
-            mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Money/CristalMedium.png", mWidth, mHeight, 5000);
+            mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Money/CristalMedium.png", "",
+                                                            mWidth, mHeight, 5000);
             break;
 
         case MoneyType::Small:
             mValue = 1;
             mWidth = 16.0f * mGame->GetScale();
             mHeight = 28.0f * mGame->GetScale();
-            mDrawSpriteComponent = new DrawSpriteComponent(this, "../Assets/Sprites/Money/CristalSmall.png", mWidth, mHeight, 5000);
+            mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Money/CristalSmall.png", "",
+                                                            mWidth, mHeight, 5000);
             break;
     }
 
@@ -138,11 +141,11 @@ void Money::OnUpdate(float deltaTime) {
 
 void Money::Activate() {
     mAABBComponent->SetActive(true); // reativa colisão
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetIsVisible(true);
+    if (mRectComponent) {
+        mRectComponent->SetVisible(true);
     }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetIsVisible(true);
+    if (mDrawComponent) {
+        mDrawComponent->SetVisible(true);
     }
 }
 
@@ -155,11 +158,11 @@ void Money::Deactivate() {
     mFlyTimer = 0;
     mHoverTimer = 0;
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetIsVisible(false);
+    if (mRectComponent) {
+        mRectComponent->SetVisible(false);
     }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetIsVisible(false);
+    if (mDrawComponent) {
+        mDrawComponent->SetVisible(false);
     }
 }
 
@@ -174,10 +177,10 @@ void Money::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth);
-        mDrawSpriteComponent->SetHeight(mHeight);
-    }
+    // if (mDrawSpriteComponent) {
+    //     mDrawSpriteComponent->SetWidth(mWidth);
+    //     mDrawSpriteComponent->SetHeight(mHeight);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -195,7 +198,7 @@ void Money::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

@@ -42,6 +42,9 @@ public:
 
     void SetCameraVelocity(Vector2 velocity) { mCameraVelocity = velocity; }
 
+    void SetZoom(float zoom);
+    float GetZoom() const { return mZoom; }
+
     void StartCameraShake(float duration = 1.0f, float strength = 5.0f);
     void ChangeCameraMode(CameraMode cameraMode);
     void ChangeResolution(float oldScale, float newScale);
@@ -90,4 +93,6 @@ private:
 
     bool mLookUp;
     bool mLookDown;
+
+    float mZoom;
 };

@@ -7,9 +7,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Projectile::Projectile(class Game *game, ProjectileType type, float width, float height, float speed, float damage)
     :Actor(game)
@@ -24,30 +23,33 @@ Projectile::Projectile(class Game *game, ProjectileType type, float width, float
     ,mBounceCount(0)
     ,mCollisionCooldownDuration(0.1f)
     ,mCollisionCooldownTimer(0.0f)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
 {
     std::vector<int> firing;
     switch (mProjectileType) {
         case ProjectileType::Acid:
-            mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f, "../Assets/Sprites/AcidBlob/AcidBlob.png", "../Assets/Sprites/AcidBlob/AcidBlob.json", 1001);
+            mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/AcidBlob/AcidBlob.png",
+                                                        "../Assets/Sprites/AcidBlob/AcidBlob.json",
+                                                        mWidth * 1.5f, mHeight * 1.5f, 1001);
 
             firing = {0, 1, 2, 3, 4, 5, 6};
-            mDrawAnimatedComponent->AddAnimation("firing", firing);
+            mDrawComponent->AddAnimation("firing", firing);
 
-            mDrawAnimatedComponent->SetAnimation("firing");
-            mDrawAnimatedComponent->SetAnimFPS(8.0f);
+            mDrawComponent->SetAnimation("firing");
+            mDrawComponent->SetAnimFPS(8.0f);
             break;
 
         case ProjectileType::OrangeBall:
-            mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.2f, mHeight * 2.2f, "../Assets/Sprites/FinalBossProjectile2/Projectile.png", "../Assets/Sprites/FinalBossProjectile2/Projectile.json", 1001);
+            mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/FinalBossProjectile2/Projectile.png",
+                                                        "../Assets/Sprites/FinalBossProjectile2/Projectile.json",
+                                                        mWidth * 2.2f, mHeight * 2.2f, 1001);
 
             firing = {0, 1, 2, 3, 4, 5};
-            mDrawAnimatedComponent->AddAnimation("firing", firing);
+            mDrawComponent->AddAnimation("firing", firing);
 
-            mDrawAnimatedComponent->SetAnimation("firing");
-            mDrawAnimatedComponent->SetAnimFPS(8.0f);
+            mDrawComponent->SetAnimation("firing");
+            mDrawComponent->SetAnimFPS(8.0f);
             break;
     }
 
@@ -123,19 +125,17 @@ void Projectile::Activate() {
     }
 
     mAABBComponent->SetActive(true); // reativa colisão
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-        mDrawPolygonComponent->SetIsVisible(true);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
+        mRectComponent->SetVisible(true);
     }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.2f);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
-        mDrawSpriteComponent->SetIsVisible(true);
-    }
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
-        mDrawAnimatedComponent->SetIsVisible(true);
+
+    if (mDrawComponent) {
+        mDrawComponent->SetWidth(mWidth * 1.5f);
+        mDrawComponent->SetHeight(mHeight * 1.5f);
+        mDrawComponent->SetVisible(true);
     }
     mRigidBodyComponent->SetVelocity(GetForward() * mSpeed);
 }
@@ -150,14 +150,12 @@ void Projectile::Deactivate() {
     mAABBComponent->SetActive(false); // desativa colisão
     ExplosionEffect();
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetIsVisible(false);
+    if (mRectComponent) {
+        mRectComponent->SetVisible(false);
     }
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetIsVisible(false);
-    }
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetIsVisible(false);
+
+    if (mDrawComponent) {
+        mDrawComponent->SetVisible(false);
     }
 }
 
@@ -175,11 +173,13 @@ void Projectile::ResolveGroundCollision() {
                         // Colidiu Top ou Bot
                         if (collisionNormal == Vector2::NegUnitY || collisionNormal == Vector2::UnitY) {
                             SetRotation(-GetRotation());
+                            SetTransformRotation(-GetTransformRotation());
                         }
 
                         // Colidiu Left ou Right
                         if (collisionNormal == Vector2::NegUnitX || collisionNormal == Vector2::UnitX) {
                             SetRotation(Math::Pi - GetRotation());
+                            SetTransformRotation(Math::Pi - GetTransformRotation());
                         }
 
                         mBounceCount++;
@@ -210,15 +210,10 @@ void Projectile::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.2f);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.2f);
-    }
-
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.5f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -236,7 +231,7 @@ void Projectile::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

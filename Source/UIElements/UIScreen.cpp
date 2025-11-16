@@ -38,7 +38,7 @@ void UIScreen::Update(float deltaTime) {
 
 }
 
-void UIScreen::Draw(SDL_Renderer *renderer)
+void UIScreen::Draw(Renderer *renderer)
 {
     if (!mIsVisible) {
         return;
@@ -165,6 +165,40 @@ void UIScreen::HandleMouse(const SDL_Event &event) {
     }
 }
 
+void UIScreen::HandleMousePress(const Vector2& virtualMousePos)
+{
+    // Coordenadas já estão no espaço virtual,
+    // mas a lógica do botão espera coordenadas relativas ao UIScreen
+    Vector2 uiScreenRelativePos = virtualMousePos - GetPosition();
+
+    for (UIButton* button : mButtons) {
+        if (button->ContainsPoint(uiScreenRelativePos)) {
+            button->OnClick();
+        }
+    }
+}
+
+void UIScreen::HandleMouseMotion(const Vector2& virtualMousePos)
+{
+    Vector2 uiScreenRelativePos = virtualMousePos - GetPosition();
+    int index = -1;
+
+    for (size_t i = 0; i < mButtons.size(); ++i) {
+        if (mButtons[i]->ContainsPoint(uiScreenRelativePos)) {
+            index = i;
+            mSelectedButtonIndex = i;
+        }
+    }
+
+    // Atualiza destaque
+    if (index != -1) {
+        for (size_t i = 0; i < mButtons.size(); ++i) {
+            mButtons[i]->SetHighlighted(static_cast<int>(i) == index);
+        }
+    }
+    // Nota: você pode querer um 'else' aqui para desmarcar
+    // se o mouse sair de todos os botões (index == -1)
+}
 
 void UIScreen::Close()
 {

@@ -9,9 +9,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Mushroom::Mushroom(Game *game)
     :Enemy(game)
@@ -42,7 +41,7 @@ Mushroom::Mushroom(Game *game)
     mWidth = 80 * mGame->GetScale();
     mHeight = 110 * mGame->GetScale();
     mMoveSpeed = 300 * mGame->GetScale();
-    mHealthPoints = 180;
+    mHealthPoints = 90;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 15;
     mMoneyDrop = 20;
@@ -53,24 +52,26 @@ Mushroom::Mushroom(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 3.7f, mWidth * 3.7f, "../Assets/Sprites/Mushroom/Mushroom.png", "../Assets/Sprites/Mushroom/Mushroom.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Mushroom/Mushroom.png",
+                                                    "../Assets/Sprites/Mushroom/Mushroom.json",
+                                                    mWidth * 3.7f, mWidth * 3.7f, 998);
     std::vector run = {18, 19, 20, 21, 22, 23, 24, 25, };
-    mDrawAnimatedComponent->AddAnimation("run", run);
+    mDrawComponent->AddAnimation("run", run);
 
     std::vector idle = {13, 14, 15, 16, 47, 17, 46};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector attack = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    mDrawAnimatedComponent->AddAnimation("attack", attack);
+    mDrawComponent->AddAnimation("attack", attack);
 
     std::vector stun = {26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43};
-    mDrawAnimatedComponent->AddAnimation("stun", stun);
+    mDrawComponent->AddAnimation("stun", stun);
 
     std::vector hit = {44, 10, 11, 12, 45};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(10.0f);
 }
 
 void Mushroom::OnUpdate(float deltaTime) {
@@ -78,9 +79,9 @@ void Mushroom::OnUpdate(float deltaTime) {
 
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0 && mMushroomState != State::Attack) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -107,7 +108,7 @@ void Mushroom::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -151,6 +152,7 @@ void Mushroom::MovementBeforePlayerSpotted(float deltaTime) {
     mLookingAroundTimer += deltaTime;
     if (mLookingAroundTimer >= mLookingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mLookingAroundTimer = 0;
     }
 
@@ -195,9 +197,11 @@ void Mushroom::Stop(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -216,9 +220,11 @@ void Mushroom::WalkForward(float deltaTime) {
 
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2, mRigidBodyComponent->GetVelocity().y));
@@ -227,9 +233,9 @@ void Mushroom::WalkForward(float deltaTime) {
     if (Math::Abs(dist) < mDistToAttack) {
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 2.5f, mJumpForce));
         mMushroomState = State::Attack;
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
     }
 }
 
@@ -246,9 +252,11 @@ void Mushroom::WalkAway(float deltaTime) {
 
     if (dist > 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed, mRigidBodyComponent->GetVelocity().y));
@@ -323,8 +331,10 @@ void Mushroom::Attack(float deltaTime) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
     }
 }
 
@@ -343,28 +353,28 @@ void Mushroom::Stun(float deltaTime) {
 
 void Mushroom::ManageAnimations() {
     if (mMushroomState == State::Attack) {
-        mDrawAnimatedComponent->SetAnimation("attack");
-        mDrawAnimatedComponent->SetAnimFPS(10.0f / mAttackDuration);
+        mDrawComponent->SetAnimation("attack");
+        mDrawComponent->SetAnimFPS(10.0f / mAttackDuration);
     }
     else if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
-        mDrawAnimatedComponent->SetAnimFPS(5.0f / mHitDuration);
+        mDrawComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimFPS(5.0f / mHitDuration);
     }
     else if (mMushroomState == State::WalkForward) {
-        mDrawAnimatedComponent->SetAnimation("run");
-        mDrawAnimatedComponent->SetAnimFPS(12);
+        mDrawComponent->SetAnimation("run");
+        mDrawComponent->SetAnimFPS(12);
     }
     else if (mMushroomState == State::WalkAway) {
-        mDrawAnimatedComponent->SetAnimation("run");
-        mDrawAnimatedComponent->SetAnimFPS(8);
+        mDrawComponent->SetAnimation("run");
+        mDrawComponent->SetAnimFPS(8);
     }
     else if (mMushroomState == State::Stun) {
-        mDrawAnimatedComponent->SetAnimation("stun");
-        mDrawAnimatedComponent->SetAnimFPS(12);
+        mDrawComponent->SetAnimation("stun");
+        mDrawComponent->SetAnimFPS(12);
     }
     else if (mMushroomState == State::Stop) {
-        mDrawAnimatedComponent->SetAnimation("idle");
-        mDrawAnimatedComponent->SetAnimFPS(12);
+        mDrawComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimFPS(12);
     }
 }
 
@@ -383,10 +393,10 @@ void Mushroom::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 3.7f);
-        mDrawAnimatedComponent->SetHeight(mWidth * 3.7f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 3.7f);
+    //     mDrawAnimatedComponent->SetHeight(mWidth * 3.7f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -404,7 +414,7 @@ void Mushroom::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

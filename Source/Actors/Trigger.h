@@ -109,6 +109,6 @@ protected:
     std::string mDialoguePath;
     std::string mCutsceneId;
 
-    class DrawPolygonComponent *mDrawPolygonComponent;
+    class RectComponent* mRectComponent;
     class ColliderComponent *mAABBComponent;
 };

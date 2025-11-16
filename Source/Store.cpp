@@ -12,7 +12,7 @@ Store::Store(class Game *game, const std::string &fontName)
     ,mFontName(fontName)
     ,mStoreMenu(nullptr)
     ,mStoreMessage(nullptr)
-    ,mTextColor(Vector3(0.74, 0.09, 0.11))
+    ,mTextColor(Vector3(0.74f, 0.09f, 0.11f))
     ,mStoreOpened(false)
     ,mStoreMessageOpened(false)
     ,mSwordRangeUpgrade(false)
@@ -96,7 +96,7 @@ void Store::OpenStore() {
         return;
     }
     mStoreMenu = new UIScreen(mGame, mFontName);
-    const Vector2 buttonSize = Vector2(mGame->GetLogicalWindowWidth() * 0.35, 75 * mGame->GetScale());
+    const Vector2 buttonSize = Vector2(mGame->GetLogicalWindowWidth() * 0.35f, 75 * mGame->GetScale());
     mStoreMenu->SetSize(Vector2(mGame->GetLogicalWindowWidth() / 2, 2 * mGame->GetLogicalWindowHeight() / 3));
     mStoreMenu->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 4, mGame->GetLogicalWindowHeight() / 6));
     Vector2 buttonPos = Vector2(mStoreMenu->GetSize().x / 20, 0);

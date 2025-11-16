@@ -39,8 +39,9 @@ private:
     Vector2 mDirection;
     float mSpeedScale;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawParticleComponent* mDrawParticleComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
+
     class RigidBodyComponent* mRigidBodyComponent;
     class ColliderComponent* mAABBComponent;
 };

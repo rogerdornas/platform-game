@@ -4,28 +4,6 @@
       "actions": [
         { 
           "actionType": "SpawnEnemy", 
-          "type": "CloneEnemy", 
-          "id": "CenterBot", 
-          "delay": 2.5
-        },
-        {
-          "actionType": "SpawnEnemy", 
-          "type": "Mushroom", 
-          "id": "RightBot", 
-          "delay": 2.0
-        },
-        {
-          "actionType": "SpawnEnemy", 
-          "type": "FlyingShooterEnemy", 
-          "id": "CenterMid", 
-          "delay": 3.0
-        }
-      ]
-    },
-    {
-      "actions": [
-        { 
-          "actionType": "SpawnEnemy", 
           "type": "FlyingSpawnerEnemy", 
           "id": "RightMid", 
           "delay": 3.0

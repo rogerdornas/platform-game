@@ -2,7 +2,10 @@
 #include <vector>
 #include <SDL_image.h>
 
-UIFont::UIFont(SDL_Renderer* renderer)
+#include "../Renderer/Renderer.h"
+#include "../Renderer/Texture.h"
+
+UIFont::UIFont(Renderer* renderer)
     :mRenderer(renderer)
 {
 }
@@ -38,61 +41,69 @@ void UIFont::Unload()
 	mFontData.clear();
 }
 
-SDL_Texture* UIFont::RenderText(const std::string& text, const Vector3& color /*= Color::White*/,
+Texture* UIFont::RenderText(const std::string& text, const Vector3& color /*= Color::White*/,
                                 int pointSize /*= 24*/, unsigned wrapLength /*= 900*/)
 {
-    if(!mRenderer) {
-        SDL_Log("Renderer is null. Can't Render Text!");
-        return nullptr;
-    }
+	if (!mRenderer)
+	{
+		SDL_Log("Renderer é nulo. Não é possível renderizar texto!");
+		return nullptr;
+	}
 
-	// Convert to SDL_Color
+	// Converte Vector3 para SDL_Color
 	SDL_Color sdlColor;
-
-	// Swap red and blue so we get RGBA instead of BGRA
 	sdlColor.r = static_cast<Uint8>(color.x * 255);
 	sdlColor.g = static_cast<Uint8>(color.y * 255);
 	sdlColor.b = static_cast<Uint8>(color.z * 255);
 	sdlColor.a = 255;
 
+	// Encontra a fonte mais próxima do tamanho solicitado
+	TTF_Font* font = nullptr;
 	auto it = mFontData.find(pointSize);
-	if (it == mFontData.end())	{
-		if (mFontData.empty()) {
-			SDL_Log("Nenhuma fonte disponível em mFontData!");
-			return nullptr;
-		}
-
-		// Encontre o tamanho mais próximo
+	if (it == mFontData.end())
+	{
 		int closestSize = -1;
 		int smallestDiff = std::numeric_limits<int>::max();
-
-		for (const auto& pair : mFontData) {
-			int size = pair.first;
-			int diff = std::abs(size - pointSize);
-			if (diff < smallestDiff) {
+		for (const auto& pair : mFontData)
+		{
+			int diff = std::abs(pair.first - pointSize);
+			if (diff < smallestDiff)
+			{
 				smallestDiff = diff;
-				closestSize = size;
+				closestSize = pair.first;
 			}
 		}
-		// SDL_Log("Tamanho de fonte %d não suportado! Usando tamanho mais próximo: %d", pointSize, closestSize);
-		it = mFontData.find(closestSize);
+		if (closestSize != -1)
+			font = mFontData[closestSize];
+		else
+		{
+			SDL_Log("Nenhuma fonte carregada!");
+			return nullptr;
+		}
+	}
+	else
+	{
+		font = it->second;
 	}
 
-	TTF_Font* font = it->second;
-
+	// Renderiza o texto para uma surface SDL
 	SDL_Surface* surface = TTF_RenderUTF8_Blended_Wrapped(font, text.c_str(), sdlColor, wrapLength);
-	if (!surface) {
+	if (!surface)
+	{
 		SDL_Log("Falha ao renderizar texto: %s", TTF_GetError());
 		return nullptr;
 	}
 
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
-	SDL_FreeSurface(surface); // Libera a superfície independentemente do sucesso
-
-	if (!texture) {
-		SDL_Log("Falha ao criar textura a partir do texto: %s", SDL_GetError());
+	// Cria uma textura OpenGL a partir da surface
+	auto* tex = new Texture();
+	if (tex->LoadFromSurface(surface))
+	{
+		SDL_FreeSurface(surface);
+		return tex;
+	}
+	else {
+		delete tex;
+		SDL_FreeSurface(surface);
 		return nullptr;
 	}
-
-	return texture;
 }

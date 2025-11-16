@@ -35,8 +35,9 @@ private:
 
     bool mSwordHitLava;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawAnimatedComponent *mDrawAnimatedComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
+
     class RigidBodyComponent *mRigidBodyComponent;
     class ColliderComponent *mAABBComponent;
 };

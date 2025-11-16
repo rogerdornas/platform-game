@@ -3,11 +3,12 @@
 //
 
 #include "UIButton.h"
+#include "../Renderer/Renderer.h"
 
 UIButton::UIButton(const std::string& text, class UIFont* font, std::function<void()> onClick,
-                    const Vector2& pos, const Vector2& size, const Vector3& color,
-                    int pointSize , unsigned wrapLength,
-                    const Vector2 &textPos, TextPos textAlign, const Vector3& textColor, const Vector2 &textSize)
+                   const Vector2& pos, const Vector2& size, const Vector3& color,
+                   int pointSize , unsigned wrapLength,
+                   const Vector2 &textPos, TextPos textAlign, const Vector3& textColor, const Vector2 &textSize)
         :UIElement(pos, size, color)
         ,mOnClick(onClick)
         ,mHighlighted(false)
@@ -23,24 +24,32 @@ UIButton::~UIButton()
 }
 
 
-void UIButton::Draw(SDL_Renderer *renderer, const Vector2 &screenPos)
+void UIButton::Draw(Renderer *renderer, const Vector2 &screenPos)
 {
-    SDL_Rect titleQuad = {static_cast<int>(screenPos.x + mPosition.x),
-                          static_cast<int>(screenPos.y + mPosition.y),
-                          static_cast<int>(mSize.x),
-                          static_cast<int>(mSize.y)};
+    // Desenhar o retângulo do botão
+    Vector2 drawPos = screenPos + mPosition + mSize / 2;
 
     if (mHighlighted) {
-        SDL_SetRenderDrawColor(renderer, 200, 100, 0, 255);
-        SDL_RenderFillRect(renderer, &titleQuad);
+        Vector3 drawColor = Vector3(200, 100, 0);
+        renderer->DrawRect(drawPos, mSize, 0.0f, drawColor, Vector2::Zero, RendererMode::TRIANGLES);
+    }
+    // Calcular posição do texto
+    Vector2 textDrawPos = drawPos;
+    switch (mTextAlign) {
+        case TextPos::AlignLeft:
+            textDrawPos += Vector2(10.0f, (mSize.y - mText->GetSize().y) * 0.5f);
+        break;
+        case TextPos::AlignRight:
+            textDrawPos += Vector2(mSize.x - mText->GetSize().x - 10.0f,
+                                   (mSize.y - mText->GetSize().y) * 0.5f);
+        break;
+        case TextPos::Center:
+            default:
+                textDrawPos += (mSize * 0.5f) - (mText->GetSize() * 0.5f);
+        break;
     }
 
-    if (mTextAlign == TextPos::AlignLeft) {
-        mText->Draw(renderer, screenPos + mPosition);
-    }
-    else if (mTextAlign == TextPos::Center) {
-        mText->Draw(renderer, screenPos + mPosition + mSize * 0.5f - mText->GetSize() * 0.5f);
-    }
+    mText->Draw(renderer, textDrawPos);
 }
 
 bool UIButton::ContainsPoint(const Vector2 &pt) const {

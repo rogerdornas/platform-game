@@ -8,9 +8,8 @@
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
 #include "../Random.h"
-#include "../Components/DrawComponents/DrawParticleComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Particle::Particle(Game* game)
     :Actor(game)
@@ -24,8 +23,8 @@ Particle::Particle(Game* game)
     ,mGravityForce(2000.0f)
     ,mDirection(Vector2::Zero)
     ,mSpeedScale(1.0f * mGame->GetScale())
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawParticleComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
     ,mRigidBodyComponent(nullptr)
     ,mAABBComponent(nullptr)
 {
@@ -47,11 +46,13 @@ Particle::Particle(Game* game)
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 255, 255}, 5000);
 
-    mDrawParticleComponent = new DrawParticleComponent(this, mTexturePath,
+    mDrawComponent = new AnimatorComponent(this, mTexturePath, "",
                                                     static_cast<int>(width * 1.6),
                                                     static_cast<int>(height * 1.6),
-                                                    mColor,
                                                     5000);
+
+    mDrawComponent->SetTextureFactor(0.0f);
+
     mRigidBodyComponent = new RigidBodyComponent(this, 0.1);
     mAABBComponent = new AABBComponent(this, v1, v3);
 
@@ -123,6 +124,7 @@ void Particle::OnUpdate(float deltaTime)
             velocity.Normalize();
         }
         SetRotation(Math::Atan2(velocity.y, velocity.x));
+        SetTransformRotation(Math::Atan2(velocity.y, velocity.x));
 
         // Gravidade
         if (mGravity) {
@@ -151,8 +153,12 @@ void Particle::OnUpdate(float deltaTime)
 }
 
 void Particle::Activate() {
-    if (mDrawParticleComponent) {
-        mDrawParticleComponent->SetColor(mColor);
+    // if (mDrawParticleComponent) {
+    //     mDrawParticleComponent->SetColor(mColor);
+    // }
+    if (mDrawComponent) {
+        mDrawComponent->SetColor(Vector3(mColor.r / 255.0f, mColor.g / 255.0f, mColor.b / 255.0f));
+        mDrawComponent->SetAlpha(mColor.a / 255.0f);
     }
 
     float width = 1.2 * mSize;
@@ -176,14 +182,16 @@ void Particle::Activate() {
     }
 
     mAABBComponent->SetActive(true); // reativa colisão
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-        mDrawPolygonComponent->SetIsVisible(true);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(width);
+        mRectComponent->SetHeight(height);
+        mRectComponent->SetVisible(true);
     }
-    if (mDrawParticleComponent) {
-        mDrawParticleComponent->SetWidth(width * 1.6);
-        mDrawParticleComponent->SetHeight(height * 1.6);
-        mDrawParticleComponent->SetIsVisible(true);
+    if (mDrawComponent) {
+        mDrawComponent->SetWidth(width * 1.6);
+        mDrawComponent->SetHeight(height * 1.6);
+        mDrawComponent->SetVisible(true);
     }
 }
 
@@ -193,11 +201,11 @@ void Particle::Deactivate() {
     mLifeTimer = 0;
     mRigidBodyComponent->SetVelocity(Vector2::Zero);
     mAABBComponent->SetActive(false); // desativa colisão
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetIsVisible(false);
+    if (mRectComponent) {
+        mRectComponent->SetVisible(false);
     }
-    if (mDrawParticleComponent) {
-        mDrawParticleComponent->SetIsVisible(false);
+    if (mDrawComponent) {
+        mDrawComponent->SetVisible(false);
     }
 }
 
@@ -211,10 +219,10 @@ void Particle::ChangeResolution(float oldScale, float newScale) {
 
     float width = 1.2 * mSize;
     float height = mSize;
-    if (mDrawParticleComponent) {
-        mDrawParticleComponent->SetWidth(width * 1.6f);
-        mDrawParticleComponent->SetHeight(height * 1.6f);
-    }
+    // if (mDrawParticleComponent) {
+    //     mDrawParticleComponent->SetWidth(width * 1.6f);
+    //     mDrawParticleComponent->SetHeight(height * 1.6f);
+    // }
 
     Vector2 v1(-width / 2, -height / 2);
     Vector2 v2(width / 2, -height / 2);
@@ -232,7 +240,7 @@ void Particle::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

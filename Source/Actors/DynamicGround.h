@@ -36,6 +36,7 @@ public:
     void SetMinHeight(float minHeight) { mMinHeight = minHeight; }
     void SetGrowSpeed(Vector2 speed) { mGrowSpeed = speed*  mGame->GetScale(); }
     void SetGrowDirection(GrowthDirection growDirection) { mGrowthDirection = growDirection; }
+    GrowthDirection GetGrowDirection() const { return mGrowthDirection; }
 
     void SetSprites() override;
     void SetTilesIndex(float width, float height, float x, float y) override;
@@ -52,6 +53,4 @@ private:
     bool mIsDecreasing;
     bool mIsOscillating;
     GrowthDirection mGrowthDirection;
-
-    class DrawDynamicGroundSpritesComponent* mDrawDynamicGroundSpritesComponent;
 };

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="472">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="474">
  <editorsettings>
   <export target="Pain.json" format="json"/>
  </editorsettings>
@@ -635,6 +635,256 @@
 </data>
  </layer>
  <objectgroup id="4" name="Levers"/>
+ <objectgroup id="10" name="Camera">
+  <object id="455" name="Camera" x="352" y="3776" width="1600" height="2464">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="3424"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="128"/>
+    <property name="LimitMinCameraPositionY" type="float" value="3584"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="456" name="Camera" x="2304" y="5120" width="3392" height="1120">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="5888"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="128"/>
+    <property name="LimitMinCameraPositionY" type="float" value="3584"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="457" name="Camera" x="2016" y="3776" width="1216" height="1280">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="3424"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="128"/>
+    <property name="LimitMinCameraPositionY" type="float" value="3584"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="458" name="Camera" x="3584" y="4192" width="2112" height="864">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="5888"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="3456"/>
+    <property name="LimitMinCameraPositionY" type="float" value="3264"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="459" name="Camera" x="4832" y="704" width="1728" height="3360">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="6866"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="0"/>
+    <property name="LimitMinCameraPositionY" type="float" value="448"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="460" name="Camera" x="3584" y="3424" width="1184" height="704">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="5888"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="3456"/>
+    <property name="LimitMinCameraPositionY" type="float" value="448"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="461" name="Camera" x="6048" y="4128" width="768" height="480">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="8736"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
+    <property name="LimitMinCameraPositionX" type="float" value="5172"/>
+    <property name="LimitMinCameraPositionY" type="float" value="448"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="462" name="Camera" x="6880" y="3552" width="1280" height="1056">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="8736"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6816"/>
+    <property name="LimitMinCameraPositionY" type="float" value="3552"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="463" name="Camera" x="8544" y="3584" width="992" height="1024">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
+    <property name="LimitMinCameraPositionX" type="float" value="0"/>
+    <property name="LimitMinCameraPositionY" type="float" value="0"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="464" name="Camera" x="7552" y="2336" width="1248" height="800">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="3384"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
+    <property name="LimitMinCameraPositionY" type="float" value="2304"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="465" name="Camera" x="7552" y="1696" width="2304" height="576">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="2520"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
+    <property name="LimitMinCameraPositionY" type="float" value="1440"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="466" name="Camera" x="6880" y="1696" width="608" height="1376">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="3384"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
+    <property name="LimitMinCameraPositionY" type="float" value="1440"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="467" name="Camera" x="8864" y="2560" width="640" height="960">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
+    <property name="LimitMinCameraPositionY" type="float" value="2304"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="468" name="Camera" x="9920" y="1312" width="768" height="896">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="2520"/>
+    <property name="LimitMinCameraPositionX" type="float" value="7872"/>
+    <property name="LimitMinCameraPositionY" type="float" value="288"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="469" name="Camera" x="8160" y="384" width="2528" height="832">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="1368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="7872"/>
+    <property name="LimitMinCameraPositionY" type="float" value="288"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="470" name="Camera" x="7168" y="352" width="928" height="288">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="1368"/>
+    <property name="LimitMinCameraPositionX" type="float" value="7232"/>
+    <property name="LimitMinCameraPositionY" type="float" value="288"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+  <object id="471" name="Camera" x="8224" y="3584" width="256" height="1024">
+   <properties>
+    <property name="Event" value="FollowPlayerLimited"/>
+    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
+    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
+    <property name="LimitMinCameraPositionX" type="float" value="6816"/>
+    <property name="LimitMinCameraPositionY" type="float" value="3552"/>
+    <property name="Target" value="Camera"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="Triggers">
+  <object id="256" name="Close Wall" x="6944" y="4384" width="128" height="224">
+   <properties>
+    <property name="Condition" value="!Level4ArenaDone"/>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="255,258"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="406" name="Close Wall" x="9888" y="288" width="128" height="928">
+   <properties>
+    <property name="Condition" value="!FoxDefeated"/>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="329,436,440"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="267" name="Make Spike" x="7072" y="3648" width="1088" height="640">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="266"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="268" name="Kill Enemies" x="7072" y="3584" width="1088" height="992">
+   <properties>
+    <property name="Enemies" value="269,270,271,272,273,274,275"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="255,258,266"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="409" name="Spot Player" x="8160" y="992" width="1280" height="224">
+   <properties>
+    <property name="Condition" value="!FoxDefeated"/>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Enemies" value="407"/>
+    <property name="Event" value="SpotPlayer"/>
+    <property name="Target" value="Enemy"/>
+   </properties>
+  </object>
+  <object id="434" name="Level5" x="6880" y="352" width="256" height="288">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="ChangeScene"/>
+    <property name="PlayerStartPositionId" type="int" value="0"/>
+    <property name="Scene" value="Level5"/>
+    <property name="Target" value="Game"/>
+   </properties>
+  </object>
+  <object id="454" name="Boss Battle" x="8160" y="352" width="2532" height="864">
+   <properties>
+    <property name="Condition" value="!FoxDefeated"/>
+    <property name="Enemies" value="407"/>
+    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
+    <property name="Grounds" value="329,436,440"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="473" x="8320" y="3584" width="160" height="1024">
+   <properties>
+    <property name="Destroy" type="bool" value="true"/>
+    <property name="Event" value="ChangeWorldState"/>
+    <property name="Target" value="Game"/>
+    <property name="WorldState" value="Level4ArenaDone"/>
+    <property name="WorldStateFlag" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Checkpoint">
+  <object id="164" name="Checkpoint" x="640" y="5760" width="416" height="192"/>
+  <object id="181" name="Checkpoint" x="5184" y="3872" width="416" height="192"/>
+  <object id="254" name="Checkpoint" x="6176" y="4416" width="416" height="192"/>
+  <object id="321" name="Checkpoint" x="10176" y="2016" width="416" height="192"/>
+ </objectgroup>
  <objectgroup id="2" name="Grounds">
   <object id="126" name="Ground" x="1120" y="6240" width="4928" height="352"/>
   <object id="121" name="Ground" x="800" y="5376" width="1184" height="128"/>
@@ -1661,6 +1911,7 @@
   </object>
   <object id="255" name="DynamicGround" x="6720" y="4288" width="160" height="416">
    <properties>
+    <property name="Condition" value="!Level4ArenaDone"/>
     <property name="GrowSpeedX" type="float" value="0"/>
     <property name="GrowSpeedY" type="float" value="1000"/>
     <property name="GrowthDirection" type="int" value="0"/>
@@ -1700,6 +1951,7 @@
   </object>
   <object id="266" name="DynamicGround" x="7136" y="4544" width="1024" height="128">
    <properties>
+    <property name="Condition" value="!Level4ArenaDone"/>
     <property name="GrowSpeedX" type="float" value="0"/>
     <property name="GrowSpeedY" type="float" value="1000"/>
     <property name="GrowthDirection" type="int" value="0"/>
@@ -1710,6 +1962,7 @@
   </object>
   <object id="258" name="DynamicGround" x="8160" y="3520" width="160" height="1153">
    <properties>
+    <property name="Condition" value="!Level4ArenaDone"/>
     <property name="GrowSpeedX" type="float" value="0"/>
     <property name="GrowSpeedY" type="float" value="1000"/>
     <property name="GrowthDirection" type="int" value="0"/>
@@ -1723,246 +1976,6 @@
    </properties>
   </object>
   <object id="444" name="Ground" x="8000" y="640" width="128" height="96"/>
- </objectgroup>
- <objectgroup id="10" name="Camera">
-  <object id="455" name="Camera" x="352" y="3776" width="1600" height="2464">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="3424"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="128"/>
-    <property name="LimitMinCameraPositionY" type="float" value="3584"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="456" name="Camera" x="2304" y="5120" width="3392" height="1120">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="5888"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="128"/>
-    <property name="LimitMinCameraPositionY" type="float" value="3584"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="457" name="Camera" x="2016" y="3776" width="1216" height="1280">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="3424"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="128"/>
-    <property name="LimitMinCameraPositionY" type="float" value="3584"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="458" name="Camera" x="3584" y="4192" width="2112" height="864">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="5888"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="3456"/>
-    <property name="LimitMinCameraPositionY" type="float" value="3264"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="459" name="Camera" x="4832" y="704" width="1728" height="3360">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="6866"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="0"/>
-    <property name="LimitMinCameraPositionY" type="float" value="448"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="460" name="Camera" x="3584" y="3424" width="1184" height="704">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="5888"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="6368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="3456"/>
-    <property name="LimitMinCameraPositionY" type="float" value="448"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="461" name="Camera" x="6048" y="4128" width="768" height="480">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="8736"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
-    <property name="LimitMinCameraPositionX" type="float" value="5172"/>
-    <property name="LimitMinCameraPositionY" type="float" value="448"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="462" name="Camera" x="6880" y="3552" width="1280" height="1056">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="8736"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
-    <property name="LimitMinCameraPositionX" type="float" value="6816"/>
-    <property name="LimitMinCameraPositionY" type="float" value="3552"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="463" name="Camera" x="8544" y="3584" width="992" height="1024">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
-    <property name="LimitMinCameraPositionX" type="float" value="0"/>
-    <property name="LimitMinCameraPositionY" type="float" value="0"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="464" name="Camera" x="7552" y="2336" width="1248" height="800">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="3384"/>
-    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
-    <property name="LimitMinCameraPositionY" type="float" value="2304"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="465" name="Camera" x="7552" y="1696" width="2304" height="576">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="2520"/>
-    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
-    <property name="LimitMinCameraPositionY" type="float" value="1440"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="466" name="Camera" x="6880" y="1696" width="608" height="1376">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="3384"/>
-    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
-    <property name="LimitMinCameraPositionY" type="float" value="1440"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="467" name="Camera" x="8864" y="2560" width="640" height="960">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
-    <property name="LimitMinCameraPositionX" type="float" value="6720"/>
-    <property name="LimitMinCameraPositionY" type="float" value="2304"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="468" name="Camera" x="9920" y="1312" width="768" height="896">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="2520"/>
-    <property name="LimitMinCameraPositionX" type="float" value="7872"/>
-    <property name="LimitMinCameraPositionY" type="float" value="288"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="469" name="Camera" x="8160" y="384" width="2528" height="832">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="1368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="7872"/>
-    <property name="LimitMinCameraPositionY" type="float" value="288"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="470" name="Camera" x="7168" y="352" width="928" height="288">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="10880"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="1368"/>
-    <property name="LimitMinCameraPositionX" type="float" value="7232"/>
-    <property name="LimitMinCameraPositionY" type="float" value="288"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
-  <object id="471" name="Camera" x="8224" y="3584" width="256" height="1024">
-   <properties>
-    <property name="Event" value="FollowPlayerLimited"/>
-    <property name="LimitMaxCameraPositionX" type="float" value="9760"/>
-    <property name="LimitMaxCameraPositionY" type="float" value="4632"/>
-    <property name="LimitMinCameraPositionX" type="float" value="6816"/>
-    <property name="LimitMinCameraPositionY" type="float" value="3552"/>
-    <property name="Target" value="Camera"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="7" name="Triggers">
-  <object id="256" name="Close Wall" x="6944" y="4384" width="128" height="224">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="255,258"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="406" name="Close Wall" x="9888" y="288" width="128" height="928">
-   <properties>
-    <property name="Condition" value="!FoxDefeated"/>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="329,436,440"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="267" name="Make Spike" x="7072" y="3648" width="1088" height="640">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="266"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="268" name="Kill Enemies" x="7072" y="3584" width="1088" height="992">
-   <properties>
-    <property name="Enemies" value="269,270,271,272,273,274,275"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="255,258,266"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="409" name="Spot Player" x="8160" y="992" width="1280" height="224">
-   <properties>
-    <property name="Condition" value="!FoxDefeated"/>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Enemies" value="407"/>
-    <property name="Event" value="SpotPlayer"/>
-    <property name="Target" value="Enemy"/>
-   </properties>
-  </object>
-  <object id="434" name="Level5" x="6880" y="352" width="256" height="288">
-   <properties>
-    <property name="Destroy" type="bool" value="true"/>
-    <property name="Event" value="ChangeScene"/>
-    <property name="PlayerStartPositionId" type="int" value="0"/>
-    <property name="Scene" value="Level5"/>
-    <property name="Target" value="Game"/>
-   </properties>
-  </object>
-  <object id="454" name="Boss Battle" x="8160" y="352" width="2532" height="864">
-   <properties>
-    <property name="Condition" value="!FoxDefeated"/>
-    <property name="Enemies" value="407"/>
-    <property name="Event" value="SetIsDecreasingAfterKillingEnemies"/>
-    <property name="Grounds" value="329,436,440"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="5" name="Checkpoint">
-  <object id="164" name="Checkpoint" x="640" y="5760" width="416" height="192"/>
-  <object id="181" name="Checkpoint" x="5184" y="3872" width="416" height="192"/>
-  <object id="254" name="Checkpoint" x="6176" y="4416" width="416" height="192"/>
-  <object id="321" name="Checkpoint" x="10176" y="2016" width="416" height="192"/>
  </objectgroup>
  <objectgroup id="3" name="Player">
   <object id="117" name="Player" x="1344" y="6208" width="32" height="32">

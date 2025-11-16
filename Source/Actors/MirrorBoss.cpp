@@ -8,6 +8,7 @@
 #include "FlyingEnemySimple.h"
 #include "FlyingShooterEnemy.h"
 #include "Lever.h"
+#include "Light.h"
 #include "Mushroom.h"
 #include "Projectile.h"
 #include "Skill.h"
@@ -17,11 +18,9 @@
 #include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../Random.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Actors/DynamicGround.h"
+#include "../Components/Drawing/DrawComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
 
 MirrorBoss::MirrorBoss(Game *game)
     :Enemy(game)
@@ -66,6 +65,9 @@ MirrorBoss::MirrorBoss(Game *game)
     ,mTeleportOutTimer(0.0f)
     ,mDistFromPlayerToStartTeleport(550.0f * mGame->GetScale())
     ,mDistFromPlayerToEndTeleport(650.0f * mGame->GetScale())
+    ,mTeleportLight(nullptr)
+    ,mTeleportLightDuration(1.5f)
+    ,mTeleportLightTimer(0.0f)
 {
     mWidth = 120 * mGame->GetScale();
     mHeight = 250 * mGame->GetScale();
@@ -81,14 +83,23 @@ MirrorBoss::MirrorBoss(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mHeight * 1.8f * 0.667f, mHeight * 1.8f, "../Assets/Sprites/MirrorBoss/MirrorBoss.png", "../Assets/Sprites/MirrorBoss/MirrorBoss.json", 998);
+    mDrawComponent = new AnimatorComponent(this,
+                                        "../Assets/Sprites/MirrorBoss/MirrorBoss.png",
+                                        "../Assets/Sprites/MirrorBoss/MirrorBoss.json",
+                                        mHeight * 1.8f * 0.667f, mHeight * 1.8f, 998);
     std::vector idle = {0};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(1.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(1.0f);
 
     // mSpawnPoints = mGame->GetSpawnPointsPositions();
+
+    mTeleportLight = new Light(mGame);
+    mTeleportLight->SetRadius(800.0f);
+    mTeleportLight->SetMaxIntensity(0.75f);
+    mTeleportLight->SetColor(Vector3(0.80f, 0.80f, 0.97f));
+    mTeleportLight->Deactivate();
 }
 
 void MirrorBoss::OnUpdate(float deltaTime) {
@@ -97,9 +108,9 @@ void MirrorBoss::OnUpdate(float deltaTime) {
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0)
         {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -129,12 +140,23 @@ void MirrorBoss::OnUpdate(float deltaTime) {
         MovementBeforePlayerSpotted();
     }
 
+    if (mTeleportLightTimer < mTeleportLightDuration) {
+        mTeleportLightTimer += deltaTime;
+        mTeleportLight->Activate();
+        mTeleportLight->SetPosition(mTeleportTargetPosition);
+    }
+    else {
+        if (mTeleportLight->IsActivate()) {
+            mTeleportLight->Deactivate(0.3f);
+        }
+    }
+
     // Se morreu
     if (Died()) {
         TriggerBossDefeat();
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -316,6 +338,7 @@ void MirrorBoss::Projectiles(float deltaTime) {
             if (p->GetState() == ActorState::Paused && p->GetProjectileType() == Projectile::ProjectileType::OrangeBall) {
                 p->SetState(ActorState::Active);
                 p->SetRotation(direction);
+                p->SetTransformRotation(direction);
                 p->SetWidth(mProjectileWidth);
                 p->SetHeight(mProjectileHeight);
                 p->SetSpeed(mProjectileSpeed);
@@ -323,7 +346,7 @@ void MirrorBoss::Projectiles(float deltaTime) {
                 p->SetDamage(mProjectileDamage);
                 p->SetMaxBounce(mNumProjectileBounces);
                 p->SetPosition(GetPosition());
-                p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
+                // p->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
                 break;
             }
         }
@@ -508,10 +531,11 @@ void MirrorBoss::TeleportIn(float deltaTime) {
         SetPosition(mTeleportTargetPosition);
 
         mTeleportInTimer = 0;
+        mTeleportLightTimer = 0;
         mBossState = State::TeleportOut;
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         return;
     }
 
@@ -545,13 +569,16 @@ void MirrorBoss::TriggerBossDefeat() {
 }
 
 void MirrorBoss::ManageAnimations() {
-    mDrawAnimatedComponent->SetTransparency(255);
+    // mDrawAnimatedComponent->SetTransparency(255);
+    mDrawComponent->SetAlpha(1.0f);
 
     if (mBossState == State::TeleportIn) {
-        mDrawAnimatedComponent->SetTransparency(static_cast<int>((1.0f - mTeleportInTimer / mTeleportDuration) * 255));
+        // mDrawAnimatedComponent->SetTransparency(static_cast<int>((1.0f - mTeleportInTimer / mTeleportDuration) * 255));
+        mDrawComponent->SetAlpha(1.0f - mTeleportInTimer / mTeleportDuration);
     }
     else if (mBossState == State::TeleportOut) {
-        mDrawAnimatedComponent->SetTransparency(static_cast<int>(mTeleportOutTimer / mTeleportDuration * 255));
+        // mDrawAnimatedComponent->SetTransparency(static_cast<int>(mTeleportOutTimer / mTeleportDuration * 255));
+        mDrawComponent->SetAlpha(mTeleportOutTimer / mTeleportDuration);
     }
 }
 
@@ -586,10 +613,10 @@ void MirrorBoss::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mHeight * 1.8f * 0.667f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mHeight * 1.8f * 0.667f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.8f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -607,7 +634,7 @@ void MirrorBoss::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

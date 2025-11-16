@@ -39,6 +39,7 @@ private:
 
     class RigidBodyComponent* mRigidBodyComponent;
     class ColliderComponent* mAABBComponent;
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
 };

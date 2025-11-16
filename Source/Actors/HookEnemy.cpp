@@ -11,11 +11,9 @@
 #include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Random.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawRopeComponent.h"
 
 HookEnemy::HookEnemy(Game *game)
     :Enemy(game)
@@ -66,24 +64,26 @@ HookEnemy::HookEnemy(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.35f, mWidth * 1.35f * 0.73f, "../Assets/Sprites/HookEnemy/HookEnemy.png", "../Assets/Sprites/HookEnemy/HookEnemy.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/HookEnemy/HookEnemy.png",
+                                                    "../Assets/Sprites/HookEnemy/HookEnemy.json",
+                                                    mWidth * 1.35f, mWidth * 1.35f * 0.73f, 998);
     std::vector idle = {2, 3, 4, 5};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector fly = {1};
-    mDrawAnimatedComponent->AddAnimation("fly", fly);
+    mDrawComponent->AddAnimation("fly", fly);
 
     std::vector jump = {6};
-    mDrawAnimatedComponent->AddAnimation("jump", jump);
+    mDrawComponent->AddAnimation("jump", jump);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(7.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(7.0f);
 
 
-    mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
-    mDrawRopeComponent->SetNumSegments(mHookSegments);
-    mDrawRopeComponent->SetAmplitude(mHookAmplitude);
-    mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+    // mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
+    // mDrawRopeComponent->SetNumSegments(mHookSegments);
+    // mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+    // mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
 
     RemoveComponent(mColliderComponent);
     delete mColliderComponent;
@@ -91,14 +91,15 @@ HookEnemy::HookEnemy(Game *game)
 
     mColliderComponent = new OBBComponent(this, Vector2(mWidth / 2, mHeight / 2));
 
-    if (mDrawPolygonComponent) {
-        if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
-            auto verts = obb->GetVertices();
-            mDrawPolygonComponent->SetVertices(verts);
-        }
-    }
+    // if (mDrawPolygonComponent) {
+    //     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
+    //         auto verts = obb->GetVertices();
+    //         mDrawPolygonComponent->SetVertices(verts);
+    //     }
+    // }
 
     SetRotation(3 * Math::Pi / 2);
+    SetTransformRotation(3 * Math::Pi / 2);
 }
 
 void HookEnemy::OnUpdate(float deltaTime) {
@@ -106,9 +107,9 @@ void HookEnemy::OnUpdate(float deltaTime) {
     mKnockBackTimer += deltaTime;
     if (mFlashTimer < mHitDuration) {
         if (mFlashTimer == 0 && mHookEnemyState != State::DiagonalAttack) {
-            if (mDrawAnimatedComponent) {
-                // mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     // mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -142,7 +143,7 @@ void HookEnemy::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 
@@ -150,12 +151,12 @@ void HookEnemy::OnUpdate(float deltaTime) {
         mStopDuration = 1.0f;
     }
 
-    if (mDrawPolygonComponent) {
-        if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
-            auto verts = obb->GetVertices();
-            mDrawPolygonComponent->SetVertices(verts);
-        }
-    }
+    // if (mDrawPolygonComponent) {
+    //     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
+    //         auto verts = obb->GetVertices();
+    //         mDrawPolygonComponent->SetVertices(verts);
+    //     }
+    // }
 }
 
 void HookEnemy::ResolveGroundCollision() {
@@ -182,9 +183,11 @@ void HookEnemy::ResolveGroundCollision() {
                         float dist = GetPosition().x - player->GetPosition().x;
                         if (dist < 0) {
                             SetRotation(0.0);
+                            SetScale(Vector2(1,1));
                         }
                         else {
                             SetRotation(Math::Pi);
+                            SetScale(Vector2(-1,1));
                         }
                         mHookEnemyState = State::ForwardAttack;
                     }
@@ -289,6 +292,7 @@ void HookEnemy::Stop(float deltaTime) {
     mStopTimer += deltaTime;
 
     SetRotation(3 * Math::Pi / 2);
+    SetTransformRotation(3 * Math::Pi / 2);
     if (mStopTimer >= mStopDuration) {
         mStopTimer = 0;
         float hookProbability = 0.5f;
@@ -343,12 +347,12 @@ void HookEnemy::Stop(float deltaTime) {
                 mHookEnd = nearestHookPoint->GetPosition();
                 mHookAnimProgress = 0.0f;
                 mIsHookAnimating = true;
-                if (mDrawRopeComponent) {
-                    mDrawRopeComponent->SetIsVisible(true);
-
-                    mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-                    mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-                }
+                // if (mDrawRopeComponent) {
+                //     mDrawRopeComponent->SetIsVisible(true);
+                //
+                //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+                //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+                // }
             }
         }
         else {
@@ -356,9 +360,11 @@ void HookEnemy::Stop(float deltaTime) {
             float dist = GetPosition().x - player->GetPosition().x;
             if (dist < 0) {
                 SetRotation(0.0);
+                SetScale(Vector2(1,1));
             }
             else {
                 SetRotation(Math::Pi);
+                SetScale(Vector2(-1,1));
             }
             mHookEnemyState = State::ForwardAttack;
         }
@@ -379,6 +385,7 @@ void HookEnemy::Hook(float deltaTime) {
             angle += Math::TwoPi;
         }
         SetRotation(angle);
+        SetTransformRotation(angle);
 
         mHookEnemyState = State::DiagonalAttack;
     }
@@ -393,14 +400,14 @@ void HookEnemy::Hook(float deltaTime) {
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetIsVisible(false);
-            }
+            // if (mDrawRopeComponent) {
+            //     mDrawRopeComponent->SetIsVisible(false);
+            // }
         }
-        if (mDrawRopeComponent) {
-            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-        }
+        // if (mDrawRopeComponent) {
+        //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+        //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        // }
         if (mHookPoint) {
             mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
         }
@@ -424,9 +431,11 @@ void HookEnemy::DiagonalAttack(float deltaTime) {
         float dist = GetPosition().x - player->GetPosition().x;
         if (dist < 0) {
             SetRotation(0.0);
+            SetScale(Vector2(1,1));
         }
         else {
             SetRotation(Math::Pi);
+            SetScale(Vector2(-1,1));
         }
         mHookEnemyState = State::ForwardAttack;
     }
@@ -438,6 +447,7 @@ void HookEnemy::ForwardAttack(float deltaTime) {
         mForwardAttackTimer = 0;
         mForwardAttackDelayTimer = 0;
         SetRotation(3 * Math::Pi / 2);
+        SetTransformRotation(3 * Math::Pi / 2);
         mHookEnemyState = State::Stop;
         return;
     }
@@ -464,35 +474,38 @@ void HookEnemy::TriggerBossDefeat() {
 }
 
 void HookEnemy::ManageAnimations() {
-    mDrawAnimatedComponent->SetWidth(mWidth * 1.35f);
-    mDrawAnimatedComponent->SetHeight(mWidth * 1.35f * 0.73f);
-    mDrawAnimatedComponent->SetAnimFPS(7.0f);
-    mDrawAnimatedComponent->UseFlip(false);
-    mDrawAnimatedComponent->UseRotation(true);
+    mDrawComponent->SetWidth(mWidth * 1.35f);
+    mDrawComponent->SetHeight(mWidth * 1.35f * 0.73f);
+    mDrawComponent->SetAnimFPS(7.0f);
+    // mDrawAnimatedComponent->UseFlip(false);
+    // mDrawAnimatedComponent->UseRotation(true);
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
     if (mHookEnemyState == State::Stop) {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation("idle");
         float dist = GetPosition().x - playerPos.x;
         if (dist > 0) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+            SetScale(Vector2(1, -1));
+            // mDrawAnimatedComponent->UseFlip(true);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
         }
     }
     else if (mHookEnemyState == State::Hook) {
-        mDrawAnimatedComponent->SetAnimation("jump");
+        mDrawComponent->SetAnimation("jump");
         if (mRigidBodyComponent->GetVelocity().x < 0) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+            SetScale(Vector2(1, -1));
+            // mDrawAnimatedComponent->UseFlip(true);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
         }
     }
     else if (mHookEnemyState == State::DiagonalAttack || mHookEnemyState == State::ForwardAttack) {
-        mDrawAnimatedComponent->SetAnimation("fly");
+        mDrawComponent->SetAnimation("fly");
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+            SetScale(Vector2(1, -1));
+            // mDrawAnimatedComponent->UseFlip(true);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
         }
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.55f);
-        mDrawAnimatedComponent->SetHeight(mWidth * 1.55f * 0.73f);
+        mDrawComponent->SetWidth(mWidth * 1.55f);
+        mDrawComponent->SetHeight(mWidth * 1.55f * 0.73f);
     }
 }
 
@@ -512,26 +525,26 @@ void HookEnemy::ChangeResolution(float oldScale, float newScale) {
     mHookEnd.x = mHookEnd.x / oldScale * newScale;
     mHookEnd.y = mHookEnd.y / oldScale * newScale;
 
-    if (mDrawRopeComponent) {
-        mDrawRopeComponent->SetNumSegments(mHookSegments);
-        mDrawRopeComponent->SetAmplitude(mHookAmplitude);
-        mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
-    }
+    // if (mDrawRopeComponent) {
+    //     mDrawRopeComponent->SetNumSegments(mHookSegments);
+    //     mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+    //     mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+    // }
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth( mWidth * 1.35f);
-        mDrawAnimatedComponent->SetHeight(mWidth * 1.35f * 0.73f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth( mWidth * 1.35f);
+    //     mDrawAnimatedComponent->SetHeight(mWidth * 1.35f * 0.73f);
+    // }
 
     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
         obb->Update(0);
         obb->SetHalfSize(Vector2(mWidth / 2, mHeight / 2));
 
-        if (mDrawPolygonComponent) {
-            auto verts = obb->GetVertices();
-            mDrawPolygonComponent->SetVertices(verts);
-        }
+        // if (mDrawPolygonComponent) {
+        //     auto verts = obb->GetVertices();
+        //     mDrawPolygonComponent->SetVertices(verts);
+        // }
     }
 }

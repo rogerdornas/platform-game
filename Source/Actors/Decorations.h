@@ -19,7 +19,7 @@ private:
     float mHeight;
     std::string mImagePath;
 
-    class DrawPolygonComponent *mDrawPolygonComponent;
-    class DrawSpriteComponent *mDrawSpriteComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
 };
 

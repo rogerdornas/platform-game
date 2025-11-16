@@ -10,9 +10,8 @@
 #include "../Random.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 FlyingGolem::FlyingGolem(Game *game)
     :Enemy(game)
@@ -58,27 +57,29 @@ FlyingGolem::FlyingGolem(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.7f * 2.0f, mWidth * 1.7f, "../Assets/Sprites/FlyingGolem2/FlyingGolem.png", "../Assets/Sprites/FlyingGolem2/FlyingGolem.json", 998);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/FlyingGolem2/FlyingGolem.png",
+                                                    "../Assets/Sprites/FlyingGolem2/FlyingGolem.json",
+                                                    mWidth * 1.7f * 2.0f, mWidth * 1.7f, 998);
     std::vector idle = {22, 23, 24, 25, 26, 27, 28, 29};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector hit = {19, 20, 21, 37};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
     std::vector attack = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    mDrawAnimatedComponent->AddAnimation("attack", attack);
+    mDrawComponent->AddAnimation("attack", attack);
 
     std::vector fly = {11, 12, 13, 14, 15, 16, 17, 18};
-    mDrawAnimatedComponent->AddAnimation("fly", fly);
+    mDrawComponent->AddAnimation("fly", fly);
 
     std::vector teleportIn = {38, 30, 31, 32, 33, 34, 35, 36};
-    mDrawAnimatedComponent->AddAnimation("teleportIn", teleportIn);
+    mDrawComponent->AddAnimation("teleportIn", teleportIn);
 
     std::vector teleportOut = {46, 45, 44, 43, 42, 41, 40, 39};
-    mDrawAnimatedComponent->AddAnimation("teleportOut", teleportOut);
+    mDrawComponent->AddAnimation("teleportOut", teleportOut);
 
-    mDrawAnimatedComponent->SetAnimation("fly");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("fly");
+    mDrawComponent->SetAnimFPS(10.0f);
 }
 
 void FlyingGolem::OnUpdate(float deltaTime) {
@@ -90,9 +91,9 @@ void FlyingGolem::OnUpdate(float deltaTime) {
             mFlyingGolemState != State::TeleportIn &&
             mFlyingGolemState != State::TeleportOut)
         {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -113,9 +114,9 @@ void FlyingGolem::OnUpdate(float deltaTime) {
         float dist = (GetPosition() - mGame->GetPlayer()->GetPosition()).Length();
         if (dist >= mDistToTeleport) {
             mFlyingGolemState = State::TeleportIn;
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
     }
 
@@ -123,7 +124,7 @@ void FlyingGolem::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -160,6 +161,7 @@ void FlyingGolem::MovementBeforePlayerSpotted() {
     Player *player = GetGame()->GetPlayer();
     if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mFlyingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -177,6 +179,7 @@ void FlyingGolem::FlyingAround(float deltaTime) {
     Player *player = GetGame()->GetPlayer();
     if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mFlyingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -199,9 +202,11 @@ void FlyingGolem::Stop(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -234,9 +239,9 @@ void FlyingGolem::FlyForward(float deltaTime) {
 
     float dist = (GetPosition() - player->GetPosition()).Length();
     if (dist <= mDistToAttack) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
             mAttackDirectionRight = false;
         }
@@ -256,9 +261,9 @@ void FlyingGolem::Attack(float deltaTime) {
     if (mAttackTimer >= mAttackDuration) {
         mAttackTimer = 0;
         mFlyingGolemState = State::TeleportIn;
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
     }
 
     Vector2 v1;
@@ -302,8 +307,10 @@ void FlyingGolem::Attack(float deltaTime) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
     }
 }
 
@@ -320,9 +327,9 @@ void FlyingGolem::TeleportIn(float deltaTime) {
 
         mTeleportInTimer = 0;
         mFlyingGolemState = State::TeleportOut;
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         return;
     }
 
@@ -347,40 +354,42 @@ void FlyingGolem::TeleportOut(float deltaTime) {
 }
 
 void FlyingGolem::ManageAnimations() {
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimFPS(10.0f);
     if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-        mDrawAnimatedComponent->UseFlip(true);
-        mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+        SetScale(Vector2(-1,1));
+        // mDrawAnimatedComponent->UseFlip(true);
+        // mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
     }
     else {
-        mDrawAnimatedComponent->UseFlip(false);
+        SetScale(Vector2(1,1));
+        // mDrawAnimatedComponent->UseFlip(false);
     }
 
     if (mFlyingGolemState == State::Attack) {
-        mDrawAnimatedComponent->SetAnimation("attack");
-        mDrawAnimatedComponent->SetAnimFPS(11.0f / mAttackDuration);
+        mDrawComponent->SetAnimation("attack");
+        mDrawComponent->SetAnimFPS(11.0f / mAttackDuration);
     }
     else if (mFlyingGolemState == State::TeleportIn) {
-        mDrawAnimatedComponent->SetAnimation("teleportIn");
-        mDrawAnimatedComponent->SetAnimFPS(8.0f / mTeleportDuration);
+        mDrawComponent->SetAnimation("teleportIn");
+        mDrawComponent->SetAnimFPS(8.0f / mTeleportDuration);
     }
     else if (mFlyingGolemState == State::TeleportOut) {
-        mDrawAnimatedComponent->SetAnimation("teleportOut");
-        mDrawAnimatedComponent->SetAnimFPS(8.0f / mTeleportDuration);
+        mDrawComponent->SetAnimation("teleportOut");
+        mDrawComponent->SetAnimFPS(8.0f / mTeleportDuration);
     }
     else if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
-        mDrawAnimatedComponent->SetAnimFPS(4.0f / mHitDuration);
+        mDrawComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimFPS(4.0f / mHitDuration);
     }
     else if (mFlyingGolemState == State::Stop) {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation("idle");
     }
     else if (mFlyingGolemState == State::FlyForward) {
-        mDrawAnimatedComponent->SetAnimation("fly");
-        mDrawAnimatedComponent->SetAnimFPS(15.0f);
+        mDrawComponent->SetAnimation("fly");
+        mDrawComponent->SetAnimFPS(15.0f);
     }
     else if (mFlyingGolemState == State::FlyingAround) {
-        mDrawAnimatedComponent->SetAnimation("fly");
+        mDrawComponent->SetAnimation("fly");
     }
 }
 
@@ -405,10 +414,10 @@ void FlyingGolem::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 2.0f);
-        mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mIdleWidth * 1.7f * 2.0f);
+    //     mDrawAnimatedComponent->SetHeight(mIdleWidth * 1.7f);
+    // }
 
     Vector2 v1;
     Vector2 v2;
@@ -447,7 +456,7 @@ void FlyingGolem::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

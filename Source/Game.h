@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <vector>
+#include "Renderer/Renderer.h"
 #include "Camera.h"
 #include "Actors/Ground.h"
 #include "Actors/Player.h"
@@ -98,6 +99,9 @@ public:
     void AddActor(class Actor *actor);
     void RemoveActor(class Actor *actor);
 
+    // Renderer
+    class Renderer* GetRenderer() { return mRenderer; }
+
     // Draw functions
     void AddDrawable(class DrawComponent *drawable);
     void RemoveDrawable(class DrawComponent *drawable);
@@ -158,8 +162,8 @@ public:
 
     int **GetLevelData() const { return mLevelData; }
     int **GetLevelDataDynamicGrounds() const { return mLevelDataDynamicGrounds; }
-    SDL_Texture* GetTileSheet() const { return mTileSheet; }
-    std::unordered_map<int, SDL_Rect> GetTileSheetData() { return mTileSheetData; }
+    Texture* GetTileSheet() const { return mTileSheet; }
+    std::unordered_map<int, Vector4> GetTileSheetData() { return mTileSheetData; }
 
     float GetTileSize() { return mTileSize; }
     int GetOriginalTileSize() { return mOriginalTileSize; }
@@ -206,8 +210,6 @@ public:
 
     bool GetIsPlayingOnKeyboard() const { return mIsPlayingOnKeyboard; }
 
-    SDL_Renderer* GetRenderer() const { return mRenderer; }
-
     Store* GetStore() const { return mStore; }
 
     void PlayFinalGoodCutscene();
@@ -226,6 +228,7 @@ public:
     void SetCheckPointMoney(int money) { mCheckPointMoney = money; }
     int GetCheckPointMoney() const { return mCheckPointMoney; }
     void SetGoingToNextLevel() { mGoingToNextLevel = true; }
+    bool GetGoingToNextLevel() { return mGoingToNextLevel; }
     void SetCurrentCutscene(Cutscene* cutscene) { mCurrentCutscene = cutscene; }
     void SetHitByLava() { mHitByLava = true; }
     void SetLavaRespawnPosition(Vector2 lavaRespawnPosition) { mLavaRespawnPosition = lavaRespawnPosition; }
@@ -281,8 +284,8 @@ private:
 
     // SDL stuff
     SDL_Window *mWindow;
-    SDL_Renderer *mRenderer;
     AudioSystem* mAudio;
+    class Renderer* mRenderer;
 
     // Window properties
     int mWindowWidth;
@@ -354,8 +357,8 @@ private:
     // Level data
     int **mLevelData;
     int **mLevelDataDynamicGrounds;
-    SDL_Texture* mTileSheet;
-    std::unordered_map<int, SDL_Rect> mTileSheetData;
+    Texture* mTileSheet;
+    std::unordered_map<int, Vector4> mTileSheetData;
     int mLevelWidth;
     int mLevelHeight;
     float mTileSize;
@@ -425,19 +428,19 @@ private:
     Store* mStore;
 
     // Background images
-    void DrawParallaxBackground(SDL_Texture* background);
-    void DrawParallaxLayer(SDL_Texture *texture, float parallaxFactor, int y, int h);
-    void DrawParallaxLayers(std::vector<SDL_Texture*> backgroundLayers);
+    void DrawParallaxBackground(Texture* background);
+    void DrawParallaxLayer(Texture* texture, float parallaxFactor, int y, int h);
+    void DrawParallaxLayers(std::vector<Texture*> backgroundLayers);
 
     bool mUseParallaxBackground;
     SDL_Texture* mBackGroundTextureMainMenu;
     SDL_Texture* mBackGroundTextureLevel1;
-    std::vector<SDL_Texture*> mBackgroundLayersLevel2;
+    std::vector<Texture*> mBackgroundLayersLevel2;
     std::vector<SDL_Texture*> mBackgroundLayersLevel3;
     std::vector<SDL_Texture*> mBackgroundLayersLevel4;
     SDL_Texture* mBackGroundTextureLevel3;
     SDL_Texture* mBackGroundTextureLevel4;
-    SDL_Texture* mBackGroundTexture;
+    Texture* mBackGroundTexture;
 
     // SDL_Texture *mSky;
     // SDL_Texture *mMountains;

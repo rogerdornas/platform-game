@@ -5,9 +5,8 @@
 #include "HookPoint.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 HookPoint::HookPoint(class Game *game)
     :Actor(game)
@@ -16,9 +15,8 @@ HookPoint::HookPoint(class Game *game)
     ,mRadius(530.0f * mGame->GetScale())
     ,mHookPointState(HookPointState::OutRange)
 
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
-    ,mDrawPolygonComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
 {
     // Componente visual
     Vector2 v1(-mWidth/2, -mHeight/2);
@@ -34,21 +32,21 @@ HookPoint::HookPoint(class Game *game)
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 0, 255}, 5000);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mWidth,
-                                               "../Assets/Sprites/HookPoint/HookPoint.png",
-                                               "../Assets/Sprites/HookPoint/HookPoint.json", 999);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/HookPoint/HookPoint.png",
+                                               "../Assets/Sprites/HookPoint/HookPoint.json",
+                                               mWidth, mWidth, 999);
 
     std::vector idle = {0};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector illuminated = {1};
-    mDrawAnimatedComponent->AddAnimation("illuminated", illuminated);
+    mDrawComponent->AddAnimation("illuminated", illuminated);
 
     std::vector hooked = {2};
-    mDrawAnimatedComponent->AddAnimation("hooked", hooked);
+    mDrawComponent->AddAnimation("hooked", hooked);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(1.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(1.0f);
 
 
     mAABBComponent = new AABBComponent(this, v1, v3);
@@ -63,18 +61,18 @@ HookPoint::~HookPoint() {
 void HookPoint::OnUpdate(float deltaTime) {
     switch (mHookPointState) {
         case HookPointState::OutRange:
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetAnimation("idle");
+            if (mDrawComponent) {
+                mDrawComponent->SetAnimation("idle");
             }
             break;
         case HookPointState::InRange:
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetAnimation("illuminated");
+            if (mDrawComponent) {
+                mDrawComponent->SetAnimation("illuminated");
             }
             break;
         case HookPointState::Hooked:
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetAnimation("hooked");
+            if (mDrawComponent) {
+                mDrawComponent->SetAnimation("hooked");
             }
             break;
     }
@@ -88,15 +86,10 @@ void HookPoint::ChangeResolution(float oldScale, float newScale) {
     mRadius = mRadius / oldScale * newScale;
     SetPosition(Vector2(GetPosition().x / oldScale * newScale, GetPosition().y / oldScale * newScale));
 
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth);
-        mDrawSpriteComponent->SetHeight(mHeight);
-    }
-
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth);
-        mDrawAnimatedComponent->SetHeight(mHeight);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth);
+    //     mDrawAnimatedComponent->SetHeight(mHeight);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -114,9 +107,9 @@ void HookPoint::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }
 
 

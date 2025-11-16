@@ -31,7 +31,7 @@ public:
     void IncreaseHPBar();
     void IncreaseManaBar();
 
-    void Draw(class SDL_Renderer *renderer) override;
+    void Draw(class Renderer *renderer) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
 
@@ -77,7 +77,7 @@ private:
     bool mBossFight;
     class Enemy* mBoss;
 
-    void DrawLifeBar(class SDL_Renderer *renderer);
-    void DrawManaBar(class SDL_Renderer * renderer);
-    void DrawBossLifeBar(class SDL_Renderer * renderer);
+    void DrawLifeBar(class Renderer *renderer);
+    void DrawManaBar(class Renderer * renderer);
+    void DrawBossLifeBar(class Renderer * renderer);
 };

@@ -9,9 +9,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 LittleBat::LittleBat(Game *game)
     :Enemy(game)
@@ -34,15 +33,17 @@ LittleBat::LittleBat(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 4.0f, mHeight * 4.0f, "../Assets/Sprites/SpawnFly/SpawnFly.png", "../Assets/Sprites/SpawnFly/SpawnFly.json", 999);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/SpawnFly/SpawnFly.png",
+                                                    "../Assets/Sprites/SpawnFly/SpawnFly.json",
+                                                    mWidth * 4.0f, mHeight * 4.0f, 999);
     std::vector fly = {0, 1, 2, 3, 4};
-    mDrawAnimatedComponent->AddAnimation("fly", fly);
+    mDrawComponent->AddAnimation("fly", fly);
 
     std::vector hit = {5};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
-    mDrawAnimatedComponent->SetAnimation("fly");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("fly");
+    mDrawComponent->SetAnimFPS(10.0f);
 }
 
 void LittleBat::OnUpdate(float deltaTime) {
@@ -60,8 +61,8 @@ void LittleBat::OnUpdate(float deltaTime) {
     ResolveEnemyCollision();
 
     if (mPlayerSpotted) {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->SetAnimFPS(14.0f);
+        if (mDrawComponent) {
+            mDrawComponent->SetAnimFPS(14.0f);
         }
         MovementAfterPlayerSpotted(deltaTime);
     }
@@ -73,7 +74,7 @@ void LittleBat::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -82,6 +83,7 @@ void LittleBat::MovementBeforePlayerSpotted() {
     Player *player = GetGame()->GetPlayer();
     if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mFlyingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -116,18 +118,20 @@ void LittleBat::MovementAfterPlayerSpotted(float deltaTime) {
 
 void LittleBat::ManageAnimations() {
     if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-        mDrawAnimatedComponent->UseFlip(true);
-        mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+        SetScale(Vector2(-1, 1));
+        // mDrawAnimatedComponent->UseFlip(true);
+        // mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
     }
     else {
-        mDrawAnimatedComponent->UseFlip(false);
+        SetScale(Vector2(1, 1));
+        // mDrawAnimatedComponent->UseFlip(false);
     }
 
     if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimation("hit");
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("fly");
+        mDrawComponent->SetAnimation("fly");
     }
 }
 
@@ -143,10 +147,10 @@ void LittleBat::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 4.0f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 4.0f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 4.0f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 4.0f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -164,7 +168,7 @@ void LittleBat::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

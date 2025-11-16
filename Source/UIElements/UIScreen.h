@@ -24,10 +24,12 @@ public:
 
 	// UIScreen subclasses can override these
 	virtual void Update(float deltaTime);
-	virtual void Draw(class SDL_Renderer *renderer);
+	virtual void Draw(class Renderer *renderer);
 	virtual void ProcessInput(const uint8_t* keys);
 	virtual void HandleKeyPress(int key, int controllerButton, int controllerAxisY, int controllerAxisX);
 	virtual void HandleMouse(const SDL_Event& event);
+	void HandleMousePress(const Vector2& virtualMousePos);
+	void HandleMouseMotion(const Vector2& virtualMousePos);
 
 	void SetPosition(Vector2 position) { mPos = position; }
 	void SetSize(Vector2 size) { mSize = size; }

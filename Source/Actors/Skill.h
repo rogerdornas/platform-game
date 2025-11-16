@@ -34,7 +34,8 @@ private:
     void SetPlayerSkill();
     void LoadSkillMessage();
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
+
     class ColliderComponent* mAABBComponent;
 };

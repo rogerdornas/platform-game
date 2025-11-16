@@ -16,7 +16,7 @@ const Vector2 &CircleColliderComponent::GetCenter() const {
 }
 
 float CircleColliderComponent::GetRadius() const {
-    return mOwner->GetScale() * mRadius;
+    // return mOwner->GetScale() * mRadius;
 }
 
 bool CircleColliderComponent::Intersect(const CircleColliderComponent &c) const {

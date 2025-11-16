@@ -31,8 +31,8 @@ private:
     float mRadius;
     HookPointState mHookPointState;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawSpriteComponent* mDrawSpriteComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
+
     class ColliderComponent* mAABBComponent;
 };

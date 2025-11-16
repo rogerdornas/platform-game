@@ -6,7 +6,6 @@
 
 #include "Component.h"
 #include "../Actors/Actor.h"
-#include "DrawComponents/DrawAnimatedComponent.h"
 
 class DashEffectActor : public Actor
 {
@@ -26,7 +25,7 @@ private:
     float mEffectTimer;
     Actor* mOwner;
 
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class AnimatorComponent* mDrawComponent;
 };
 
 

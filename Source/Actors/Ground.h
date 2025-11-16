@@ -49,8 +49,9 @@ protected:
     Vector2 mVelocity;
     std::vector<std::vector<int>> mTilesIndex;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawGroundSpritesComponent* mDrawGroundSpritesComponent;
+    class RectComponent* mRectComponent;
+    class TileMapComponent* mDrawComponent;
+    class AnimatorComponent* mDesenho;
 
     class RigidBodyComponent* mRigidBodyComponent;
     class ColliderComponent* mAABBComponent;

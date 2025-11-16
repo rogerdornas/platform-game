@@ -10,9 +10,8 @@
 #include "../Random.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 DragonFly::DragonFly(Game *game)
     :Enemy(game)
@@ -67,30 +66,33 @@ DragonFly::DragonFly(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.8f, mWidth * 1.8f, "../Assets/Sprites/DragonFly/DragonFly.png", "../Assets/Sprites/DragonFly/DragonFly.json", 999);
+    mDrawComponent = new AnimatorComponent(this,
+                                            "../Assets/Sprites/DragonFly/DragonFly.png",
+                                            "../Assets/Sprites/DragonFly/DragonFly.json",
+                                            mWidth * 1.8f, mWidth * 1.8f, 999);
     std::vector idle = {39, 40, 41, 42, 43, 44};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector hit = {35, 36, 37, 38};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
     std::vector attack = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-    mDrawAnimatedComponent->AddAnimation("attack", attack);
+    mDrawComponent->AddAnimation("attack", attack);
 
     std::vector charge = {13, 14, 15, 16};
-    mDrawAnimatedComponent->AddAnimation("charge", charge);
+    mDrawComponent->AddAnimation("charge", charge);
 
     std::vector chargeFly = {17, 18, 19, 20, 21, 22};
-    mDrawAnimatedComponent->AddAnimation("chargeFly", chargeFly);
+    mDrawComponent->AddAnimation("chargeFly", chargeFly);
 
     std::vector hitStum = {23, 24, 25, 26, 27, 28};
-    mDrawAnimatedComponent->AddAnimation("hitStum", hitStum);
+    mDrawComponent->AddAnimation("hitStum", hitStum);
 
     std::vector stumLoop = {45, 46, 47, 48, 49, 50};
-    mDrawAnimatedComponent->AddAnimation("stumLoop", stumLoop);
+    mDrawComponent->AddAnimation("stumLoop", stumLoop);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(10.0f);
 
 
     RemoveComponent(mColliderComponent);
@@ -99,12 +101,12 @@ DragonFly::DragonFly(Game *game)
 
     mColliderComponent = new OBBComponent(this, Vector2(mWidth / 2, mHeight / 2));
 
-    if (mDrawPolygonComponent) {
-        if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
-            auto verts = obb->GetVertices();
-            mDrawPolygonComponent->SetVertices(verts);
-        }
-    }
+    // if (mDrawPolygonComponent) {
+    //     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
+    //         auto verts = obb->GetVertices();
+    //         mDrawPolygonComponent->SetVertices(verts);
+    //     }
+    // }
 }
 
 void DragonFly::OnUpdate(float deltaTime) {
@@ -116,9 +118,9 @@ void DragonFly::OnUpdate(float deltaTime) {
             mDragonFlyState != State::AttackStraight &&
             mDragonFlyState != State::Dive)
         {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
+            // if (mDrawAnimatedComponent) {
+            //     mDrawAnimatedComponent->ResetAnimationTimer();
+            // }
         }
         mFlashTimer += deltaTime;
     }
@@ -135,15 +137,15 @@ void DragonFly::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
-    if (mDrawPolygonComponent) {
-        if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
-            auto verts = obb->GetVertices();
-            mDrawPolygonComponent->SetVertices(verts);
-        }
-    }
+    // if (mDrawPolygonComponent) {
+    //     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
+    //         auto verts = obb->GetVertices();
+    //         mDrawPolygonComponent->SetVertices(verts);
+    //     }
+    // }
 }
 
 void DragonFly::ResolveGroundCollision() {
@@ -157,17 +159,17 @@ void DragonFly::ResolveGroundCollision() {
                     if (mDragonFlyState != State::Attack && mDragonFlyState != State::FlyingAround) {
                         if (collisionNormal == Vector2::NegUnitX && mDragonFlyState != State::Stum) {
                             if (GetRotation() > Math::ToRadians(330) || GetRotation() < Math::ToRadians(30)) {
-                                if (mDrawAnimatedComponent) {
-                                    mDrawAnimatedComponent->ResetAnimationTimer();
-                                }
+                                // if (mDrawAnimatedComponent) {
+                                //     mDrawAnimatedComponent->ResetAnimationTimer();
+                                // }
                                 mDragonFlyState = State::Stum;
                             }
                         }
                         if (collisionNormal == Vector2::UnitX && mDragonFlyState != State::Stum) {
                             if (GetRotation() > Math::ToRadians(150) && GetRotation() < Math::ToRadians(210)) {
-                                if (mDrawAnimatedComponent) {
-                                    mDrawAnimatedComponent->ResetAnimationTimer();
-                                }
+                                // if (mDrawAnimatedComponent) {
+                                //     mDrawAnimatedComponent->ResetAnimationTimer();
+                                // }
                                 mDragonFlyState = State::Stum;
                             }
                         }
@@ -242,6 +244,7 @@ void DragonFly::MovementBeforePlayerSpotted() {
     Player *player = GetGame()->GetPlayer();
     if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mFlyingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -259,6 +262,7 @@ void DragonFly::FlyingAround(float deltaTime) {
     Player *player = GetGame()->GetPlayer();
     if (mFlyingAroundTimer > mFlyingAroundDuration) {
         SetRotation(Math::Abs(GetRotation() - Math::Pi)); // Comuta rotação entre 0 e Pi
+        SetScale(Vector2(GetScale().x * -1, 1));
         mFlyingAroundTimer = 0;
     }
     if (mKnockBackTimer >= mKnockBackDuration) {
@@ -281,10 +285,14 @@ void DragonFly::Stop(float deltaTime) {
     float dist = GetPosition().x - playerPos.x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1, 1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1, 1));
     }
+
+    SetTransformRotation(0.0f);
 
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(Vector2(0, 0));
@@ -292,7 +300,7 @@ void DragonFly::Stop(float deltaTime) {
 
     if (mStopTimer >= mStopDuration * 0.5f) {
         if (mIsCharging == false) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
+            // mDrawAnimatedComponent->ResetAnimationTimer();
         }
         mIsCharging = true;
     }
@@ -318,6 +326,7 @@ void DragonFly::FollowPlayer(float deltaTime) {
     }
 
     SetRotation(angle);
+    SetTransformRotation(angle);
 
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(GetForward() * mMoveSpeed);
@@ -332,6 +341,7 @@ void DragonFly::FollowPlayer(float deltaTime) {
             direction.Normalize();
         }
         SetRotation(Math::Atan2(direction.y, direction.x));
+        SetTransformRotation(Math::Atan2(direction.y, direction.x));
         mDragonFlyState = State::AttackStraight;
     }
 }
@@ -354,6 +364,7 @@ void DragonFly::AttackStraight(float deltaTime) {
         angle += Math::TwoPi;
     }
     SetRotation(angle);
+    SetTransformRotation(angle);
 
     float dist = (GetPosition() - mAttackStraightTarget).Length();
     if (dist <= mDistToDive) {
@@ -387,6 +398,7 @@ void DragonFly::Dive(float deltaTime) {
         angle += Math::TwoPi;
     }
     SetRotation(angle);
+    SetTransformRotation(angle);
 }
 
 void DragonFly::Curve(float deltaTime) {
@@ -412,6 +424,7 @@ void DragonFly::Curve(float deltaTime) {
         angle += Math::TwoPi;
     }
     SetRotation(angle);
+    SetTransformRotation(angle);
 }
 
 void DragonFly::Stum(float deltaTime) {
@@ -420,9 +433,10 @@ void DragonFly::Stum(float deltaTime) {
         mStumTimer = 0;
         mStunnedAnimation = false;
         SetRotation(Math::Abs(GetRotation() - Math::Pi));  // Inverte rotação
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->ResetAnimationTimer();
-        }
+        SetTransformRotation(Math::Abs(GetRotation() - Math::Pi));
+        // if (mDrawAnimatedComponent) {
+        //     mDrawAnimatedComponent->ResetAnimationTimer();
+        // }
         mDragonFlyState = State::Attack;
         return;
     }
@@ -454,6 +468,7 @@ void DragonFly::Attack(float deltaTime) {
     }
 
     SetRotation(angle);
+    SetTransformRotation(angle);
 
     if (mKnockBackTimer >= mKnockBackDuration) {
         mRigidBodyComponent->SetVelocity(GetForward() * mMoveSpeed * 0.5f);
@@ -461,65 +476,84 @@ void DragonFly::Attack(float deltaTime) {
 }
 
 void DragonFly::ManageAnimations() {
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
-    mDrawAnimatedComponent->UseFlip(false);
-    mDrawAnimatedComponent->UseRotation(false);
+    mDrawComponent->SetAnimFPS(10.0f);
+    // mDrawAnimatedComponent->UseFlip(false);
+    // mDrawAnimatedComponent->UseRotation(false);
 
     if (mDragonFlyState == State::FollowPlayer ||
         mDragonFlyState == State::AttackStraight)
     {
-        mDrawAnimatedComponent->SetAnimation("charge");
-        mDrawAnimatedComponent->SetAnimFPS(13.0f);
-        mDrawAnimatedComponent->UseRotation(true);
+        mDrawComponent->SetAnimation("charge");
+        mDrawComponent->SetAnimFPS(13.0f);
+        // mDrawAnimatedComponent->UseRotation(true);
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+            SetScale(Vector2(1,-1));
+            // mDrawAnimatedComponent->UseFlip(true);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+        }
+        else {
+            SetScale(Vector2(1, 1));
         }
     }
     else if (mDragonFlyState == State::Dive ||
              mDragonFlyState == State::Curve)
     {
-        mDrawAnimatedComponent->SetAnimation("idle");
-        mDrawAnimatedComponent->SetAnimFPS(13.0f);
-        mDrawAnimatedComponent->UseRotation(true);
+        mDrawComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimFPS(13.0f);
+        // mDrawAnimatedComponent->UseRotation(true);
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+            SetScale(Vector2(1,-1));
+            // mDrawAnimatedComponent->UseFlip(true);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+        }
+        else {
+            SetScale(Vector2(1, 1));
         }
     }
     else if (mDragonFlyState == State::Stum) {
-        mDrawAnimatedComponent->UseRotation(true);
+        // mDrawAnimatedComponent->UseRotation(true);
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
-        }
-        if (mStunnedAnimation) {
-            mDrawAnimatedComponent->SetAnimation("stumLoop");
+            SetScale(Vector2(1,-1));
+            // mDrawAnimatedComponent->UseFlip(true);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
         }
         else {
-            mDrawAnimatedComponent->SetAnimation("hitStum");
-            mDrawAnimatedComponent->SetAnimFPS(6.0f / (mStumDuration * 0.2));
+            SetScale(Vector2(1, 1));
+        }
+        if (mStunnedAnimation) {
+            mDrawComponent->SetAnimation("stumLoop");
+        }
+        else {
+            mDrawComponent->SetAnimation("hitStum");
+            mDrawComponent->SetAnimFPS(6.0f / (mStumDuration * 0.2));
         }
     }
     else if (mDragonFlyState == State::Attack) {
-        mDrawAnimatedComponent->UseRotation(true);
+        // mDrawAnimatedComponent->UseRotation(true);
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
-            mDrawAnimatedComponent->UseFlip(true);
-            mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+            SetScale(Vector2(1,-1));
+            // mDrawAnimatedComponent->UseFlip(true);
+            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
         }
-        mDrawAnimatedComponent->SetAnimation("attack");
-        mDrawAnimatedComponent->SetAnimFPS(13.0f / mAttackDuration);
+        else {
+            SetScale(Vector2(1, 1));
+        }
+        mDrawComponent->SetAnimation("attack");
+        mDrawComponent->SetAnimFPS(13.0f / mAttackDuration);
     }
     else if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
-        mDrawAnimatedComponent->SetAnimFPS(4.0f / mHitDuration);
+        mDrawComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimFPS(4.0f / mHitDuration);
     }
     else if (mIsCharging) {
-        mDrawAnimatedComponent->SetAnimation("chargeFly");
-        mDrawAnimatedComponent->SetAnimFPS(6.0f / (mStopDuration * 0.5f));
+        mDrawComponent->SetAnimation("chargeFly");
+        mDrawComponent->SetAnimFPS(6.0f / (mStopDuration * 0.5f));
+        if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
+            SetScale(Vector2(-1,1));
+        }
     }
     else if (mDragonFlyState == State::Stop || mDragonFlyState == State::FlyingAround) {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation("idle");
     }
 }
 
@@ -543,19 +577,19 @@ void DragonFly::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
-        mDrawAnimatedComponent->SetHeight(mWidth * 1.8f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.8f);
+    //     mDrawAnimatedComponent->SetHeight(mWidth * 1.8f);
+    // }
 
     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
         obb->Update(0);
         obb->SetHalfSize(Vector2(mWidth / 2, mHeight / 2));
 
-        if (mDrawPolygonComponent) {
-            auto verts = obb->GetVertices();
-            mDrawPolygonComponent->SetVertices(verts);
-        }
+        // if (mDrawPolygonComponent) {
+        //     auto verts = obb->GetVertices();
+        //     mDrawPolygonComponent->SetVertices(verts);
+        // }
     }
 }
 

@@ -99,5 +99,16 @@
 		"h": 22
       }
     }
-  ]
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "FrogTongue.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 350,
+      "h": 154
+    },
+    "scale": 1
+  }
 }

@@ -4,15 +4,15 @@
 
 #include "Enemy.h"
 #include "Effect.h"
+#include "Light.h"
 #include "Money.h"
 #include "ParticleSystem.h"
 #include "../Game.h"
 #include "../Random.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Enemy::Enemy(Game* game)
     :Actor(game)
@@ -27,9 +27,8 @@ Enemy::Enemy(Game* game)
     ,mPlayerSpotted(false)
     ,mOffscreenLimit(0.2f)
     ,mEnemyCollision(true)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawSpriteComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
+    ,mRectComponent(nullptr)
+    ,mDrawComponent(nullptr)
 {
     game->AddEnemy(this);
 }
@@ -50,7 +49,9 @@ void Enemy::SetSize(float width, float height) {
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {245, 154, 25, 255});
+    // mRectComponent = new RectComponent(this, mWidth, mHeight, RendererMode::LINES);
+    // mRectComponent->SetColor(Vector3(245, 0, 0));
+
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000 * mGame->GetScale(), 40000 * mGame->GetScale());
     mColliderComponent = new AABBComponent(this, v1, v3);
 }
@@ -240,8 +241,8 @@ void Enemy::ResolveGroundCollision() {
 }
 
 bool Enemy::IsOnScreen() {
-    return (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetLogicalWindowWidth()  + mGame->GetLogicalWindowWidth() * mOffscreenLimit &&
-            GetPosition().x > mGame->GetCamera()->GetPosCamera().x  - mGame->GetLogicalWindowWidth() * mOffscreenLimit &&
-            GetPosition().y > mGame->GetCamera()->GetPosCamera().y - mGame->GetLogicalWindowHeight() * mOffscreenLimit &&
-            GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetLogicalWindowHeight() + mGame->GetLogicalWindowHeight() * mOffscreenLimit);
+    return (GetPosition().x < mGame->GetCamera()->GetPosCamera().x + mGame->GetRenderer()->GetZoomedWidth()  + mGame->GetRenderer()->GetZoomedWidth() * mOffscreenLimit &&
+            GetPosition().x > mGame->GetCamera()->GetPosCamera().x  - mGame->GetRenderer()->GetZoomedWidth() * mOffscreenLimit &&
+            GetPosition().y > mGame->GetCamera()->GetPosCamera().y - mGame->GetRenderer()->GetZoomedHeight() * mOffscreenLimit &&
+            GetPosition().y < mGame->GetCamera()->GetPosCamera().y + mGame->GetRenderer()->GetZoomedHeight() + mGame->GetRenderer()->GetZoomedHeight() * mOffscreenLimit);
 }

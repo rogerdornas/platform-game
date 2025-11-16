@@ -12,10 +12,9 @@
 #include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Random.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Actors/DynamicGround.h"
 
 
@@ -69,36 +68,36 @@ Frog::Frog(Game* game)
 
     std::string frogAssets = "../Assets/Sprites/Frog/";
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 1.5f, mHeight * 1.5f / 1.2f,
-                                                       frogAssets + "Frog.png",
-                                                       frogAssets + "Frog.json", 998);
+    mDrawComponent = new AnimatorComponent(this, frogAssets + "Frog.png",
+                                                       frogAssets + "Frog.json",
+                                                       mWidth * 1.5f, mHeight * 1.5f / 1.2f, 998);
 
     std::vector hitIdle = {0};
-    mDrawAnimatedComponent->AddAnimation("hitIdle", hitIdle);
+    mDrawComponent->AddAnimation("hitIdle", hitIdle);
 
     std::vector hitJump = {1};
-    mDrawAnimatedComponent->AddAnimation("hitJump", hitJump);
+    mDrawComponent->AddAnimation("hitJump", hitJump);
 
     std::vector hitSide = {2};
-    mDrawAnimatedComponent->AddAnimation("hitSide", hitSide);
+    mDrawComponent->AddAnimation("hitSide", hitSide);
 
     std::vector hitTongue = {3};
-    mDrawAnimatedComponent->AddAnimation("hitTongue", hitTongue);
+    mDrawComponent->AddAnimation("hitTongue", hitTongue);
 
     std::vector idle = {4};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector jump = {5};
-    mDrawAnimatedComponent->AddAnimation("jump", jump);
+    mDrawComponent->AddAnimation("jump", jump);
 
     std::vector side = {6};
-    mDrawAnimatedComponent->AddAnimation("side", side);
+    mDrawComponent->AddAnimation("side", side);
 
     std::vector tongue = {7};
-    mDrawAnimatedComponent->AddAnimation("tongue", tongue);
+    mDrawComponent->AddAnimation("tongue", tongue);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(16.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(16.0f);
 
     mTongue = new FrogTongue(mGame, this, 20.0f);
     mTongue->SetDuration(mTongueDuration);
@@ -164,17 +163,15 @@ void Frog::OnUpdate(float deltaTime) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
     }
 
-    if (mDrawSpriteComponent) {
-        mDrawSpriteComponent->SetWidth(mWidth * 1.5f);
-        mDrawSpriteComponent->SetHeight(mHeight * 1.5f);
-    }
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f / 1.2f);
+    if (mDrawComponent) {
+        mDrawComponent->SetWidth(mWidth * 1.5f);
+        mDrawComponent->SetHeight(mHeight * 1.5f / 1.2f);
     }
 
     if (mPlayerSpotted) {
@@ -193,7 +190,7 @@ void Frog::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 
@@ -307,82 +304,89 @@ void Frog::MovementBeforePlayerSpotted() {
 
 void Frog::ManageAnimations() {
     if (mFrogState == State::Tongue) {
-        mDrawAnimatedComponent->SetAnimation("tongue");
+        mDrawComponent->SetAnimation("tongue");
     }
     else if (mIsOnGround) {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation("idle");
         if (mWallPosition == WallSide::Bottom) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->SetAnimation("side");
-                mDrawAnimatedComponent->UseRotation(false);
-                mDrawAnimatedComponent->SetOffsetRotation(0.0f);
-                mDrawAnimatedComponent->UseFlip(false);
-                mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
+            if (mDrawComponent) {
+                mDrawComponent->SetAnimation("side");
+                // mDrawAnimatedComponent->UseRotation(false);
+                // mDrawAnimatedComponent->SetOffsetRotation(0.0f);
+                // mDrawAnimatedComponent->UseFlip(false);
+                // mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
             }
         }
         else if (mWallPosition == WallSide::Top) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->UseRotation(true);
-                mDrawAnimatedComponent->SetOffsetRotation(0.0f);
-                mDrawAnimatedComponent->UseFlip(false);
-                mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
+            if (mDrawComponent) {
+
+                // mDrawAnimatedComponent->UseRotation(true);
+                // mDrawAnimatedComponent->SetOffsetRotation(0.0f);
+                // mDrawAnimatedComponent->UseFlip(false);
+                // mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
             }
         }
         else if (mWallPosition == WallSide::Left) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->UseRotation(true);
-                mDrawAnimatedComponent->SetOffsetRotation(0.0f);
-                mDrawAnimatedComponent->UseFlip(false);
-                mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
+            if (mDrawComponent) {
+                // mDrawAnimatedComponent->UseRotation(true);
+                // mDrawAnimatedComponent->SetOffsetRotation(0.0f);
+                // mDrawAnimatedComponent->UseFlip(false);
+                // mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
             }
         }
         else if (mWallPosition == WallSide::Right) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->UseRotation(true);
-                mDrawAnimatedComponent->SetOffsetRotation(0.0f);
-                mDrawAnimatedComponent->UseFlip(false);
-                mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
+            if (mDrawComponent) {
+                // mDrawAnimatedComponent->UseRotation(true);
+                // mDrawAnimatedComponent->SetOffsetRotation(0.0f);
+                // mDrawAnimatedComponent->UseFlip(false);
+                // mDrawAnimatedComponent->SetFlip(SDL_FLIP_NONE);
             }
         }
     }
     else {
-        if (mDrawAnimatedComponent) {
-            mDrawAnimatedComponent->SetAnimation("jump");
-            mDrawAnimatedComponent->UseRotation(true);
-            mDrawAnimatedComponent->UseFlip(false);
+        if (mDrawComponent) {
+            mDrawComponent->SetAnimation("jump");
+            // mDrawAnimatedComponent->UseRotation(true);
+            // mDrawAnimatedComponent->UseFlip(false);
             Vector2 vel = mRigidBodyComponent->GetVelocity();
             float offset = 67.5f;
             if (vel.x > 0) {
-                mDrawAnimatedComponent->SetOffsetRotation(offset);
+                // mDrawAnimatedComponent->SetOffsetRotation(offset);
+                SetTransformRotation(GetTransformRotation() + offset);
             }
             else if (vel.y > 0) {
                 offset += Math::ToDegrees(Math::Pi - GetRotation());
-                mDrawAnimatedComponent->SetOffsetRotation(offset);
-                mDrawAnimatedComponent->UseFlip(true);
-                mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
+                SetTransformRotation(GetTransformRotation() + offset);
+                SetScale(Vector2(-1, 1));
+                // mDrawAnimatedComponent->SetOffsetRotation(offset);
+                // mDrawAnimatedComponent->UseFlip(true);
+                // mDrawAnimatedComponent->SetFlip(SDL_FLIP_HORIZONTAL);
             }
             else if (vel.y <= 0) {
                 offset = Math::ToDegrees(Math::Pi - GetRotation());
-                mDrawAnimatedComponent->SetOffsetRotation(offset);
-                mDrawAnimatedComponent->UseFlip(true);
-                mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+                SetTransformRotation(GetTransformRotation() + offset);
+                SetScale(Vector2(1, -1));
+                // mDrawAnimatedComponent->SetOffsetRotation(offset);
+                // mDrawAnimatedComponent->UseFlip(true);
+                // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
             }
+            SetTransformRotation(GetTransformRotation() - offset);
         }
     }
     if (mIsFlashing) {
         if (mIsOnGround) {
             if (mWallPosition == WallSide::Bottom) {
-                mDrawAnimatedComponent->SetAnimation("hitSide");
+                mDrawComponent->SetAnimation("hitSide");
             }
             else {
-                mDrawAnimatedComponent->SetAnimation("hitIdle");
+                mDrawComponent->SetAnimation("hitIdle");
             }
         }
         else {
-            mDrawAnimatedComponent->SetAnimation("hitJump");
+            mDrawComponent->SetAnimation("hitJump");
         }
         if (mFrogState == State::Tongue) {
-            mDrawAnimatedComponent->SetAnimation("hitTongue");
+            mDrawComponent->SetAnimation("hitTongue");
         }
     }
 }
@@ -392,9 +396,11 @@ void Frog::Stop(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 
     mRigidBodyComponent->SetVelocity(Vector2(0, 0));
@@ -429,22 +435,32 @@ void Frog::JumpCombo(float deltaTime) {
             case WallSide::Bottom:
                 if (dist < 0) {
                     SetRotation(0.0);
+                    SetTransformRotation(0.0f);
+                    SetScale(Vector2(1,1));
                 }
                 else {
                     SetRotation(Math::Pi);
+                    SetTransformRotation(0.0f);
+                    SetScale(Vector2(-1,1));
                 }
             break;
 
             case WallSide::Top:
                 SetRotation(Math::Pi);
+                SetTransformRotation(Math::Pi);
+                SetScale(Vector2(1,1));
             break;
 
             case WallSide::Left:
                 SetRotation(Math::Pi / 2);
+                SetTransformRotation(Math::Pi / 2);
+                SetScale(Vector2(1,1));
             break;
 
             case WallSide::Right:
                 SetRotation(3 * Math::Pi / 2);
+                SetTransformRotation(3 * Math::Pi / 2);
+                SetScale(Vector2(1,1));
             break;
 
         }
@@ -489,6 +505,7 @@ void Frog::JumpCombo(float deltaTime) {
                 }
 
                 SetRotation(angle);
+                SetTransformRotation(angle);
                 mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mJumpForce));
             }
             else {
@@ -512,6 +529,7 @@ void Frog::JumpCombo(float deltaTime) {
                         }
 
                         SetRotation(angle);
+                        SetTransformRotation(angle);
                         mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mJumpForce));
                         break;
 
@@ -528,6 +546,7 @@ void Frog::JumpCombo(float deltaTime) {
                         }
 
                         SetRotation(angle);
+                        SetTransformRotation(angle);
                         mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mJumpForce));
                         break;
 
@@ -544,6 +563,7 @@ void Frog::JumpCombo(float deltaTime) {
                         }
 
                         SetRotation(angle);
+                        SetTransformRotation(angle);
                         mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mJumpForce));
                         break;
 
@@ -560,6 +580,7 @@ void Frog::JumpCombo(float deltaTime) {
                         }
 
                         SetRotation(angle);
+                        SetTransformRotation(angle);
                         mRigidBodyComponent->SetVelocity(Vector2(GetForward() * mJumpForce));
                         break;
                 }
@@ -579,6 +600,7 @@ void Frog::Tongue(float delTime) {
 
     mTongue->SetState(ActorState::Active);
     mTongue->SetRotation(GetRotation());
+    mTongue->SetScale(GetScale());
 }
 
 
@@ -601,10 +623,10 @@ void Frog::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.5f / 1.2f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 1.5f);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.5f / 1.2f);
+    // }
     Vector2 v1(-mHeight / 2, -mHeight / 2);
     Vector2 v2(mHeight / 2, -mHeight / 2);
     Vector2 v3(mHeight / 2, mHeight / 2);
@@ -621,7 +643,7 @@ void Frog::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

@@ -30,6 +30,6 @@ private:
     float mEffectTimer;
     Actor* mOwner;
 
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
+    class AnimatorComponent* mDrawComponent;
 };
 

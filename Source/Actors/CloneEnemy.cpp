@@ -9,9 +9,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Components/DashComponent.h"
 
 CloneEnemy::CloneEnemy(Game *game)
@@ -102,55 +101,56 @@ CloneEnemy::CloneEnemy(Game *game)
 
     SetSize(mWidth, mHeight);
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 4.93f, mWidth * 4.93f * 1.11f,
-                                                   "../Assets/Sprites/Esquilo5/Esquilo.png",
-                                                   "../Assets/Sprites/Esquilo5/Esquilo.json", 1002);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Esquilo5/Esquilo.png",
+                                                   "../Assets/Sprites/Esquilo5/Esquilo.json",
+                                                   mWidth * 4.93f, mWidth * 4.93f * 1.11f, 1002);
 
     std::vector idle = {21, 22, 23, 24};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector attackFront = {21, 2, 3};
-    mDrawAnimatedComponent->AddAnimation("attackFront", attackFront);
+    mDrawComponent->AddAnimation("attackFront", attackFront);
 
     std::vector attackUp = {21, 4, 5};
-    mDrawAnimatedComponent->AddAnimation("attackUp", attackUp);
+    mDrawComponent->AddAnimation("attackUp", attackUp);
 
     std::vector attackDown = {21, 0, 1};
-    mDrawAnimatedComponent->AddAnimation("attackDown", attackDown);
+    mDrawComponent->AddAnimation("attackDown", attackDown);
 
     std::vector fireball = {12, 13};
-    mDrawAnimatedComponent->AddAnimation("fireball", fireball);
+    mDrawComponent->AddAnimation("fireball", fireball);
 
     std::vector dash = {6, 7, 7, 7, 8};
-    mDrawAnimatedComponent->AddAnimation("dash", dash);
+    mDrawComponent->AddAnimation("dash", dash);
 
     std::vector run = {28, 29, 30, 31, 32, 33};
-    mDrawAnimatedComponent->AddAnimation("run", run);
+    mDrawComponent->AddAnimation("run", run);
 
     std::vector heal = {14, 15, 16, 17, 18, 18, 17, 16, 15, 14};
-    mDrawAnimatedComponent->AddAnimation("heal", heal);
+    mDrawComponent->AddAnimation("heal", heal);
 
     std::vector wallSlide = {34};
-    mDrawAnimatedComponent->AddAnimation("wallSlide", wallSlide);
+    mDrawComponent->AddAnimation("wallSlide", wallSlide);
 
     std::vector hurt = {19, 20};
-    mDrawAnimatedComponent->AddAnimation("hurt", hurt);
+    mDrawComponent->AddAnimation("hurt", hurt);
 
     std::vector die = {19, 9, 10, 11, 11, 11};
-    mDrawAnimatedComponent->AddAnimation("die", die);
+    mDrawComponent->AddAnimation("die", die);
 
     std::vector jumpUp = {25};
-    mDrawAnimatedComponent->AddAnimation("jumpUp", jumpUp);
+    mDrawComponent->AddAnimation("jumpUp", jumpUp);
 
     std::vector jumpApex = {26};
-    mDrawAnimatedComponent->AddAnimation("jumpApex", jumpApex);
+    mDrawComponent->AddAnimation("jumpApex", jumpApex);
 
     std::vector falling = {27};
-    mDrawAnimatedComponent->AddAnimation("falling", falling);
+    mDrawComponent->AddAnimation("falling", falling);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
-    mDrawAnimatedComponent->SetTransparency(170);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(10.0f);
+    // mDrawAnimatedComponent->SetTransparency(170);
+    mDrawComponent->SetAlpha(0.7f);
 
     mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), 0.2f, 0.5f);
 
@@ -241,6 +241,7 @@ void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &contro
                 if (it->left && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
                     (mKnockBackTimer >= mKnockBackDuration)) {
                     SetRotation(Math::Pi);
+                    SetScale(Vector2(-1, 1));
                     mSwordDirection = Math::Pi;
                     if (!mIsOnGround) {
                         mIsRunning = true;
@@ -261,6 +262,7 @@ void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &contro
                 if (it->leftSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
                     (mKnockBackTimer >= mKnockBackDuration)) {
                     SetRotation(Math::Pi);
+                    SetScale(Vector2(-1, 1));
                     mSwordDirection = Math::Pi;
                     if (!mIsOnGround) {
                         mIsRunning = true;
@@ -281,6 +283,7 @@ void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &contro
                 if (it->right && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
                     (mKnockBackTimer >= mKnockBackDuration)) {
                     SetRotation(0);
+                    SetScale(Vector2(1, 1));
                     mSwordDirection = 0;
                     if (!mIsOnGround) {
                         mIsRunning = true;
@@ -301,6 +304,7 @@ void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &contro
                 if (it->rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
                     (mKnockBackTimer >= mKnockBackDuration)) {
                     SetRotation(0);
+                    SetScale(Vector2(1, 1));
                     mSwordDirection = 0;
                     if (!mIsOnGround) {
                         mIsRunning = true;
@@ -401,14 +405,12 @@ void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &contro
             // Sword
             // Detecta borda de descida da tecla K e cooldown pronto
             if (it->sword && !mPrevSwordPressed && mSwordCooldownTimer >= mSwordCooldownDuration) {
-                if (mDrawAnimatedComponent) {
-                    mDrawAnimatedComponent->ResetAnimationTimer();
-                }
                 mGame->GetAudio()->PlayVariantSound("SwordSlash/SwordSlash.wav", 11);
                 // Ativa a espada
                 mSwordHitPlayer = false;
                 mSword->SetState(ActorState::Active);
                 mSword->SetRotation(mSwordDirection);
+                mSword->SetTransformRotation(mSwordDirection);
                 mSword->SetPosition(GetPosition());
                 mSwordHitEnemy = false;
                 mSwordHitGround = false;
@@ -431,6 +433,7 @@ void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &contro
                         if (f->GetState() == ActorState::Paused) {
                             f->SetState(ActorState::Active);
                             f->SetRotation(GetRotation());
+                            f->SetScale(Vector2(GetForward().x, 1));
                             f->SetWidth(mFireballWidth);
                             f->SetHeight(mFireBallHeight);
                             f->SetSpeed(mFireballSpeed);
@@ -440,9 +443,6 @@ void CloneEnemy::OnProcessInput(const uint8_t* state, SDL_GameController &contro
                             mIsFireAttacking = true;
                             mStopInAirFireBallTimer = 0;
                             mFireballAnimationTimer = 0;
-                            if (mDrawAnimatedComponent) {
-                                mDrawAnimatedComponent->ResetAnimationTimer();
-                            }
                             mMana -= mFireballManaCost;
                             break;
                         }
@@ -495,11 +495,6 @@ void CloneEnemy::OnUpdate(float deltaTime) {
     }
 
     if (mFlashTimer < mHurtDuration) {
-        if (mFlashTimer == 0) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
-        }
         mFlashTimer += deltaTime;
     }
     else {
@@ -537,11 +532,6 @@ void CloneEnemy::OnUpdate(float deltaTime) {
     }
 
     if (mIsHealing) {
-        if (mHealAnimationTimer == 0) {
-            if (mDrawAnimatedComponent) {
-                mDrawAnimatedComponent->ResetAnimationTimer();
-            }
-        }
         mHealAnimationTimer += deltaTime;
     }
 
@@ -622,7 +612,7 @@ void CloneEnemy::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 }
@@ -670,7 +660,7 @@ void CloneEnemy::ResolveGroundCollision() {
                         if (g->GetComponent<RigidBodyComponent>()->GetVelocity().y > 0) {
                             mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                                                      g->GetComponent<RigidBodyComponent>()->
-                                                                        GetVelocity().y * 1.5));
+                                                                        GetVelocity().y * 1.5f));
                             // Para não grudar quando pular por baixo de uma plataforma movel
                         }
                     }
@@ -816,55 +806,56 @@ void CloneEnemy::ResolvePlayerCollision() {
 
 
 void CloneEnemy::ManageAnimations() {
-    mDrawAnimatedComponent->SetAnimFPS(10.0f);
-    mDrawAnimatedComponent->UseFlip(false);
+    mDrawComponent->SetAnimFPS(10.0f);
+    // mDrawAnimatedComponent->UseFlip(false);
 
     if (mFlashTimer< mHurtDuration) {
-        mDrawAnimatedComponent->SetAnimation("hurt");
+        mDrawComponent->SetAnimation("hurt");
     }
     else if (mDashComponent->GetIsDashing()) {
-        mDrawAnimatedComponent->SetAnimation("dash");
+        mDrawComponent->SetAnimation("dash");
     }
     else if (mSword->GetState() == ActorState::Active) {
         if (mSword->GetRotation() == 3 * Math::Pi / 2) {
-            mDrawAnimatedComponent->SetAnimation("attackUp");
+            mDrawComponent->SetAnimation("attackUp");
         }
         if (mSword->GetRotation() == Math::Pi / 2) {
-            mDrawAnimatedComponent->SetAnimation("attackDown");
+            mDrawComponent->SetAnimation("attackDown");
         }
         if (mSword->GetRotation() == 0 || mSword->GetRotation() == Math::Pi) {
             SetRotation(mSword->GetRotation());
-            mDrawAnimatedComponent->SetAnimation("attackFront");
+            SetScale(Vector2(mSword->GetForward().x, 1));
+            mDrawComponent->SetAnimation("attackFront");
         }
-        mDrawAnimatedComponent->SetAnimFPS(3.0f / 0.15f);
+        mDrawComponent->SetAnimFPS(3.0f / 0.15f);
     }
     else if (mFireballAnimationTimer < mFireballAnimationDuration) {
-        mDrawAnimatedComponent->SetAnimation("fireball");
-        mDrawAnimatedComponent->SetAnimFPS(2.0f / mFireballAnimationDuration);
+        mDrawComponent->SetAnimation("fireball");
+        mDrawComponent->SetAnimFPS(2.0f / mFireballAnimationDuration);
     }
     else if (mStopRunningTimer < mStopRunningDuration && mIsOnGround) {
-        mDrawAnimatedComponent->SetAnimation("run");
+        mDrawComponent->SetAnimation("run");
     }
     else if (!mIsOnGround) {
         if (mRigidBodyComponent->GetVelocity().y < -200 * mGame->GetScale()) {
-            mDrawAnimatedComponent->SetAnimation("jumpUp");
+            mDrawComponent->SetAnimation("jumpUp");
         }
         if (mRigidBodyComponent->GetVelocity().y > 200 * mGame->GetScale()) {
-            mDrawAnimatedComponent->SetAnimation("falling");
+            mDrawComponent->SetAnimation("falling");
         }
         if (mRigidBodyComponent->GetVelocity().y > -200 * mGame->GetScale() &&
             mRigidBodyComponent->GetVelocity().y < 200 * mGame->GetScale())
         {
-            mDrawAnimatedComponent->SetAnimation("jumpApex");
+            mDrawComponent->SetAnimation("jumpApex");
         }
     }
     else if (mIsHealing) {
-        mDrawAnimatedComponent->SetAnimation("heal");
-        mDrawAnimatedComponent->SetAnimFPS(10.0f / (mHealAnimationDuration));
+        mDrawComponent->SetAnimation("heal");
+        mDrawComponent->SetAnimFPS(10.0f / (mHealAnimationDuration));
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("idle");
-        mDrawAnimatedComponent->SetAnimFPS(6.0f);
+        mDrawComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimFPS(6.0f);
     }
 }
 
@@ -892,10 +883,10 @@ void CloneEnemy::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 4.93f);
-        mDrawAnimatedComponent->SetHeight(mWidth * 4.93f * 1.11f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 4.93f);
+    //     mDrawAnimatedComponent->SetHeight(mWidth * 4.93f * 1.11f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -913,7 +904,7 @@ void CloneEnemy::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

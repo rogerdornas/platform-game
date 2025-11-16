@@ -103,6 +103,8 @@ public:
 
     bool Died();
 
+    void InitLight();
+
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
@@ -251,10 +253,10 @@ private:
 
     bool mInvertControls;
 
-    class DrawPolygonComponent* mDrawPolygonComponent;
-    class DrawSpriteComponent* mDrawSpriteComponent;
-    class DrawAnimatedComponent* mDrawAnimatedComponent;
-    class DrawRopeComponent* mDrawRopeComponent;
+    class Light* mLight;
+
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
 
     class RigidBodyComponent* mRigidBodyComponent;
     class ColliderComponent* mAABBComponent;

@@ -34,6 +34,6 @@ private:
     float mActivatingDuration;
     float mActivatingTimer;
 
-    class DrawSpriteComponent *mDrawSpriteComponent;
-    class DrawAnimatedComponent *mDrawAnimatedComponent;
+    class RectComponent* mRectComponent;
+    class AnimatorComponent* mDrawComponent;
 };

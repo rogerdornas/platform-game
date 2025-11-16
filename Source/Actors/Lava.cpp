@@ -7,8 +7,8 @@
 #include "../Game.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 
 Lava::Lava(class Game *game, float width, float height, bool isMoving, float movingDuration, Vector2 velocity)
     :Actor(game)
@@ -20,8 +20,8 @@ Lava::Lava(class Game *game, float width, float height, bool isMoving, float mov
     ,mMovingTimer(0.0f)
     ,mVelocity(velocity * mGame->GetScale())
     ,mSwordHitLava(false)
-    ,mDrawPolygonComponent(nullptr)
-    ,mDrawAnimatedComponent(nullptr)
+    ,mDrawComponent(nullptr)
+    ,mRectComponent(nullptr)
 {
     Vector2 v1(-mWidth/2, -mHeight/2);
     Vector2 v2(mWidth/2, -mHeight/2);
@@ -36,13 +36,15 @@ Lava::Lava(class Game *game, float width, float height, bool isMoving, float mov
 
     // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, {255, 0, 0, 255});
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth, mHeight * 1.1f, "../Assets/Sprites/Lava/Lava.png", "../Assets/Sprites/Lava/Lava.json", 98);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Lava/Lava.png",
+                                                    "../Assets/Sprites/Lava/Lava.json",
+                                                    mWidth, mHeight * 1.1f, 98);
 
     std::vector<int> idle = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(9.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(9.0f);
 
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1, 40000, 40000);
@@ -84,8 +86,8 @@ void Lava::ResolvePlayerCollision() {
         if (!player->Died()) {
             player->GetComponent<AABBComponent>()->SetActive(false);
             player->SetInvulnerableTimer(-1.0f);
-            if (player->GetComponent<DrawAnimatedComponent>()) {
-                player->GetComponent<DrawAnimatedComponent>()->SetAnimation("hurt");
+            if (player->GetComponent<AnimatorComponent>()) {
+                player->GetComponent<AnimatorComponent>()->SetAnimation("hurt");
             }
             player->SetState(ActorState::Paused);
             mGame->InitCrossFade(1.5f);
@@ -126,7 +128,7 @@ void Lava::ResolveEnemyCollision() {
 
 void Lava::ResolveSwordCollision() {
     Sword* sword = mGame->GetPlayer()->GetSword();
-    if (sword->GetComponent<DrawAnimatedComponent>() && !sword->GetComponent<DrawAnimatedComponent>()->IsVisible()) {
+    if (sword->GetComponent<AnimatorComponent>() && !sword->GetComponent<AnimatorComponent>()->IsVisible()) {
         mSwordHitLava = false;
     }
     if (sword->GetComponent<ColliderComponent>()->Intersect(*mAABBComponent)) {
@@ -174,10 +176,10 @@ void Lava::ChangeResolution(float oldScale, float newScale) {
         mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
     }
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth);
-        mDrawAnimatedComponent->SetHeight(mHeight * 1.1f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth);
+    //     mDrawAnimatedComponent->SetHeight(mHeight * 1.1f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -195,7 +197,7 @@ void Lava::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

@@ -25,14 +25,18 @@ public:
     Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
 
     // Scale getter/setter
-    float GetScale() const { return mScale; }
-    void SetScale(const float scale) { mScale = scale; }
+    const Vector2& GetScale() const { return mScale; }
+    void SetScale(const Vector2& scale) { mScale = scale; }
 
     virtual void ChangeResolution(float oldScale, float newScale);
 
     // Rotation getter/setter
     float GetRotation() const { return mRotation; }
     void SetRotation(float rotation) { mRotation = rotation; }
+
+    // Transform Rotation getter/setter
+    float GetTransformRotation() const { return mTransformRotation; }
+    void SetTransformRotation(float transformRotation) { mTransformRotation = transformRotation; }
 
     // State getter/setter
     ActorState GetState() const { return mState; }
@@ -71,7 +75,9 @@ protected:
 
     // Transform
     Vector2 mPosition;
-    float mScale;
+    Vector2 mScale;
+    float mTransformRotation;
+
     float mRotation;
 
     // Components

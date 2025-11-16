@@ -5,10 +5,12 @@
 #include <SDL_ttf.h>
 #include "../Math.h"
 
+class Renderer;
+
 class UIFont
 {
 public:
-    UIFont(SDL_Renderer* renderer);
+    UIFont(Renderer* renderer);
     ~UIFont();
 
 	// Start/unload from a file
@@ -16,12 +18,12 @@ public:
 	void Unload();
 
 	// Given string and this font, draw to a texture
-	class SDL_Texture* RenderText(const std::string& text, const Vector3& color = Color::White,
+	class Texture* RenderText(const std::string& text, const Vector3& color = Color::White,
 							         int pointSize = 30, unsigned wrapLength = 1024);
 
 private:
 	// Map of point sizes to font data
 	std::unordered_map<int, TTF_Font*> mFontData;
 
-    SDL_Renderer* mRenderer;
+    Renderer* mRenderer;
 };

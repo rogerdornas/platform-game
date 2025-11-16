@@ -33,7 +33,7 @@ public:
     // Set the name of the button
     void SetText(const std::string& text);
     UIText* GetText() const { return mText; }
-    void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
+    void Draw(Renderer* renderer, const Vector2 &screenPos) override;
 
     void SetHighlighted(bool sel) { mHighlighted = sel; }
     bool GetHighlighted() const { return mHighlighted; }

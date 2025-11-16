@@ -14,6 +14,8 @@
 
 // const int SCREEN_WIDTH = 1920;
 // const int SCREEN_HEIGHT = 1080;
+// const int SCREEN_WIDTH = 1600;
+// const int SCREEN_HEIGHT = 900;
 // const int SCREEN_WIDTH = 1776;
 // const int SCREEN_HEIGHT = 999;
 const int SCREEN_WIDTH = 1280;

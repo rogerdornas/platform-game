@@ -11,13 +11,12 @@
 #include "../HUD.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/AABBComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
+#include "../Components/Drawing/RectComponent.h"
 #include "../Components/DashComponent.h"
 #include "../Actors/Sword.h"
 #include "../Actors/FireBall.h"
 #include "../Random.h"
-#include "../Components/DrawComponents/DrawPolygonComponent.h"
 #include "../Actors/DynamicGround.h"
 
 
@@ -78,25 +77,25 @@ Fox::Fox(Game* game)
 
     std::string foxAssets = "../Assets/Sprites/Raposa/";
 
-    mDrawAnimatedComponent = new DrawAnimatedComponent(this, mWidth * 2.3f, 0.91f * mWidth * 2.3f,
-                                                       foxAssets + "Raposa.png",
-                                                       foxAssets + "Raposa.json", 998);
+    mDrawComponent = new AnimatorComponent(this, foxAssets + "Raposa.png",
+                                                       foxAssets + "Raposa.json",
+                                                       mWidth * 2.3f, 0.91f * mWidth * 2.3f, 998);
 
     std::vector idle = {2};
-    mDrawAnimatedComponent->AddAnimation("idle", idle);
+    mDrawComponent->AddAnimation("idle", idle);
 
     std::vector run = {3, 4, 5, 6, 7};
-    mDrawAnimatedComponent->AddAnimation("run", run);
+    mDrawComponent->AddAnimation("run", run);
 
     std::vector hit = {1};
-    mDrawAnimatedComponent->AddAnimation("hit", hit);
+    mDrawComponent->AddAnimation("hit", hit);
 
     std::vector dash = {0};
-    mDrawAnimatedComponent->AddAnimation("dash", dash);
+    mDrawComponent->AddAnimation("dash", dash);
 
 
-    mDrawAnimatedComponent->SetAnimation("idle");
-    mDrawAnimatedComponent->SetAnimFPS(16.0f);
+    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->SetAnimFPS(16.0f);
 
     mDashComponent = new DashComponent(this, 1500 * mGame->GetScale(), mDashDuration * 0.95f, 0.5f);
     mSword = new Sword(game, this, mWidth * 3.6f, mHeight * 1.3f, 0.2f, 10.0f);
@@ -142,7 +141,7 @@ void Fox::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mDrawAnimatedComponent) {
+    if (mDrawComponent) {
         ManageAnimations();
     }
 
@@ -292,16 +291,16 @@ void Fox::MovementBeforePlayerSpotted() {
 
 void Fox::ManageAnimations() {
     if (mIsRunning) {
-        mDrawAnimatedComponent->SetAnimation("run");
+        mDrawComponent->SetAnimation("run");
     }
     else {
-        mDrawAnimatedComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation("idle");
     }
     if (mDashComponent->GetIsDashing()) {
-        mDrawAnimatedComponent->SetAnimation("dash");
+        mDrawComponent->SetAnimation("dash");
     }
     if (mIsFlashing) {
-        mDrawAnimatedComponent->SetAnimation("hit");
+        mDrawComponent->SetAnimation("hit");
     }
 }
 
@@ -310,9 +309,11 @@ void Fox::Stop(float deltaTime) {
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 
     mRigidBodyComponent->SetVelocity(Vector2(0, mRigidBodyComponent->GetVelocity().y));
@@ -352,9 +353,11 @@ void Fox::Dash(float deltaTime) {
         float dist = GetPosition().x - player->GetPosition().x;
         if (dist < 0) {
             SetRotation(0.0);
+            SetScale(Vector2(1,1));
         }
         else {
             SetRotation(Math::Pi);
+            SetScale(Vector2(-1,1));
         }
         mDashComponent->UseDash(true);
     }
@@ -377,9 +380,11 @@ void Fox::RunAway(float deltaTime) {
 
     if (dist > 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 4, mRigidBodyComponent->GetVelocity().y));
 
@@ -398,9 +403,11 @@ void Fox::RunAndSword(float deltaTime)
     float dist = GetPosition().x - player->GetPosition().x;
     if (dist < 0) {
         SetRotation(0.0);
+        SetScale(Vector2(1,1));
     }
     else {
         SetRotation(Math::Pi);
+        SetScale(Vector2(-1,1));
     }
 
     mRigidBodyComponent->SetVelocity(Vector2(GetForward().x * mMoveSpeed * 3, mRigidBodyComponent->GetVelocity().y));
@@ -414,9 +421,11 @@ void Fox::RunAndSword(float deltaTime)
 
         if (up) {
             mSword->SetRotation(3 * Math::Pi / 2);
+            mSword->SetTransformRotation(3 * Math::Pi / 2);
         }
         else {
             mSword->SetRotation(GetRotation());
+            mSword->SetScale(Vector2(GetForward().x, 1));
         }
         mSword->SetPosition(GetPosition());
         mSwordHitPlayer = false;
@@ -432,9 +441,11 @@ void Fox::Fireball(float deltaTime)
     if (!mAlreadyFireballed) {
         if (dist < 0) {
             SetRotation(0.0);
+            SetScale(Vector2(1, 1));
         }
         else {
             SetRotation(Math::Pi);
+            SetScale(Vector2(-1, 1));
         }
 
         std::vector<FireBall* > fireBalls = GetGame()->GetFireBalls();
@@ -442,6 +453,7 @@ void Fox::Fireball(float deltaTime)
             if (f->GetState() == ActorState::Paused) {
                 f->SetState(ActorState::Active);
                 f->SetRotation(GetRotation());
+                f->SetScale(Vector2(GetForward().x, 1));
                 f->SetWidth(mFireballWidth);
                 f->SetHeight(mFireBallHeight);
                 f->SetSpeed(mFireballSpeed);
@@ -494,9 +506,11 @@ void Fox::Jump(float deltaTime) {
         float dist = GetPosition().x - player->GetPosition().x;
         if (dist < 0) {
             SetRotation(0.0);
+            SetScale(Vector2(1, 1));
         }
         else {
             SetRotation(Math::Pi);
+            SetScale(Vector2(-1, 1));
         }
 
         mJumpCount++;
@@ -523,10 +537,10 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
 
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x / oldScale * newScale, mRigidBodyComponent->GetVelocity().y / oldScale * newScale));
 
-    if (mDrawAnimatedComponent) {
-        mDrawAnimatedComponent->SetWidth(mWidth * 2.3f);
-        mDrawAnimatedComponent->SetHeight(0.91f * mWidth * 2.3f);
-    }
+    // if (mDrawAnimatedComponent) {
+    //     mDrawAnimatedComponent->SetWidth(mWidth * 2.3f);
+    //     mDrawAnimatedComponent->SetHeight(0.91f * mWidth * 2.3f);
+    // }
 
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -544,7 +558,7 @@ void Fox::ChangeResolution(float oldScale, float newScale) {
         aabb->SetMax(v3);
     }
 
-    if (mDrawPolygonComponent) {
-        mDrawPolygonComponent->SetVertices(vertices);
-    }
+    // if (mDrawPolygonComponent) {
+    //     mDrawPolygonComponent->SetVertices(vertices);
+    // }
 }

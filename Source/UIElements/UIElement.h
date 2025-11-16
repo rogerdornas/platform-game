@@ -7,6 +7,8 @@
 #include "../Math.h"
 #include <SDL.h>
 
+class Renderer;
+
 class UIElement {
 public:
     UIElement(const Vector2 &pos, const Vector2 &size, const Vector3 &color);
@@ -21,7 +23,7 @@ public:
     const Vector3& GetColor() const { return mColor; }
     void SetColor(const Vector3 &color) { mColor = color; }
 
-    virtual void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) {};
+    virtual void Draw(Renderer* renderer, const Vector2 &screenPos) {};
 
     virtual void ChangeResolution(float oldScale, float newScale) {};
 
