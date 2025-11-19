@@ -22,7 +22,9 @@ DynamicGround::DynamicGround(Game* game, float width, float height, bool isSpike
     ,mIsOscillating(false)
     ,mGrowthDirection(GrowthDirection::Centered)
 {
-    mDrawComponent->SetDrawOrder(100);
+    if (mDrawComponent) {
+        mDrawComponent->SetDrawOrder(100);
+    }
     // RemoveComponent(mDrawGroundSpritesComponent);
     // delete mDrawGroundSpritesComponent;
     // mDrawGroundSpritesComponent = nullptr;
@@ -70,82 +72,80 @@ void DynamicGround::OnUpdate(float deltaTime) {
             mIsGrowing = true;
         }
     }
-    if (mIsGrowing || mIsDecreasing) {
-        float growX = 0;
-        float growY = 0;
-        if (mIsGrowing) {
-            growX = mGrowSpeed.x * deltaTime;
-            growY = mGrowSpeed.y * deltaTime;
-            if (mWidth + growX > mMaxWidth) {
-                growX = mMaxWidth - mWidth;
-            }
-            if (mHeight + growY > mMaxHeight) {
-                growY = mMaxHeight - mHeight;
-            }
+    float growX = 0;
+    float growY = 0;
+    if (mIsGrowing) {
+        growX = mGrowSpeed.x * deltaTime;
+        growY = mGrowSpeed.y * deltaTime;
+        if (mWidth + growX > mMaxWidth) {
+            growX = mMaxWidth - mWidth;
         }
-        if (mIsDecreasing) {
-            growX = -mGrowSpeed.x * deltaTime;
-            growY = -mGrowSpeed.y * deltaTime;
-            if (mWidth + growX < mMinWidth) {
-                growX = mMinWidth - mWidth;
-            }
-            if (mHeight + growY < mMinHeight) {
-                growY = mMinHeight - mHeight;
-            }
+        if (mHeight + growY > mMaxHeight) {
+            growY = mMaxHeight - mHeight;
         }
+    }
+    if (mIsDecreasing) {
+        growX = -mGrowSpeed.x * deltaTime;
+        growY = -mGrowSpeed.y * deltaTime;
+        if (mWidth + growX < mMinWidth) {
+            growX = mMinWidth - mWidth;
+        }
+        if (mHeight + growY < mMinHeight) {
+            growY = mMinHeight - mHeight;
+        }
+    }
 
-        mWidth += growX;
-        mHeight += growY;
+    mWidth += growX;
+    mHeight += growY;
 
-        if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
-            mIsGrowing = false;
-        }
-        if (mWidth <= mMinWidth && mHeight <= mMinHeight) {
-            mIsDecreasing = false;
-        }
+    if (mWidth >= mMaxWidth && mHeight >= mMaxHeight) {
+        mIsGrowing = false;
+    }
+    if (mWidth <= mMinWidth && mHeight <= mMinHeight) {
+        mIsDecreasing = false;
+    }
 
-        Vector2 v1(-mWidth / 2, -mHeight / 2);
-        Vector2 v2(mWidth / 2, -mHeight / 2);
-        Vector2 v3(mWidth / 2, mHeight / 2);
-        Vector2 v4(-mWidth / 2, mHeight / 2);
+    Vector2 v1(-mWidth / 2, -mHeight / 2);
+    Vector2 v2(mWidth / 2, -mHeight / 2);
+    Vector2 v3(mWidth / 2, mHeight / 2);
+    Vector2 v4(-mWidth / 2, mHeight / 2);
 
-        std::vector<Vector2> vertices;
-        vertices.emplace_back(v1);
-        vertices.emplace_back(v2);
-        vertices.emplace_back(v3);
-        vertices.emplace_back(v4);
+    std::vector<Vector2> vertices;
+    vertices.emplace_back(v1);
+    vertices.emplace_back(v2);
+    vertices.emplace_back(v3);
+    vertices.emplace_back(v4);
 
-        if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
-            aabb->SetMin(v1);
-            aabb->SetMax(v3);
-        }
-        if (mRectComponent) {
-            // mDrawPolygonComponent->SetVertices(vertices);
-            mRectComponent->SetWidth(mWidth);
-            mRectComponent->SetHeight(mHeight);
-        }
+    if (auto* aabb = dynamic_cast<AABBComponent*>(mAABBComponent)) {
+        aabb->SetMin(v1);
+        aabb->SetMax(v3);
+    }
+    if (mRectComponent) {
+        // mDrawPolygonComponent->SetVertices(vertices);
+        mRectComponent->SetWidth(mWidth);
+        mRectComponent->SetHeight(mHeight);
+    }
 
-        if (mDrawComponent) {
-            mDrawComponent->SetCurrentWidth(mWidth);
-            mDrawComponent->SetCurrentHeight(mHeight);
-        }
+    if (mDrawComponent) {
+        mDrawComponent->SetCurrentWidth(mWidth);
+        mDrawComponent->SetCurrentHeight(mHeight);
+    }
 
-        switch (mGrowthDirection) {
-            case GrowthDirection::Right:
-                SetPosition(Vector2(GetPosition().x + growX / 2.0f, GetPosition().y));
-                break;
-            case GrowthDirection::Left:
-                SetPosition(Vector2(GetPosition().x - growX / 2.0f, GetPosition().y));
-                break;
-            case GrowthDirection::Up:
-                SetPosition(Vector2(GetPosition().x, GetPosition().y - growY / 2.0f));
-                break;
-            case GrowthDirection::Down:
-                SetPosition(Vector2(GetPosition().x, GetPosition().y + growY / 2.0f));
-                break;
-            default:
-                break;
-        }
+    switch (mGrowthDirection) {
+        case GrowthDirection::Right:
+            SetPosition(Vector2(GetPosition().x + growX / 2.0f, GetPosition().y));
+            break;
+        case GrowthDirection::Left:
+            SetPosition(Vector2(GetPosition().x - growX / 2.0f, GetPosition().y));
+            break;
+        case GrowthDirection::Up:
+            SetPosition(Vector2(GetPosition().x, GetPosition().y - growY / 2.0f));
+            break;
+        case GrowthDirection::Down:
+            SetPosition(Vector2(GetPosition().x, GetPosition().y + growY / 2.0f));
+            break;
+        default:
+            break;
     }
 }
 

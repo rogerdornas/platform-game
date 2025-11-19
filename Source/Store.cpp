@@ -95,25 +95,29 @@ void Store::OpenStore() {
     if (mStoreOpened) {
         return;
     }
+
+    float virtualWidth = mGame->GetRenderer()->GetVirtualWidth();
+    float virtualHeight = mGame->GetRenderer()->GetVirtualHeight();
+
     mStoreMenu = new UIScreen(mGame, mFontName);
-    const Vector2 buttonSize = Vector2(mGame->GetLogicalWindowWidth() * 0.35f, 75 * mGame->GetScale());
-    mStoreMenu->SetSize(Vector2(mGame->GetLogicalWindowWidth() / 2, 2 * mGame->GetLogicalWindowHeight() / 3));
-    mStoreMenu->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 4, mGame->GetLogicalWindowHeight() / 6));
-    Vector2 buttonPos = Vector2(mStoreMenu->GetSize().x / 20, 0);
+    const Vector2 buttonSize = Vector2(virtualWidth * 0.35f, 75);
+    mStoreMenu->SetSize(Vector2(virtualWidth / 2, 2 * virtualHeight / 3));
+    mStoreMenu->SetPosition(Vector2(virtualWidth / 4, virtualHeight / 6));
+    Vector2 buttonPos = Vector2(mStoreMenu->GetSize().x / 20, 0.0f);
 
-    float costPosX = mStoreMenu->GetSize().x - 150 * mGame->GetScale();
-    float moneyImgX = mStoreMenu->GetSize().x - 180 * mGame->GetScale();
+    float costPosX = mStoreMenu->GetSize().x - 150;
+    float moneyImgX = mStoreMenu->GetSize().x - 180;
 
-    auto* background = mStoreMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", -1.2 * mStoreMenu->GetPosition(), Vector2(mGame->GetLogicalWindowWidth(), mGame->GetLogicalWindowHeight()) * 1.5f);
-    background->SetTransparency(128);
+    auto* background = mStoreMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", mStoreMenu->GetSize() / 2, Vector2(virtualWidth, virtualHeight) * 1.5f);
+    background->SetAlpha(0.5f);
 
-    mStoreMenu->AddImage("../Assets/Sprites/Background/Store.png", Vector2::Zero, mStoreMenu->GetSize());
+    mStoreMenu->AddImage("../Assets/Sprites/Background/Store.png", mStoreMenu->GetSize() / 2, mStoreMenu->GetSize());
 
-    UIText* text = mStoreMenu->AddText("LOJA", Vector2::Zero, Vector2::Zero, 40 * mGame->GetScale());
-    text->SetPosition(Vector2((mStoreMenu->GetSize().x - text->GetSize().x) / 2, 20 * mGame->GetScale()));
+    UIText* text = mStoreMenu->AddText("LOJA", Vector2::Zero, Vector2::Zero, 40);
+    text->SetPosition(Vector2(mStoreMenu->GetSize().x / 2, 40));
 
-    int buttonPointSize = static_cast<int>(34 * mGame->GetScale());
-    Vector2 textPos = Vector2(buttonSize.x / 20, buttonSize.y / 5);
+    int buttonPointSize = static_cast<int>(34);
+    Vector2 textPos = Vector2(10, 0);
 
     if (mSwordRangeUpgrade) {
         mTextColor = Color::Red;
@@ -136,8 +140,8 @@ void Store::OpenStore() {
     }, textPos, mTextColor);
     std::string cost = std::to_string(mSwordRangeUpgradeCost);
     text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
-    text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    text->SetPosition(Vector2(costPosX + text->GetSize().x / 2, button->GetPosition().y + button->GetSize().y / 2));
+    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 2), Vector2(20, 35));
 
     if (mManaUpgrade) {
         mTextColor = Color::Red;
@@ -161,8 +165,8 @@ void Store::OpenStore() {
     }, textPos, mTextColor);
     cost = std::to_string(mManaUpgradeCost);
     text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
-    text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    text->SetPosition(Vector2(costPosX + text->GetSize().x / 2, button->GetPosition().y + button->GetSize().y / 2));
+    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 2), Vector2(20, 35));
 
     if (mHealthPointsUpgrade) {
         mTextColor = Color::Red;
@@ -186,8 +190,8 @@ void Store::OpenStore() {
     }, textPos, mTextColor);
     cost = std::to_string(mHealthPointsUpgradeCost);
     text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
-    text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    text->SetPosition(Vector2(costPosX + text->GetSize().x / 2, button->GetPosition().y + button->GetSize().y / 2));
+    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 2), Vector2(20, 35));
 
     if (mHealCountUpgrade) {
         mTextColor = Color::Red;
@@ -210,8 +214,8 @@ void Store::OpenStore() {
     }, textPos, mTextColor);
     cost = std::to_string(mHealCountUpgradeCost);
     text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
-    text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    text->SetPosition(Vector2(costPosX + text->GetSize().x / 2, button->GetPosition().y + button->GetSize().y / 2));
+    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 2), Vector2(20, 35));
 
     if (mSwordSpeedUpgrade) {
         mTextColor = Color::Red;
@@ -234,8 +238,8 @@ void Store::OpenStore() {
     }, textPos, mTextColor);
     cost = std::to_string(mSwordSpeedUpgradeCost);
     text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
-    text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    text->SetPosition(Vector2(costPosX + text->GetSize().x / 2, button->GetPosition().y + button->GetSize().y / 2));
+    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 2), Vector2(20, 35));
 
     if (mSwordDamageUpgrade) {
         mTextColor = Color::Red;
@@ -258,8 +262,8 @@ void Store::OpenStore() {
     }, textPos, mTextColor);
     cost = std::to_string(mSwordDamageUpgradeCost);
     text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
-    text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+    text->SetPosition(Vector2(costPosX + text->GetSize().x / 2, button->GetPosition().y + button->GetSize().y / 2));
+    mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 2), Vector2(20, 35));
 
     if (mFireballUpgrade) {
         mTextColor = Color::Red;
@@ -283,23 +287,23 @@ void Store::OpenStore() {
         }, textPos, mTextColor);
         cost = std::to_string(mFireballUpgradeCost);
         text = mStoreMenu->AddText(cost, Vector2::Zero, Vector2::Zero, buttonPointSize, mTextColor);
-        text->SetPosition(Vector2(costPosX, button->GetPosition().y + button->GetSize().y / 5));
-        mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 4), Vector2(20, 35) * mGame->GetScale());
+        text->SetPosition(Vector2(costPosX + text->GetSize().x / 2, button->GetPosition().y + button->GetSize().y / 2));
+        mStoreMenu->AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(moneyImgX, button->GetPosition().y + button->GetSize().y / 2), Vector2(20, 35));
     }
 
     name = "FECHAR LOJA";
-    mStoreMenu->AddButton(name, buttonPos + Vector2(0, mStoreMenu->GetSize().y - buttonSize.y * 1.2f), Vector2(mGame->GetLogicalWindowWidth() * 0.45f, 75 * mGame->GetScale()), buttonPointSize, UIButton::TextPos::Center,
+    mStoreMenu->AddButton(name, buttonPos + Vector2(0, mStoreMenu->GetSize().y - buttonSize.y * 1.2f), Vector2(virtualWidth * 0.45f, 75), buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         CloseStore();
     });
 
     if (mGame->GetIsPlayingOnKeyboard()) {
-        text = mStoreMenu->AddText("PRESSIONE [ENTER] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
-        text->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 12, 17 * mGame->GetLogicalWindowHeight() / 24));
+        text = mStoreMenu->AddText("PRESSIONE [ENTER] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
+        text->SetPosition(Vector2(virtualWidth / 12, 17 * virtualHeight / 24));
     }
     else {
-        text = mStoreMenu->AddText("PRESSIONE [A] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
-        text->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 12, 17 * mGame->GetLogicalWindowHeight() / 24));
+        text = mStoreMenu->AddText("PRESSIONE [A] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
+        text->SetPosition(Vector2(virtualWidth / 12, 17 * virtualHeight / 24));
     }
 
     mStoreOpened = true;
@@ -323,15 +327,18 @@ void Store::LoadStoreMessage() {
         return;
     }
 
+    float virtualWidth = mGame->GetRenderer()->GetVirtualWidth();
+    float virtualHeight = mGame->GetRenderer()->GetVirtualHeight();
+
     mStoreMessage = new UIScreen(mGame, "../Assets/Fonts/K2D-Bold.ttf");
-    mStoreMessage->SetSize(Vector2(mGame->GetLogicalWindowWidth() / 3, 2 * mGame->GetLogicalWindowHeight() / 6));
-    mStoreMessage->SetPosition(Vector2(mGame->GetLogicalWindowWidth() / 3, 7 * mGame->GetLogicalWindowHeight() / 8));
+    mStoreMessage->SetSize(Vector2(virtualWidth / 3, 2 * virtualHeight / 6));
+    mStoreMessage->SetPosition(Vector2(virtualWidth / 3, 7 * virtualHeight / 8));
 
     if (mGame->GetIsPlayingOnKeyboard()) {
-        mStoreMessage->AddText("PRESSIONE [ESPAÇO] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+        mStoreMessage->AddText("PRESSIONE [ESPAÇO] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
     }
     else {
-        mStoreMessage->AddText("PRESSIONE [Y] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30 * mGame->GetScale()));
+        mStoreMessage->AddText("PRESSIONE [Y] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
     }
     mStoreMessageOpened = true;
 }

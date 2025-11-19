@@ -8,8 +8,8 @@
 
 HUD::HUD(class Game* game, const std::string& fontName)
     :UIScreen(game, fontName)
-    ,mSpeedHPDecrease(200.0f * mGame->GetScale())
-    ,mSpeedHPIncrease(200.0f * mGame->GetScale())
+    ,mSpeedHPDecrease(200.0f)
+    ,mSpeedHPIncrease(200.0f)
     ,mNumOfSubManaBars(mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost())
     ,mWaitToDecreaseDuration(0.7f)
     ,mWaitToDecreaseTimer(0.0f)
@@ -20,20 +20,20 @@ HUD::HUD(class Game* game, const std::string& fontName)
     ,mBossFight(false)
     ,mBoss(nullptr)
 {
-    float HPBarX = 50 * mGame->GetScale();
-    float HPBarY = 50 * mGame->GetScale();
-    float HPBarWidth = mGame->GetPlayer()->GetMaxHealthPoints() * 5 * mGame->GetScale();
-    float HPBarHeight = 30 * mGame->GetScale();
+    float HPBarX = 50;
+    float HPBarY = 50;
+    float HPBarWidth = mGame->GetPlayer()->GetMaxHealthPoints() * 5;
+    float HPBarHeight = 30;
 
-    float ManaBarX = 50 * mGame->GetScale();
-    float ManaBarY = 85 * mGame->GetScale();
-    float ManaBarWidth = mGame->GetPlayer()->GetMaxMana() * 2.5 * mGame->GetScale();
-    float ManaBarHeight = 30 * mGame->GetScale();
+    float ManaBarX = 50;
+    float ManaBarY = 85;
+    float ManaBarWidth = mGame->GetPlayer()->GetMaxMana() * 2.5;
+    float ManaBarHeight = 30;
 
-    float bossHPBarX = mGame->GetLogicalWindowWidth() * 0.15f;
-    float bossHPBarY = mGame->GetLogicalWindowHeight() * 0.95f;
-    float bossHPBarWidth = mGame->GetLogicalWindowWidth() * 0.7f;
-    float bossHPBarHeight = 30 * mGame->GetScale();
+    float bossHPBarX = mGame->GetRenderer()->GetVirtualWidth() * 0.15f;
+    float bossHPBarY = mGame->GetRenderer()->GetVirtualHeight() * 0.95f;
+    float bossHPBarWidth = mGame->GetRenderer()->GetVirtualWidth() * 0.7f;
+    float bossHPBarHeight = 30;
 
     mHPBar = {HPBarX, HPBarY,HPBarWidth,HPBarHeight};
     mDamageTakenBar = mHPBar;
@@ -52,29 +52,29 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mBossHPGrowingBar = mBossHPBar;
 
     mPlayerHealCount = AddText(std::to_string(mGame->GetPlayer()->GetHealCount()),
-                                Vector2(50, 120) * mGame->GetScale(),
-                               Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(),
-                                POINT_SIZE * mGame->GetScale());
+                                Vector2(65, 138),
+                               Vector2(CHAR_WIDTH, WORD_HEIGHT),
+                                POINT_SIZE);
 
     if (mGame->GetPlayer()->GetHealCount() == 0) {
-        mPotion = AddImage("../Assets/Sprites/Healingpotions/empty.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/empty.png", Vector2(96, 139), Vector2(32, 32));
     }
     else if (mGame->GetPlayer()->GetHealCount() == 1) {
-        mPotion = AddImage("../Assets/Sprites/Healingpotions/bemVazia.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/bemVazia.png", Vector2(96, 139), Vector2(32, 32));
     }
     else if (mGame->GetPlayer()->GetHealCount() == 2) {
-        mPotion = AddImage("../Assets/Sprites/Healingpotions/meioVazia.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/meioVazia.png", Vector2(96, 139), Vector2(32, 32));
     }
     else if (mGame->GetPlayer()->GetHealCount() == 3 || mGame->GetPlayer()->GetHealCount() == 4) {
-        mPotion = AddImage("../Assets/Sprites/Healingpotions/cheia.png", Vector2(80, 123) * mGame->GetScale(), Vector2(32, 32) * mGame->GetScale());
+        mPotion = AddImage("../Assets/Sprites/Healingpotions/cheia.png", Vector2(96, 139), Vector2(32, 32));
     }
 
-    AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(1765, 52) * mGame->GetScale(), Vector2(20, 35) * mGame->GetScale());
+    AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(1770, 68), Vector2(20, 35));
 
     mPlayerMoney = AddText(std::to_string(mGame->GetPlayer()->GetMoney()),
-                                Vector2(1800, 50) * mGame->GetScale(),
-                               Vector2(CHAR_WIDTH, WORD_HEIGHT) * mGame->GetScale(),
-                                POINT_SIZE * mGame->GetScale());
+                                Vector2(1815, 65),
+                               Vector2(CHAR_WIDTH, WORD_HEIGHT),
+                                POINT_SIZE);
 }
 
 HUD::~HUD()
@@ -202,11 +202,11 @@ void HUD::EndBossFight() {
 
 
 void HUD::IncreaseHPBar() {
-    mHPBar.w = mGame->GetPlayer()->GetMaxHealthPoints() * 5 * mGame->GetScale();
+    mHPBar.w = mGame->GetPlayer()->GetMaxHealthPoints() * 5;
 }
 
 void HUD::IncreaseManaBar() {
-    mManaBar.w = mGame->GetPlayer()->GetMaxMana() * 2.5 * mGame->GetScale();
+    mManaBar.w = mGame->GetPlayer()->GetMaxMana() * 2.5;
     mNumOfSubManaBars = mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost();
 }
 
@@ -260,15 +260,26 @@ void HUD::DrawLifeBar(class Renderer *renderer) {
 
     // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
     // SDL_RenderFillRect(renderer, &HPBar);
-    //
+    renderer->DrawRect(Vector2(HPBar.x, HPBar.y) + Vector2(HPBar.w, HPBar.h) / 2, Vector2(HPBar.w, HPBar.h), 0.0f,
+                         Vector3(40 / 255.0f, 40 / 255.0f, 40 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 150 / 255.0f);
+
     // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
     // SDL_RenderFillRect(renderer, &DamageTakenBar);
-    //
+    renderer->DrawRect(Vector2(DamageTakenBar.x, DamageTakenBar.y) + Vector2(DamageTakenBar.w, DamageTakenBar.h) / 2, Vector2(DamageTakenBar.w, DamageTakenBar.h), 0.0f,
+                     Vector3(240 / 255.0f, 234 / 255.0f, 95 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+
+
     // SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
     // SDL_RenderFillRect(renderer, &HPRemainingBar);
-    //
+    renderer->DrawRect(Vector2(HPRemainingBar.x, HPRemainingBar.y) + Vector2(HPRemainingBar.w, HPRemainingBar.h) / 2, Vector2(HPRemainingBar.w, HPRemainingBar.h), 0.0f,
+                     Vector3(242 / 255.0f, 121 / 255.0f, 123 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 100 / 255.0f);
+
+
     // SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
     // SDL_RenderFillRect(renderer, &HPGrowingBar);
+    renderer->DrawRect(Vector2(HPGrowingBar.x, HPGrowingBar.y) + Vector2(HPGrowingBar.w, HPGrowingBar.h) / 2, Vector2(HPGrowingBar.w, HPGrowingBar.h), 0.0f,
+                     Vector3(242 / 255.0f, 90 / 255.0f, 70 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+
 }
 
 void HUD::DrawManaBar(struct Renderer *renderer) {
@@ -293,13 +304,19 @@ void HUD::DrawManaBar(struct Renderer *renderer) {
 
     // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
     // SDL_RenderFillRect(renderer, &ManaBar);
-    //
+    renderer->DrawRect(Vector2(ManaBar.x, ManaBar.y) + Vector2(ManaBar.w, ManaBar.h) / 2, Vector2(ManaBar.w, ManaBar.h), 0.0f,
+                 Vector3(40 / 255.0f, 40 / 255.0f, 40 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 150 / 255.0f);
+
     // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
     // SDL_RenderFillRect(renderer, &ManaUsedBar);
-    //
+    renderer->DrawRect(Vector2(ManaUsedBar.x, ManaUsedBar.y) + Vector2(ManaUsedBar.w, ManaUsedBar.h) / 2, Vector2(ManaUsedBar.w, ManaUsedBar.h), 0.0f,
+             Vector3(240 / 255.0f, 234 / 255.0f, 95 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+
     // SDL_SetRenderDrawColor(renderer, 65, 188, 217, 255);
     // SDL_RenderFillRect(renderer, &ManaRemainingBar);
-    //
+    renderer->DrawRect(Vector2(ManaRemainingBar.x, ManaRemainingBar.y) + Vector2(ManaRemainingBar.w, ManaRemainingBar.h) / 2, Vector2(ManaRemainingBar.w, ManaRemainingBar.h), 0.0f,
+             Vector3(65 / 255.0f, 188 / 255.0f, 217 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+
     // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     // for (int i = 1; i < mNumOfSubManaBars; i++) {
     //     SDL_RenderDrawLine(renderer,
@@ -308,6 +325,11 @@ void HUD::DrawManaBar(struct Renderer *renderer) {
     //                 mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
     //                 mManaBar.y + mManaBar.h);
     // }
+    for (int i = 1; i < mNumOfSubManaBars; i++) {
+        renderer->DrawLine(Vector2(mManaBar.x + i * mManaBar.w / mNumOfSubManaBars, mManaBar.y),
+                           Vector2(mManaBar.x + i * mManaBar.w / mNumOfSubManaBars, mManaBar.y + mManaBar.h),
+                           Vector3(0, 0, 0), 1.0f, Vector2::Zero, 1.0f);
+    }
 }
 
 void HUD::DrawBossLifeBar(struct Renderer *renderer) {
@@ -337,15 +359,23 @@ void HUD::DrawBossLifeBar(struct Renderer *renderer) {
 
     // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
     // SDL_RenderFillRect(renderer, &HPBar);
-    //
+    renderer->DrawRect(Vector2(HPBar.x, HPBar.y) + Vector2(HPBar.w, HPBar.h) / 2, Vector2(HPBar.w, HPBar.h), 0.0f,
+                     Vector3(40 / 255.0f, 40 / 255.0f, 40 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 150 / 255.0f);
+
     // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
     // SDL_RenderFillRect(renderer, &DamageTakenBar);
-    //
+    renderer->DrawRect(Vector2(DamageTakenBar.x, DamageTakenBar.y) + Vector2(DamageTakenBar.w, DamageTakenBar.h) / 2, Vector2(DamageTakenBar.w, DamageTakenBar.h), 0.0f,
+                 Vector3(240 / 255.0f, 234 / 255.0f, 95 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+
     // SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
     // SDL_RenderFillRect(renderer, &HPRemainingBar);
-    //
+    renderer->DrawRect(Vector2(HPRemainingBar.x, HPRemainingBar.y) + Vector2(HPRemainingBar.w, HPRemainingBar.h) / 2, Vector2(HPRemainingBar.w, HPRemainingBar.h), 0.0f,
+                 Vector3(242 / 255.0f, 121 / 255.0f, 123 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 100 / 255.0f);
+
     // SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
     // SDL_RenderFillRect(renderer, &HPGrowingBar);
+    renderer->DrawRect(Vector2(HPGrowingBar.x, HPGrowingBar.y) + Vector2(HPGrowingBar.w, HPGrowingBar.h) / 2, Vector2(HPGrowingBar.w, HPGrowingBar.h), 0.0f,
+             Vector3(242 / 255.0f, 90 / 255.0f, 70 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
 }
 
 

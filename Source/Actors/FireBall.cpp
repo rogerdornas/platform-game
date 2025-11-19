@@ -138,7 +138,7 @@ void FireBall::OnUpdate(float deltaTime) {
             }
             if (mLight) {
                 // mLight->SetActivate(false);
-                mLight->Deactivate(0.5f);
+                mLight->Deactivate(0.7f);
             }
             break;
     }
@@ -204,11 +204,11 @@ void FireBall::Activate() {
     if (!mLight) {
         mLight = new Light(mGame);
         mLight->SetRadius(250.0f);
-        mLight->SetMaxIntensity(0.95f);
+        mLight->SetMaxIntensity(1.2f);
         mLight->SetColor(Vector3(0.72f, 0.37f, 0.37f));
     }
     if (mLight) {
-        mLight->Activate(0.2f);
+        mLight->Activate(0.1f);
     }
 }
 

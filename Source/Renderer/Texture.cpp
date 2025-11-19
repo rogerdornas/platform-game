@@ -60,7 +60,10 @@ bool Texture::Load(const std::string &filePath)
 
 bool Texture::LoadFromSurface(SDL_Surface *surface) {
     if (!surface)
+    {
+        SDL_Log("Falha ao carregar textura: SDL_Surface está nula.");
         return false;
+    }
 
     mWidth = surface->w;
     mHeight = surface->h;
@@ -69,31 +72,55 @@ bool Texture::LoadFromSurface(SDL_Surface *surface) {
     glBindTexture(GL_TEXTURE_2D, mTextureID);
 
     GLenum format = GL_RGBA;
+    GLint bytesPerPixel = surface->format->BytesPerPixel;
 
-    // Detecta formato do SDL_Surface
-    if (surface->format->BytesPerPixel == 3)
+    if (bytesPerPixel == 3)
     {
         format = (surface->format->Rmask == 0x000000ff) ? GL_RGB : GL_BGR;
     }
-    else if (surface->format->BytesPerPixel == 4)
+    else if (bytesPerPixel == 4)
     {
         format = (surface->format->Rmask == 0x000000ff) ? GL_RGBA : GL_BGRA;
     }
     else
     {
-        SDL_Log("Formato de textura desconhecido!");
+        SDL_Log("Formato de textura desconhecido! BytesPerPixel: %d", bytesPerPixel);
+        glDeleteTextures(1, &mTextureID); // Limpa o ID gerado
+        mTextureID = 0;
         return false;
     }
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    // Salva os valores antigos para restaurá-los depois
+    GLint oldAlignment;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &oldAlignment);
+    GLint oldRowLength;
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &oldRowLength);
 
-    // Envia pixels para GPU
+    // Define os valores necessários para carregar o SDL_Surface
+    // GL_UNPACK_ALIGNMENT, 1 é seguro para qualquer surface.
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    // GL_UNPACK_ROW_LENGTH informa ao OpenGL o "pitch" em pixels.
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, surface->pitch / bytesPerPixel);
+
+
+    // Usamos GL_RGBA como formato *interno* para consistência.
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0,
                  format, GL_UNSIGNED_BYTE, surface->pixels);
 
-    // Configura filtros
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    // Isso evita que o carregamento de *outras* texturas quebre.
+    glPixelStorei(GL_UNPACK_ALIGNMENT, oldAlignment);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, oldRowLength);
+
+    // 5. Configurar filtros (LINEAR é melhor para fontes)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Adicionar Clamp to Edge é bom para fontes, evita "sangramento"
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // Desvincular textura (boa prática)
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     return true;
 }

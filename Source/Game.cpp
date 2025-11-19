@@ -689,18 +689,21 @@ void Game::LoadMainMenu() {
 }
 
 void Game::LoadConfirmQuitGameMenu() {
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
+
     mConfirmQuitGameMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth / 5, 0.046f * mLogicalWindowHeight);
-    mConfirmQuitGameMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
-    mConfirmQuitGameMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 2 * mLogicalWindowHeight / 3));
+    const Vector2 buttonSize = Vector2(virtualWidth / 5, 0.046f * virtualHeight);
+    mConfirmQuitGameMenu->SetSize(Vector2(virtualWidth / 3, virtualHeight / 3));
+    mConfirmQuitGameMenu->SetPosition(Vector2(virtualWidth / 3, 2 * virtualHeight / 3));
     Vector2 buttonPos = Vector2((mConfirmQuitGameMenu->GetSize().x - buttonSize.x) / 2, mConfirmQuitGameMenu->GetSize().y * 0.30f);
-    float distanceBetweenButtons = 0.064f * mLogicalWindowHeight;
+    float distanceBetweenButtons = 0.064f * virtualHeight;
 
     UIText* text = mConfirmQuitGameMenu->AddText("SAIR DO JOGO?", Vector2::Zero, Vector2::Zero, 0.035f * mWindowHeight);
-    text->SetPosition(Vector2((mConfirmQuitGameMenu->GetSize().x - text->GetSize().x) / 2, 0.0f));
+    text->SetPosition(Vector2(mConfirmQuitGameMenu->GetSize().x / 2, 0.0f));
 
     std::string name = "SIM";
-    int buttonPointSize = static_cast<int>(0.031f * mLogicalWindowHeight);
+    int buttonPointSize = static_cast<int>(0.031f * virtualHeight);
     mConfirmQuitGameMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         Quit();
@@ -715,18 +718,21 @@ void Game::LoadConfirmQuitGameMenu() {
 }
 
 void Game::LoadLoadGameMenu() {
-    mLoadGameMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mLoadGameMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
-    mLoadGameMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
 
-    auto buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.65f, 0.14f * mLogicalWindowHeight);
-    auto buttonPointSize = static_cast<int>(0.033f * mLogicalWindowHeight);
+    mLoadGameMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mLoadGameMenu->SetSize(Vector2(virtualWidth * 0.8f, virtualHeight * 0.85f));
+    mLoadGameMenu->SetPosition(Vector2(virtualWidth * 0.1f, virtualHeight * 0.13f));
+
+    auto buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.65f, 0.14f * virtualHeight);
+    auto buttonPointSize = static_cast<int>(0.033f * virtualHeight);
     auto buttonPos = Vector2(mLoadGameMenu->GetSize().x * 0.05f, mLoadGameMenu->GetSize().y * 0.2f);
-    float distanceBetweenButtons = 0.16f * mLogicalWindowHeight;
+    float distanceBetweenButtons = 0.16f * virtualHeight;
 
     mLoadGameMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", mLoadGameMenu->GetSize() / 2, mLoadGameMenu->GetSize());
 
-    UIText* text = mLoadGameMenu->AddText("SELECIONAR PERFIL", Vector2::Zero, Vector2::Zero, 0.046f * mLogicalWindowHeight);
+    UIText* text = mLoadGameMenu->AddText("SELECIONAR PERFIL", Vector2::Zero, Vector2::Zero, 0.046f * virtualHeight);
     text->SetPosition(Vector2(mLoadGameMenu->GetSize().x / 2, mLoadGameMenu->GetSize().y * 0.05f));
 
     std::string name = "   SLOT 1";
@@ -793,7 +799,7 @@ void Game::LoadLoadGameMenu() {
             LoadGame();
         });
 
-    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.20f, 0.046f * mLogicalWindowHeight);
+    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.20f, 0.046f * virtualHeight);
     buttonPos = Vector2(mLoadGameMenu->GetSize().x * 0.75f, mLoadGameMenu->GetSize().y * 0.25f);
 
     name = "DELETAR SAVE";
@@ -828,8 +834,8 @@ void Game::LoadLoadGameMenu() {
             mSaveManager->DeleteSave(4);
         });
 
-    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.2f, 0.046f * mLogicalWindowHeight);
-    buttonPos = Vector2((mLoadGameMenu->GetSize().x - buttonSize.x) / 2, mLoadGameMenu->GetSize().y - 0.056f * mLogicalWindowHeight);
+    buttonSize = Vector2(mLoadGameMenu->GetSize().x * 0.2f, 0.046f * virtualHeight);
+    buttonPos = Vector2((mLoadGameMenu->GetSize().x - buttonSize.x) / 2, mLoadGameMenu->GetSize().y - 0.056f * virtualHeight);
     name = "VOLTAR";
     mLoadGameMenu->AddButton(name, buttonPos,
         buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -840,18 +846,21 @@ void Game::LoadLoadGameMenu() {
 
 
 void Game::LoadPauseMenu() {
-    mPauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.22f, 0.046f * mLogicalWindowHeight);
-    mPauseMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
-    mPauseMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
-    Vector2 buttonPos = Vector2((mPauseMenu->GetSize().x - buttonSize.x) / 2, 0.0f);
-    float distanceBetweenButtons = 0.064f * mLogicalWindowHeight;
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
 
-    auto* background = mPauseMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", mPauseMenu->GetSize() / 2, Vector2(mLogicalWindowWidth, mLogicalWindowHeight) * 1.5f);
-    background->SetTransparency(128);
+    mPauseMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    const Vector2 buttonSize = Vector2(virtualWidth * 0.22f, 0.046f * virtualHeight);
+    mPauseMenu->SetSize(Vector2(virtualWidth / 3, virtualHeight / 3));
+    mPauseMenu->SetPosition(Vector2(virtualWidth / 3, 5 * virtualHeight / 12));
+    Vector2 buttonPos = Vector2((mPauseMenu->GetSize().x - buttonSize.x) / 2, 0.0f);
+    float distanceBetweenButtons = 0.064f * virtualHeight;
+
+    auto* background = mPauseMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", mPauseMenu->GetSize() / 2, Vector2(virtualWidth, virtualHeight) * 1.5f);
+    background->SetAlpha(0.5f);
 
     std::string name = "CONTINUAR";
-    int buttonPointSize = static_cast<int>(0.031f * mLogicalWindowHeight);
+    int buttonPointSize = static_cast<int>(0.031f * virtualHeight);
     mPauseMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         TogglePause();
@@ -886,20 +895,23 @@ void Game::LoadPauseMenu() {
 }
 
 void Game::LoadConfirmBackToMenu() {
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
+
     mConfirmBackToMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    const Vector2 buttonSize = Vector2(mLogicalWindowWidth * 0.22f, 50 * mScale);
-    mConfirmBackToMenu->SetSize(Vector2(mLogicalWindowWidth / 3, mLogicalWindowHeight / 3));
-    mConfirmBackToMenu->SetPosition(Vector2(mLogicalWindowWidth / 3, 5 * mLogicalWindowHeight / 12));
+    const Vector2 buttonSize = Vector2(virtualWidth * 0.22f, 50);
+    mConfirmBackToMenu->SetSize(Vector2(virtualWidth / 3, virtualHeight / 3));
+    mConfirmBackToMenu->SetPosition(Vector2(virtualWidth / 3, 5 * virtualHeight / 12));
     Vector2 buttonPos = Vector2((mConfirmBackToMenu->GetSize().x - buttonSize.x) / 2, mConfirmBackToMenu->GetSize().y * 0.30f);
 
-    auto* background = mConfirmBackToMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", -1.2 * mConfirmBackToMenu->GetPosition(), Vector2(mLogicalWindowWidth, mLogicalWindowHeight) * 1.5f);
-    background->SetTransparency(128);
+    auto* background = mConfirmBackToMenu->AddImage("../Assets/Sprites/Menus/FundoPreto.png", mConfirmBackToMenu->GetSize() / 2, Vector2(virtualWidth, virtualHeight) * 1.5f);
+    background->SetAlpha(0.5f);
 
     UIText* text = mConfirmBackToMenu->AddText("VOLTAR AO MENU?", Vector2::Zero, Vector2::Zero, 38 * mScale);
-    text->SetPosition(Vector2((mConfirmBackToMenu->GetSize().x - text->GetSize().x) / 2, 0.0f));
+    text->SetPosition(Vector2(mConfirmBackToMenu->GetSize().x / 2, 0.0f));
 
     std::string name = "SIM";
-    int buttonPointSize = static_cast<int>(34 * mScale);
+    int buttonPointSize = static_cast<int>(34);
     mConfirmBackToMenu->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         SaveGame();
@@ -912,7 +924,7 @@ void Game::LoadConfirmBackToMenu() {
     });
 
     name = "NÃO";
-    mConfirmBackToMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::Center,
+    mConfirmBackToMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35), buttonSize, buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mConfirmBackToMenu->Close();
         mPauseMenu->SetIsVisible(true);
@@ -920,18 +932,21 @@ void Game::LoadConfirmBackToMenu() {
 }
 
 void Game::LoadLevelSelectMenu() {
-    mLevelSelectMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mLevelSelectMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
-    mLevelSelectMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
 
-    const auto buttonSize = Vector2(mLevelSelectMenu->GetSize().x * 0.8f, 50 * mScale);
-    const auto buttonPointSize = static_cast<int>(34 * mScale);
+    mLevelSelectMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
+    mLevelSelectMenu->SetSize(Vector2(virtualWidth * 0.8f, virtualHeight * 0.85f));
+    mLevelSelectMenu->SetPosition(Vector2(virtualWidth * 0.1f, virtualHeight * 0.13f));
+
+    const auto buttonSize = Vector2(mLevelSelectMenu->GetSize().x * 0.8f, 50);
+    const auto buttonPointSize = static_cast<int>(34);
     const auto buttonPos = Vector2(mLevelSelectMenu->GetSize().x * 0.1f, 0.0f);
 
-    mLevelSelectMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mLevelSelectMenu->GetSize());
+    mLevelSelectMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", mLevelSelectMenu->GetSize() / 2, mLevelSelectMenu->GetSize());
 
     std::string name = "   PRÓLOGO";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 2 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -940,7 +955,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   1 - FLORESTA";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 4 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -949,7 +964,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   2 - FOGO";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 6 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -958,7 +973,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   3 - PÂNTANO";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 8 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 8 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -967,7 +982,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   4 - NEVE";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 10 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 10 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -976,7 +991,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   5 - FINAL";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 12 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 12 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -985,7 +1000,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   TESTE";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 14 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 14 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -994,7 +1009,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   COLISEU";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 16 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 16 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -1003,7 +1018,7 @@ void Game::LoadLevelSelectMenu() {
         });
 
     name = "   ROOM 0";
-    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 18 * 35) * mScale,
+    mLevelSelectMenu->AddButton(name, buttonPos + Vector2(0, 18 * 35),
         buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
         [this]()
         {
@@ -1018,17 +1033,20 @@ void Game::LoadLevelSelectMenu() {
 }
 
 void Game::LoadOptionsMenu() {
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
+
     mOptionsMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mOptionsMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
-    mOptionsMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
-    Vector2 buttonSize = Vector2(mOptionsMenu->GetSize().x * 0.8f, 50 * mScale);
+    mOptionsMenu->SetSize(Vector2(virtualWidth * 0.8f, virtualHeight * 0.85f));
+    mOptionsMenu->SetPosition(Vector2(virtualWidth * 0.1f, virtualHeight * 0.13f));
+    Vector2 buttonSize = Vector2(mOptionsMenu->GetSize().x * 0.8f, 50);
     Vector2 buttonPos = Vector2(mOptionsMenu->GetSize().x * 0.1f, 0.0f);
 
-    mOptionsMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mOptionsMenu->GetSize());
+    mOptionsMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", mOptionsMenu->GetSize() / 2, mOptionsMenu->GetSize());
 
     UIText* text;
     std::string name;
-    int buttonPointSize = static_cast<int>(34 * mScale);
+    int buttonPointSize = static_cast<int>(0.031f * virtualHeight);
     Vector2 textPos = Vector2(buttonSize.x * 0.05f, 0.0f);
     std::string optionValue;
     float optionPosX = mOptionsMenu->GetSize().x * 0.6f;
@@ -1042,9 +1060,10 @@ void Game::LoadOptionsMenu() {
             mOptionsMenu->Close();
             LoadOptionsMenu();
         }, textPos);
+
         optionValue = "< ON >";
         text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
-        text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
+        text->SetPosition(Vector2(optionPosX, button->GetPosition().y + text->GetSize().y / 2));
     }
     else {
         name = "FULL SCREEN";
@@ -1070,7 +1089,7 @@ void Game::LoadOptionsMenu() {
         }, textPos);
         optionValue = "< OFF >";
         text = mOptionsMenu->AddText(optionValue, Vector2::Zero, Vector2::Zero, buttonPointSize);
-        text->SetPosition(Vector2(optionPosX, button->GetPosition().y));
+        text->SetPosition(Vector2(optionPosX, button->GetPosition().y + text->GetSize().y / 2));
     }
 
     // name = "RESOLUÇÃO";
@@ -1112,17 +1131,20 @@ void Game::LoadOptionsMenu() {
 }
 
 void Game::LoadControlMenu() {
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
+
     mControlMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mControlMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
-    mControlMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
-    Vector2 buttonSize = Vector2(mControlMenu->GetSize().x * 0.8f, 50 * mScale);
+    mControlMenu->SetSize(Vector2(virtualWidth * 0.8f, virtualHeight * 0.85f));
+    mControlMenu->SetPosition(Vector2(virtualWidth * 0.1f, virtualHeight * 0.13f));
+    Vector2 buttonSize = Vector2(mControlMenu->GetSize().x * 0.8f, 50);
     Vector2 buttonPos = Vector2(mControlMenu->GetSize().x * 0.1f, 0.0f);
 
-    mControlMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mControlMenu->GetSize());
-    mControlMenu->AddImage("../Assets/Sprites/Menus/Control2.png", Vector2::Zero, Vector2(mControlMenu->GetSize().x, mControlMenu->GetSize().x / 1.9f));
+    mControlMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", mControlMenu->GetSize() / 2, mControlMenu->GetSize());
+    mControlMenu->AddImage("../Assets/Sprites/Menus/Control2.png", mControlMenu->GetSize() / 2, Vector2(mControlMenu->GetSize().x, mControlMenu->GetSize().x / 1.9f));
 
     std::string name;
-    int buttonPointSize = static_cast<int>(34 * mScale);
+    int buttonPointSize = static_cast<int>(34);
 
     name = "VOLTAR";
     mControlMenu->AddButton(name, buttonPos + Vector2(0.0f, mControlMenu->GetSize().y - buttonSize.y * 1.2f), buttonSize, buttonPointSize, UIButton::TextPos::Center,
@@ -1132,17 +1154,20 @@ void Game::LoadControlMenu() {
 }
 
 void Game::LoadKeyBoardMenu() {
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
+
     mKeyboardMenu = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mKeyboardMenu->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
-    mKeyboardMenu->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
-    Vector2 buttonSize = Vector2(mKeyboardMenu->GetSize().x * 0.8f, 50 * mScale);
+    mKeyboardMenu->SetSize(Vector2(virtualWidth * 0.8f, virtualHeight * 0.85f));
+    mKeyboardMenu->SetPosition(Vector2(virtualWidth * 0.1f, virtualHeight * 0.13f));
+    Vector2 buttonSize = Vector2(mKeyboardMenu->GetSize().x * 0.8f, 50);
     Vector2 buttonPos = Vector2(mKeyboardMenu->GetSize().x * 0.1f, 0.0f);
 
-    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mKeyboardMenu->GetSize());
+    mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Fundo2.png", mKeyboardMenu->GetSize() / 2, mKeyboardMenu->GetSize());
     mKeyboardMenu->AddImage("../Assets/Sprites/Menus/Keyboard4.png", Vector2(mKeyboardMenu->GetSize().x * 0.125f, 0.0f), Vector2(mKeyboardMenu->GetSize().y * 1.4f, mKeyboardMenu->GetSize().y * 1.4f / 1.52f));
 
     std::string name;
-    int buttonPointSize = static_cast<int>(34 * mScale);
+    int buttonPointSize = static_cast<int>(34);
 
 
     name = "VOLTAR";
@@ -1153,206 +1178,210 @@ void Game::LoadKeyBoardMenu() {
 }
 
 void Game::LoadKeyBoardMenu2() {
+    float virtualWidth = mRenderer->GetVirtualWidth();
+    float virtualHeight = mRenderer->GetVirtualHeight();
+
     mKeyboardMenu2 = new UIScreen(this, "../Assets/Fonts/K2D-Bold.ttf");
-    mKeyboardMenu2->SetSize(Vector2(mLogicalWindowWidth * 0.8f, mLogicalWindowHeight * 0.85f));
-    mKeyboardMenu2->SetPosition(Vector2(mLogicalWindowWidth * 0.1f, mLogicalWindowHeight * 0.13f));
+    mKeyboardMenu2->SetSize(Vector2(virtualWidth * 0.8f, virtualHeight * 0.85f));
+    mKeyboardMenu2->SetPosition(Vector2(virtualWidth * 0.1f, virtualHeight * 0.13f));
 
-    Vector2 buttonSize = Vector2(mKeyboardMenu2->GetSize().x * 0.47f, 60 * mScale);
-    Vector2 buttonPos = Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale);
-    int buttonPointSize = static_cast<int>(40 * mScale);
+    Vector2 buttonSize = Vector2(mKeyboardMenu2->GetSize().x * 0.47f, 60);
+    Vector2 buttonPos = Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200);
+    int buttonPointSize = static_cast<int>(40);
     Vector2 textPos = Vector2(buttonSize.x / 20, 0.0f);
+    float distanceBetweenButtons = 80;
 
-    mKeyboardMenu2->AddImage("../Assets/Sprites/Menus/Fundo2.png", Vector2::Zero, mKeyboardMenu2->GetSize());
+    mKeyboardMenu2->AddImage("../Assets/Sprites/Menus/Fundo2.png", mKeyboardMenu2->GetSize() / 2, mKeyboardMenu2->GetSize());
 
-    UIText* text = mKeyboardMenu2->AddText("TECLADO", Vector2::Zero, Vector2::Zero, 50 * mScale);
-    text->SetPosition(Vector2((mKeyboardMenu2->GetSize().x - text->GetSize().x) / 2, 20 * mScale));
+    UIText* text = mKeyboardMenu2->AddText("TECLADO", Vector2::Zero, Vector2::Zero, 50);
+    text->SetPosition(Vector2(mKeyboardMenu2->GetSize().x / 2, 50));
 
     std::string name;
 
     name = "CIMA";
     mKeyboardMenu2->AddButton(name, buttonPos, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[1]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[1]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[1]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[1]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 0 * 40) * mScale);
+        mKeyboardMenu2->GetTexts()[1]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 0 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[1];
         mBindingAction = Action::Up;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Up].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(520, 0) * mScale);
+    text->SetPosition(buttonPos + Vector2(600 + text->GetSize().x / 2, text->GetSize().y / 2));
 
     name = "BAIXO";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 2 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 1 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[2]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[2]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[2]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[2]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 2 * 40) * mScale);
+        mKeyboardMenu2->GetTexts()[2]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 2 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[2];
         mBindingAction = Action::Down;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Down].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(520, 2 * 40) * mScale);
+    text->SetPosition(buttonPos + Vector2(600 + text->GetSize().x / 2, 1 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "PULO";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 4 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 2 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[3]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[3]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[3]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[3]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 4 * 40) * mScale);
+        mKeyboardMenu2->GetTexts()[3]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 4 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[3];
         mBindingAction = Action::Jump;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Jump].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(520, 4 * 40) * mScale);
+    text->SetPosition(buttonPos + Vector2(600 + text->GetSize().x / 2, 2 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "ATAQUE";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 6 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 3 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[4]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[4]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[4]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[4]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 6 * 40) * mScale);
+        mKeyboardMenu2->GetTexts()[4]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 6 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[4];
         mBindingAction = Action::Attack;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Attack].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(520, 6 * 40) * mScale);
+    text->SetPosition(buttonPos + Vector2(600 + text->GetSize().x / 2, 3 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "AVANÇO";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 8 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 4 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[5]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[5]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[5]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[5]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 8 * 40) * mScale);
+        mKeyboardMenu2->GetTexts()[5]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 8 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[5];
         mBindingAction = Action::Dash;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Dash].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(520, 8 * 40) * mScale);
+    text->SetPosition(buttonPos + Vector2(600 + text->GetSize().x / 2, 4 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "ATAQUE A DISTÂNCIA";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 10 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 5 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[6]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[6]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[6]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[6]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 10 * 40) * mScale);
+        mKeyboardMenu2->GetTexts()[6]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 10 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[6];
         mBindingAction = Action::FireBall;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::FireBall].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(520, 10 * 40) * mScale);
+    text->SetPosition(buttonPos + Vector2(600 + text->GetSize().x / 2, 5 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "CURA";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 12 * 40) * mScale, buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(0, 6 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[7]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[7]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[7]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[7]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(470, 12 * 40) * mScale);
+        mKeyboardMenu2->GetTexts()[7]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 12 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[7];
         mBindingAction = Action::Heal;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Heal].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(520, 12 * 40) * mScale);
+    text->SetPosition(buttonPos + Vector2(600 + text->GetSize().x / 2, 6 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "ESQUERDA";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 0 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 0 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[8]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[8]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[8]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[8]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 0 * 40 * mScale));
+        mKeyboardMenu2->GetTexts()[8]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 0 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[8];
         mBindingAction = Action::MoveLeft;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::MoveLeft].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 0 * 40 * mScale));
+    text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 0 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "DIREITA";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 2 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 1 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[9]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[9]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[9]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[9]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 2 * 40 * mScale));
+        mKeyboardMenu2->GetTexts()[9]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 2 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[9];
         mBindingAction = Action::MoveRight;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::MoveRight].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 2 * 40 * mScale));
+    text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 1 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "GANCHO";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 4 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 2 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[10]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[10]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[10]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[10]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 4 * 40 * mScale));
+        mKeyboardMenu2->GetTexts()[10]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 4 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[10];
         mBindingAction = Action::Hook;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Hook].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 4 * 40 * mScale));
+    text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 2 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "ABRIR LOJA";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 6 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 3 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[11]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[11]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[11]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[11]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 6 * 40 * mScale));
+        mKeyboardMenu2->GetTexts()[11]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 6 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[11];
         mBindingAction = Action::OpenStore;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::OpenStore].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 6 * 40 * mScale));
+    text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 3 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "MAPA";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 8 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 4 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[12]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[12]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[12]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[12]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 8 * 40 * mScale));
+        mKeyboardMenu2->GetTexts()[12]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 8 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[12];
         mBindingAction = Action::Map;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Map].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 8 * 40 * mScale));
+    text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 4 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "CAMINHAR / OLHAR";
-    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 10 * 40 * mScale), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 5 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
     [this]() {
-        mKeyboardMenu2->GetTexts()[13]->SetPointSize(25 * mScale);
+        mKeyboardMenu2->GetTexts()[13]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[13]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[13]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200 * mScale) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450 * mScale, 10 * 40 * mScale));
+        mKeyboardMenu2->GetTexts()[13]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 10 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[13];
         mBindingAction = Action::Look;
     }, textPos);
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Look].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
-    text->SetPosition(buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2 + 500 * mScale, 10 * 40 * mScale));
+    text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 5 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "VOLTAR";
-    mKeyboardMenu2->AddButton(name, Vector2(mKeyboardMenu2->GetSize().x * 0.375f, mKeyboardMenu2->GetSize().y * 0.9f), Vector2(mKeyboardMenu2->GetSize().x * 0.25f, 40 * mScale), buttonPointSize, UIButton::TextPos::Center,
+    mKeyboardMenu2->AddButton(name, Vector2(mKeyboardMenu2->GetSize().x * 0.375f, mKeyboardMenu2->GetSize().y * 0.9f), Vector2(mKeyboardMenu2->GetSize().x * 0.25f, 40), buttonPointSize, UIButton::TextPos::Center,
     [this]() {
         mKeyboardMenu2->Close();
     });
@@ -1430,10 +1459,10 @@ void Game::LoadObjects(const std::string &fileName) {
                             growthDirection = static_cast<int>(prop["value"]);
                         }
                         else if (propName == "MinHeight") {
-                            minHeight = static_cast<float>(prop["value"]) * mScale;
+                            minHeight = static_cast<float>(prop["value"]);
                         }
                         else if (propName == "MinWidth") {
-                            minWidth = static_cast<float>(prop["value"]) * mScale;
+                            minWidth = static_cast<float>(prop["value"]);
                         }
                         else if (propName == "Oscillate") {
                             isOscillating = static_cast<float>(prop["value"]);
@@ -3336,6 +3365,8 @@ void Game::GenerateOutput()
     // Clear back buffer
     mRenderer->Clear();
 
+    mRenderer->BeginGameDraw();
+
     if (mCamera) {
         if (mUseParallaxBackground) {
             switch (mGameScene) {
@@ -3390,17 +3421,18 @@ void Game::GenerateOutput()
         //     // DrawParallaxLayer(mMountains,  0.3f, mWindowHeight / 4, mWindowHeight / 3);  // montanhas ao fundo
         //     // DrawParallaxLayer(mTreesBack,  0.5f, mWindowHeight / 3, mWindowHeight / 2);  // árvores distantes
         //     // DrawParallaxLayer(mTreesFront, 0.7f, mWindowHeight / 2, mWindowHeight / 2);  // árvores próximas
-        }
-        else {
-            mRenderer->DrawTexture(Vector2(mWindowWidth / 2, mWindowHeight / 2),
-                                   Vector2(mWindowWidth, mWindowHeight), 0.0f, Color::White,
-                                   mBackGroundTexture, Vector4::UnitRect);
-        }
+    }
+    else {
+        mRenderer->DrawTexture(Vector2(mWindowWidth / 2, mWindowHeight / 2),
+                               Vector2(mWindowWidth, mWindowHeight), 0.0f, Color::White,
+                               mBackGroundTexture, Vector4::UnitRect);
+    }
 
     for (auto drawable: mDrawables)
         drawable->Draw(mRenderer);
 
     // Draw all UI screens
+    mRenderer->BeginUIDraw();
     for (auto ui :mUIStack)
     {
         ui->Draw(mRenderer);

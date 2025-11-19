@@ -623,7 +623,14 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         // Ativa a espada
         mSword->SetState(ActorState::Active);
         mSword->SetRotation(mSwordDirection);
-        mSword->SetTransformRotation(mSwordDirection);
+        if (mSwordDirection == Math::Pi) {
+            mSword->SetTransformRotation(0.0f);
+            mSword->SetScale(Vector2(-1, 1));
+        }
+        else {
+            mSword->SetTransformRotation(mSwordDirection);
+            mSword->SetScale(Vector2(1, 1));
+        }
         mSword->SetPosition(GetPosition());
         mSwordHitEnemy = false;
         mSwordHitGround = false;

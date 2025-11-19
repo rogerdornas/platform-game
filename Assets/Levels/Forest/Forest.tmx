@@ -2012,48 +2012,6 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="6" name="Levers">
-  <object id="110" x="18944" y="16320" width="64" height="64">
-   <properties>
-    <property name="Event" value="SetIsGrowing"/>
-    <property name="Grounds" value="111"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="112" x="19200" y="16320" width="64" height="64">
-   <properties>
-    <property name="Event" value="SetIsDecreasing"/>
-    <property name="Grounds" value="111"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="113" x="27456" y="15360" width="64" height="64">
-   <properties>
-    <property name="Event" value="SetIsMoving"/>
-    <property name="Grounds" value="114"/>
-    <property name="Target" value="Ground"/>
-   </properties>
-  </object>
-  <object id="121" x="29920" y="15072" width="64" height="64">
-   <properties>
-    <property name="Event" value="SetIsDecreasing"/>
-    <property name="Grounds" value="115,116,117,118"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="124" x="19136" y="17984" width="64" height="64">
-   <properties>
-    <property name="Event" value="SetIsDecreasing"/>
-    <property name="Grounds" value="122,123"/>
-    <property name="Target" value="DynamicGround"/>
-   </properties>
-  </object>
-  <object id="127" x="24608" y="15360" width="64" height="64"/>
-  <object id="128" x="24736" y="15360" width="64" height="64"/>
-  <object id="130" x="24896" y="15360" width="64" height="64"/>
-  <object id="131" x="25056" y="15360" width="64" height="64"/>
-  <object id="132" x="25216" y="15360" width="64" height="64"/>
- </objectgroup>
  <objectgroup id="11" name="Camera">
   <object id="460" name="Camera" x="5120" y="23040" width="2560" height="1600">
    <properties>
@@ -2772,7 +2730,7 @@
     <property name="GrowSpeedY" type="float" value="0"/>
     <property name="GrowthDirection" type="int" value="3"/>
     <property name="MinHeight" type="float" value="1088"/>
-    <property name="MinWidth" type="float" value="128"/>
+    <property name="MinWidth" type="float" value="32"/>
    </properties>
   </object>
   <object id="123" name="DynamicGround" x="19072" y="16960" width="864" height="1088">
@@ -2781,7 +2739,7 @@
     <property name="GrowSpeedY" type="float" value="0"/>
     <property name="GrowthDirection" type="int" value="2"/>
     <property name="MinHeight" type="float" value="1088"/>
-    <property name="MinWidth" type="float" value="128"/>
+    <property name="MinWidth" type="float" value="32"/>
    </properties>
   </object>
   <object id="125" name="Ground" x="18240" y="18048" width="1696" height="96"/>
@@ -3153,6 +3111,48 @@
     <property name="StartPositionId" type="int" value="0"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="6" name="Levers">
+  <object id="110" x="18944" y="16320" width="64" height="64">
+   <properties>
+    <property name="Event" value="SetIsGrowing"/>
+    <property name="Grounds" value="111"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="112" x="19200" y="16320" width="64" height="64">
+   <properties>
+    <property name="Event" value="SetIsDecreasing"/>
+    <property name="Grounds" value="111"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="113" x="27456" y="15360" width="64" height="64">
+   <properties>
+    <property name="Event" value="SetIsMoving"/>
+    <property name="Grounds" value="114"/>
+    <property name="Target" value="Ground"/>
+   </properties>
+  </object>
+  <object id="121" x="29920" y="15072" width="64" height="64">
+   <properties>
+    <property name="Event" value="SetIsDecreasing"/>
+    <property name="Grounds" value="115,116,117,118"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="124" x="19136" y="17984" width="64" height="64">
+   <properties>
+    <property name="Event" value="SetIsDecreasing"/>
+    <property name="Grounds" value="122,123"/>
+    <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="127" x="24608" y="15360" width="64" height="64"/>
+  <object id="128" x="24736" y="15360" width="64" height="64"/>
+  <object id="130" x="24896" y="15360" width="64" height="64"/>
+  <object id="131" x="25056" y="15360" width="64" height="64"/>
+  <object id="132" x="25216" y="15360" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="10" name="Lava">
   <object id="289" x="7776" y="19040" width="1120" height="160">

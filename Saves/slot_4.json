@@ -1,11 +1,11 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 1952.0,
-            "y": 4352.0
+            "x": 13744.0,
+            "y": 4256.0
         },
-        "scene": "Prologue",
-        "total_play_time": 0.0
+        "scene": "Level1",
+        "total_play_time": 259.9299621582031
     },
     "player": {
         "can_dash": false,
@@ -14,15 +14,20 @@
         "can_wallslide": false,
         "death_counter": 0,
         "max_jumps_in_air": 0,
-        "money": 0
+        "money": 1
     },
     "upgrades": {
         "fireball": false,
         "heal_count": false,
         "health_points": false,
-        "mana": false,
+        "mana": true,
         "sword_damage": false,
         "sword_range": false,
         "sword_speed": false
+    },
+    "world_state": {
+        "BushMonsterDefeated": false,
+        "Level1ArenaDone": true,
+        "Level1Puzzle1Done": true
     }
 }

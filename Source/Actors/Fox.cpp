@@ -422,9 +422,11 @@ void Fox::RunAndSword(float deltaTime)
         if (up) {
             mSword->SetRotation(3 * Math::Pi / 2);
             mSword->SetTransformRotation(3 * Math::Pi / 2);
+            mSword->SetScale(Vector2(1, 1));
         }
         else {
             mSword->SetRotation(GetRotation());
+            mSword->SetTransformRotation(0.0f);
             mSword->SetScale(Vector2(GetForward().x, 1));
         }
         mSword->SetPosition(GetPosition());

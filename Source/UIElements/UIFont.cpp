@@ -96,6 +96,11 @@ Texture* UIFont::RenderText(const std::string& text, const Vector3& color /*= Co
 
 	// Cria uma textura OpenGL a partir da surface
 	auto* tex = new Texture();
+	// tex->CreateFromSurface(surface);
+	tex->LoadFromSurface(surface);
+	SDL_FreeSurface(surface);
+	return tex;
+
 	if (tex->LoadFromSurface(surface))
 	{
 		SDL_FreeSurface(surface);

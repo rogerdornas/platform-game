@@ -19,7 +19,7 @@ public:
     ~UIImage();
 
     void SetImage(const std::string& imagePath);
-    void SetTransparency(int transparency) { mTransparency = transparency; }
+    void SetAlpha(float alpha) { mAlpha = alpha; }
     void Draw(Renderer* renderer, const Vector2 &screenPos) override;
 
     void ChangeResolution(float oldScale, float newScale) override;
@@ -27,5 +27,5 @@ public:
 private:
     Texture* mTexture; // Texture for the image
     Renderer* mRenderer;
-    int mTransparency;
+    float mAlpha;
 };

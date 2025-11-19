@@ -30,22 +30,21 @@ void UIButton::Draw(Renderer *renderer, const Vector2 &screenPos)
     Vector2 drawPos = screenPos + mPosition + mSize / 2;
 
     if (mHighlighted) {
-        Vector3 drawColor = Vector3(200, 100, 0);
+        Vector3 drawColor = Vector3(0.78f, 0.39f, 0.0f);
         renderer->DrawRect(drawPos, mSize, 0.0f, drawColor, Vector2::Zero, RendererMode::TRIANGLES);
     }
     // Calcular posição do texto
     Vector2 textDrawPos = drawPos;
     switch (mTextAlign) {
         case TextPos::AlignLeft:
-            textDrawPos += Vector2(10.0f, (mSize.y - mText->GetSize().y) * 0.5f);
+            textDrawPos += Vector2(-mSize.x / 2 + mText->GetSize().x / 2, 0);
         break;
+
         case TextPos::AlignRight:
-            textDrawPos += Vector2(mSize.x - mText->GetSize().x - 10.0f,
-                                   (mSize.y - mText->GetSize().y) * 0.5f);
+            textDrawPos += Vector2(mSize.x / 2 - mText->GetSize().x / 2, 0);
         break;
+
         case TextPos::Center:
-            default:
-                textDrawPos += (mSize * 0.5f) - (mText->GetSize() * 0.5f);
         break;
     }
 

@@ -33,6 +33,7 @@ JumpEffect::JumpEffect(Game *game, Actor *owner, float duration)
     mDrawComponent->SetAnimFPS(fps);
 
     // mDrawAnimatedComponent->SetTransparency(100);
+    mDrawComponent->SetAlpha(0.4f);
 }
 
 void JumpEffect::OnUpdate(float deltaTime) {

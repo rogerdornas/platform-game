@@ -28,6 +28,7 @@ DashEffectActor::DashEffectActor(Game *game, Actor* owner, float duration)
     mDrawComponent->SetAnimFPS(30);
 
     // mDrawAnimatedComponent->SetTransparency(150);
+    mDrawComponent->SetAlpha(0.6f);
 }
 
 void DashEffectActor::OnUpdate(float deltaTime) {

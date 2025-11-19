@@ -21,6 +21,7 @@ Renderer::Renderer(SDL_Window *window)
     ,mZoom(1.0f) // <-- Inicializa o zoom como 1.0 (normal)
     ,mZoomedWidth(1920.0f) // <-- Inicializa com o valor base
     ,mZoomedHeight(1080.0f) // <-- Inicializa com o valor base
+    ,mDrawingUI(false)
 {
 
 }
@@ -161,13 +162,11 @@ void Renderer::Clear()
 {
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT);
-
-    // OnWindowResize(mWindowWidth, mWindowHeight);
 }
 
 void Renderer::Draw(RendererMode mode, const Matrix4 &modelMatrix, const Vector2 &cameraPos, VertexArray *vertices,
-                    const Vector3 &color, Texture *texture, const Vector4 &textureRect,
-                    float textureFactor, float alpha)
+                    const Vector3 &color, float alpha, Texture *texture, const Vector4 &textureRect,
+                    float textureFactor)
 {
     mBaseShader->SetMatrixUniform("uOrthoProj", mOrthoProjection);
     mBaseShader->SetMatrixUniform("uWorldTransform", modelMatrix);
@@ -176,8 +175,17 @@ void Renderer::Draw(RendererMode mode, const Matrix4 &modelMatrix, const Vector2
     mBaseShader->SetVectorUniform("uCameraPos", cameraPos);
     mBaseShader->SetFloatUniform("uAlpha", alpha);
 
-    // Envia as luzes para o shader
-    UploadLightingUniforms();
+    if (mDrawingUI) {
+        mOrthoProjection = Matrix4::CreateOrtho(0.0f, mVirtualWidth, mVirtualHeight, 0.0f, -1.0f, 1.0f);
+        mBaseShader->SetMatrixUniform("uOrthoProj", mOrthoProjection);
+        DeactivateLighting();
+
+    }
+    else {
+        mOrthoProjection = Matrix4::CreateOrtho(0.0f, mZoomedWidth, mZoomedHeight, 0.0f, -1.0f, 1.0f);
+        mBaseShader->SetMatrixUniform("uOrthoProj", mOrthoProjection);
+        UploadLightingUniforms();
+    }
 
     if(vertices)
     {
@@ -205,13 +213,13 @@ void Renderer::Draw(RendererMode mode, const Matrix4 &modelMatrix, const Vector2
 }
 
 void Renderer::DrawRect(const Vector2 &position, const Vector2 &size, float rotation, const Vector3 &color,
-                        const Vector2 &cameraPos, RendererMode mode)
+                        const Vector2 &cameraPos, RendererMode mode, float alpha)
 {
     Matrix4 model = Matrix4::CreateScale(Vector3(size.x, size.y, 1.0f)) *
                     Matrix4::CreateRotationZ(rotation) *
                     Matrix4::CreateTranslation(Vector3(position.x, position.y, 0.0f));
 
-    Draw(mode, model, cameraPos, mSpriteVerts, color);
+    Draw(mode, model, cameraPos, mSpriteVerts, color, alpha);
 }
 
 void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float rotation, const Vector3 &color,
@@ -222,7 +230,7 @@ void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float r
                     Matrix4::CreateRotationZ(rotation) *
                     Matrix4::CreateTranslation(Vector3(position.x, position.y, 0.0f));
 
-    Draw(RendererMode::TRIANGLES, model, cameraPos, mSpriteVerts, color, texture, textureRect, textureFactor, alpha);
+    Draw(RendererMode::TRIANGLES, model, cameraPos, mSpriteVerts, color, alpha, texture, textureRect, textureFactor);
 }
 
 void Renderer::DrawGeometry(const Vector2 &position, const Vector2 &size, float rotation, const Vector3 &color,
@@ -233,6 +241,49 @@ void Renderer::DrawGeometry(const Vector2 &position, const Vector2 &size, float 
                     Matrix4::CreateTranslation(Vector3(position.x, position.y, 0.0f));
 
     Draw(mode, model, cameraPos, vertexArray, color);
+}
+
+void Renderer::DrawLine(const Vector2 &start, const Vector2 &end, const Vector3 &color,
+                        float thickness, const Vector2 &cameraPos, float alpha)
+{
+    // 1. Calcular o vetor da linha e seu comprimento
+    Vector2 lineVector = end - start;
+    float lineLength = lineVector.Length();
+
+    // Se a linha tem comprimento zero, não desenhe
+    if (lineLength < 0.01f) {
+        return;
+    }
+
+    // 2. Calcular o ponto central (posição) e a rotação da linha
+    Vector2 center = (start + end) / 2.0f;
+    float rotation = std::atan2(lineVector.y, lineVector.x);
+
+    // 3. Criar a matriz de modelo
+    // O tamanho 'size' será (comprimento_da_linha, espessura)
+    Matrix4 model = Matrix4::CreateScale(Vector3(lineLength, thickness, 1.0f)) *
+                    Matrix4::CreateRotationZ(rotation) *
+                    Matrix4::CreateTranslation(Vector3(center.x, center.y, 0.0f));
+
+    // 4. Chamar a função principal Draw
+    // Assumimos que 'mLineVerts' é um VertexArray que representa um segmento de linha padrão
+    // (por exemplo, um quadrado 1x1 ou apenas 2 vértices em (0,0) e (1,0) se você estiver desenhando apenas uma linha)
+    // Se você não tiver um mLineVerts, você pode usar mSpriteVerts e desenhar um retângulo fino.
+
+    // **NOTA:** Se você quiser desenhar a linha como um segmento fino (LINES), você precisa de
+    // um VertexArray com apenas 2 vértices (por exemplo, (0,0) e (1,0)) e um índice para GL_LINE_LOOP/GL_LINES.
+    // Se você usar mSpriteVerts, o modo RendererMode::LINES desenhará um retângulo *contorno*.
+
+    // Vou usar mSpriteVerts e o modo LINES, assumindo que você quer o *contorno* de um retângulo,
+    // ou se mSpriteVerts é um VBO/IBO de 2 pontos (0,0) e (1,0) para desenhar uma linha.
+    // **Vou desenhar como um segmento fino de triângulos para ter espessura (DrawRect style):**
+
+    // Para desenhar uma linha com espessura (um retângulo fino):
+    Draw(RendererMode::TRIANGLES, model, cameraPos, mSpriteVerts, color, alpha);
+
+    // Se você quiser desenhar apenas um segmento de linha de 1 pixel de espessura (e **mLineVerts** existir e
+    // tiver 2 vértices), você usaria:
+    // Draw(RendererMode::LINES, model, cameraPos, mLineVerts, color, alpha);
 }
 
 void Renderer::DrawFade(float alpha)
@@ -256,15 +307,10 @@ void Renderer::DrawFade(float alpha)
     mBaseShader->SetActive();
 }
 
-
 void Renderer::Present()
 {
 	// Swap the buffers
 	SDL_GL_SwapWindow(mWindow);
-
-    if(!mLights.empty()){
-        SDL_Log("%f %f", mLights[0]->GetPosition().x, mLights[0]->GetPosition().y);
-    }
 }
 
 void Renderer::SetAmbientLight(const Vector3& color, float intensity)
@@ -292,7 +338,9 @@ bool Renderer::LoadShaders()
 		return false;
 	}
 
-	mBaseShader->SetActive();
+    mBaseShader->SetActive(); // Ativa para configurar
+    mBaseShader->SetMatrixUniform("uOrthoProj", mOrthoProjection);
+    mBaseShader->SetTextureUniform("uTexture", 0);
 
     return true;
 }
@@ -333,6 +381,13 @@ void Renderer::UploadLightingUniforms()
         }
     }
 }
+
+void Renderer::DeactivateLighting() {
+    mBaseShader->SetVectorUniform("uAmbientColor", Vector3(1.0f, 1.0f, 1.0f));
+    mBaseShader->SetFloatUniform("uAmbientIntensity", 1.0f);
+    mBaseShader->SetIntUniform("uNumLights", 0);
+}
+
 
 Texture* Renderer::GetTexture(const std::string& fileName)
 {
@@ -462,3 +517,12 @@ Vector2 Renderer::ScreenToVirtual(const Vector2& screenPoint) const
     return virtualPoint;
 }
 
+void Renderer::BeginGameDraw()
+{
+    mDrawingUI = false;
+}
+
+void Renderer::BeginUIDraw()
+{
+    mDrawingUI = true;
+}

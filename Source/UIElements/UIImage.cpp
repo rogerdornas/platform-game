@@ -9,7 +9,7 @@ UIImage::UIImage(const std::string &imagePath, const Vector2 &pos, const Vector2
     :UIElement(pos, size, color)
     ,mTexture(nullptr)
     ,mRenderer(renderer)
-    ,mTransparency(255)
+    ,mAlpha(1.0f)
 {
     mTexture = mRenderer->GetTexture(imagePath);
 }
@@ -52,7 +52,8 @@ void UIImage::Draw(Renderer* renderer, const Vector2 &screenPos)
         return;
     }
 
-    mRenderer->DrawTexture(mPosition + screenPos, mSize, 0.0f, Color::White, mTexture, Vector4::UnitRect);
+    mRenderer->DrawTexture(mPosition + screenPos, mSize, 0.0f, Color::White, mTexture, Vector4::UnitRect,
+                            Vector2::Zero, Vector2::One, 1.0f, mAlpha);
 
     // SDL_Rect dstRect;
     // dstRect.x = mPosition.x + screenPos.x;

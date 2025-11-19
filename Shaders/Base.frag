@@ -65,12 +65,11 @@ void main()
     {
         float dist = length(fragWorldPos - uLights[i].position);
 
-//        float linearFalloff = clamp(1.0 - dist / uLights[i].radius, 0.0, 1.0);
-//        float attenuation = linearFalloff * linearFalloff;
-
         float attenuation = smoothstep(uLights[i].radius, 0.0, dist);
+
         lighting += uLights[i].color * uLights[i].intensity * attenuation;
     }
 
+    lighting = clamp(lighting, vec3(0.0), vec3(1.3));
     outColor = vec4(baseColor * lighting, finalAlpha);
 }
