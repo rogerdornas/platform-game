@@ -153,6 +153,10 @@ void Trigger::SetEvent(std::string event) {
         mEvent = Event::ChangeWorldState;
         return;
     }
+    if (event == "ChangeZoom") {
+        mEvent = Event::ChangeZoom;
+        return;
+    }
 
     if (event == "SpotPlayer") {
         mEvent = Event::SpotPlayer;
@@ -418,6 +422,11 @@ void Trigger::GameTrigger() {
 
         case Event::ChangeWorldState:
             mGame->SetWorldFlag(mWorldState, mWorldStateFlag);
+            break;
+
+        case Event::ChangeZoom:
+            mGame->SetTargetZoom(mTargetZoom);
+            mGame->SetZoomSpeed(mZoomSpeed);
             break;
 
         default:

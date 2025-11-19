@@ -81,6 +81,9 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mIsCrossFading(false)
     ,mCrossFadeDuration(0.0f)
     ,mCrossFadeTimer(0.0f)
+    ,mZoom(1.0f)
+    ,mTargetZoom(1.0f)
+    ,mZoomSpeed(1.0f)
     ,mCamera(nullptr)
     ,mPlayer(nullptr)
     ,mStore(nullptr)
@@ -325,7 +328,8 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime) {
             scene == GameScene::Level4 ||
             scene == GameScene::Level5 ||
             scene == GameScene::Room0 ||
-            scene == GameScene::MirrorBoss) {
+            scene == GameScene::MirrorBoss)
+        {
             mNextScene = scene;
             mSceneManagerState = SceneManagerState::Entering;
             mSceneManagerTimer = transitionTime;
@@ -350,6 +354,12 @@ void Game::ResetGameScene(float transitionTime)
 
 void Game::ChangeScene()
 {
+    mZoom = 1.0f;
+    mTargetZoom = 1.0f;
+    if (mCamera) {
+        mCamera->SetZoom(mZoom);
+    }
+
     // Unload current Scene
     UnloadScene();
 
@@ -1604,6 +1614,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 std::string wavePath;
                 std::string worldState;
                 bool worldStateFlag = false;
+                float targetZoom = 1.0f;
+                float zoomSpeed = 1.0f;
                 std::string dialoguePath;
                 std::string cutsceneId;
                 std::string condition;
@@ -1658,6 +1670,12 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "WorldStateFlag") {
                             worldStateFlag = prop["value"];
                         }
+                        else if (propName == "TargetZoom") {
+                            targetZoom = prop["value"];
+                        }
+                        else if (propName == "ZoomSpeed") {
+                            zoomSpeed = prop["value"];
+                        }
                         else if (propName == "FilePath") {
                             dialoguePath = prop["value"];
                         }
@@ -1692,6 +1710,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetWavesPath(wavePath);
                 trigger->SetWorldState(worldState);
                 trigger->SetWorldStateFlag(worldStateFlag);
+                trigger->SetTargetZoom(targetZoom);
+                trigger->SetZoomSpeed(zoomSpeed);
                 trigger->SetDialoguePath(dialoguePath);
                 trigger->SetCutsceneId(cutsceneId);
             }
@@ -2480,13 +2500,13 @@ void Game::ProcessInput()
                     }
 
                     if (event.key.keysym.sym == SDLK_1) {
-                        mCamera->SetZoom(2.0f);
+                        mTargetZoom = 2.0f;
                     }
                     if (event.key.keysym.sym == SDLK_2) {
-                        mCamera->SetZoom(0.5f);
+                        mTargetZoom = 0.5f;
                     }
                     if (event.key.keysym.sym == SDLK_3) {
-                        mCamera->SetZoom(1.0f);
+                        mTargetZoom = 1.0f;
                     }
                 }
                 break;
@@ -2929,6 +2949,21 @@ void Game::UpdateGame()
         mPlayer->ResetHealCount();
         mPlayer->SetMoney(mCheckPointMoney);
         mBackToCheckpoint = false;
+    }
+
+    // Zoom
+    if (mZoom != mTargetZoom) {
+        if (std::abs(mTargetZoom - mZoom) > 0.001f)
+        {
+            mZoom = mZoom + (mTargetZoom - mZoom) * mZoomSpeed * deltaTime;
+
+            if (std::abs(mTargetZoom - mZoom) < 0.001f) {
+                mZoom = mTargetZoom;
+            }
+            if (mCamera) {
+                mCamera->SetZoom(mZoom);
+            }
+        }
     }
 
     UpdateCamera(deltaTime);

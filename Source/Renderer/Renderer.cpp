@@ -511,8 +511,8 @@ Vector2 Renderer::ScreenToVirtual(const Vector2& screenPoint) const
 
     // 2. Escala as coordenadas do viewport para as coordenadas virtuais
     // (mouse.x / viewportWidth) * virtualWidth
-    virtualPoint.x *= (mZoomedWidth / static_cast<float>(mViewportWidth));
-    virtualPoint.y *= (mZoomedHeight / static_cast<float>(mViewportHeight));
+    virtualPoint.x *= (mVirtualWidth / static_cast<float>(mViewportWidth));
+    virtualPoint.y *= (mVirtualHeight / static_cast<float>(mViewportHeight));
 
     return virtualPoint;
 }

@@ -1,20 +1,20 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 14640.0,
-            "y": 11552.0
+            "x": 4752.0,
+            "y": 2304.0
         },
-        "scene": "LevelTeste",
-        "total_play_time": 26931.478515625
+        "scene": "Level2",
+        "total_play_time": 28152.017578125
     },
     "player": {
         "can_dash": true,
         "can_fireball": true,
         "can_hook": true,
         "can_wallslide": true,
-        "death_counter": 217,
+        "death_counter": 218,
         "max_jumps_in_air": 1,
-        "money": 398
+        "money": 853
     },
     "upgrades": {
         "fireball": true,

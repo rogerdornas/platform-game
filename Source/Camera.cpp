@@ -408,11 +408,21 @@ void Camera::SetZoom(float zoom)
         zoom = 0.01f;
     }
 
-    mZoom = zoom;
+    if (mZoom == zoom) {
+        return;
+    }
 
-    // Informa ao Renderer sobre o novo zoom
-    // (Isso recalcula a matriz de projeção)
+    float oldWidth = mGame->GetRenderer()->GetZoomedWidth();
+    float oldHeight = mGame->GetRenderer()->GetZoomedHeight();
+
+    mZoom = zoom;
     mGame->GetRenderer()->SetZoom(mZoom);
+
+    float newWidth = mGame->GetRenderer()->GetZoomedWidth();
+    float newHeight = mGame->GetRenderer()->GetZoomedHeight();
+
+    mPos.x += (oldWidth - newWidth) * 0.5f;
+    mPos.y += (oldHeight - newHeight) * 0.5f;
 }
 
 void Camera::ChangeResolution(float oldScale, float newScale) {

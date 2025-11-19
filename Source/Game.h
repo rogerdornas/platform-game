@@ -244,6 +244,9 @@ public:
     void SetWorldFlag(const std::string& key, bool value);
     bool GetWorldFlag(const std::string& key) const;
 
+    void SetTargetZoom(float targetZoom) { mTargetZoom = targetZoom; }
+    void SetZoomSpeed(float zoomSpeed) { mZoomSpeed = zoomSpeed; }
+
     // Converte uma Action para sua representação em string
     std::string ActionToString(Action action);
     Action StringToAction(const std::string& str);
@@ -312,6 +315,9 @@ private:
 
     // Camera
     class Camera *mCamera;
+    float mZoom;
+    float mTargetZoom;
+    float mZoomSpeed;
 
     // Game-specific
     class Player *mPlayer;

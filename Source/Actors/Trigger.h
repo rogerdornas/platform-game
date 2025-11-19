@@ -46,6 +46,7 @@ public:
         ChangeScene,
         StartArena,
         ChangeWorldState,
+        ChangeZoom,
 
         SpotPlayer,
         GolemVulnerable,
@@ -73,6 +74,8 @@ public:
     void SetWavesPath(const std::string &wavesPath);
     void SetWorldState(std::string worldState) { mWorldState = worldState; }
     void SetWorldStateFlag(bool worldStateFlag) { mWorldStateFlag = worldStateFlag; }
+    void SetTargetZoom(float targetZoom) { mTargetZoom = targetZoom; }
+    void SetZoomSpeed(float zoomSpeed) { mZoomSpeed = zoomSpeed; }
     void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
     void SetCutsceneId(const std::string &cutsceneId) { mCutsceneId = cutsceneId; }
 
@@ -105,6 +108,8 @@ protected:
     std::string mWavesPath;
     std::string mWorldState;
     bool mWorldStateFlag;
+    float mTargetZoom;
+    float mZoomSpeed;
 
     std::string mDialoguePath;
     std::string mCutsceneId;
