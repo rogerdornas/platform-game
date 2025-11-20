@@ -1,0 +1,240 @@
+{
+  "frames": [
+    {
+      "filename": "Fired01.png",
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Fired02.png",
+      "frame": {
+        "x": 1,
+        "y": 203,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Fired03.png",
+      "frame": {
+        "x": 113,
+        "y": 1,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Fired04.png",
+      "frame": {
+        "x": 113,
+        "y": 203,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Fired05.png",
+      "frame": {
+        "x": 225,
+        "y": 1,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Fired06.png",
+      "frame": {
+        "x": 225,
+        "y": 203,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Fired07.png",
+      "frame": {
+        "x": 337,
+        "y": 1,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Fired08.png",
+      "frame": {
+        "x": 337,
+        "y": 203,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Off01.png",
+      "frame": {
+        "x": 449,
+        "y": 1,
+        "w": 110,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 110,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 110,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Brazier.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 560,
+      "h": 404
+    },
+    "scale": 1
+  }
+}

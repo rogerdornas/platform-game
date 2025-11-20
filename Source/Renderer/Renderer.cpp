@@ -13,7 +13,7 @@ Renderer::Renderer(SDL_Window *window)
     ,mContext(nullptr)
     ,mOrthoProjection(Matrix4::Identity)
     ,mAmbientColor(Vector3(1.0f, 1.0f, 1.0f))
-    ,mAmbientIntensity(0.5f)
+    ,mAmbientIntensity(0.4f)
     ,mVirtualWidth(1920.0f) // <-- Defina sua resolução virtual 16:9 aqui
     ,mVirtualHeight(1080.0f) // <-- Defina sua resolução virtual 16:9 aqui
     ,mWindowWidth(0.0f)
@@ -446,13 +446,6 @@ void Renderer::SetZoom(float zoom)
 
     // Recalcula a matriz de projeção com base nas novas dimensões
     mOrthoProjection = Matrix4::CreateOrtho(0.0f, mZoomedWidth, mZoomedHeight, 0.0f, -1.0f, 1.0f);
-
-    // Re-envia a nova matriz de projeção para o shader
-    // if (mBaseShader)
-    // {
-    //     mBaseShader->SetActive();
-    //     mBaseShader->SetMatrixUniform("uOrthoProj", mOrthoProjection);
-    // }
 }
 
 void Renderer::UpdateViewport()

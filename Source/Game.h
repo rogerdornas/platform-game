@@ -44,6 +44,8 @@ public:
         Level4,
         Level5,
         Room0,
+        Room1,
+        Room2,
         MirrorBoss
     };
 

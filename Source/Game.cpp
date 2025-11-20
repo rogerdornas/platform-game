@@ -17,6 +17,7 @@
 #include "HUD.h"
 #include "SaveData.h"
 #include "SaveManager.h"
+#include "Actors/Brazier.h"
 #include "Actors/BushMonster.h"
 #include "Actors/Checkpoint.h"
 #include "Actors/CloneEnemy.h"
@@ -143,8 +144,8 @@ Game::Game(int windowWidth, int windowHeight, int FPS)
     ,mFadeDuration(0.4f)
     ,mSceneManagerTimer(0.0f)
     ,mFadeAlpha(0)
-    ,mGameScene(GameScene::Room0)
-    ,mNextScene(GameScene::Room0)
+    ,mGameScene(GameScene::MainMenu)
+    ,mNextScene(GameScene::MainMenu)
 {
 }
 
@@ -328,6 +329,8 @@ void Game::SetGameScene(Game::GameScene scene, float transitionTime) {
             scene == GameScene::Level4 ||
             scene == GameScene::Level5 ||
             scene == GameScene::Room0 ||
+            scene == GameScene::Room1 ||
+            scene == GameScene::Room2 ||
             scene == GameScene::MirrorBoss)
         {
             mNextScene = scene;
@@ -512,7 +515,9 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Level1) {
-        mUseParallaxBackground = true;
+        mUseParallaxBackground = false;
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "BG_1.png");
+
         LoadLevel(levelsAssets + "1-Musgo/Musgo.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -617,6 +622,42 @@ void Game::ChangeScene()
         // mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Level2/4.png");
 
         LoadLevel(levelsAssets + "Room0/Room0.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
+        mBossMusic.Reset();
+    }
+    else if (mNextScene == GameScene::Room1) {
+        mUseParallaxBackground = false;
+        // mUseParallaxBackground = true;
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+        // mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Level2/4.png");
+
+        LoadLevel(levelsAssets + "Room1/Room1.json");
+
+        mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
+                                           mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
+
+        mHUD = new HUD(this, "../Assets/Fonts/K2D-Bold.ttf");
+
+        if (mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+            mMusicHandle = mAudio->PlaySound("Greenpath.wav", true);
+        }
+        mBossMusic.Reset();
+    }
+    else if (mNextScene == GameScene::Room2) {
+        mUseParallaxBackground = false;
+        // mUseParallaxBackground = true;
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Free-Nature-Backgrounds-Pixel-Art5.png");
+        // mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Level2/4.png");
+
+        LoadLevel(levelsAssets + "Room2/Room2.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
                                            mPlayer->GetPosition().y - mLogicalWindowHeight / 2));
@@ -1549,6 +1590,17 @@ void Game::LoadObjects(const std::string &fileName) {
                 }
                 auto* decoration = new Decorations(this, width, height, imagePath);
                 decoration->SetPosition(Vector2(x + width / 2, y + height / 2));
+            }
+        }
+        if (layer["name"] == "Brazier") {
+            for (const auto &obj: layer["objects"]) {
+                float x = static_cast<float>(obj["x"]) * mScale;
+                float y = static_cast<float>(obj["y"]) * mScale;
+                float width = static_cast<float>(obj["width"]) * mScale;
+                float height = static_cast<float>(obj["height"]) * mScale;
+
+                auto* brazier = new Brazier(this);
+                brazier->SetPosition(Vector2(x + width / 2, y + height / 2));
             }
         }
         if (layer["name"] == "Lava") {
@@ -3446,9 +3498,15 @@ void Game::GenerateOutput()
             }
         }
         else {
+            // Vector2 size(3858, 800);
+            // Vector2 position(1800 + size.x / 2, 3584 + size.y / 2);
+            // Vector2 size(1700, 900);
+            // Vector2 position(4600, 4000);
+            Vector2 size(66000, 6400);
+            Vector2 position(33000, 3200);
             // DrawParallaxBackground(mBackGroundTexture); // desenha o fundo com repetição horizontal
-            mRenderer->DrawTexture(Vector2(33000, 3200),
-                       Vector2(66000, 6400), 0.0f, Color::White,
+            mRenderer->DrawTexture(position,
+                       size, 0.0f, Color::White,
                        mBackGroundTexture, Vector4::UnitRect, mCamera->GetPosCamera());
         }
         //     // Ordem de desenho: mais distantes primeiro

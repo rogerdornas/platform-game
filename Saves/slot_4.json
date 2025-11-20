@@ -5,7 +5,7 @@
             "y": 4256.0
         },
         "scene": "Level1",
-        "total_play_time": 266.8074035644531
+        "total_play_time": 310.3488464355469
     },
     "player": {
         "can_dash": false,
@@ -14,7 +14,7 @@
         "can_wallslide": false,
         "death_counter": 0,
         "max_jumps_in_air": 0,
-        "money": 1
+        "money": 27
     },
     "upgrades": {
         "fireball": false,

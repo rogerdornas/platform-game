@@ -278,7 +278,7 @@ void Player::SetJumpEffects() {
 void Player::InitLight() {
     mLight = new Light(mGame);
     mLight->SetRadius(300.0f);
-    mLight->SetMaxIntensity(0.85f);
+    mLight->SetMaxIntensity(0.65f);
     mLight->Activate();
 }
 

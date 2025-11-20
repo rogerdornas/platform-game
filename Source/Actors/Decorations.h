@@ -9,7 +9,7 @@
 class Decorations : public  Actor
 {
 public:
-    Decorations(Game *game, float width, float height, std::string imagePath);
+    Decorations(Game* game, float width, float height, std::string imagePath);
 
     void OnUpdate(float deltaTime) override;
     void ChangeResolution(float oldScale, float newScale) override;
