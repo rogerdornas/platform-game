@@ -13,7 +13,7 @@ Renderer::Renderer(SDL_Window *window)
     ,mContext(nullptr)
     ,mOrthoProjection(Matrix4::Identity)
     ,mAmbientColor(Vector3(1.0f, 1.0f, 1.0f))
-    ,mAmbientIntensity(0.45f)
+    ,mAmbientIntensity(0.5f)
     ,mVirtualWidth(1920.0f) // <-- Defina sua resolução virtual 16:9 aqui
     ,mVirtualHeight(1080.0f) // <-- Defina sua resolução virtual 16:9 aqui
     ,mWindowWidth(0.0f)
@@ -168,11 +168,14 @@ void Renderer::Draw(RendererMode mode, const Matrix4 &modelMatrix, const Vector2
                     const Vector3 &color, float alpha, Texture *texture, const Vector4 &textureRect,
                     float textureFactor)
 {
+    // Transforma posição da cânera em int para não ter tremor
+    Vector2 cameraInt(std::floor(cameraPos.x), std::floor(cameraPos.y));
+
     mBaseShader->SetMatrixUniform("uOrthoProj", mOrthoProjection);
     mBaseShader->SetMatrixUniform("uWorldTransform", modelMatrix);
     mBaseShader->SetVectorUniform("uColor", color);
     mBaseShader->SetVectorUniform("uTexRect", textureRect);
-    mBaseShader->SetVectorUniform("uCameraPos", cameraPos);
+    mBaseShader->SetVectorUniform("uCameraPos", cameraInt);
     mBaseShader->SetFloatUniform("uAlpha", alpha);
 
     if (mDrawingUI) {
@@ -226,9 +229,12 @@ void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float r
                            Texture *texture, const Vector4 &textureRect, const Vector2 &cameraPos, Vector2 scale,
                            float textureFactor, float alpha)
 {
+    // Transforma para int a posição para não ter tremor
+    Vector3 pos(std::floor(position.x), std::floor(position.y), std::floor(0.0f));
+
     Matrix4 model = Matrix4::CreateScale(Vector3(size.x * scale.x, size.y * scale.y, 1.0f)) *
                     Matrix4::CreateRotationZ(rotation) *
-                    Matrix4::CreateTranslation(Vector3(position.x, position.y, 0.0f));
+                    Matrix4::CreateTranslation(pos);
 
     Draw(RendererMode::TRIANGLES, model, cameraPos, mSpriteVerts, color, alpha, texture, textureRect, textureFactor);
 }
