@@ -1257,7 +1257,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[1]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[1]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[1]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 0 * 40));
+        mKeyboardMenu2->GetTexts()[1]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470 + mKeyboardMenu2->GetTexts()[1]->GetSize().x / 2, 25 + 0 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[1];
         mBindingAction = Action::Up;
@@ -1271,7 +1271,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[2]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[2]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[2]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 2 * 40));
+        mKeyboardMenu2->GetTexts()[2]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470 + mKeyboardMenu2->GetTexts()[2]->GetSize().x / 2, 25 + 2 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[2];
         mBindingAction = Action::Down;
@@ -1285,7 +1285,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[3]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[3]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[3]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 4 * 40));
+        mKeyboardMenu2->GetTexts()[3]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470 + mKeyboardMenu2->GetTexts()[3]->GetSize().x / 2, 25 + 4 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[3];
         mBindingAction = Action::Jump;
@@ -1299,7 +1299,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[4]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[4]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[4]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 6 * 40));
+        mKeyboardMenu2->GetTexts()[4]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470 + mKeyboardMenu2->GetTexts()[4]->GetSize().x / 2, 25 + 6 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[4];
         mBindingAction = Action::Attack;
@@ -1313,7 +1313,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[5]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[5]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[5]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 8 * 40));
+        mKeyboardMenu2->GetTexts()[5]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470 + mKeyboardMenu2->GetTexts()[5]->GetSize().x / 2, 25 + 8 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[5];
         mBindingAction = Action::Dash;
@@ -1327,7 +1327,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[6]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[6]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[6]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 10 * 40));
+        mKeyboardMenu2->GetTexts()[6]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470 + mKeyboardMenu2->GetTexts()[6]->GetSize().x / 2, 25 + 10 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[6];
         mBindingAction = Action::FireBall;
@@ -1341,7 +1341,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[7]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[7]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[7]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470, 12 * 40));
+        mKeyboardMenu2->GetTexts()[7]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(470 + mKeyboardMenu2->GetTexts()[7]->GetSize().x / 2, 25 + 12 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[7];
         mBindingAction = Action::Heal;
@@ -1355,7 +1355,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[8]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[8]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[8]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 0 * 40));
+        mKeyboardMenu2->GetTexts()[8]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 403 + mKeyboardMenu2->GetTexts()[8]->GetSize().x / 2, 25 + 0 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[8];
         mBindingAction = Action::MoveLeft;
@@ -1369,7 +1369,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[9]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[9]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[9]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 2 * 40));
+        mKeyboardMenu2->GetTexts()[9]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 403 + mKeyboardMenu2->GetTexts()[9]->GetSize().x / 2, 25 + 2 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[9];
         mBindingAction = Action::MoveRight;
@@ -1383,7 +1383,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[10]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[10]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[10]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 4 * 40));
+        mKeyboardMenu2->GetTexts()[10]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 403 + mKeyboardMenu2->GetTexts()[10]->GetSize().x / 2, 25 + 4 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[10];
         mBindingAction = Action::Hook;
@@ -1397,7 +1397,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[11]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[11]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[11]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 6 * 40));
+        mKeyboardMenu2->GetTexts()[11]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 403 + mKeyboardMenu2->GetTexts()[11]->GetSize().x / 2, 25 + 6 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[11];
         mBindingAction = Action::OpenStore;
@@ -1411,7 +1411,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[12]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[12]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[12]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 8 * 40));
+        mKeyboardMenu2->GetTexts()[12]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 403 + mKeyboardMenu2->GetTexts()[12]->GetSize().x / 2, 25 + 8 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[12];
         mBindingAction = Action::Map;
@@ -1425,7 +1425,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[13]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[13]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[13]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 10 * 40));
+        mKeyboardMenu2->GetTexts()[13]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 403 + mKeyboardMenu2->GetTexts()[13]->GetSize().x / 2, 25 + 10 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[13];
         mBindingAction = Action::Look;
@@ -1439,7 +1439,7 @@ void Game::LoadKeyBoardMenu2() {
     [this]() {
         mKeyboardMenu2->GetTexts()[14]->SetPointSize(25);
         mKeyboardMenu2->GetTexts()[14]->SetText("Pressione outra tecla");
-        mKeyboardMenu2->GetTexts()[14]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 12 * 40));
+        mKeyboardMenu2->GetTexts()[14]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 403 + mKeyboardMenu2->GetTexts()[14]->GetSize().x / 2, 25 + 12 * 40));
         mWaitingForKey = true;
         mNewButtonText = mKeyboardMenu2->GetTexts()[14];
         mBindingAction = Action::Freeze;
@@ -2476,7 +2476,7 @@ void Game::ProcessInput()
                     if (mNewButtonText) {
                         mNewButtonText->SetPointSize(40 * mScale);
                         mNewButtonText->SetText(keyName);
-                        mNewButtonText->SetPosition(mNewButtonText->GetPosition() + Vector2(50, 0) * mScale);
+                        mNewButtonText->SetPosition(mNewButtonText->GetPosition() + Vector2(12 + mNewButtonText->GetSize().x / 2, 0) * mScale);
                     }
 
                     mInputBindings[mBindingAction].key = sc;

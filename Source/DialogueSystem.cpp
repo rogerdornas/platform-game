@@ -17,7 +17,7 @@ DialogueSystem::DialogueSystem(class Game *game, const std::string &fontName, st
     SetSize(Vector2(mGame->GetLogicalWindowWidth() * 0.9f, mGame->GetLogicalWindowHeight() * 0.2f));
     SetPosition(Vector2(mGame->GetLogicalWindowWidth() * 0.05f, mGame->GetLogicalWindowHeight() * 0.75f));
 
-    AddImage("../Assets/Sprites/Background/Store.png", Vector2::Zero, GetSize());
+    AddImage("../Assets/Sprites/Background/Store.png", GetSize() / 2, GetSize());
 
     if (!mLines.empty()) {
         int textPointSize = static_cast<int>(40 * mGame->GetScale());
@@ -26,9 +26,9 @@ DialogueSystem::DialogueSystem(class Game *game, const std::string &fontName, st
         Vector3 color = mLines[mCurrentLine].color;
         int wrapLength = GetSize().x * 0.9;
 
-        mDialogueText = AddText(text, GetSize() * 0.05f,
-                               Vector2::Zero * mGame->GetScale(),
+        mDialogueText = AddText(text, Vector2::Zero,Vector2::Zero,
                                 textPointSize, color, wrapLength);
+        mDialogueText->SetPosition(GetSize() * 0.05f + mDialogueText->GetSize() / 2);
 
     } else {
         Finished();
@@ -45,11 +45,11 @@ DialogueSystem::DialogueSystem(class Game *game, const std::string &fontName, st
 
     if (mGame->GetIsPlayingOnKeyboard()) {
         UIText* text = AddText("[ENTER]", Vector2::Zero, Vector2::Zero, static_cast<int>(20 * mGame->GetScale()));
-        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.80f));
+        text->SetPosition(Vector2(GetSize().x * 0.953f + text->GetSize().x / 2, GetSize().y * 0.80f + text->GetSize().y / 2));
     }
     else {
         UIText* text = AddText("[A]", Vector2::Zero, Vector2::Zero, static_cast<int>(20 * mGame->GetScale()));
-        text->SetPosition(Vector2(GetSize().x * 0.953f, GetSize().y * 0.80f));
+        text->SetPosition(Vector2(GetSize().x * 0.953f + text->GetSize().x / 2, GetSize().y * 0.80f + text->GetSize().y / 2));
     }
 
 }
@@ -100,6 +100,7 @@ void DialogueSystem::Advance() {
         // mDialogueText->SetText(mLines[mCurrentLine].speakerName + ": " + mLines[mCurrentLine].text);
         mDialogueText->SetColor(mLines[mCurrentLine].color);
         mDialogueText->SetText(mLines[mCurrentLine].text);
+        mDialogueText->SetPosition(GetSize() * 0.05f + mDialogueText->GetSize() / 2);
     } else {
         Finished();
     }

@@ -299,12 +299,11 @@ void Store::OpenStore() {
 
     if (mGame->GetIsPlayingOnKeyboard()) {
         text = mStoreMenu->AddText("PRESSIONE [ENTER] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
-        text->SetPosition(Vector2(virtualWidth / 12, 17 * virtualHeight / 24));
     }
     else {
         text = mStoreMenu->AddText("PRESSIONE [A] PARA COMPRAR", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
-        text->SetPosition(Vector2(virtualWidth / 12, 17 * virtualHeight / 24));
     }
+    text->SetPosition(Vector2(mStoreMenu->GetSize().x / 2, 800));
 
     mStoreOpened = true;
     mGame->TogglePause();
@@ -334,12 +333,14 @@ void Store::LoadStoreMessage() {
     mStoreMessage->SetSize(Vector2(virtualWidth / 3, 2 * virtualHeight / 6));
     mStoreMessage->SetPosition(Vector2(virtualWidth / 3, 7 * virtualHeight / 8));
 
+    UIText* text;
     if (mGame->GetIsPlayingOnKeyboard()) {
-        mStoreMessage->AddText("PRESSIONE [ESPAÇO] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
+        text = mStoreMessage->AddText("PRESSIONE [ESPAÇO] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
     }
     else {
-        mStoreMessage->AddText("PRESSIONE [Y] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
+        text = mStoreMessage->AddText("PRESSIONE [Y] PARA ABRIR A LOJA", Vector2::Zero, Vector2::Zero, static_cast<int>(30));
     }
+    text->SetPosition(Vector2(mStoreMessage->GetSize().x / 2, 35.0f));
     mStoreMessageOpened = true;
 }
 
