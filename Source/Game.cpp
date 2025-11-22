@@ -385,8 +385,11 @@ void Game::ChangeScene()
         }
 
         // Pool de Partículas
-        for (int i = 0; i < 200; i++) {
-            new Particle(this);
+        for (int i = 0; i < 150; i++) {
+            new Particle(this, Particle::ParticleType::SolidParticle);
+        }
+        for (int i = 0; i < 250; i++) {
+            new Particle(this, Particle::ParticleType::BlurParticle);
         }
 
         // Pool de Projectiles
@@ -1430,6 +1433,20 @@ void Game::LoadKeyBoardMenu2() {
 
     text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Look].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
     text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 5 * distanceBetweenButtons + text->GetSize().y / 2));
+
+    name = "CONGELAR";
+    mKeyboardMenu2->AddButton(name, buttonPos + Vector2(mKeyboardMenu2->GetSize().x / 2, 6 * distanceBetweenButtons), buttonSize, buttonPointSize, UIButton::TextPos::AlignLeft,
+    [this]() {
+        mKeyboardMenu2->GetTexts()[14]->SetPointSize(25);
+        mKeyboardMenu2->GetTexts()[14]->SetText("Pressione outra tecla");
+        mKeyboardMenu2->GetTexts()[14]->SetPosition(Vector2(mKeyboardMenu2->GetSize().x * 0.01f, 200) + Vector2(mKeyboardMenu2->GetSize().x / 2 + 450, 12 * 40));
+        mWaitingForKey = true;
+        mNewButtonText = mKeyboardMenu2->GetTexts()[14];
+        mBindingAction = Action::Freeze;
+    }, textPos);
+
+    text = mKeyboardMenu2->AddText(SDL_GetScancodeName(mInputBindings[Action::Freeze].key), Vector2::Zero, Vector2::Zero, buttonPointSize);
+    text->SetPosition(buttonPos + Vector2(1300 + text->GetSize().x / 2, 6 * distanceBetweenButtons + text->GetSize().y / 2));
 
     name = "VOLTAR";
     mKeyboardMenu2->AddButton(name, Vector2(mKeyboardMenu2->GetSize().x * 0.375f, mKeyboardMenu2->GetSize().y * 0.9f), Vector2(mKeyboardMenu2->GetSize().x * 0.25f, 40), buttonPointSize, UIButton::TextPos::Center,
@@ -2552,7 +2569,7 @@ void Game::ProcessInput()
                     }
 
                     if (event.key.keysym.sym == SDLK_1) {
-                        mTargetZoom = 2.0f;
+                        mTargetZoom = 1.5f;
                     }
                     if (event.key.keysym.sym == SDLK_2) {
                         mTargetZoom = 0.5f;
@@ -3328,6 +3345,7 @@ std::string Game::ActionToString(Action action) {
         case Action::Dash:      return "Dash";
         case Action::Attack:    return "Attack";
         case Action::FireBall:  return "FireBall";
+        case Action::Freeze:    return "Freeze";
         case Action::Heal:      return "Heal";
         case Action::Hook:      return "Hook";
         case Action::Pause:     return "Pause";
@@ -3348,6 +3366,7 @@ Game::Action Game::StringToAction(const std::string &str) {
     if (str == "Dash")      return Action::Dash;
     if (str == "Attack")    return Action::Attack;
     if (str == "FireBall")  return Action::FireBall;
+    if (str == "Freeze")    return Action::Freeze;
     if (str == "Heal")      return Action::Heal;
     if (str == "Hook")      return Action::Hook;
     if (str == "Pause")     return Action::Pause;
@@ -3500,10 +3519,10 @@ void Game::GenerateOutput()
         else {
             // Vector2 size(3858, 800);
             // Vector2 position(1800 + size.x / 2, 3584 + size.y / 2);
-            // Vector2 size(1700, 900);
-            // Vector2 position(4600, 4000);
-            Vector2 size(66000, 6400);
-            Vector2 position(33000, 3200);
+            Vector2 size(1700, 900);
+            Vector2 position(12000, 4000);
+            // Vector2 size(66000, 6400);
+            // Vector2 position(33000, 3200);
             // DrawParallaxBackground(mBackGroundTexture); // desenha o fundo com repetição horizontal
             mRenderer->DrawTexture(position,
                        size, 0.0f, Color::White,

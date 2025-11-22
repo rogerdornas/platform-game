@@ -63,6 +63,7 @@ Frog::Frog(Game* game)
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
     mEnemyCollision = false;
+    mFreezeMax = 1000;
 
     SetSize(mWidth, mHeight);
 
@@ -119,6 +120,7 @@ void Frog::OnUpdate(float deltaTime) {
     ResolvePlayerCollision();
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
     Vector2 v1;
     Vector2 v2;
@@ -174,15 +176,17 @@ void Frog::OnUpdate(float deltaTime) {
         mDrawComponent->SetHeight(mHeight * 1.5f / 1.2f);
     }
 
-    if (mPlayerSpotted) {
-        mGame->GetHUD()->StartBossFight(this);
-        if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            mGame->GetHUD()->StartBossFight(this);
+            if (!mGame->GetBossMusicHandle().IsValid()) {
+                mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Se morreu
@@ -190,8 +194,10 @@ void Frog::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 
     if (mHealthPoints <= mMaxHealthPoints / 2) {
@@ -303,6 +309,7 @@ void Frog::MovementBeforePlayerSpotted() {
 }
 
 void Frog::ManageAnimations() {
+    mDrawComponent->SetAnimFPS(16.0f);
     if (mFrogState == State::Tongue) {
         mDrawComponent->SetAnimation("tongue");
     }

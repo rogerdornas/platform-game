@@ -76,6 +76,7 @@ Golem::Golem(Game *game)
     mIdleWidth = mWidth;
     mPunchSpriteWidth = mWidth * 1.5f;
     mPunchOffsetHitBox = mWidth * 0.8f;
+    mFreezeMax = 1000;
 
     SetSize(mWidth, mHeight);
 
@@ -134,21 +135,24 @@ void Golem::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
     // Gravidade
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                              mRigidBodyComponent->GetVelocity().y
                                              + mGravity * deltaTime));
 
-    if (mPlayerSpotted) {
-        mGame->GetHUD()->StartBossFight(this);
-        if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            mGame->GetHUD()->StartBossFight(this);
+            if (!mGame->GetBossMusicHandle().IsValid()) {
+                mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Se morreu
@@ -169,8 +173,10 @@ void Golem::OnUpdate(float deltaTime) {
         }
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 
     if (mHealthPoints <= 0.65f * mMaxHealthPoints) {
@@ -529,12 +535,13 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mFlashTimer = 0;
     mPlayerSpotted = true;
 
-    auto* blood = new ParticleSystem(mGame, 10, 170.0, 3.0, 0.07f);
+    auto* blood = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, 10, 170.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());
     blood->SetEmitDirection(knockBackDirection);
     blood->SetParticleSpeedScale(1);
     blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
     blood->SetParticleGravity(true);
+    blood->SetConeSpread(65.0f);
 
     auto* circleBlur = new Effect(mGame);
     circleBlur->SetDuration(0.3);
@@ -550,6 +557,7 @@ void Golem::ReceiveHit(float damage, Vector2 knockBackDirection) {
 
 
 void Golem::ManageAnimations() {
+    mDrawComponent->SetAnimFPS(10.0f);
     if (mGolemState == State::Punch) {
         if (mIsInvulnerable) {
             mDrawComponent->SetAnimation("punchInvulnerable");

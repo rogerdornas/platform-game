@@ -80,6 +80,7 @@ MirrorBoss::MirrorBoss(Game *game)
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
     mEnemyCollision = false;
+    mFreezeMax = 1000;
 
     SetSize(mWidth, mHeight);
 
@@ -120,6 +121,7 @@ void MirrorBoss::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
     if (mCloneEnemy && mCloneEnemy->GetState() == ActorState::Destroy && mAlreadySpawnedEnemy) {
         mSpawnPortalTimer = 0;
@@ -129,15 +131,17 @@ void MirrorBoss::OnUpdate(float deltaTime) {
         mBossState = State::Stop;
     }
 
-    if (mPlayerSpotted) {
-        mGame->GetHUD()->StartBossFight(this);
-        if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            mGame->GetHUD()->StartBossFight(this);
+            if (!mGame->GetBossMusicHandle().IsValid()) {
+                mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     if (mTeleportLightTimer < mTeleportLightDuration) {
@@ -156,8 +160,10 @@ void MirrorBoss::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 
@@ -569,6 +575,7 @@ void MirrorBoss::TriggerBossDefeat() {
 }
 
 void MirrorBoss::ManageAnimations() {
+    mDrawComponent->SetAnimFPS(1.0f);
     // mDrawAnimatedComponent->SetTransparency(255);
     mDrawComponent->SetAlpha(1.0f);
 

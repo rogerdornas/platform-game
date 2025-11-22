@@ -71,15 +71,18 @@ void Mantis::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    if (mPlayerSpotted) {
-        if (mDrawComponent) {
-            mDrawComponent->SetAnimFPS(10.0f);
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            if (mDrawComponent) {
+                mDrawComponent->SetAnimFPS(10.0f);
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Gravidade
@@ -91,8 +94,10 @@ void Mantis::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 

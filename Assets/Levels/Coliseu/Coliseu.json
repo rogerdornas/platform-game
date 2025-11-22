@@ -1066,7 +1066,7 @@
                         {
                          "name":"Scene",
                          "type":"string",
-                         "value":"Level2"
+                         "value":"Room2"
                         }, 
                         {
                          "name":"Target",

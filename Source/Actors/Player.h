@@ -173,6 +173,16 @@ private:
     float mFireballAnimationDuration;
     float mFireballAnimationTimer;
 
+    bool mCanFreeze;
+    bool mIsFreezingFront;
+    bool mIsFreezingUp;
+    bool mIsFreezingDown;
+    class ParticleSystem* mSnowBalls;
+    class ParticleSystem* mIceCloud;
+    float mIntervalBetweenFreezeEmitDuration;
+    float mIntervalBetweenFreezeEmitTimer;
+    float mFreezeManaCost;
+
     bool mCanWallSlide;                  // Habilidade de agarrar na parede
     bool mIsWallSliding;                 // Se esta deslizando
     WallSlideSide mWallSlideSide;        // Lado que esta deslizando

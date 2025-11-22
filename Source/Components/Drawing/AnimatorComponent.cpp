@@ -11,12 +11,14 @@
 
 AnimatorComponent::AnimatorComponent(class Actor* owner, const std::string &texPath, const std::string &dataPath,
                                      int width, int height, int drawOrder)
-        :DrawComponent(owner,  drawOrder)
-        ,mAnimTimer(0.0f)
-        ,mIsPaused(false)
-        ,mWidth(width)
-        ,mHeight(height)
-        ,mTextureFactor(1.0f)
+    :DrawComponent(owner,  drawOrder)
+    ,mAnimTimer(0.0f)
+    ,mAnimFPS(10.0f)
+    ,mIsPaused(false)
+    ,mWidth(width)
+    ,mHeight(height)
+    ,mTextureFactor(1.0f)
+    ,mFreezeLevel(0.0f)
 {
     // Load texture
     mSpriteTexture = GetGame()->GetRenderer()->GetTexture(texPath);
@@ -42,7 +44,7 @@ bool AnimatorComponent::LoadSpriteSheetData(const std::string& dataPath)
     std::ifstream spriteSheetFile(dataPath);
 
     if (!spriteSheetFile.is_open()) {
-        SDL_Log("Failed to open sprite sheet data file: %s", dataPath.c_str());
+        // SDL_Log("Failed to open sprite sheet data file: %s", dataPath.c_str());
         return false;
     }
 
@@ -85,7 +87,7 @@ void AnimatorComponent::Draw(Renderer* renderer)
         }
 
         renderer->DrawTexture(mOwner->GetPosition(), Vector2(mWidth, mHeight), mOwner->GetTransformRotation(),
-                              mColor, mSpriteTexture, texRect, GetGame()->GetCamera()->GetPosCamera(), mOwner->GetScale(), mTextureFactor, mAlpha);
+                              mColor, mSpriteTexture, texRect, GetGame()->GetCamera()->GetPosCamera(), mOwner->GetScale(), mTextureFactor, mAlpha, mFreezeLevel);
     }
 }
 

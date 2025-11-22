@@ -72,6 +72,7 @@ Moth::Moth(Game *game)
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
+    mFreezeMax = 1000;
 
     SetSize(mWidth, mHeight);
 
@@ -143,16 +144,19 @@ void Moth::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    if (mPlayerSpotted) {
-        mGame->GetHUD()->StartBossFight(this);
-        if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            mGame->GetHUD()->StartBossFight(this);
+            if (!mGame->GetBossMusicHandle().IsValid()) {
+                mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Se morreu
@@ -162,8 +166,10 @@ void Moth::OnUpdate(float deltaTime) {
 
     ChangeGround(deltaTime);
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 

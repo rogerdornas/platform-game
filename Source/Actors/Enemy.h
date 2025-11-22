@@ -27,8 +27,13 @@ public:
 
     bool GetEnemyCollision() const { return mEnemyCollision; }
 
+    void ReceiveFreeze(float freezeDamage, float freezeIntensity);
+    bool IsFrozen() { return mIsFrozen; }
+    void Unfreeze();
+
 protected:
     void SetSize(float width, float height);
+    void ManageFreezing(float deltaTime);
     bool Died();
     virtual void ResolveEnemyCollision();
     virtual void ResolveGroundCollision();
@@ -45,6 +50,16 @@ protected:
     float mMaxHealthPoints;
     float mHealthPoints;
     float mContactDamage;
+
+    bool mIsFrozen;
+    float mFreezeMax;
+    float mFreezeCount;
+    float mFreezeDuration;
+    float mFreezeTimer;
+    float mFreezeDecayDuration;
+    float mFreezeDecayTimer;
+    float mFreezeDecayRate;
+    class ParticleSystem* mFreezeEffect;
 
     float mKnockBackSpeed;
     float mKnockBackTimer;

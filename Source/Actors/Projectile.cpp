@@ -93,11 +93,12 @@ void Projectile::OnUpdate(float deltaTime) {
 }
 
 void Projectile::ExplosionEffect() {
-    auto* explosion = new ParticleSystem(mGame, 12, 200.0, 0.2, 0.07f);
+    auto* explosion = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, 12, 200.0, 0.2, 0.07f);
     explosion->SetPosition(GetPosition() + GetForward() * (mWidth / 2));
     explosion->SetEmitDirection(Vector2::Zero);
-    explosion->SetIsSplash(true);
-    explosion->SetParticleSpeedScale(1);
+    explosion->SetConeSpread(360.0f);
+    explosion->SetGroundCollision(false);
+    explosion->SetParticleSpeedScale(0.3f);
     if (mProjectileType == ProjectileType::Acid) {
         explosion->SetParticleColor(SDL_Color{208, 232, 92, 255});
     }

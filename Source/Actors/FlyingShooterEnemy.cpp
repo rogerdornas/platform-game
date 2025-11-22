@@ -77,23 +77,27 @@ void FlyingShooterEnemy::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    if (mPlayerSpotted) {
-        if (mDrawComponent) {
-            mDrawComponent->SetAnimFPS(15.0f);
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            if (mDrawComponent) {
+                mDrawComponent->SetAnimFPS(15.0f);
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
-    else {
-        MovementBeforePlayerSpotted();
-    }
-
     // Se morreu
     if (Died()) {
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 

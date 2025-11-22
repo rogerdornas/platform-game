@@ -148,10 +148,10 @@ void FireBall::OnUpdate(float deltaTime) {
 }
 
 void FireBall::ExplosionEffect() {
-    auto* explosion = new ParticleSystem(mGame, mWidth / 5 / mGame->GetScale(), 200.0, 0.2, 0.07f);
+    auto* explosion = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, mWidth / 5 / mGame->GetScale(), 200.0, 0.2, 0.07f);
     explosion->SetPosition(GetPosition() + GetForward() * (mWidth / 2));
     explosion->SetEmitDirection(Vector2::Zero);
-    explosion->SetIsSplash(true);
+    explosion->SetGroundCollision(false);
     explosion->SetParticleSpeedScale(mWidth / 50 / mGame->GetScale());
     explosion->SetParticleColor(SDL_Color{247, 118, 34, 255});
     explosion->SetParticleGravity(false);
@@ -272,6 +272,7 @@ void FireBall::ResolveEnemyCollision() {
             for (Enemy* e : enemies) {
                 if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
                     e->ReceiveHit(mDamage, GetForward());
+                    e->Unfreeze();
                     if (mSound.IsValid()) {
                         if (mGame->GetAudio()->GetSoundState(mSound) == SoundState::Playing) {
                             mGame->GetAudio()->StopSound(mSound);

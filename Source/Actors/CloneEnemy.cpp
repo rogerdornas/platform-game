@@ -675,7 +675,7 @@ void CloneEnemy::ResolveGroundCollision() {
                             (collisionNormal == Vector2::NegUnitX && Math::Abs(mSword->GetForward().x) == 1) ||
                             (collisionNormal == Vector2::UnitX && Math::Abs(mSword->GetForward().x) == 1) )
                         {
-                            auto* grass = new ParticleSystem(mGame, 6, 150.0, 0.30, 0.05f);
+                            auto* grass = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, 6, 150.0, 0.30, 0.05f);
                             if (collisionNormal == Vector2::NegUnitY) {
                                 grass->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y - g->GetHeight() / 2));
                             }
@@ -690,8 +690,9 @@ void CloneEnemy::ResolveGroundCollision() {
                             }
 
                             grass->SetEmitDirection(mSword->GetForward() * -1);
-                            grass->SetIsSplash(true);
-                            grass->SetParticleSpeedScale(0.5);
+                            grass->SetGroundCollision(false);
+                            grass->SetParticleSpeedScale(0.4);
+                            grass->SetConeSpread(45.0f);
                             SDL_Color color;
                             switch (mGame->GetGameScene()) {
                                 case Game::GameScene::LevelTeste:

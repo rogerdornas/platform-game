@@ -103,20 +103,23 @@ void FlyingGolem::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    MovementAfterPlayerSpotted(deltaTime);
+    if (!mIsFrozen) {
+        MovementAfterPlayerSpotted(deltaTime);
 
-    // Teleporta se estiver longe
-    if (mFlyingGolemState != State::FlyingAround &&
-        mFlyingGolemState != State::TeleportIn &&
-        mFlyingGolemState != State::TeleportOut)
-    {
-        float dist = (GetPosition() - mGame->GetPlayer()->GetPosition()).Length();
-        if (dist >= mDistToTeleport) {
-            mFlyingGolemState = State::TeleportIn;
-            // if (mDrawAnimatedComponent) {
-            //     mDrawAnimatedComponent->ResetAnimationTimer();
-            // }
+        // Teleporta se estiver longe
+        if (mFlyingGolemState != State::FlyingAround &&
+            mFlyingGolemState != State::TeleportIn &&
+            mFlyingGolemState != State::TeleportOut)
+        {
+            float dist = (GetPosition() - mGame->GetPlayer()->GetPosition()).Length();
+            if (dist >= mDistToTeleport) {
+                mFlyingGolemState = State::TeleportIn;
+                // if (mDrawAnimatedComponent) {
+                //     mDrawAnimatedComponent->ResetAnimationTimer();
+                // }
+            }
         }
     }
 
@@ -124,8 +127,10 @@ void FlyingGolem::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 

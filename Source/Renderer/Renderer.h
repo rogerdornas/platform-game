@@ -31,7 +31,7 @@ public:
                      const Vector3 &color, Texture *texture,
                      const Vector4 &textureRect = Vector4::UnitRect,
                      const Vector2 &cameraPos = Vector2::Zero, Vector2 scale = Vector2::One,
-                     float textureFactor = 1.0f, float alpha = 1.0f);
+                     float textureFactor = 1.0f, float alpha = 1.0f, float freezeLevel = 0.0f);
 
     void DrawGeometry(const Vector2 &position, const Vector2 &size,  float rotation,
                       const Vector3 &color, const Vector2 &cameraPos, VertexArray *vertexArray, RendererMode mode);

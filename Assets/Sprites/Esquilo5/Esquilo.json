@@ -351,9 +351,159 @@
       }
     },
     {
-      "filename": "Heal1.png",
+      "filename": "FreezeDown1.png",
       "frame": {
         "x": 369,
+        "y": 1,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "FreezeDown2.png",
+      "frame": {
+        "x": 1,
+        "y": 511,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "FreezeFront1.png",
+      "frame": {
+        "x": 93,
+        "y": 409,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "FreezeFront2.png",
+      "frame": {
+        "x": 185,
+        "y": 307,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "FreezeUp1.png",
+      "frame": {
+        "x": 277,
+        "y": 205,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "FreezeUp2.png",
+      "frame": {
+        "x": 369,
+        "y": 103,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Heal1.png",
+      "frame": {
+        "x": 461,
         "y": 1,
         "w": 90,
         "h": 100
@@ -379,7 +529,7 @@
       "filename": "Heal2.png",
       "frame": {
         "x": 93,
-        "y": 409,
+        "y": 511,
         "w": 90,
         "h": 100
       },
@@ -404,7 +554,7 @@
       "filename": "Heal3.png",
       "frame": {
         "x": 185,
-        "y": 307,
+        "y": 409,
         "w": 90,
         "h": 100
       },
@@ -429,7 +579,7 @@
       "filename": "Heal4.png",
       "frame": {
         "x": 277,
-        "y": 205,
+        "y": 307,
         "w": 90,
         "h": 100
       },
@@ -454,7 +604,7 @@
       "filename": "Heal5.png",
       "frame": {
         "x": 369,
-        "y": 103,
+        "y": 205,
         "w": 90,
         "h": 100
       },
@@ -479,7 +629,7 @@
       "filename": "Hurt1.png",
       "frame": {
         "x": 461,
-        "y": 1,
+        "y": 103,
         "w": 90,
         "h": 100
       },
@@ -503,106 +653,6 @@
     {
       "filename": "Hurt2.png",
       "frame": {
-        "x": 185,
-        "y": 409,
-        "w": 90,
-        "h": 100
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 90,
-        "h": 100
-      },
-      "sourceSize": {
-        "w": 90,
-        "h": 100
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Idle01.png",
-      "frame": {
-        "x": 277,
-        "y": 307,
-        "w": 90,
-        "h": 100
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 90,
-        "h": 100
-      },
-      "sourceSize": {
-        "w": 90,
-        "h": 100
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Idle02.png",
-      "frame": {
-        "x": 369,
-        "y": 205,
-        "w": 90,
-        "h": 100
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 90,
-        "h": 100
-      },
-      "sourceSize": {
-        "w": 90,
-        "h": 100
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Idle03.png",
-      "frame": {
-        "x": 461,
-        "y": 103,
-        "w": 90,
-        "h": 100
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 90,
-        "h": 100
-      },
-      "sourceSize": {
-        "w": 90,
-        "h": 100
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    {
-      "filename": "Idle04.png",
-      "frame": {
         "x": 553,
         "y": 1,
         "w": 90,
@@ -626,7 +676,32 @@
       }
     },
     {
-      "filename": "Jump1.png",
+      "filename": "Idle01.png",
+      "frame": {
+        "x": 185,
+        "y": 511,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Idle02.png",
       "frame": {
         "x": 277,
         "y": 409,
@@ -651,7 +726,7 @@
       }
     },
     {
-      "filename": "Jump2.png",
+      "filename": "Idle03.png",
       "frame": {
         "x": 369,
         "y": 307,
@@ -676,7 +751,7 @@
       }
     },
     {
-      "filename": "Jump3.png",
+      "filename": "Idle04.png",
       "frame": {
         "x": 461,
         "y": 205,
@@ -701,7 +776,7 @@
       }
     },
     {
-      "filename": "Walk1.png",
+      "filename": "Jump1.png",
       "frame": {
         "x": 553,
         "y": 103,
@@ -726,7 +801,32 @@
       }
     },
     {
-      "filename": "Walk2.png",
+      "filename": "Jump2.png",
+      "frame": {
+        "x": 277,
+        "y": 511,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Jump3.png",
       "frame": {
         "x": 369,
         "y": 409,
@@ -751,7 +851,7 @@
       }
     },
     {
-      "filename": "Walk3.png",
+      "filename": "Walk1.png",
       "frame": {
         "x": 461,
         "y": 307,
@@ -776,7 +876,7 @@
       }
     },
     {
-      "filename": "Walk4.png",
+      "filename": "Walk2.png",
       "frame": {
         "x": 553,
         "y": 205,
@@ -801,7 +901,32 @@
       }
     },
     {
-      "filename": "Walk5.png",
+      "filename": "Walk3.png",
+      "frame": {
+        "x": 369,
+        "y": 511,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk4.png",
       "frame": {
         "x": 461,
         "y": 409,
@@ -826,10 +951,35 @@
       }
     },
     {
-      "filename": "Walk6.png",
+      "filename": "Walk5.png",
       "frame": {
         "x": 553,
         "y": 307,
+        "w": 90,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "Walk6.png",
+      "frame": {
+        "x": 461,
+        "y": 511,
         "w": 90,
         "h": 100
       },
@@ -883,7 +1033,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 644,
-      "h": 510
+      "h": 612
     },
     "scale": 1
   }

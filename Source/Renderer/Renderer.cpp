@@ -13,7 +13,7 @@ Renderer::Renderer(SDL_Window *window)
     ,mContext(nullptr)
     ,mOrthoProjection(Matrix4::Identity)
     ,mAmbientColor(Vector3(1.0f, 1.0f, 1.0f))
-    ,mAmbientIntensity(0.4f)
+    ,mAmbientIntensity(0.8f)
     ,mVirtualWidth(1920.0f) // <-- Defina sua resolução virtual 16:9 aqui
     ,mVirtualHeight(1080.0f) // <-- Defina sua resolução virtual 16:9 aqui
     ,mWindowWidth(0.0f)
@@ -227,7 +227,7 @@ void Renderer::DrawRect(const Vector2 &position, const Vector2 &size, float rota
 
 void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float rotation, const Vector3 &color,
                            Texture *texture, const Vector4 &textureRect, const Vector2 &cameraPos, Vector2 scale,
-                           float textureFactor, float alpha)
+                           float textureFactor, float alpha, float freezeLevel)
 {
     // Transforma para int a posição para não ter tremor
     Vector3 pos(std::floor(position.x), std::floor(position.y), std::floor(0.0f));
@@ -235,6 +235,8 @@ void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float r
     Matrix4 model = Matrix4::CreateScale(Vector3(size.x * scale.x, size.y * scale.y, 1.0f)) *
                     Matrix4::CreateRotationZ(rotation) *
                     Matrix4::CreateTranslation(pos);
+
+    mBaseShader->SetFloatUniform("uFreezeLevel", freezeLevel);
 
     Draw(RendererMode::TRIANGLES, model, cameraPos, mSpriteVerts, color, alpha, texture, textureRect, textureFactor);
 }

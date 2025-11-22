@@ -76,6 +76,7 @@ public:
         Dash,
         Attack,
         FireBall,
+        Freeze,
         Heal,
         Hook,
         Pause,

@@ -79,6 +79,16 @@ Player::Player(Game* game)
     ,mFireballAnimationDuration(0.2f)
     ,mFireballAnimationTimer(mFireballAnimationDuration)
 
+    ,mCanFreeze(true)
+    ,mIsFreezingFront(false)
+    ,mIsFreezingUp(false)
+    ,mIsFreezingDown(false)
+    ,mSnowBalls(nullptr)
+    ,mIceCloud(nullptr)
+    ,mIntervalBetweenFreezeEmitDuration(0.1f)
+    ,mIntervalBetweenFreezeEmitTimer(0.0f)
+    ,mFreezeManaCost(0.0f)
+
     ,mCanWallSlide(true)
     ,mIsWallSliding(false)
     ,mWallSlideSide(WallSlideSide::notSliding)
@@ -202,46 +212,55 @@ Player::Player(Game* game)
                                            "../Assets/Sprites/Esquilo5/Esquilo.json",
                                            mWidth * 4.93f, mWidth * 4.93f * 1.11f, 1002);
 
-    std::vector idle = {21, 22, 23, 24};
+    std::vector idle = {27, 28, 29, 30};
     mDrawComponent->AddAnimation("idle", idle);
 
-    std::vector attackFront = {21, 2, 3};
+    std::vector attackFront = {27, 2, 3};
     mDrawComponent->AddAnimation("attackFront", attackFront);
 
-    std::vector attackUp = {21, 4, 5};
+    std::vector attackUp = {27, 4, 5};
     mDrawComponent->AddAnimation("attackUp", attackUp);
 
-    std::vector attackDown = {21, 0, 1};
+    std::vector attackDown = {27, 0, 1};
     mDrawComponent->AddAnimation("attackDown", attackDown);
 
     std::vector fireball = {12, 13};
     mDrawComponent->AddAnimation("fireball", fireball);
 
+    std::vector freezeFront = {16, 17};
+    mDrawComponent->AddAnimation("freezeFront", freezeFront);
+
+    std::vector freezeDown = {14, 15};
+    mDrawComponent->AddAnimation("freezeDown", freezeDown);
+
+    std::vector freezeUp = {18, 19};
+    mDrawComponent->AddAnimation("freezeUp", freezeUp);
+
     std::vector dash = {6, 7, 7, 7, 8};
     mDrawComponent->AddAnimation("dash", dash);
 
-    std::vector run = {28, 29, 30, 31, 32, 33};
+    std::vector run = {34, 35, 36, 37, 38, 39};
     mDrawComponent->AddAnimation("run", run);
 
-    std::vector heal = {14, 15, 16, 17, 18, 18, 17, 16, 15, 14};
+    std::vector heal = {20, 21, 22, 23, 24, 24, 23, 22, 21, 20};
     mDrawComponent->AddAnimation("heal", heal);
 
-    std::vector wallSlide = {34};
+    std::vector wallSlide = {40};
     mDrawComponent->AddAnimation("wallSlide", wallSlide);
 
-    std::vector hurt = {19, 20};
+    std::vector hurt = {25, 26};
     mDrawComponent->AddAnimation("hurt", hurt);
 
-    std::vector die = {19, 9, 10, 11, 11, 11};
+    std::vector die = {25, 9, 10, 11, 11, 11};
     mDrawComponent->AddAnimation("die", die);
 
-    std::vector jumpUp = {25};
+    std::vector jumpUp = {31};
     mDrawComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {26};
+    std::vector jumpApex = {32};
     mDrawComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {27};
+    std::vector falling = {33};
     mDrawComponent->AddAnimation("falling", falling);
 
     mDrawComponent->SetAnimation("idle");
@@ -387,6 +406,8 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     // bool heal = state[SDL_SCANCODE_V] ||
     //             SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 10000;
+
+    bool freeze = mGame->IsActionPressed(Game::Action::Freeze, state, &controller);
 
     bool heal = mGame->IsActionPressed(Game::Action::Heal, state, &controller) ||
                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 10000;
@@ -676,6 +697,69 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         mPrevFireBallPressed = fireBall;
     }
 
+    if (mCanFreeze) {
+        if (freeze && mMana >= mFreezeManaCost) {
+            if (mIntervalBetweenFreezeEmitTimer >= mIntervalBetweenFreezeEmitDuration) {
+                mIsFreezingDown = false;
+                mIsFreezingUp = false;
+                mIsFreezingFront = false;
+
+                mSnowBalls = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 13.0f, 100.0f, 0.45f, 0.15f);
+                mSnowBalls->SetParticleColor(SDL_Color{255, 255, 255, 180});
+                mSnowBalls->SetParticleGravity(false);
+                if (down) {
+                    mIsFreezingDown = true;
+                    mSnowBalls->SetEmitDirection(Vector2::UnitY);
+                    mSnowBalls->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
+                }
+                else if (up) {
+                    mIsFreezingUp = true;
+                    mSnowBalls->SetEmitDirection(Vector2::NegUnitY);
+                    mSnowBalls->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
+                }
+                else {
+                    mIsFreezingFront = true;
+                    mSnowBalls->SetEmitDirection(GetForward());
+                    mSnowBalls->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
+                }
+                mSnowBalls->SetConeSpread(35.0f);
+                mSnowBalls->SetParticleSpeedScale(1.1f);
+                mSnowBalls->SetEnemyCollision(true);
+                mSnowBalls->SetApplyFreeze(true);
+                mSnowBalls->SetFreezeDamage(0.05f);
+                mSnowBalls->SetFreezeIntensity(1.0f);
+                mSnowBalls->SetParticleDrawOrder(4999);
+
+                mIceCloud = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 80.0f, 60.0f, 0.55f, 0.2f);
+                mIceCloud->SetParticleColor(SDL_Color{100, 200, 255, 50});
+                mIceCloud->SetConeSpread(40.0f);
+                mIceCloud->SetParticleSpeedScale(0.9f);
+                mIceCloud->SetParticleGravity(false);
+                if (down) {
+                    mIceCloud->SetEmitDirection(Vector2::UnitY);
+                    mIceCloud->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
+                }
+                else if (up) {
+                    mIceCloud->SetEmitDirection(Vector2::NegUnitY);
+                    mIceCloud->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
+                }
+                else {
+                    mIceCloud->SetEmitDirection(GetForward());
+                    mIceCloud->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
+                }
+                mIceCloud->SetGroundCollision(false);
+
+                mMana -= mFreezeManaCost;
+                mIntervalBetweenFreezeEmitTimer = 0;
+            }
+        }
+        else {
+            mIsFreezingDown = false;
+            mIsFreezingUp = false;
+            mIsFreezingFront = false;
+        }
+    }
+
     // Heal
     if (heal && mHealCount > 0 && mHealthPoints < mMaxHealthPoints && mIsOnGround) {
         if (left || leftSlow || right || rightSlow || jump || dash || sword || fireBall) {
@@ -780,6 +864,10 @@ void Player::OnUpdate(float deltaTime) {
         mFireBallCooldownTimer += deltaTime;
     }
 
+    if (mIntervalBetweenFreezeEmitTimer < mIntervalBetweenFreezeEmitDuration) {
+        mIntervalBetweenFreezeEmitTimer += deltaTime;
+    }
+
     if (mFireballAnimationTimer < mFireballAnimationDuration) {
         mFireballAnimationTimer += deltaTime;
     }
@@ -818,6 +906,13 @@ void Player::OnUpdate(float deltaTime) {
     if (mIsDead) {
         mDeathAnimationTimer += deltaTime;
     }
+
+    // if (mIceCloud) {
+    //     mIceCloud->SetPosition(GetPosition() + GetForward().x * Vector2(mWidth, 0));
+    // }
+    // if (mSnowBalls) {
+    //     mSnowBalls->SetPosition(GetPosition() + GetForward().x * Vector2(mWidth, 0));
+    // }
 
     if (mStopInAirFireBallTimer < mStopInAirFireBallMaxDuration) {
         mStopInAirFireBallTimer += deltaTime;
@@ -1131,7 +1226,7 @@ void Player::ResolveGroundCollision() {
                             (collisionNormal == Vector2::NegUnitX && Math::Abs(mSword->GetForward().x) == 1) ||
                             (collisionNormal == Vector2::UnitX && Math::Abs(mSword->GetForward().x) == 1) )
                         {
-                            auto* grass = new ParticleSystem(mGame, 6, 150.0, 0.30, 0.05f);
+                            auto* grass = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, 6, 150.0, 0.30, 0.05f);
                             if (collisionNormal == Vector2::NegUnitY) {
                                 grass->SetPosition(Vector2(mSword->GetPosition().x, g->GetPosition().y - g->GetHeight() / 2));
                             }
@@ -1146,8 +1241,9 @@ void Player::ResolveGroundCollision() {
                             }
 
                             grass->SetEmitDirection(mSword->GetForward() * -1);
-                            grass->SetIsSplash(true);
-                            grass->SetParticleSpeedScale(0.5);
+                            grass->SetGroundCollision(false);
+                            grass->SetParticleSpeedScale(0.4);
+                            grass->SetConeSpread(45.0f);
                             SDL_Color color;
                             switch (mGame->GetGameScene()) {
                                 case Game::GameScene::LevelTeste:
@@ -1267,7 +1363,7 @@ void Player::ResolveEnemyCollision() {
     if (!enemies.empty()) {
         bool swordHitEnemy = false;
         for (Enemy* e: enemies) {
-            if (!mIsInvulnerable && mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+            if (!mIsInvulnerable && !e->IsFrozen() && mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
                 collisionNormal = mAABBComponent->ResolveCollision(*e->GetComponent<ColliderComponent>());
 
                 mDashComponent->StopDash();
@@ -1309,7 +1405,6 @@ void Player::ResolveEnemyCollision() {
 
 void Player::ManageAnimations() {
     mDrawComponent->SetAnimFPS(10.0f);
-    // mDrawAnimatedComponent->UseFlip(false);
     if (mIsDead) {
         mDrawComponent->SetAnimation("die");
         mDrawComponent->SetAnimFPS(4.0f / mDeathAnimationDuration);
@@ -1337,6 +1432,18 @@ void Player::ManageAnimations() {
     else if (mFireballAnimationTimer < mFireballAnimationDuration) {
         mDrawComponent->SetAnimation("fireball");
         mDrawComponent->SetAnimFPS(2.0f / mFireballAnimationDuration);
+    }
+    else if (mIsFreezingFront) {
+        mDrawComponent->SetAnimation("freezeFront");
+        mDrawComponent->SetAnimFPS(5.0f);
+    }
+    else if (mIsFreezingDown) {
+        mDrawComponent->SetAnimation("freezeDown");
+        mDrawComponent->SetAnimFPS(5.0f);
+    }
+    else if (mIsFreezingUp) {
+        mDrawComponent->SetAnimation("freezeUp");
+        mDrawComponent->SetAnimFPS(5.0f);
     }
     else if ((!mIsOnMovingGround && !mIsOnGround && mIsWallSliding &&
                mRigidBodyComponent->GetVelocity().y > 0) ||

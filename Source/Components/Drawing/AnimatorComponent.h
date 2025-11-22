@@ -34,6 +34,8 @@ public:
 
     void SetTextureFactor(float textureFactor) { mTextureFactor = textureFactor; }
 
+    void SetFreezeLevel(float freezeLevel) { mFreezeLevel = freezeLevel; }
+
 private:
     bool LoadSpriteSheetData(const std::string& dataPath);
 
@@ -50,18 +52,21 @@ private:
     std::string mAnimName;
 
     // Tracks current elapsed time in animation
-    float mAnimTimer = 0.0f;
+    float mAnimTimer;
 
     // The frames per second the animation should run at
-    float mAnimFPS = 10.0f;
+    float mAnimFPS;
 
     // Whether or not the animation is paused (defaults to false)
-    bool mIsPaused = false;
+    bool mIsPaused;
 
     // Size
     int mWidth;
     int mHeight;
 
     float mTextureFactor;
+
+    // Congelamento
+    float mFreezeLevel;
 };
 

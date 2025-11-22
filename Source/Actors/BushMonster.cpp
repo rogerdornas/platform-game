@@ -32,6 +32,7 @@ BushMonster::BushMonster(Game* game)
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 10;
     mMoneyDrop = 100;
+    mFreezeMax = 1000;
 
     SetSize(mWidth, mHeight);
 
@@ -67,20 +68,23 @@ void BushMonster::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
     // Gravidade
     mRigidBodyComponent->SetVelocity(Vector2(mRigidBodyComponent->GetVelocity().x,
                                              mRigidBodyComponent->GetVelocity().y + mGravity * deltaTime));
 
-    if (mPlayerSpotted) {
-        mGame->GetHUD()->StartBossFight(this);
-        if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            mGame->GetHUD()->StartBossFight(this);
+            if (!mGame->GetBossMusicHandle().IsValid()) {
+                mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Se morreu
@@ -92,8 +96,10 @@ void BushMonster::OnUpdate(float deltaTime) {
         mIdleDuration = 0.8f;
         mDashSpeed = 2000 * mGame->GetScale();
     }
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 

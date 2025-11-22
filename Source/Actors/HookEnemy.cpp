@@ -25,7 +25,7 @@ HookEnemy::HookEnemy(Game *game)
     ,mStopDuration(1.2f)
     ,mStopTimer(0.0f)
 
-    ,mHitDuration(0.3f)
+    ,mHitDuration(0.07f)
 
     ,mHookStateDuration(0.6f)
     ,mHookStateTimer(0.0f)
@@ -61,6 +61,7 @@ HookEnemy::HookEnemy(Game *game)
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
+    mFreezeMax = 1000;
 
     SetSize(mWidth, mHeight);
 
@@ -119,6 +120,7 @@ void HookEnemy::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
     // Gravidade
     if (!mIsOnGround && mHookEnemyState != State::ForwardAttack) {
@@ -127,15 +129,17 @@ void HookEnemy::OnUpdate(float deltaTime) {
                                                  + mGravity * deltaTime));
     }
 
-    if (mPlayerSpotted) {
-        mGame->GetHUD()->StartBossFight(this);
-        if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            mGame->GetHUD()->StartBossFight(this);
+            if (!mGame->GetBossMusicHandle().IsValid()) {
+                mGame->StartBossMusic(mGame->GetAudio()->PlaySound("MantisLords.wav", true));
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Se morreu
@@ -143,8 +147,10 @@ void HookEnemy::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 
     if (mHealthPoints <= mMaxHealthPoints / 2) {
@@ -183,10 +189,12 @@ void HookEnemy::ResolveGroundCollision() {
                         float dist = GetPosition().x - player->GetPosition().x;
                         if (dist < 0) {
                             SetRotation(0.0);
+                            SetTransformRotation(0.0f);
                             SetScale(Vector2(1,1));
                         }
                         else {
                             SetRotation(Math::Pi);
+                            SetTransformRotation(0.0f);
                             SetScale(Vector2(-1,1));
                         }
                         mHookEnemyState = State::ForwardAttack;
@@ -293,6 +301,7 @@ void HookEnemy::Stop(float deltaTime) {
 
     SetRotation(3 * Math::Pi / 2);
     SetTransformRotation(3 * Math::Pi / 2);
+    SetScale(Vector2(1, 1));
     if (mStopTimer >= mStopDuration) {
         mStopTimer = 0;
         float hookProbability = 0.5f;
@@ -360,10 +369,12 @@ void HookEnemy::Stop(float deltaTime) {
             float dist = GetPosition().x - player->GetPosition().x;
             if (dist < 0) {
                 SetRotation(0.0);
+                SetTransformRotation(0.0f);
                 SetScale(Vector2(1,1));
             }
             else {
                 SetRotation(Math::Pi);
+                SetTransformRotation(0.0f);
                 SetScale(Vector2(-1,1));
             }
             mHookEnemyState = State::ForwardAttack;
@@ -431,10 +442,12 @@ void HookEnemy::DiagonalAttack(float deltaTime) {
         float dist = GetPosition().x - player->GetPosition().x;
         if (dist < 0) {
             SetRotation(0.0);
+            SetTransformRotation(0.0f);
             SetScale(Vector2(1,1));
         }
         else {
             SetRotation(Math::Pi);
+            SetTransformRotation(0.0f);
             SetScale(Vector2(-1,1));
         }
         mHookEnemyState = State::ForwardAttack;
@@ -477,35 +490,45 @@ void HookEnemy::ManageAnimations() {
     mDrawComponent->SetWidth(mWidth * 1.35f);
     mDrawComponent->SetHeight(mWidth * 1.35f * 0.73f);
     mDrawComponent->SetAnimFPS(7.0f);
-    // mDrawAnimatedComponent->UseFlip(false);
-    // mDrawAnimatedComponent->UseRotation(true);
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
     if (mHookEnemyState == State::Stop) {
         mDrawComponent->SetAnimation("idle");
         float dist = GetPosition().x - playerPos.x;
         if (dist > 0) {
             SetScale(Vector2(1, -1));
-            // mDrawAnimatedComponent->UseFlip(true);
-            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+        }
+        else {
+            SetScale(Vector2(1, 1));
         }
     }
     else if (mHookEnemyState == State::Hook) {
         mDrawComponent->SetAnimation("jump");
         if (mRigidBodyComponent->GetVelocity().x < 0) {
             SetScale(Vector2(1, -1));
-            // mDrawAnimatedComponent->UseFlip(true);
-            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
         }
     }
-    else if (mHookEnemyState == State::DiagonalAttack || mHookEnemyState == State::ForwardAttack) {
+    else if (mHookEnemyState == State::DiagonalAttack) {
         mDrawComponent->SetAnimation("fly");
         if (GetRotation() > Math::PiOver2 && GetRotation() < 3 * Math::PiOver2) {
             SetScale(Vector2(1, -1));
-            // mDrawAnimatedComponent->UseFlip(true);
-            // mDrawAnimatedComponent->SetFlip(SDL_FLIP_VERTICAL);
+        }
+        else {
+            SetScale(Vector2(1, 1));
         }
         mDrawComponent->SetWidth(mWidth * 1.55f);
         mDrawComponent->SetHeight(mWidth * 1.55f * 0.73f);
+    }
+    else if (mHookEnemyState == State::ForwardAttack) {
+        mDrawComponent->SetAnimation("fly");
+
+        mDrawComponent->SetWidth(mWidth * 1.55f);
+        mDrawComponent->SetHeight(mWidth * 1.55f * 0.73f);
+    }
+    if (mIsFlashing) {
+        mDrawComponent->SetTextureFactor(0.0f);
+    }
+    else {
+        mDrawComponent->SetTextureFactor(1.0f);
     }
 }
 

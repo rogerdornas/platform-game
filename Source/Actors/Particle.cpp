@@ -11,18 +11,24 @@
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Drawing/RectComponent.h"
 
-Particle::Particle(Game* game)
+Particle::Particle(Game* game, ParticleType particleType)
     :Actor(game)
+    ,mParticleType(particleType)
     ,mSize(8.0f * mGame->GetScale())
     ,mLifeTDuration(0.0f)
     ,mLifeTimer(0.0f)
-    ,mIsSplash(false)
-    ,mTexturePath("../Assets/Sprites/Particle/Ellipse.png")
+    ,mGroundCollision(true)
+    ,mEnemyCollision(false)
+    ,mTexturePath("../Assets/Sprites/Effects/ImperfectCircleBlur.png")
     ,mColor(SDL_Color{255, 255, 255, 255})
     ,mGravity(true)
     ,mGravityForce(2000.0f)
     ,mDirection(Vector2::Zero)
     ,mSpeedScale(1.0f * mGame->GetScale())
+    ,mApplyDamage(false)
+    ,mApplyFreeze(false)
+    ,mFreezeDamage(1.0f)
+    ,mFreezeIntensity(1.2f)
     ,mDrawComponent(nullptr)
     ,mRectComponent(nullptr)
     ,mRigidBodyComponent(nullptr)
@@ -44,14 +50,25 @@ Particle::Particle(Game* game)
     vertices.emplace_back(v3);
     vertices.emplace_back(v4);
 
-    // mDrawPolygonComponent = new DrawPolygonComponent(this, vertices, SDL_Color{255, 255, 255, 255}, 5000);
-
-    mDrawComponent = new AnimatorComponent(this, mTexturePath, "",
-                                                    static_cast<int>(width * 1.6),
-                                                    static_cast<int>(height * 1.6),
+    switch (mParticleType) {
+        case ParticleType::SolidParticle:
+            mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Particle/Ellipse.png", "",
+                                                        static_cast<int>(width * 1.6),
+                                                        static_cast<int>(height * 1.6),
                                                     5000);
 
-    mDrawComponent->SetTextureFactor(0.0f);
+            mDrawComponent->SetTextureFactor(0.0f);
+            break;
+
+        case ParticleType::BlurParticle:
+            mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Particle/ImperfectCircleBlur.png", "",
+                                                        static_cast<int>(width * 1.6),
+                                                        static_cast<int>(height * 1.6),
+                                                    5000);
+
+            mDrawComponent->SetTextureFactor(0.0f);
+            break;
+    }
 
     mRigidBodyComponent = new RigidBodyComponent(this, 0.1);
     mAABBComponent = new AABBComponent(this, v1, v3);
@@ -110,6 +127,28 @@ void Particle::SetDirection(Vector2 direction) {
     }
 }
 
+void Particle::SetVelocity(Vector2 velocity) {
+    if (mRigidBodyComponent) {
+        mRigidBodyComponent->SetVelocity(velocity);
+    }
+}
+
+void Particle::UpdateFade() {
+    float t = mLifeTimer / mLifeTDuration;
+
+    float alphaCurve = 1.0f - (t * t * t * t);
+
+    if (mDrawComponent) {
+        // Aplica a curva à cor original
+        float alpha = (mColor.a / 255.0f) * alphaCurve;
+
+        // Garante que não fique negativo ou estoure (opcional, mas seguro)
+        alpha = std::max(0.0f, std::min(alpha, 1.0f));
+
+        mDrawComponent->SetAlpha(alpha);
+    }
+}
+
 void Particle::OnUpdate(float deltaTime)
 {
     mLifeTimer += deltaTime;
@@ -118,6 +157,9 @@ void Particle::OnUpdate(float deltaTime)
     }
     else {
         Activate();
+
+        UpdateFade();
+
         // Rotation
         Vector2 velocity = mRigidBodyComponent->GetVelocity();
         if (velocity.Length() != 0) {
@@ -133,18 +175,43 @@ void Particle::OnUpdate(float deltaTime)
                                                      mGravityForce * deltaTime));
         }
 
-        if (!mIsSplash) {
+        if (mApplyDamage) {
+            ApplyEnemyDamage();
+        }
+        if (mApplyFreeze) {
+            ApplyEnemyFreeze();
+        }
+
+        if (mGroundCollision) {
             std::vector<Ground*> grounds = mGame->GetGrounds();
             if (!grounds.empty()) {
                 for (Ground* g : grounds) {
                     if (mAABBComponent->Intersect(*g->GetComponent<ColliderComponent>())) {
                         Deactivate();
-                        auto* blood = new ParticleSystem(mGame, 6, 100.0, 0.09, 0.05f);
+                        auto* blood = new ParticleSystem(mGame, mParticleType, 6, 100.0, 0.09, 0.05f);
                         blood->SetPosition(GetPosition());
-                        blood->SetIsSplash(true);
-                        blood->SetParticleSpeedScale(1);
+                        blood->SetGroundCollision(false);
+                        blood->SetParticleSpeedScale(0.3f);
                         blood->SetParticleColor(mColor);
                         blood->SetParticleGravity(true);
+                        blood->SetConeSpread(360.0f);
+                    }
+                }
+            }
+        }
+        if (mEnemyCollision) {
+            std::vector<Enemy*> enemies = mGame->GetEnemies();
+            if (!enemies.empty()) {
+                for (Enemy* e : enemies) {
+                    if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+                        Deactivate();
+                        auto* blood = new ParticleSystem(mGame, mParticleType, 6, 100.0, 0.09, 0.05f);
+                        blood->SetPosition(GetPosition());
+                        blood->SetGroundCollision(false);
+                        blood->SetParticleSpeedScale(0.3f);
+                        blood->SetParticleColor(mColor);
+                        blood->SetParticleGravity(true);
+                        blood->SetConeSpread(360.0f);
                     }
                 }
             }
@@ -206,6 +273,28 @@ void Particle::Deactivate() {
     }
     if (mDrawComponent) {
         mDrawComponent->SetVisible(false);
+    }
+}
+
+void Particle::ApplyEnemyDamage() {
+    std::vector<Enemy*> enemies = mGame->GetEnemies();
+    if (!enemies.empty()) {
+        for (Enemy* e : enemies) {
+            if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+                e->ReceiveHit(1.0f, Vector2::Zero);
+            }
+        }
+    }
+}
+
+void Particle::ApplyEnemyFreeze() {
+    std::vector<Enemy*> enemies = mGame->GetEnemies();
+    if (!enemies.empty()) {
+        for (Enemy* e : enemies) {
+            if (mAABBComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
+                e->ReceiveFreeze(mFreezeDamage, mFreezeIntensity);
+            }
+        }
     }
 }
 

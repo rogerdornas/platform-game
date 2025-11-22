@@ -72,6 +72,7 @@ Fox::Fox(Game* game)
     mKnockBackSpeed = 0.0f * mGame->GetScale();
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
+    mFreezeMax = 1000;
 
     SetSize(mWidth, mHeight);
 
@@ -117,6 +118,7 @@ void Fox::OnUpdate(float deltaTime) {
     ResolvePlayerCollision();
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
     // Gravidade
     if (!mIsOnGround) {
@@ -125,15 +127,17 @@ void Fox::OnUpdate(float deltaTime) {
                                                  + mGravity * deltaTime));
     }
 
-    if (mPlayerSpotted) {
-        mGame->GetHUD()->StartBossFight(this);
-        if (!mGame->GetBossMusicHandle().IsValid()) {
-            mGame->StartBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav", true));
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            mGame->GetHUD()->StartBossFight(this);
+            if (!mGame->GetBossMusicHandle().IsValid()) {
+                mGame->StartBossMusic(mGame->GetAudio()->PlaySound("Hornet.wav", true));
+            }
+            MovementAfterPlayerSpotted(deltaTime);
         }
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Se morreu
@@ -141,8 +145,10 @@ void Fox::OnUpdate(float deltaTime) {
         TriggerBossDefeat();
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 
     if (mHealthPoints <= mMaxHealthPoints / 2) {
@@ -290,6 +296,7 @@ void Fox::MovementBeforePlayerSpotted() {
 }
 
 void Fox::ManageAnimations() {
+    mDrawComponent->SetAnimFPS(16.0f);
     if (mIsRunning) {
         mDrawComponent->SetAnimation("run");
     }

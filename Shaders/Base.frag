@@ -22,6 +22,9 @@ uniform float uTextureFactor;
 // Transparência global
 uniform float uAlpha;
 
+// Nível de congelamento (0.0 = normal, 1.0 = totalmente congelado)
+uniform float uFreezeLevel;
+
 // Iluminação
 uniform vec3 uAmbientColor;
 uniform float uAmbientIntensity;
@@ -47,6 +50,20 @@ void main()
     // Sample color from texture
     vec4 texColor = texture(uTexture, fragTexCoord);
     vec3 baseColor = mix(uColor, texColor.rgb, uTextureFactor);
+
+    // Congelamento
+    if (uFreezeLevel > 0.0)
+    {
+        // Converte a cor atual para escala de cinza (Luminosidade)
+        float gray = dot(baseColor, vec3(0.299, 0.587, 0.114));
+
+        // Define a cor do "Gelo" (Ciano Claro).
+        // Multiplicamos gray por 1.5 para aumentar o brilho/reflexo do gelo.
+        vec3 iceTint = vec3(0.5, 0.8, 1.0) * (gray * 1.5);
+
+        // 3. Mistura a cor original com a cor de gelo baseada no nível (0.0 a 1.0)
+        baseColor = mix(baseColor, iceTint, uFreezeLevel);
+    }
 
     // Combina alpha global com alpha da textura
     float finalAlpha = texColor.a * uAlpha;

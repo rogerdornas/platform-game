@@ -130,15 +130,20 @@ void DragonFly::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    MovementAfterPlayerSpotted(deltaTime);
+    if (!mIsFrozen) {
+        MovementAfterPlayerSpotted(deltaTime);
+    }
 
     // Se morreu
     if (Died()) {
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
     // if (mDrawPolygonComponent) {
     //     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {

@@ -116,20 +116,25 @@ void FlyingSpawnerEnemy::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    if (mPlayerSpotted) {
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted();
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            MovementAfterPlayerSpotted(deltaTime);
+        }
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Se morreu
     if (Died()) {
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 

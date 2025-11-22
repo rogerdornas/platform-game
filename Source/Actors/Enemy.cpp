@@ -27,6 +27,15 @@ Enemy::Enemy(Game* game)
     ,mPlayerSpotted(false)
     ,mOffscreenLimit(0.2f)
     ,mEnemyCollision(true)
+    ,mIsFrozen(false)
+    ,mFreezeMax(50)
+    ,mFreezeCount(0)
+    ,mFreezeDuration(3.0f)
+    ,mFreezeTimer(0.0f)
+    ,mFreezeDecayDuration(1.5f)
+    ,mFreezeDecayTimer(0.0f)
+    ,mFreezeDecayRate(20.0f)
+    ,mFreezeEffect(nullptr)
     ,mRectComponent(nullptr)
     ,mDrawComponent(nullptr)
 {
@@ -64,12 +73,13 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mFlashTimer = 0;
     mPlayerSpotted = true;
 
-    auto* blood = new ParticleSystem(mGame, 10, 170.0, 3.0, 0.07f);
+    auto* blood = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, 10, 170.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());
     blood->SetEmitDirection(knockBackDirection);
     blood->SetParticleSpeedScale(1);
     blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
     blood->SetParticleGravity(true);
+    blood->SetConeSpread(65.0f);
 
     auto* circleBlur = new Effect(mGame);
     circleBlur->SetDuration(0.3);
@@ -80,6 +90,88 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
 
     if (IsOnScreen()) {
         mGame->GetAudio()->PlayVariantSound("HitEnemy/HitEnemy.wav", 4);
+    }
+}
+
+void Enemy::ReceiveFreeze(float freezeDamage, float freezeIntensity) {
+    mHealthPoints -= freezeDamage;
+    if (mIsFrozen) {
+        return;
+    }
+    mFreezeCount += freezeIntensity;
+    mFreezeDecayTimer = 0;
+    mPlayerSpotted = true;
+
+    if (mFreezeCount >= mFreezeMax) {
+        // congela
+        mRigidBodyComponent->SetVelocity(Vector2::Zero);
+        mIsFrozen = true;
+        mFreezeTimer = 0;
+        // mFreezeCount = 0;
+        //nuvem de gelo
+        float particleSize = 0.75f * (GetWidth() + GetHeight() / 2);
+        mFreezeEffect = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, particleSize, 100.0f, 0.35f, mFreezeDuration);
+        mFreezeEffect->SetParticleColor(SDL_Color{100, 200, 255, 25});
+        mFreezeEffect->SetConeSpread(360.0f);
+        mFreezeEffect->SetParticleSpeedScale(0.2f);
+        mFreezeEffect->SetParticleGravity(false);
+        mFreezeEffect->SetEmitDirection(GetForward());
+        mFreezeEffect->SetGroundCollision(false);
+        mFreezeEffect->SetPosition(GetPosition());
+    }
+}
+
+void Enemy::ManageFreezing(float deltaTime) {
+    if (mIsFrozen) {
+        mFreezeTimer += deltaTime;
+        mRigidBodyComponent->SetVelocity(Vector2::Zero);
+        if (mDrawComponent) {
+            mDrawComponent->SetAnimFPS(0);
+        }
+
+        if (mFreezeEffect) {
+            mFreezeEffect->SetPosition(GetPosition());
+        }
+
+        if (mHealthPoints <= 0) {
+            mFreezeEffect->EndParticleSystem();
+        }
+
+        if (mFreezeTimer >= mFreezeDuration) {
+            mIsFrozen = false;
+            mFreezeCount = 0;
+        }
+    }
+    else if (mFreezeCount > 0) {
+        mFreezeDecayTimer += deltaTime;
+        if (mFreezeDecayTimer >= mFreezeDecayDuration) {
+            mFreezeCount -= mFreezeDecayRate * deltaTime;
+            if (mFreezeCount < 0) {
+                mFreezeCount = 0;
+            }
+        }
+    }
+
+
+    // --- ENVIANDO PARA O SHADER ---
+    // Calcula a porcentagem (0.0 a 1.0)
+    float freezeLevel = mFreezeCount / mFreezeMax;
+
+    // Garante que se estiver no estado Frozen, o visual é 100%
+    if (mIsFrozen) {
+        freezeLevel = 1.0f;
+    }
+
+    // Passa para o componente de desenho
+    if (mDrawComponent) {
+        mDrawComponent->SetFreezeLevel(freezeLevel);
+    }
+}
+void Enemy::Unfreeze() {
+    mIsFrozen = false;
+    mFreezeCount = 0;
+    if (mFreezeEffect) {
+        mFreezeEffect->EndParticleSystem();
     }
 }
 
@@ -95,12 +187,13 @@ bool Enemy::Died() {
 
             mGame->GetCamera()->StartCameraShake(0.3, mCameraShakeStrength);
 
-            auto* blood = new ParticleSystem(mGame, 15, 300.0, 3.0, 0.07f);
+            auto* blood = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, 15, 300.0, 3.0, 0.07f);
             blood->SetPosition(GetPosition());
             blood->SetEmitDirection(Vector2::UnitY);
-            blood->SetParticleSpeedScale(1.4);
+            blood->SetParticleSpeedScale(0.8);
             blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
             blood->SetParticleGravity(true);
+            blood->SetConeSpread(360.0f);
 
             auto* circleBlur = new Effect(mGame);
             circleBlur->SetDuration(1.0);
@@ -186,7 +279,7 @@ bool Enemy::Died() {
 }
 
 void Enemy::ResolveEnemyCollision() {
-    if (!mEnemyCollision) {
+    if (!mEnemyCollision || mIsFrozen) {
         return;
     }
 
@@ -194,7 +287,7 @@ void Enemy::ResolveEnemyCollision() {
     if (!enemies.empty()) {
         for (Enemy* e: enemies) {
             if (e != this) {
-                if (e->GetEnemyCollision()) {
+                if (e->GetEnemyCollision() && !e->IsFrozen()) {
                     if (mColliderComponent->Intersect(*e->GetComponent<ColliderComponent>())) {
                         mColliderComponent->ResolveCollision(*e->GetComponent<ColliderComponent>());
                     }

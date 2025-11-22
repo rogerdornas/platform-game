@@ -91,12 +91,15 @@ void Mushroom::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    if (mPlayerSpotted) {
-        MovementAfterPlayerSpotted(deltaTime);
-    }
-    else {
-        MovementBeforePlayerSpotted(deltaTime);
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            MovementAfterPlayerSpotted(deltaTime);
+        }
+        else {
+            MovementBeforePlayerSpotted(deltaTime);
+        }
     }
 
     // Gravidade
@@ -108,8 +111,10 @@ void Mushroom::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 
@@ -128,12 +133,13 @@ void Mushroom::ReceiveHit(float damage, Vector2 knockBackDirection) {
     mFlashTimer = 0;
     mPlayerSpotted = true;
 
-    auto* blood = new ParticleSystem(mGame, 10, 170.0, 3.0, 0.07f);
+    auto* blood = new ParticleSystem(mGame, Particle::ParticleType::SolidParticle, 10, 170.0, 3.0, 0.07f);
     blood->SetPosition(GetPosition());
     blood->SetEmitDirection(knockBackDirection);
     blood->SetParticleSpeedScale(1);
     blood->SetParticleColor(SDL_Color{226, 90, 70, 255});
     blood->SetParticleGravity(true);
+    blood->SetConeSpread(65.0f);
 
     auto* circleBlur = new Effect(mGame);
     circleBlur->SetDuration(0.3);

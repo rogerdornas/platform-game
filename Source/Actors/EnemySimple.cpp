@@ -61,15 +61,18 @@ void EnemySimple::OnUpdate(float deltaTime) {
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
+    ManageFreezing(deltaTime);
 
-    if (mPlayerSpotted) {
-        if (mDrawComponent) {
-            mDrawComponent->SetAnimFPS(15.0f);
+    if (!mIsFrozen) {
+        if (mPlayerSpotted) {
+            if (mDrawComponent) {
+                mDrawComponent->SetAnimFPS(15.0f);
+            }
+            MovementAfterPlayerSpotted();
         }
-        MovementAfterPlayerSpotted();
-    }
-    else {
-        MovementBeforePlayerSpotted();
+        else {
+            MovementBeforePlayerSpotted();
+        }
     }
 
     // Gravidade
@@ -81,8 +84,10 @@ void EnemySimple::OnUpdate(float deltaTime) {
     if (Died()) {
     }
 
-    if (mDrawComponent) {
-        ManageAnimations();
+    if (!mIsFrozen) {
+        if (mDrawComponent) {
+            ManageAnimations();
+        }
     }
 }
 
