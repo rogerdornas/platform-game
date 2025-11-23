@@ -10,10 +10,18 @@
 #include "../Actors/Sword.h"
 #include "../AudioSystem.h"
 
+class ParticleSystem;
+
 class Player : public Actor
 {
 public:
     enum class WallSlideSide { notSliding, left, right };
+    enum class EffectDir { Front, Up, Down };
+
+    struct AttachedEffect {
+        ParticleSystem* system;
+        EffectDir direction;
+    };
 
     Player(Game* game);
 
@@ -177,8 +185,8 @@ private:
     bool mIsFreezingFront;
     bool mIsFreezingUp;
     bool mIsFreezingDown;
-    class ParticleSystem* mSnowBalls;
-    class ParticleSystem* mIceCloud;
+    std::vector<AttachedEffect> mSnowBallsParticleSystems;
+    std::vector<AttachedEffect> mIceCloudParticleSystems;
     float mIntervalBetweenFreezeEmitDuration;
     float mIntervalBetweenFreezeEmitTimer;
     float mFreezeManaCost;

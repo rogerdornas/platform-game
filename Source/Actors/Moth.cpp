@@ -123,24 +123,7 @@ void Moth::OnUpdate(float deltaTime) {
     }
 
     // Revida bola de fogo
-    std::vector<FireBall*> fireBalls = mGame->GetFireBalls();
-    if (!fireBalls.empty()) {
-        for (FireBall* f : fireBalls) {
-            if ((GetPosition() - f->GetPosition()).Length() < 150 * mGame->GetScale()) {
-                if (Random::GetFloat() < mSlowMotionProbability) {
-                    Vector2 direction = player->GetPosition() - GetPosition();
-                    if (direction.Length() > 0) {
-                        direction.Normalize();
-                    }
-                    f->SetRotation(Math::Atan2(direction.y, direction.x));
-                    f->SetTransformRotation(Math::Atan2(direction.y, direction.x));
-                    f->SetIsFromEnemy();
-                    // f->GetComponent<DrawAnimatedComponent>()->UseRotation(true);
-                    f->GetComponent<RigidBodyComponent>()->SetVelocity(f->GetForward() * f->GetSpeed());
-                }
-            }
-        }
-    }
+    ReflectFireball();
 
     ResolveGroundCollision();
     ResolveEnemyCollision();
@@ -172,6 +155,29 @@ void Moth::OnUpdate(float deltaTime) {
         }
     }
 }
+
+void Moth::ReflectFireball() {
+    // Revida bola de fogo
+    std::vector<FireBall*> fireBalls = mGame->GetFireBalls();
+    if (!fireBalls.empty()) {
+        for (FireBall* f : fireBalls) {
+            if ((GetPosition() - f->GetPosition()).Length() < 180 * mGame->GetScale()) {
+                if (Random::GetFloat() < mSlowMotionProbability) {
+                    Vector2 direction = mGame->GetPlayer()->GetPosition() - GetPosition();
+                    if (direction.Length() > 0) {
+                        direction.Normalize();
+                    }
+                    f->SetRotation(Math::Atan2(direction.y, direction.x));
+                    f->SetTransformRotation(Math::Atan2(direction.y, direction.x));
+                    f->SetScale(Vector2(1, 1));
+                    f->SetIsFromEnemy();
+                    f->GetComponent<RigidBodyComponent>()->SetVelocity(f->GetForward() * f->GetSpeed());
+                }
+            }
+        }
+    }
+}
+
 
 void Moth::MovementBeforePlayerSpotted() {
 

@@ -25,15 +25,17 @@ public:
     void SetGroundCollision(bool groundCollision) { mGroundCollision = groundCollision; }
     void SetEnemyCollision(bool enemyCollision) { mEnemyCollision = enemyCollision; }
     void SetParticleColor(SDL_Color color) { mColor = color; }
+    SDL_Color GetColor() { return mColor; }
     void SetGravity(bool g) { mGravity = g; }
     void SetSpeedScale(float speedScale) { mSpeedScale = speedScale; }
     void SetDirection(Vector2 direction);
 
     void SetApplyDamage(bool applyDamage) { mApplyDamage = applyDamage; }
     void SetApplyFreeze(bool applyFreeze) { mApplyFreeze = applyFreeze; }
+    bool GetApplyFreeze() { return mApplyFreeze; }
     void SetFreezeDamage(float freezeDamage) { mFreezeDamage = freezeDamage; }
     void SetFreezeIntensity(float freezeIntensity) { mFreezeIntensity = freezeIntensity; }
-
+    float GetFreezeIntensity() { return mFreezeIntensity; }
     void SetVelocity(Vector2 velocity);
     void UpdateFade();
 

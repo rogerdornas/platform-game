@@ -5,7 +5,7 @@
             "y": 4672.0
         },
         "scene": "Level5",
-        "total_play_time": 951.1049194335938
+        "total_play_time": 957.8802490234375
     },
     "player": {
         "can_dash": true,
@@ -14,7 +14,7 @@
         "can_wallslide": true,
         "death_counter": 2,
         "max_jumps_in_air": 1,
-        "money": 265
+        "money": 215
     },
     "upgrades": {
         "fireball": true,
@@ -23,7 +23,7 @@
         "mana": true,
         "sword_damage": true,
         "sword_range": true,
-        "sword_speed": false
+        "sword_speed": true
     },
     "world_state": {
         "BushMonsterDefeated": true,

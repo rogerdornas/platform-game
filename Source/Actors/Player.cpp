@@ -83,8 +83,6 @@ Player::Player(Game* game)
     ,mIsFreezingFront(false)
     ,mIsFreezingUp(false)
     ,mIsFreezingDown(false)
-    ,mSnowBalls(nullptr)
-    ,mIceCloud(nullptr)
     ,mIntervalBetweenFreezeEmitDuration(0.1f)
     ,mIntervalBetweenFreezeEmitTimer(0.0f)
     ,mFreezeManaCost(0.0f)
@@ -326,16 +324,17 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     bool left = (mGame->IsActionPressed(Game::Action::MoveLeft, state, &controller) &&
                 !mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
-                SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -20000;
+                SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000;
 
     // bool leftSlow = (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_LCTRL]) ||
     //                 (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 &&
     //                  SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
 
-    bool leftSlow = (mGame->IsActionPressed(Game::Action::MoveLeft, state, &controller) &&
-                    mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
-                    (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 &&
-                    SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
+    bool leftSlow = false;
+    // bool leftSlow = (mGame->IsActionPressed(Game::Action::MoveLeft, state, &controller) &&
+    //                 mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
+    //                 (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < -10000 &&
+    //                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > -20000);
 
     // bool right = (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LCTRL]) ||
     //              SDL_GameControllerGetButton(&controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
@@ -343,16 +342,17 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     bool right = (mGame->IsActionPressed(Game::Action::MoveRight, state, &controller) &&
                  !mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
-                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 20000;
+                 SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000;
 
     // bool rightSlow = (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_LCTRL]) ||
     //                  (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000 &&
     //                   SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
 
-    bool rightSlow = (mGame->IsActionPressed(Game::Action::MoveRight, state, &controller) &&
-                     mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
-                     (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000 &&
-                     SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
+    bool rightSlow = false;
+    // bool rightSlow = (mGame->IsActionPressed(Game::Action::MoveRight, state, &controller) &&
+    //                  mGame->IsActionPressed(Game::Action::Look, state, &controller)) ||
+    //                  (SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) > 10000 &&
+    //                  SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_LEFTX) < 20000);
 
     // bool lookUp = (state[SDL_SCANCODE_UP] && state[SDL_SCANCODE_LCTRL]) ||
     //                SDL_GameControllerGetAxis(&controller, SDL_CONTROLLER_AXIS_RIGHTY) < -28000;
@@ -699,55 +699,66 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     if (mCanFreeze) {
         if (freeze && mMana >= mFreezeManaCost) {
+            AttachedEffect freeze;
             if (mIntervalBetweenFreezeEmitTimer >= mIntervalBetweenFreezeEmitDuration) {
                 mIsFreezingDown = false;
                 mIsFreezingUp = false;
                 mIsFreezingFront = false;
 
-                mSnowBalls = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 13.0f, 100.0f, 0.45f, 0.15f);
-                mSnowBalls->SetParticleColor(SDL_Color{255, 255, 255, 180});
-                mSnowBalls->SetParticleGravity(false);
+                auto* snowBalls = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 13.0f, 100.0f, 0.45f, 0.15f);
+                snowBalls->SetParticleColor(SDL_Color{255, 255, 255, 180});
+                snowBalls->SetParticleGravity(false);
                 if (down) {
                     mIsFreezingDown = true;
-                    mSnowBalls->SetEmitDirection(Vector2::UnitY);
-                    mSnowBalls->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
+                    snowBalls->SetEmitDirection(Vector2::UnitY);
+                    snowBalls->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
+                    freeze.direction = EffectDir::Down;
                 }
                 else if (up) {
                     mIsFreezingUp = true;
-                    mSnowBalls->SetEmitDirection(Vector2::NegUnitY);
-                    mSnowBalls->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
+                    snowBalls->SetEmitDirection(Vector2::NegUnitY);
+                    snowBalls->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
+                    freeze.direction = EffectDir::Up;
                 }
                 else {
                     mIsFreezingFront = true;
-                    mSnowBalls->SetEmitDirection(GetForward());
-                    mSnowBalls->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
+                    snowBalls->SetEmitDirection(GetForward());
+                    snowBalls->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
+                    freeze.direction = EffectDir::Front;
                 }
-                mSnowBalls->SetConeSpread(35.0f);
-                mSnowBalls->SetParticleSpeedScale(1.1f);
-                mSnowBalls->SetEnemyCollision(true);
-                mSnowBalls->SetApplyFreeze(true);
-                mSnowBalls->SetFreezeDamage(0.05f);
-                mSnowBalls->SetFreezeIntensity(1.0f);
-                mSnowBalls->SetParticleDrawOrder(4999);
+                snowBalls->SetConeSpread(35.0f);
+                snowBalls->SetParticleSpeedScale(1.1f);
+                snowBalls->SetEnemyCollision(true);
+                snowBalls->SetApplyFreeze(true);
+                snowBalls->SetFreezeDamage(0.05f);
+                snowBalls->SetFreezeIntensity(1.0f);
+                snowBalls->SetParticleDrawOrder(4999);
+                freeze.system = snowBalls;
+                mSnowBallsParticleSystems.emplace_back(freeze);
 
-                mIceCloud = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 80.0f, 60.0f, 0.55f, 0.2f);
-                mIceCloud->SetParticleColor(SDL_Color{100, 200, 255, 50});
-                mIceCloud->SetConeSpread(40.0f);
-                mIceCloud->SetParticleSpeedScale(0.9f);
-                mIceCloud->SetParticleGravity(false);
+                auto* iceCloud = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 80.0f, 60.0f, 0.55f, 0.2f);
+                iceCloud->SetParticleColor(SDL_Color{100, 200, 255, 50});
+                iceCloud->SetConeSpread(40.0f);
+                iceCloud->SetParticleSpeedScale(0.9f);
+                iceCloud->SetParticleGravity(false);
                 if (down) {
-                    mIceCloud->SetEmitDirection(Vector2::UnitY);
-                    mIceCloud->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
+                    iceCloud->SetEmitDirection(Vector2::UnitY);
+                    iceCloud->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
+                    freeze.direction = EffectDir::Down;
                 }
                 else if (up) {
-                    mIceCloud->SetEmitDirection(Vector2::NegUnitY);
-                    mIceCloud->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
+                    iceCloud->SetEmitDirection(Vector2::NegUnitY);
+                    iceCloud->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
+                    freeze.direction = EffectDir::Up;
                 }
                 else {
-                    mIceCloud->SetEmitDirection(GetForward());
-                    mIceCloud->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
+                    iceCloud->SetEmitDirection(GetForward());
+                    iceCloud->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
+                    freeze.direction = EffectDir::Front;
                 }
-                mIceCloud->SetGroundCollision(false);
+                iceCloud->SetGroundCollision(false);
+                freeze.system = iceCloud;
+                mIceCloudParticleSystems.emplace_back(freeze);
 
                 mMana -= mFreezeManaCost;
                 mIntervalBetweenFreezeEmitTimer = 0;
@@ -907,12 +918,6 @@ void Player::OnUpdate(float deltaTime) {
         mDeathAnimationTimer += deltaTime;
     }
 
-    // if (mIceCloud) {
-    //     mIceCloud->SetPosition(GetPosition() + GetForward().x * Vector2(mWidth, 0));
-    // }
-    // if (mSnowBalls) {
-    //     mSnowBalls->SetPosition(GetPosition() + GetForward().x * Vector2(mWidth, 0));
-    // }
 
     if (mStopInAirFireBallTimer < mStopInAirFireBallMaxDuration) {
         mStopInAirFireBallTimer += deltaTime;
@@ -1033,6 +1038,94 @@ void Player::OnUpdate(float deltaTime) {
             mRigidBodyComponent->SetVelocity(mHookDirection * mHookSpeed);
         } else {
             mIsHooking = false;
+        }
+    }
+
+    // Altera velocidade dos projéteis de gelo de acordo com a velocidade do player
+    for (auto it = mSnowBallsParticleSystems.begin(); it != mSnowBallsParticleSystems.end(); ) {
+        // Acessamos os dados da struct usando 'it->'
+        ParticleSystem* ps = it->system;
+        EffectDir dir = it->direction;
+
+        if (ps && ps->GetLifeTime() > 0.02f) {
+            Vector2 offset = Vector2::Zero;
+            float speedScale = 1.1f;
+
+            switch (dir) {
+                case EffectDir::Down:
+                    offset = Vector2(-10 * GetForward().x, mHeight * 0.3f);
+                    if (mRigidBodyComponent->GetVelocity().y > 0) {
+                        speedScale = 1.1f + 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    else if (mRigidBodyComponent->GetVelocity().y < 0) {
+                        // speedScale = 1.1f - 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    break;
+
+                case EffectDir::Up:
+                    offset = -1 * Vector2(10 * GetForward().x, mHeight * 0.3f);
+                    if (mRigidBodyComponent->GetVelocity().y < 0) {
+                        speedScale = 1.1f + 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    else if (mRigidBodyComponent->GetVelocity().y > 0) {
+                        // speedScale = 1.1f - 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    break;
+
+                case EffectDir::Front:
+                    offset = Vector2(mWidth * 0.45f * GetForward().x, 11);
+                    speedScale = 1.1f + 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().x);
+                    break;
+            }
+            ps->SetPosition(GetPosition() + offset);
+            ps->SetParticleSpeedScale(speedScale);
+            ++it;
+        }
+        else {
+            it = mSnowBallsParticleSystems.erase(it);
+        }
+    }
+    for (auto it = mIceCloudParticleSystems.begin(); it != mIceCloudParticleSystems.end(); ) {
+        // Acessamos os dados da struct usando 'it->'
+        ParticleSystem* ps = it->system;
+        EffectDir dir = it->direction;
+
+        if (ps && ps->GetLifeTime() > 0.02f) {
+            Vector2 offset = Vector2::Zero;
+            float speedScale = 1.1f;
+
+            switch (dir) {
+                case EffectDir::Down:
+                    offset = Vector2(-10 * GetForward().x, mHeight * 0.3f);
+                    if (mRigidBodyComponent->GetVelocity().y > 0) {
+                        speedScale = 1.1f + 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    else if (mRigidBodyComponent->GetVelocity().y < 0) {
+                        // speedScale = 1.1f - 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    break;
+
+                case EffectDir::Up:
+                    offset = -1 * Vector2(10 * GetForward().x, mHeight * 0.3f);
+                    if (mRigidBodyComponent->GetVelocity().y < 0) {
+                        speedScale = 1.1f + 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    else if (mRigidBodyComponent->GetVelocity().y > 0) {
+                        // speedScale = 1.1f - 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().y);
+                    }
+                    break;
+
+                case EffectDir::Front:
+                    offset = Vector2(mWidth * 0.45f * GetForward().x, 11);
+                speedScale = 1.1f + 0.0006f * Math::Abs(mRigidBodyComponent->GetVelocity().x);
+                break;
+            }
+            ps->SetPosition(GetPosition() + offset);
+            ps->SetParticleSpeedScale(speedScale);
+            ++it;
+        }
+        else {
+            it = mIceCloudParticleSystems.erase(it);
         }
     }
 
@@ -1435,15 +1528,15 @@ void Player::ManageAnimations() {
     }
     else if (mIsFreezingFront) {
         mDrawComponent->SetAnimation("freezeFront");
-        mDrawComponent->SetAnimFPS(5.0f);
+        mDrawComponent->SetAnimFPS(8.0f);
     }
     else if (mIsFreezingDown) {
         mDrawComponent->SetAnimation("freezeDown");
-        mDrawComponent->SetAnimFPS(5.0f);
+        mDrawComponent->SetAnimFPS(8.0f);
     }
     else if (mIsFreezingUp) {
         mDrawComponent->SetAnimation("freezeUp");
-        mDrawComponent->SetAnimFPS(5.0f);
+        mDrawComponent->SetAnimFPS(8.0f);
     }
     else if ((!mIsOnMovingGround && !mIsOnGround && mIsWallSliding &&
                mRigidBodyComponent->GetVelocity().y > 0) ||

@@ -30,8 +30,7 @@ Enemy::Enemy(Game* game)
     ,mIsFrozen(false)
     ,mFreezeMax(50)
     ,mFreezeCount(0)
-    ,mFreezeDuration(3.0f)
-    ,mFreezeTimer(0.0f)
+    ,mFrozenDecayRate(17.0f)
     ,mFreezeDecayDuration(1.5f)
     ,mFreezeDecayTimer(0.0f)
     ,mFreezeDecayRate(20.0f)
@@ -95,10 +94,15 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
 
 void Enemy::ReceiveFreeze(float freezeDamage, float freezeIntensity) {
     mHealthPoints -= freezeDamage;
+    // if (mIsFrozen) {
+    //     return;
+    // }
+    mFreezeCount += freezeIntensity;
+    mFreezeCount = std::min(mFreezeCount, mFreezeMax);
+
     if (mIsFrozen) {
         return;
     }
-    mFreezeCount += freezeIntensity;
     mFreezeDecayTimer = 0;
     mPlayerSpotted = true;
 
@@ -106,12 +110,11 @@ void Enemy::ReceiveFreeze(float freezeDamage, float freezeIntensity) {
         // congela
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
         mIsFrozen = true;
-        mFreezeTimer = 0;
         // mFreezeCount = 0;
         //nuvem de gelo
         float particleSize = 0.75f * (GetWidth() + GetHeight() / 2);
-        mFreezeEffect = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, particleSize, 100.0f, 0.35f, mFreezeDuration);
-        mFreezeEffect->SetParticleColor(SDL_Color{100, 200, 255, 25});
+        mFreezeEffect = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, particleSize, 80.0f, 0.35f, 1000.0f);
+        mFreezeEffect->SetParticleColor(SDL_Color{100, 200, 255, 15});
         mFreezeEffect->SetConeSpread(360.0f);
         mFreezeEffect->SetParticleSpeedScale(0.2f);
         mFreezeEffect->SetParticleGravity(false);
@@ -123,7 +126,6 @@ void Enemy::ReceiveFreeze(float freezeDamage, float freezeIntensity) {
 
 void Enemy::ManageFreezing(float deltaTime) {
     if (mIsFrozen) {
-        mFreezeTimer += deltaTime;
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
         if (mDrawComponent) {
             mDrawComponent->SetAnimFPS(0);
@@ -137,7 +139,10 @@ void Enemy::ManageFreezing(float deltaTime) {
             mFreezeEffect->EndParticleSystem();
         }
 
-        if (mFreezeTimer >= mFreezeDuration) {
+        mFreezeCount -= mFrozenDecayRate * deltaTime;
+
+        if (mFreezeCount <= 0) {
+            Unfreeze();
             mIsFrozen = false;
             mFreezeCount = 0;
         }

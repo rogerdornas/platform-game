@@ -21,6 +21,7 @@ public:
 
 private:
     void InitLight();
+    void ResolveFreezeParticleCollision();
     void ManageAnimations();
 
     float mWidth;
@@ -28,6 +29,8 @@ private:
     class Light* mLight;
     class Light* mRedLight;
     BrazierState mBrazierState;
+    float mFreezeMax;
+    float mFreezeCount;
 
     class ColliderComponent* mAABBComponent;
     class RectComponent* mRectComponent;

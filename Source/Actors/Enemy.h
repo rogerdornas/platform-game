@@ -54,8 +54,7 @@ protected:
     bool mIsFrozen;
     float mFreezeMax;
     float mFreezeCount;
-    float mFreezeDuration;
-    float mFreezeTimer;
+    float mFrozenDecayRate;
     float mFreezeDecayDuration;
     float mFreezeDecayTimer;
     float mFreezeDecayRate;

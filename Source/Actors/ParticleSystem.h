@@ -14,6 +14,7 @@ public:
     void OnUpdate(float deltaTime) override;
     void SetParticleLifeTime(float time) { mParticleLifeTime = time; }
     void SetEmitRate(float rate) { mEmitRate = rate; }
+    float GetLifeTime() { return mLifeTime; }
     void EndParticleSystem() { mLifeTime = 0; }
 
     void SetEmitDirection(Vector2 emitDirection) { mEmitDirection = emitDirection; }

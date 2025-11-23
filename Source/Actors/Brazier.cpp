@@ -4,6 +4,8 @@
 
 #include "Brazier.h"
 #include "Light.h"
+#include "Particle.h"
+#include "ParticleSystem.h"
 #include "../Game.h"
 #include "../Components/AABBComponent.h"
 #include "../Components/Drawing/AnimatorComponent.h"
@@ -16,6 +18,8 @@ Brazier::Brazier(Game *game)
     ,mLight(nullptr)
     ,mRedLight(nullptr)
     ,mBrazierState(BrazierState::LightOff)
+    ,mFreezeMax(120.0f)
+    ,mFreezeCount(0.0f)
     ,mAABBComponent(nullptr)
     ,mRectComponent(nullptr)
     ,mDrawComponent(nullptr)
@@ -49,6 +53,8 @@ Brazier::Brazier(Game *game)
 
     mDrawComponent->SetAnimation("lightOff");
     mDrawComponent->SetAnimFPS(12.0f);
+
+    InitLight();
 }
 
 void Brazier::OnUpdate(float deltaTime) {
@@ -58,13 +64,16 @@ void Brazier::OnUpdate(float deltaTime) {
             if (!f->GetIsFromEnemy()) {
                 if (mAABBComponent->Intersect(*f->GetComponent<ColliderComponent>())) {
                     mBrazierState = BrazierState::LightOn;
-                    InitLight();
+                    mRedLight->Activate(0.4f);
+                    mLight->Activate(0.4f);
                     f->ExplodeFireball();
                     break;
                 }
             }
         }
     }
+
+    ResolveFreezeParticleCollision();
 
     if (mLight) {
         mLight->SetPosition(GetPosition() - Vector2(0, mHeight / 2));
@@ -81,13 +90,31 @@ void Brazier::InitLight() {
     mLight->SetRadius(1000.0f);
     mLight->SetMaxIntensity(0.7f);
     mLight->SetColor(Vector3(1.0f, 1.0f, 1.0f));
-    mLight->Activate(0.4f);
+    mLight->Deactivate();
 
     mRedLight = new Light(mGame);
     mRedLight->SetRadius(200.0f);
     mRedLight->SetMaxIntensity(0.85f);
     mRedLight->SetColor(Vector3(0.92f, 0.37f, 0.37f));
-    mRedLight->Activate(0.4f);
+    mRedLight->Deactivate();
+}
+
+void Brazier::ResolveFreezeParticleCollision() {
+    std::vector<Particle*> particles = mGame->GetParticles();
+    if (!particles.empty()) {
+        for (Particle* p : particles) {
+            if (p->GetApplyFreeze() && mAABBComponent->Intersect(*p->GetComponent<ColliderComponent>())) {
+                mFreezeCount += p->GetFreezeIntensity();
+                if (mFreezeCount >= mFreezeMax) {
+                    // congela
+                    mBrazierState = BrazierState::LightOff;
+                    mRedLight->Deactivate(0.4f);
+                    mLight->Deactivate(0.4f);
+                    mFreezeCount = 0;
+                }
+            }
+        }
+    }
 }
 
 void Brazier::ManageAnimations() {

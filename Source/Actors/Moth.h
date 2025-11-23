@@ -33,6 +33,8 @@ private:
 
     void ManageAnimations();
 
+    void ReflectFireball();
+
     void Stop(float deltaTime);
     void Projectiles(float deltaTime);
     void SlowMotionProjectiles(float deltaTime);
