@@ -20,6 +20,8 @@ Brazier::Brazier(Game *game)
     ,mBrazierState(BrazierState::LightOff)
     ,mFreezeMax(120.0f)
     ,mFreezeCount(0.0f)
+    ,mIntervalBetweenSmokeEmitDuration(0.1f)
+    ,mIntervalBetweenSmokeEmitTimer(0.0f)
     ,mAABBComponent(nullptr)
     ,mRectComponent(nullptr)
     ,mDrawComponent(nullptr)
@@ -52,7 +54,7 @@ Brazier::Brazier(Game *game)
     mDrawComponent->AddAnimation("lightOn", lightOn);
 
     mDrawComponent->SetAnimation("lightOff");
-    mDrawComponent->SetAnimFPS(12.0f);
+    mDrawComponent->SetAnimFPS(16.0f);
 
     InitLight();
 }
@@ -71,6 +73,24 @@ void Brazier::OnUpdate(float deltaTime) {
                 }
             }
         }
+    }
+    else if (mBrazierState == BrazierState::LightOn) {
+        if (mIntervalBetweenSmokeEmitTimer >= mIntervalBetweenSmokeEmitDuration) {
+            auto* smoke = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 80.0f, 25.0f, 0.65f, 0.2f);
+            smoke->SetParticleColor(SDL_Color{130, 130, 130, 50});
+            smoke->SetConeSpread(60.0f);
+            smoke->SetParticleSpeedScale(0.5f);
+            smoke->SetParticleGravity(false);
+            smoke->SetEmitDirection(Vector2::NegUnitY);
+            smoke->SetPosition(GetPosition() - Vector2(0, mHeight * 0.7f));
+            smoke->SetGroundCollision(false);
+
+            mIntervalBetweenSmokeEmitTimer = 0;
+        }
+    }
+
+    if (mIntervalBetweenSmokeEmitTimer < mIntervalBetweenSmokeEmitDuration) {
+        mIntervalBetweenSmokeEmitTimer += deltaTime;
     }
 
     ResolveFreezeParticleCollision();

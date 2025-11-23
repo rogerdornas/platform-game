@@ -699,7 +699,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
 
     if (mCanFreeze) {
         if (freeze && mMana >= mFreezeManaCost) {
-            AttachedEffect freeze;
+            AttachedEffect freezeEffect;
             if (mIntervalBetweenFreezeEmitTimer >= mIntervalBetweenFreezeEmitDuration) {
                 mIsFreezingDown = false;
                 mIsFreezingUp = false;
@@ -712,19 +712,19 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                     mIsFreezingDown = true;
                     snowBalls->SetEmitDirection(Vector2::UnitY);
                     snowBalls->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
-                    freeze.direction = EffectDir::Down;
+                    freezeEffect.direction = EffectDir::Down;
                 }
                 else if (up) {
                     mIsFreezingUp = true;
                     snowBalls->SetEmitDirection(Vector2::NegUnitY);
                     snowBalls->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
-                    freeze.direction = EffectDir::Up;
+                    freezeEffect.direction = EffectDir::Up;
                 }
                 else {
                     mIsFreezingFront = true;
                     snowBalls->SetEmitDirection(GetForward());
                     snowBalls->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
-                    freeze.direction = EffectDir::Front;
+                    freezeEffect.direction = EffectDir::Front;
                 }
                 snowBalls->SetConeSpread(35.0f);
                 snowBalls->SetParticleSpeedScale(1.1f);
@@ -733,8 +733,8 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 snowBalls->SetFreezeDamage(0.05f);
                 snowBalls->SetFreezeIntensity(1.0f);
                 snowBalls->SetParticleDrawOrder(4999);
-                freeze.system = snowBalls;
-                mSnowBallsParticleSystems.emplace_back(freeze);
+                freezeEffect.system = snowBalls;
+                mSnowBallsParticleSystems.emplace_back(freezeEffect);
 
                 auto* iceCloud = new ParticleSystem(mGame, Particle::ParticleType::BlurParticle, 80.0f, 60.0f, 0.55f, 0.2f);
                 iceCloud->SetParticleColor(SDL_Color{100, 200, 255, 50});
@@ -744,21 +744,21 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 if (down) {
                     iceCloud->SetEmitDirection(Vector2::UnitY);
                     iceCloud->SetPosition(GetPosition() + Vector2(-10 * GetForward().x, mHeight * 0.3f));
-                    freeze.direction = EffectDir::Down;
+                    freezeEffect.direction = EffectDir::Down;
                 }
                 else if (up) {
                     iceCloud->SetEmitDirection(Vector2::NegUnitY);
                     iceCloud->SetPosition(GetPosition() - Vector2(10 * GetForward().x, mHeight * 0.3f));
-                    freeze.direction = EffectDir::Up;
+                    freezeEffect.direction = EffectDir::Up;
                 }
                 else {
                     iceCloud->SetEmitDirection(GetForward());
                     iceCloud->SetPosition(GetPosition() + Vector2(mWidth * 0.45f * GetForward().x, 11));
-                    freeze.direction = EffectDir::Front;
+                    freezeEffect.direction = EffectDir::Front;
                 }
                 iceCloud->SetGroundCollision(false);
-                freeze.system = iceCloud;
-                mIceCloudParticleSystems.emplace_back(freeze);
+                freezeEffect.system = iceCloud;
+                mIceCloudParticleSystems.emplace_back(freezeEffect);
 
                 mMana -= mFreezeManaCost;
                 mIntervalBetweenFreezeEmitTimer = 0;

@@ -31,6 +31,8 @@ private:
     BrazierState mBrazierState;
     float mFreezeMax;
     float mFreezeCount;
+    float mIntervalBetweenSmokeEmitDuration;
+    float mIntervalBetweenSmokeEmitTimer;
 
     class ColliderComponent* mAABBComponent;
     class RectComponent* mRectComponent;

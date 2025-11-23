@@ -3519,10 +3519,10 @@ void Game::GenerateOutput()
         else {
             // Vector2 size(3858, 800);
             // Vector2 position(1800 + size.x / 2, 3584 + size.y / 2);
-            Vector2 size(1700, 900);
-            Vector2 position(12000, 4000);
-            // Vector2 size(66000, 6400);
-            // Vector2 position(33000, 3200);
+            // Vector2 size(1700, 900);
+            // Vector2 position(12000, 4000);
+            Vector2 size(66000, 6400);
+            Vector2 position(33000, 3200);
             // DrawParallaxBackground(mBackGroundTexture); // desenha o fundo com repetição horizontal
             mRenderer->DrawTexture(position,
                        size, 0.0f, Color::White,
