@@ -170,6 +170,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/Drawing/TileMapComponent.h
         Source/Actors/Brazier.cpp
         Source/Actors/Brazier.h
+        Source/Components/Drawing/DrawRopeComponent.cpp
+        Source/Components/Drawing/DrawRopeComponent.h
 )
 
 

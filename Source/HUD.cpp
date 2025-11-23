@@ -69,12 +69,13 @@ HUD::HUD(class Game* game, const std::string& fontName)
         mPotion = AddImage("../Assets/Sprites/Healingpotions/cheia.png", Vector2(96, 139), Vector2(32, 32));
     }
 
-    AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(1770, 68), Vector2(20, 35));
+    AddImage("../Assets/Sprites/Money/CristalSmall.png", Vector2(1770, 68), Vector2(18.0f, 31.5f));
 
     mPlayerMoney = AddText(std::to_string(mGame->GetPlayer()->GetMoney()),
-                                Vector2(1815, 65),
+                                Vector2::Zero,
                                Vector2(CHAR_WIDTH, WORD_HEIGHT),
                                 POINT_SIZE);
+    mPlayerMoney->SetPosition(Vector2(1790 + mPlayerMoney->GetSize().x / 2, 65));
 }
 
 HUD::~HUD()
@@ -124,6 +125,7 @@ void HUD::Update(float deltaTime) {
 
         std::string playerMoney = std::to_string(mGame->GetPlayer()->GetMoney());
         mPlayerMoney->SetText(playerMoney);
+        mPlayerMoney->SetPosition(Vector2(1790 + mPlayerMoney->GetSize().x / 2, 65));
     }
 
     if (mDamageTakenBar.w > mHPGrowingBar.w) {

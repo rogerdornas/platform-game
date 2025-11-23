@@ -50,6 +50,7 @@
 #include "Components/AABBComponent.h"
 #include "Components/DashComponent.h"
 #include "Components/Drawing/AnimatorComponent.h"
+#include "Components/Drawing/DrawRopeComponent.h"
 #include "Components/Drawing/RectComponent.h"
 
 std::vector<int> ParseIntList(const std::string& str) {
@@ -438,9 +439,9 @@ void Game::ChangeScene()
             if (mPlayer->GetComponent<RectComponent>()) {
                 mPlayer->GetComponent<RectComponent>()->SetVisible(false);
             }
-            // if (mPlayer->GetComponent<DrawRopeComponent>()) {
-            //     mPlayer->GetComponent<DrawRopeComponent>()->SetVisible(false);
-            // }
+            if (mPlayer->GetComponent<DrawRopeComponent>()) {
+                mPlayer->GetComponent<DrawRopeComponent>()->SetVisible(false);
+            }
         }
         // Delete map
         // if (mMap) {
@@ -3540,8 +3541,9 @@ void Game::GenerateOutput()
                                mBackGroundTexture, Vector4::UnitRect);
     }
 
-    for (auto drawable: mDrawables)
+    for (auto drawable: mDrawables) {
         drawable->Draw(mRenderer);
+    }
 
     // Draw all UI screens
     mRenderer->BeginUIDraw();

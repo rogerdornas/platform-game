@@ -94,9 +94,6 @@ void Enemy::ReceiveHit(float damage, Vector2 knockBackDirection) {
 
 void Enemy::ReceiveFreeze(float freezeDamage, float freezeIntensity) {
     mHealthPoints -= freezeDamage;
-    // if (mIsFrozen) {
-    //     return;
-    // }
     mFreezeCount += freezeIntensity;
     mFreezeCount = std::min(mFreezeCount, mFreezeMax);
 

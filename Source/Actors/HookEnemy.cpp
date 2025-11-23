@@ -13,6 +13,7 @@
 #include "../Components/AABBComponent.h"
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Drawing/RectComponent.h"
+#include "../Components/Drawing/DrawRopeComponent.h"
 #include "../Random.h"
 
 HookEnemy::HookEnemy(Game *game)
@@ -50,6 +51,8 @@ HookEnemy::HookEnemy(Game *game)
     ,mLastForwardAttackDirection(1)
 
     ,mSpeedIncreaseRate(3.5f)
+
+    ,mDrawRopeComponent(nullptr)
 {
     mWidth = 220 * mGame->GetScale();
     mHeight = 100 * mGame->GetScale();
@@ -356,12 +359,12 @@ void HookEnemy::Stop(float deltaTime) {
                 mHookEnd = nearestHookPoint->GetPosition();
                 mHookAnimProgress = 0.0f;
                 mIsHookAnimating = true;
-                // if (mDrawRopeComponent) {
-                //     mDrawRopeComponent->SetIsVisible(true);
-                //
-                //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-                //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-                // }
+                if (mDrawRopeComponent) {
+                    mDrawRopeComponent->SetVisible(true);
+
+                    mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+                    mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+                }
             }
         }
         else {
@@ -411,14 +414,14 @@ void HookEnemy::Hook(float deltaTime) {
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            // if (mDrawRopeComponent) {
-            //     mDrawRopeComponent->SetIsVisible(false);
-            // }
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetVisible(false);
+            }
         }
-        // if (mDrawRopeComponent) {
-        //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-        //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-        // }
+        if (mDrawRopeComponent) {
+            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        }
         if (mHookPoint) {
             mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
         }

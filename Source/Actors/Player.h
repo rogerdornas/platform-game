@@ -275,6 +275,7 @@ private:
 
     class RectComponent* mRectComponent;
     class AnimatorComponent* mDrawComponent;
+    class DrawRopeComponent* mDrawRopeComponent;
 
     class RigidBodyComponent* mRigidBodyComponent;
     class ColliderComponent* mAABBComponent;

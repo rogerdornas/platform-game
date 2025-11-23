@@ -19,6 +19,7 @@
 #include "../Components/DashComponent.h"
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Drawing/RectComponent.h"
+#include "../Components/Drawing/DrawRopeComponent.h"
 
 Player::Player(Game* game)
     :Actor(game)
@@ -85,7 +86,7 @@ Player::Player(Game* game)
     ,mIsFreezingDown(false)
     ,mIntervalBetweenFreezeEmitDuration(0.1f)
     ,mIntervalBetweenFreezeEmitTimer(0.0f)
-    ,mFreezeManaCost(0.0f)
+    ,mFreezeManaCost(2.0f)
 
     ,mCanWallSlide(true)
     ,mIsWallSliding(false)
@@ -165,6 +166,7 @@ Player::Player(Game* game)
 
     ,mRectComponent(nullptr)
     ,mDrawComponent(nullptr)
+    ,mDrawRopeComponent(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -264,10 +266,10 @@ Player::Player(Game* game)
     mDrawComponent->SetAnimation("idle");
     mDrawComponent->SetAnimFPS(10.0f);
 
-    // mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
-    // mDrawRopeComponent->SetNumSegments(mHookSegments);
-    // mDrawRopeComponent->SetAmplitude(mHookAmplitude);
-    // mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+    mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
+    mDrawRopeComponent->SetNumSegments(mHookSegments);
+    mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+    mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
 
     // mRectComponent = new RectComponent(this, mWidth, mHeight, RendererMode::LINES);
     // mRectComponent->SetColor(Vector3(255, 255, 0));
@@ -563,9 +565,9 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            // if (mDrawRopeComponent) {
-            //     mDrawRopeComponent->SetIsVisible(false);
-            // }
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetVisible(false);
+            }
         }
     }
 
@@ -841,19 +843,19 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             mHookEnd = nearestHookPoint->GetPosition();
             mHookAnimProgress = 0.0f;
             mIsHookAnimating = true;
-            // if (mDrawRopeComponent) {
-            //     mDrawRopeComponent->SetIsVisible(true);
-            // }
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetVisible(true);
+            }
 
             // Resetar dash no ar
             mDashComponent->SetHasDashedInAir(false);
             // RESET DO CONTADOR DE PULO
             mJumpCountInAir = 0;
 
-            // if (mDrawRopeComponent) {
-            //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-            //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-            // }
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+                mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+            }
         }
         mPrevHookPressed = hook;
     }
@@ -897,14 +899,14 @@ void Player::OnUpdate(float deltaTime) {
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
-            // if (mDrawRopeComponent) {
-            //     mDrawRopeComponent->SetIsVisible(false);
-            // }
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetVisible(false);
+            }
         }
-        // if (mDrawRopeComponent) {
-        //     mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-        //     mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-        // }
+        if (mDrawRopeComponent) {
+            mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+        }
         if (mHookPoint) {
             mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
         }
@@ -944,11 +946,6 @@ void Player::OnUpdate(float deltaTime) {
     }
 
     if (mIsHealing) {
-        if (mHealAnimationTimer == 0) {
-            // if (mDrawAnimatedComponent) {
-            //     mDrawAnimatedComponent->ResetAnimationTimer();
-            // }
-        }
         mHealAnimationTimer += deltaTime;
     }
 
