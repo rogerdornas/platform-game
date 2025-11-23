@@ -33,6 +33,7 @@ BushMonster::BushMonster(Game* game)
     mContactDamage = 10;
     mMoneyDrop = 100;
     mFreezeMax = 1000;
+    mFrozenDecayRate = mFreezeMax / 3.0f;
 
     SetSize(mWidth, mHeight);
 

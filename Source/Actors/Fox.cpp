@@ -73,6 +73,7 @@ Fox::Fox(Game* game)
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
     mFreezeMax = 1000;
+    mFrozenDecayRate = mFreezeMax / 3.0f;
 
     SetSize(mWidth, mHeight);
 
@@ -82,14 +83,11 @@ Fox::Fox(Game* game)
                                                        foxAssets + "Raposa.json",
                                                        mWidth * 2.3f, 0.91f * mWidth * 2.3f, 998);
 
-    std::vector idle = {2};
+    std::vector idle = {1};
     mDrawComponent->AddAnimation("idle", idle);
 
-    std::vector run = {3, 4, 5, 6, 7};
+    std::vector run = {2, 3, 4, 5, 6};
     mDrawComponent->AddAnimation("run", run);
-
-    std::vector hit = {1};
-    mDrawComponent->AddAnimation("hit", hit);
 
     std::vector dash = {0};
     mDrawComponent->AddAnimation("dash", dash);
@@ -307,7 +305,10 @@ void Fox::ManageAnimations() {
         mDrawComponent->SetAnimation("dash");
     }
     if (mIsFlashing) {
-        mDrawComponent->SetAnimation("hit");
+        mDrawComponent->SetTextureFactor(0.0f);
+    }
+    else {
+        mDrawComponent->SetTextureFactor(1.0f);
     }
 }
 

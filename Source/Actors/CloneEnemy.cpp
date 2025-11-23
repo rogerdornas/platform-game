@@ -105,46 +105,55 @@ CloneEnemy::CloneEnemy(Game *game)
                                                    "../Assets/Sprites/Esquilo5/Esquilo.json",
                                                    mWidth * 4.93f, mWidth * 4.93f * 1.11f, 1002);
 
-    std::vector idle = {21, 22, 23, 24};
+    std::vector idle = {27, 28, 29, 30};
     mDrawComponent->AddAnimation("idle", idle);
 
-    std::vector attackFront = {21, 2, 3};
+    std::vector attackFront = {27, 2, 3};
     mDrawComponent->AddAnimation("attackFront", attackFront);
 
-    std::vector attackUp = {21, 4, 5};
+    std::vector attackUp = {27, 4, 5};
     mDrawComponent->AddAnimation("attackUp", attackUp);
 
-    std::vector attackDown = {21, 0, 1};
+    std::vector attackDown = {27, 0, 1};
     mDrawComponent->AddAnimation("attackDown", attackDown);
 
     std::vector fireball = {12, 13};
     mDrawComponent->AddAnimation("fireball", fireball);
 
+    std::vector freezeFront = {16, 17};
+    mDrawComponent->AddAnimation("freezeFront", freezeFront);
+
+    std::vector freezeDown = {14, 15};
+    mDrawComponent->AddAnimation("freezeDown", freezeDown);
+
+    std::vector freezeUp = {18, 19};
+    mDrawComponent->AddAnimation("freezeUp", freezeUp);
+
     std::vector dash = {6, 7, 7, 7, 8};
     mDrawComponent->AddAnimation("dash", dash);
 
-    std::vector run = {28, 29, 30, 31, 32, 33};
+    std::vector run = {34, 35, 36, 37, 38, 39};
     mDrawComponent->AddAnimation("run", run);
 
-    std::vector heal = {14, 15, 16, 17, 18, 18, 17, 16, 15, 14};
+    std::vector heal = {20, 21, 22, 23, 24, 24, 23, 22, 21, 20};
     mDrawComponent->AddAnimation("heal", heal);
 
-    std::vector wallSlide = {34};
+    std::vector wallSlide = {40};
     mDrawComponent->AddAnimation("wallSlide", wallSlide);
 
-    std::vector hurt = {19, 20};
+    std::vector hurt = {25, 26};
     mDrawComponent->AddAnimation("hurt", hurt);
 
-    std::vector die = {19, 9, 10, 11, 11, 11};
+    std::vector die = {25, 9, 10, 11, 11, 11};
     mDrawComponent->AddAnimation("die", die);
 
-    std::vector jumpUp = {25};
+    std::vector jumpUp = {31};
     mDrawComponent->AddAnimation("jumpUp", jumpUp);
 
-    std::vector jumpApex = {26};
+    std::vector jumpApex = {32};
     mDrawComponent->AddAnimation("jumpApex", jumpApex);
 
-    std::vector falling = {27};
+    std::vector falling = {33};
     mDrawComponent->AddAnimation("falling", falling);
 
     mDrawComponent->SetAnimation("idle");

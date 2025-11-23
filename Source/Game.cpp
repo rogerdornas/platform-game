@@ -487,7 +487,10 @@ void Game::ChangeScene()
     }
 
     else if (mNextScene == GameScene::Coliseu) {
-        mUseParallaxBackground = true;
+        // mUseParallaxBackground = true;
+        mUseParallaxBackground = false;
+        mBackGroundTexture = mRenderer->GetTexture(backgroundAssets + "Coliseu2.png");
+
         LoadLevel(levelsAssets + "Coliseu/Coliseu.json");
 
         mCamera = new Camera(this, Vector2(mPlayer->GetPosition().x - mLogicalWindowWidth / 2,
@@ -2570,10 +2573,12 @@ void Game::ProcessInput()
                     }
 
                     if (event.key.keysym.sym == SDLK_1) {
-                        mTargetZoom = 1.5f;
+                        // mTargetZoom = 1.5f;
+                        mTargetZoom += 0.05f;
                     }
                     if (event.key.keysym.sym == SDLK_2) {
-                        mTargetZoom = 0.5f;
+                        // mTargetZoom = 0.5f;
+                        mTargetZoom -= 0.2f;
                     }
                     if (event.key.keysym.sym == SDLK_3) {
                         mTargetZoom = 1.0f;
@@ -3255,15 +3260,19 @@ void Game::AddDrawable(class DrawComponent *drawable)
 {
     mDrawables.emplace_back(drawable);
 
-    std::sort(mDrawables.begin(), mDrawables.end(),[](DrawComponent* a, DrawComponent* b) {
-        return a->GetDrawOrder() < b->GetDrawOrder();
-    });
+    SortDrawables();
 }
 
 void Game::RemoveDrawable(class DrawComponent *drawable)
 {
     auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
     mDrawables.erase(iter);
+}
+
+void Game::SortDrawables() {
+    std::sort(mDrawables.begin(), mDrawables.end(),[](DrawComponent* a, DrawComponent* b) {
+    return a->GetDrawOrder() < b->GetDrawOrder();
+    });
 }
 
 void Game::InitCrossFade(float duration) {
@@ -3520,10 +3529,10 @@ void Game::GenerateOutput()
         else {
             // Vector2 size(3858, 800);
             // Vector2 position(1800 + size.x / 2, 3584 + size.y / 2);
-            // Vector2 size(1700, 900);
-            // Vector2 position(12000, 4000);
-            Vector2 size(66000, 6400);
-            Vector2 position(33000, 3200);
+            Vector2 size(1920, 1080);
+            Vector2 position(2790, 2742);
+            // Vector2 size(66000, 6400);
+            // Vector2 position(33000, 3200);
             // DrawParallaxBackground(mBackGroundTexture); // desenha o fundo com repetição horizontal
             mRenderer->DrawTexture(position,
                        size, 0.0f, Color::White,

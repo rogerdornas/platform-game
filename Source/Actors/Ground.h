@@ -51,7 +51,6 @@ protected:
 
     class RectComponent* mRectComponent;
     class TileMapComponent* mDrawComponent;
-    class AnimatorComponent* mDesenho;
 
     class RigidBodyComponent* mRigidBodyComponent;
     class ColliderComponent* mAABBComponent;

@@ -8,7 +8,7 @@
 #include "../../Actors/DynamicGround.h"
 #include "../../Renderer/Shader.h"
 
-TileMapComponent::TileMapComponent(Actor* owner, int width, int height, const int drawOrder)
+TileMapComponent::TileMapComponent(Actor* owner, int drawOrder)
     :DrawComponent(owner, drawOrder)
     , mBakedTexture(nullptr)
     , mBakedWidth(0.0f)
@@ -26,7 +26,7 @@ TileMapComponent::~TileMapComponent()
 
     if (mBakedTexture)
     {
-        mBakedTexture->Unload(); // garante que o glDeleteTextures é chamado
+        mBakedTexture->Unload();
         delete mBakedTexture;
         mBakedTexture = nullptr;
     }

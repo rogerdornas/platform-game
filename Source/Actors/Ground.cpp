@@ -24,7 +24,6 @@ Ground::Ground(Game* game, float width, float height, bool isSpike, bool isMovin
     ,mVelocity(velocity * mGame->GetScale())
     ,mRectComponent(nullptr)
     ,mDrawComponent(nullptr)
-    ,mDesenho(nullptr)
 {
     Vector2 v1(-mWidth / 2, -mHeight / 2);
     Vector2 v2(mWidth / 2, -mHeight / 2);
@@ -53,10 +52,7 @@ Ground::Ground(Game* game, float width, float height, bool isSpike, bool isMovin
     mAABBComponent = new AABBComponent(this, v1, v3);
 
     // mDrawGroundSpritesComponent = new DrawGroundSpritesComponent(this, mGame->GetTileSize(), mGame->GetTileSize(), 99);
-    mDrawComponent = new TileMapComponent(this);
-    // mDesenho = new AnimatorComponent(this, "../Assets/Sprites/Lava/Idle01.png",
-                                           // "",
-                                           // mWidth, mHeight, 1000);
+    mDrawComponent = new TileMapComponent(this, 99);
 
     if (mIsMoving) {
         mRigidBodyComponent->SetVelocity(mVelocity);

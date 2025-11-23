@@ -13,7 +13,7 @@ class TileMapComponent : public DrawComponent
 {
 public:
     // (Lower draw order corresponds with further back)
-    TileMapComponent(Actor* owner, int width = 32, int height = 32, int drawOrder = 99);
+    TileMapComponent(Actor* owner, int drawOrder = 99);
     ~TileMapComponent();
 
     void SetTilesIndex(const std::vector<std::vector<int>>& tiles);

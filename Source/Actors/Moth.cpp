@@ -73,6 +73,7 @@ Moth::Moth(Game *game)
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
     mFreezeMax = 1000;
+    mFrozenDecayRate = mFreezeMax / 3.0f;
 
     SetSize(mWidth, mHeight);
 

@@ -108,6 +108,7 @@ public:
     // Draw functions
     void AddDrawable(class DrawComponent *drawable);
     void RemoveDrawable(class DrawComponent *drawable);
+    void SortDrawables();
 
     // Window functions
     int GetWindowWidth() const { return mWindowWidth; }

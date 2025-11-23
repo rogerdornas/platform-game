@@ -255,44 +255,21 @@ void Renderer::DrawGeometry(const Vector2 &position, const Vector2 &size, float 
 void Renderer::DrawLine(const Vector2 &start, const Vector2 &end, const Vector3 &color,
                         float thickness, const Vector2 &cameraPos, float alpha)
 {
-    // 1. Calcular o vetor da linha e seu comprimento
     Vector2 lineVector = end - start;
     float lineLength = lineVector.Length();
 
-    // Se a linha tem comprimento zero, não desenhe
     if (lineLength < 0.01f) {
         return;
     }
 
-    // 2. Calcular o ponto central (posição) e a rotação da linha
     Vector2 center = (start + end) / 2.0f;
     float rotation = std::atan2(lineVector.y, lineVector.x);
 
-    // 3. Criar a matriz de modelo
-    // O tamanho 'size' será (comprimento_da_linha, espessura)
     Matrix4 model = Matrix4::CreateScale(Vector3(lineLength, thickness, 1.0f)) *
                     Matrix4::CreateRotationZ(rotation) *
                     Matrix4::CreateTranslation(Vector3(center.x, center.y, 0.0f));
 
-    // 4. Chamar a função principal Draw
-    // Assumimos que 'mLineVerts' é um VertexArray que representa um segmento de linha padrão
-    // (por exemplo, um quadrado 1x1 ou apenas 2 vértices em (0,0) e (1,0) se você estiver desenhando apenas uma linha)
-    // Se você não tiver um mLineVerts, você pode usar mSpriteVerts e desenhar um retângulo fino.
-
-    // **NOTA:** Se você quiser desenhar a linha como um segmento fino (LINES), você precisa de
-    // um VertexArray com apenas 2 vértices (por exemplo, (0,0) e (1,0)) e um índice para GL_LINE_LOOP/GL_LINES.
-    // Se você usar mSpriteVerts, o modo RendererMode::LINES desenhará um retângulo *contorno*.
-
-    // Vou usar mSpriteVerts e o modo LINES, assumindo que você quer o *contorno* de um retângulo,
-    // ou se mSpriteVerts é um VBO/IBO de 2 pontos (0,0) e (1,0) para desenhar uma linha.
-    // **Vou desenhar como um segmento fino de triângulos para ter espessura (DrawRect style):**
-
-    // Para desenhar uma linha com espessura (um retângulo fino):
     Draw(RendererMode::TRIANGLES, model, cameraPos, mSpriteVerts, color, alpha);
-
-    // Se você quiser desenhar apenas um segmento de linha de 1 pixel de espessura (e **mLineVerts** existir e
-    // tiver 2 vértices), você usaria:
-    // Draw(RendererMode::LINES, model, cameraPos, mLineVerts, color, alpha);
 }
 
 void Renderer::DrawFade(float alpha)

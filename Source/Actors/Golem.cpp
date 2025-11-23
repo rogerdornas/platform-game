@@ -77,6 +77,7 @@ Golem::Golem(Game *game)
     mPunchSpriteWidth = mWidth * 1.5f;
     mPunchOffsetHitBox = mWidth * 0.8f;
     mFreezeMax = 1000;
+    mFrozenDecayRate = mFreezeMax / 3.0f;
 
     SetSize(mWidth, mHeight);
 

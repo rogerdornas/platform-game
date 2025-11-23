@@ -75,8 +75,10 @@ void DynamicGround::OnUpdate(float deltaTime) {
     float growX = 0;
     float growY = 0;
     if (mIsGrowing) {
-        growX = mGrowSpeed.x * deltaTime;
-        growY = mGrowSpeed.y * deltaTime;
+        // fazer isso para não ficar tremendo os chãos
+        growX = std::ceil(mGrowSpeed.x * deltaTime);
+        growY = std::ceil(mGrowSpeed.y * deltaTime);
+
         if (mWidth + growX > mMaxWidth) {
             growX = mMaxWidth - mWidth;
         }
@@ -85,8 +87,10 @@ void DynamicGround::OnUpdate(float deltaTime) {
         }
     }
     if (mIsDecreasing) {
-        growX = -mGrowSpeed.x * deltaTime;
-        growY = -mGrowSpeed.y * deltaTime;
+        // fazer isso para não ficar tremendo os chãos
+        growX = std::floor(-mGrowSpeed.x * deltaTime);
+        growY = std::floor(-mGrowSpeed.y * deltaTime);
+
         if (mWidth + growX < mMinWidth) {
             growX = mMinWidth - mWidth;
         }

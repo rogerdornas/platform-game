@@ -33,16 +33,20 @@ HookEnemy::HookEnemy(Game *game)
     ,mIsHooking(false)
     ,mHookDirection(Vector2::Zero)
     ,mHookSpeed(1600.0f * mGame->GetScale())
-    ,mHookingDuration(0.15f)
+    ,mHookingDuration(0.20f)
     ,mHookingTimer(0.0f)
     ,mHookEnd(Vector2::Zero)
     ,mHookAnimProgress(0.0f)
     ,mIsHookAnimating(false)
     ,mHookPoint(nullptr)
-    ,mHookAnimationDuration(0.2f)
+    ,mHookAnimationDuration(0.45f)
     ,mHookSegments(20)
     ,mHookAmplitude(12.0f * mGame->GetScale())
-    ,mHookSegmentHeight(18.0f * mGame->GetScale())
+    ,mHookSegmentHeight(10.0f * mGame->GetScale())
+
+    ,mIsHookThrowing(false)
+    ,mCurrentRopeTip(Vector2::Zero)
+    ,mRopeThrowSpeed(3000.0f)
 
     ,mForwardAttackDuration(1.5f)
     ,mForwardAttackTimer(0.0f)
@@ -65,6 +69,7 @@ HookEnemy::HookEnemy(Game *game)
     mKnockBackDuration = 0.0f;
     mKnockBackTimer = mKnockBackDuration;
     mFreezeMax = 1000;
+    mFrozenDecayRate = mFreezeMax / 3.0f;
 
     SetSize(mWidth, mHeight);
 
@@ -84,23 +89,16 @@ HookEnemy::HookEnemy(Game *game)
     mDrawComponent->SetAnimFPS(7.0f);
 
 
-    // mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
-    // mDrawRopeComponent->SetNumSegments(mHookSegments);
-    // mDrawRopeComponent->SetAmplitude(mHookAmplitude);
-    // mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
+    mDrawRopeComponent = new DrawRopeComponent(this, "../Assets/Sprites/Rope/Rope2.png");
+    mDrawRopeComponent->SetNumSegments(mHookSegments);
+    mDrawRopeComponent->SetAmplitude(mHookAmplitude);
+    mDrawRopeComponent->SetSegmentHeight(mHookSegmentHeight);
 
     RemoveComponent(mColliderComponent);
     delete mColliderComponent;
     mColliderComponent = nullptr;
 
     mColliderComponent = new OBBComponent(this, Vector2(mWidth / 2, mHeight / 2));
-
-    // if (mDrawPolygonComponent) {
-    //     if (auto* obb = dynamic_cast<OBBComponent*>(mColliderComponent)) {
-    //         auto verts = obb->GetVertices();
-    //         mDrawPolygonComponent->SetVertices(verts);
-    //     }
-    // }
 
     SetRotation(3 * Math::Pi / 2);
     SetTransformRotation(3 * Math::Pi / 2);
@@ -110,11 +108,6 @@ void HookEnemy::OnUpdate(float deltaTime) {
     mIsOnGround = false;
     mKnockBackTimer += deltaTime;
     if (mFlashTimer < mHitDuration) {
-        if (mFlashTimer == 0 && mHookEnemyState != State::DiagonalAttack) {
-            // if (mDrawAnimatedComponent) {
-            //     // mDrawAnimatedComponent->ResetAnimationTimer();
-            // }
-        }
         mFlashTimer += deltaTime;
     }
     else {
@@ -346,24 +339,30 @@ void HookEnemy::Stop(float deltaTime) {
 
             if (nearestHookPoint) {
                 mHookPoint = nearestHookPoint;
-                nearestHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
                 Vector2 dir = (nearestHookPoint->GetPosition() - GetPosition());
                 if (dir.Length() > 0) {
                     dir.Normalize();
                 }
-                mHookDirection = dir;
-                mIsHooking = true;
-                mHookingTimer = 0.0f;
 
-                // Quando hook começa
+                mHookDirection = dir;
+
+                // Configura o alvo final
                 mHookEnd = nearestHookPoint->GetPosition();
-                mHookAnimProgress = 0.0f;
+
+                // A ponta da corda começa na posição do jogador
+                mCurrentRopeTip = GetPosition();
+
+                // Ativa o estado de ARREMESSO (Throwing), mas NÃO o de puxar (Hooking)
+                mIsHookThrowing = true;
+                mIsHooking = false; // Garante que não puxa ainda
+
+                // Inicia a animação visual (o componente precisa ficar visível)
                 mIsHookAnimating = true;
+                mHookAnimProgress = 0.0f; // Reseta a ondulação da corda
+
                 if (mDrawRopeComponent) {
                     mDrawRopeComponent->SetVisible(true);
-
-                    mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-                    mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
+                    mDrawRopeComponent->SetEndpoints(GetPosition(), mCurrentRopeTip);
                 }
             }
         }
@@ -405,33 +404,69 @@ void HookEnemy::Hook(float deltaTime) {
     }
 
     if (mHookingTimer < mHookingDuration * 5) {
-        mHookingTimer += deltaTime;
+        // mHookingTimer += deltaTime;
     }
 
     if (mIsHookAnimating) {
         mHookAnimProgress += deltaTime / mHookAnimationDuration;
         if (mHookAnimProgress >= 1.0f) {
             mHookAnimProgress = 1.0f;
-            mIsHookAnimating = false;
-            mHookPoint = nullptr;
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetVisible(false);
-            }
         }
         if (mDrawRopeComponent) {
             mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
             mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
         }
-        if (mHookPoint) {
-            mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
-        }
     }
 
+    if (mIsHookThrowing) {
+        // Calcula a distância até o alvo
+        float distanceToTarget = (mHookEnd - mCurrentRopeTip).Length();
+        float moveStep = mRopeThrowSpeed * deltaTime;
+        mHookPoint->SetHookPointState(HookPoint::HookPointState::InRange);
+
+        if (moveStep >= distanceToTarget) {
+            // A CORDA CHEGOU NO ALVO!
+            mCurrentRopeTip = mHookEnd;
+            mIsHookThrowing = false;
+
+            // AGORA sim começamos a puxar o jogador
+            mIsHooking = true;
+            mHookingTimer = 0.0f; // Reseta o timer de puxada
+
+            // Toca som de impacto/conectar
+            // mGame->GetAudio()->PlaySound("Hook/HookHit.wav"); // Exemplo
+        }
+        else {
+            // A corda ainda está viajando
+            // Move a ponta na direção do alvo
+            Vector2 travelDir = (mHookEnd - mCurrentRopeTip);
+            travelDir.Normalize();
+            mCurrentRopeTip += travelDir * moveStep;
+        }
+
+        // Atualiza o desenho da corda enquanto ela viaja
+        if (mDrawRopeComponent) {
+            // Start no Player (que pode estar caindo), End na ponta viajante
+            mDrawRopeComponent->SetEndpoints(GetPosition(), mCurrentRopeTip);
+        }
+    }
     if (mIsHooking) {
         if (mHookingTimer < mHookingDuration) {
+            mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
             mRigidBodyComponent->SetVelocity(mHookDirection * mHookSpeed);
+            mHookingTimer += deltaTime;
+            // Garante que a corda fique desenhada esticada até o fim
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            }
         } else {
             mIsHooking = false;
+            mIsHookAnimating = false;
+            mHookPoint = nullptr;
+
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetVisible(false);
+            }
         }
     }
 }
@@ -505,9 +540,24 @@ void HookEnemy::ManageAnimations() {
         }
     }
     else if (mHookEnemyState == State::Hook) {
-        mDrawComponent->SetAnimation("jump");
-        if (mRigidBodyComponent->GetVelocity().x < 0) {
-            SetScale(Vector2(1, -1));
+        if (mIsHookThrowing) {
+            mDrawComponent->SetAnimation("idle");
+            float dist = GetPosition().x - playerPos.x;
+            if (dist > 0) {
+                SetScale(Vector2(1, -1));
+            }
+            else {
+                SetScale(Vector2(1, 1));
+            }
+        }
+        else if (mIsHooking) {
+            mDrawComponent->SetAnimation("jump");
+            if (mRigidBodyComponent->GetVelocity().x < 0) {
+                SetScale(Vector2(1, -1));
+            }
+            else {
+                SetScale(Vector2(1, 1));
+            }
         }
     }
     else if (mHookEnemyState == State::DiagonalAttack) {

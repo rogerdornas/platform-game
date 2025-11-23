@@ -131,16 +131,20 @@ Player::Player(Game* game)
     ,mHookSpeed(1600.0f * mGame->GetScale())
     ,mHookCooldownDuration(0.4f)
     ,mHookCooldownTimer(0.0f)
-    ,mHookingDuration(0.15f)
+    ,mHookingDuration(0.3f)
     ,mHookingTimer(0.0f)
     ,mHookEnd(Vector2::Zero)
     ,mHookAnimProgress(0.0f)
     ,mIsHookAnimating(false)
     ,mHookPoint(nullptr)
-    ,mHookAnimationDuration(0.2f)
+    ,mHookAnimationDuration(0.45f)
     ,mHookSegments(20)
-    ,mHookAmplitude(12.0f * mGame->GetScale())
+    ,mHookAmplitude(14.0f * mGame->GetScale())
     ,mHookSegmentHeight(8.0f * mGame->GetScale())
+
+    ,mIsHookThrowing(false)
+    ,mCurrentRopeTip(Vector2::Zero)
+    ,mRopeThrowSpeed(3000.0f)
 
     ,mIsRunning(false)
     ,mHurtDuration(0.2f)
@@ -432,12 +436,12 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
     }
 
     if (!left && !leftSlow && !right && !rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking &&
-        !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
+        !mIsOnMovingGround && (mWallJumpTimer >= mWallJumpMaxTime) && (mKnockBackTimer >= mKnockBackDuration) && (!mIsHooking)) {
         mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
     }
     else {
         if (left && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime) &&
-            (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
+            (mKnockBackTimer >= mKnockBackDuration) && (!mIsHooking)) {
             SetRotation(Math::Pi);
             SetScale(Vector2(-1.0f, 1.0f));
             mSwordDirection = Math::Pi;
@@ -460,7 +464,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         }
 
         if (leftSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime) &&
-            (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
+            (mKnockBackTimer >= mKnockBackDuration) && (!mIsHooking)) {
             SetRotation(Math::Pi);
             SetScale(Vector2(-1.0f, 1.0f));
             mSwordDirection = Math::Pi;
@@ -483,7 +487,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         }
 
         if (right && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)
-            && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
+            && (mKnockBackTimer >= mKnockBackDuration) && (!mIsHooking)) {
             SetRotation(0);
             SetScale(Vector2(1.0f, 1.0f));
             mSwordDirection = 0;
@@ -506,7 +510,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
         }
 
         if (rightSlow && !mDashComponent->GetIsDashing() && !mIsFireAttacking && (mWallJumpTimer >= mWallJumpMaxTime)
-            && (mKnockBackTimer >= mKnockBackDuration) && (mHookingTimer >= mHookingDuration * 2)) {
+            && (mKnockBackTimer >= mKnockBackDuration) && (!mIsHooking)) {
             SetRotation(0);
             SetScale(Vector2(1.0f, 1.0f));
             mSwordDirection = 0;
@@ -562,6 +566,7 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
                 }
             }
             mIsHooking = false;
+            mIsHookThrowing = false;
             mHookAnimProgress = 1.0f;
             mIsHookAnimating = false;
             mHookPoint = nullptr;
@@ -829,33 +834,38 @@ void Player::OnProcessInput(const uint8_t* state, SDL_GameController &controller
             mHookCooldownTimer >= mHookCooldownDuration)
         {
             mHookPoint = nearestHookPoint;
-            nearestHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
             Vector2 dir = (nearestHookPoint->GetPosition() - GetPosition());
             if (dir.Length() > 0) {
                 dir.Normalize();
             }
-            mHookDirection = dir;
-            mIsHooking = true;
-            mHookCooldownTimer = 0.0f;
-            mHookingTimer = 0.0f;
 
-            // Quando hook começa
+            mHookDirection = dir;
+
+            // Configura o alvo final
             mHookEnd = nearestHookPoint->GetPosition();
-            mHookAnimProgress = 0.0f;
+
+            // A ponta da corda começa na posição do jogador
+            mCurrentRopeTip = GetPosition();
+
+            // Ativa o estado de ARREMESSO (Throwing), mas NÃO o de puxar (Hooking)
+            mIsHookThrowing = true;
+            mIsHooking = false; // Garante que não puxa ainda
+
+            mHookCooldownTimer = 0.0f;
+
+            // Inicia a animação visual (o componente precisa ficar visível)
             mIsHookAnimating = true;
+            mHookAnimProgress = 0.0f; // Reseta a ondulação da corda
+
             if (mDrawRopeComponent) {
                 mDrawRopeComponent->SetVisible(true);
+                mDrawRopeComponent->SetEndpoints(GetPosition(), mCurrentRopeTip);
             }
 
             // Resetar dash no ar
             mDashComponent->SetHasDashedInAir(false);
             // RESET DO CONTADOR DE PULO
             mJumpCountInAir = 0;
-
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
-                mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-            }
         }
         mPrevHookPressed = hook;
     }
@@ -889,26 +899,14 @@ void Player::OnUpdate(float deltaTime) {
         mHookCooldownTimer += deltaTime;
     }
 
-    if (mHookingTimer < mHookingDuration * 5) {
-        mHookingTimer += deltaTime;
-    }
-
     if (mIsHookAnimating) {
         mHookAnimProgress += deltaTime / mHookAnimationDuration;
         if (mHookAnimProgress >= 1.0f) {
             mHookAnimProgress = 1.0f;
-            mIsHookAnimating = false;
-            mHookPoint = nullptr;
-            if (mDrawRopeComponent) {
-                mDrawRopeComponent->SetVisible(false);
-            }
         }
         if (mDrawRopeComponent) {
             mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
             mDrawRopeComponent->SetAnimationProgress(mHookAnimProgress);
-        }
-        if (mHookPoint) {
-            mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
         }
     }
 
@@ -1030,11 +1028,56 @@ void Player::OnUpdate(float deltaTime) {
         mTimerOutOfWallToJump += deltaTime;
     }
 
+    if (mIsHookThrowing) {
+        // Calcula a distância até o alvo
+        float distanceToTarget = (mHookEnd - mCurrentRopeTip).Length();
+        float moveStep = mRopeThrowSpeed * deltaTime;
+        mHookPoint->SetHookPointState(HookPoint::HookPointState::InRange);
+
+        if (moveStep >= distanceToTarget) {
+            // A CORDA CHEGOU NO ALVO!
+            mCurrentRopeTip = mHookEnd;
+            mIsHookThrowing = false;
+
+            // AGORA sim começamos a puxar o jogador
+            mIsHooking = true;
+            mHookingTimer = 0.0f; // Reseta o timer de puxada
+
+            // Toca som de impacto/conectar
+            // mGame->GetAudio()->PlaySound("Hook/HookHit.wav"); // Exemplo
+        }
+        else {
+            // A corda ainda está viajando
+            // Move a ponta na direção do alvo
+            Vector2 travelDir = (mHookEnd - mCurrentRopeTip);
+            travelDir.Normalize();
+            mCurrentRopeTip += travelDir * moveStep;
+        }
+
+        // Atualiza o desenho da corda enquanto ela viaja
+        if (mDrawRopeComponent) {
+            // Start no Player (que pode estar caindo), End na ponta viajante
+            mDrawRopeComponent->SetEndpoints(GetPosition(), mCurrentRopeTip);
+        }
+    }
     if (mIsHooking) {
         if (mHookingTimer < mHookingDuration) {
+            mHookPoint->SetHookPointState(HookPoint::HookPointState::Hooked);
             mRigidBodyComponent->SetVelocity(mHookDirection * mHookSpeed);
+            mHookingTimer += deltaTime;
+
+            // Garante que a corda fique desenhada esticada até o fim
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetEndpoints(GetPosition(), mHookEnd);
+            }
         } else {
             mIsHooking = false;
+            mIsHookAnimating = false; // Para de desenhar
+            mHookPoint = nullptr;
+
+            if (mDrawRopeComponent) {
+                mDrawRopeComponent->SetVisible(false);
+            }
         }
     }
 

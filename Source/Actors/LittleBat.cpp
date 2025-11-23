@@ -22,7 +22,7 @@ LittleBat::LittleBat(Game *game)
     mWidth = 36 * mGame->GetScale();
     mHeight = 36 * mGame->GetScale();
     mMoveSpeed = 500 * mGame->GetScale();
-    mHealthPoints = 10;
+    mHealthPoints = 0.05f;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 10;
     mMoneyDrop = 0;

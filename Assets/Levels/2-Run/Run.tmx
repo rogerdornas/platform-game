@@ -602,33 +602,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="12" name="Decorations">
-  <object id="234" x="3552" y="2144" width="128" height="256">
-   <properties>
-    <property name="Path" value="Sprites/Objects_Fire/Threes/1.png"/>
-   </properties>
-  </object>
-  <object id="235" x="1792" y="2816" width="96" height="96">
-   <properties>
-    <property name="Path" value="Sprites/Objects_Fire/Rocks/6.png"/>
-   </properties>
-  </object>
-  <object id="236" x="5920" y="672" width="96" height="96">
-   <properties>
-    <property name="Path" value="Sprites/Objects_Fire/Grass/11.png"/>
-   </properties>
-  </object>
-  <object id="237" x="1056" y="3104" width="96" height="96">
-   <properties>
-    <property name="Path" value="Sprites/Objects_Fire/Grass/11.png"/>
-   </properties>
-  </object>
-  <object id="238" x="1152" y="3104" width="96" height="96">
-   <properties>
-    <property name="Path" value="Sprites/Objects_Fire/Grass/9.png"/>
-   </properties>
-  </object>
- </objectgroup>
+ <objectgroup id="12" name="Decorations"/>
  <objectgroup id="6" name="Levers">
   <object id="126" name="Lever1" x="7840" y="2304" width="64" height="64">
    <properties>

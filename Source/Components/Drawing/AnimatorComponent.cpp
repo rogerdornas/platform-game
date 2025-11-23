@@ -11,7 +11,7 @@
 
 AnimatorComponent::AnimatorComponent(class Actor* owner, const std::string &texPath, const std::string &dataPath,
                                      int width, int height, int drawOrder)
-    :DrawComponent(owner,  drawOrder)
+    :DrawComponent(owner, drawOrder)
     ,mAnimTimer(0.0f)
     ,mAnimFPS(10.0f)
     ,mIsPaused(false)

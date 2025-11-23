@@ -245,6 +245,10 @@ private:
     float mHookAmplitude;
     float mHookSegmentHeight;
 
+    bool mIsHookThrowing;      // Se a corda está viajando pelo ar
+    Vector2 mCurrentRopeTip;   // Onde está a ponta da corda agora
+    float mRopeThrowSpeed;     // Velocidade visual da corda (deve ser rápida)
+
     // Atributos para animar sprites
     bool mIsRunning;
     float mHurtDuration;

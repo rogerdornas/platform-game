@@ -64,6 +64,7 @@ Frog::Frog(Game* game)
     mKnockBackTimer = mKnockBackDuration;
     mEnemyCollision = false;
     mFreezeMax = 1000;
+    mFrozenDecayRate = mFreezeMax / 3.0f;
 
     SetSize(mWidth, mHeight);
 

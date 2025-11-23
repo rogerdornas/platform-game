@@ -18,7 +18,7 @@ public:
     ~DrawComponent();
 
     virtual void Draw(Renderer* renderer);
-    void SetDrawOrder(int drawOrder) { mDrawOrder = drawOrder; }
+    void SetDrawOrder(int drawOrder);
     int GetDrawOrder() const { return mDrawOrder; }
 
     void SetVisible(bool visible) { mIsVisible = visible; }
