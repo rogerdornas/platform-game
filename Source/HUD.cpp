@@ -13,12 +13,9 @@ HUD::HUD(class Game* game, const std::string& fontName)
     ,mNumOfSubManaBars(mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost())
     ,mWaitToDecreaseDuration(0.7f)
     ,mWaitToDecreaseTimer(0.0f)
-    ,mBossWaitToDecreaseTimer(0.0f)
     ,mWaitToDecreaseManaDuration(0.7f)
     ,mWaitToDecreaseManaTimer(0.0f)
     ,mPlayerDie(false)
-    ,mBossFight(false)
-    ,mBoss(nullptr)
 {
     float HPBarX = 50;
     float HPBarY = 50;
@@ -154,52 +151,79 @@ void HUD::Update(float deltaTime) {
         mPlayerDie = true;
     }
 
-    // Boss HP bar
-    if (mBossFight) {
-        float bossHealthPoints = mBoss->GetHealthPoints() / mBoss->GetMaxHealthPoints();
+    // Boss HP bars
+    for (int i = 0; i < mBossLifeBars.size(); i++) {
+        // deslocamento das barras de boss
+        mBossLifeBars[i].bossHPBar.y = mBossHPBar.y - 50 * i;
+        mBossLifeBars[i].bossDamageTakenBar.y = mBossHPBar.y - 50 * i;
+        mBossLifeBars[i].bossHPRemainingBar.y = mBossHPBar.y - 50 * i;
+        mBossLifeBars[i].bossHPGrowingBar.y = mBossHPBar.y - 50 * i;
+
+        float bossHealthPoints = mBossLifeBars[i].boss->GetHealthPoints() / mBossLifeBars[i].boss->GetMaxHealthPoints();
         if (bossHealthPoints < 0) {
             bossHealthPoints = 0;
         }
-        mBossHPRemainingBar.w = mBossHPBar.w * bossHealthPoints;
-    }
+        mBossLifeBars[i].bossHPRemainingBar.w = mBossLifeBars[i].bossHPBar.w * bossHealthPoints;
 
-    if (mBossHPGrowingBar.w < mBossHPRemainingBar.w) {
-        mBossHPGrowingBar.w += mSpeedHPIncrease * deltaTime;
-        if (mBossHPGrowingBar.w > mBossHPRemainingBar.w) {
-            mBossHPGrowingBar.w = mBossHPRemainingBar.w;
+        if (mBossLifeBars[i].bossHPGrowingBar.w < mBossLifeBars[i].bossHPRemainingBar.w) {
+            mBossLifeBars[i].bossHPGrowingBar.w += mSpeedHPIncrease * deltaTime;
+            if (mBossLifeBars[i].bossHPGrowingBar.w > mBossLifeBars[i].bossHPRemainingBar.w) {
+                mBossLifeBars[i].bossHPGrowingBar.w = mBossLifeBars[i].bossHPRemainingBar.w;
+            }
         }
-    }
-    else {
-        mBossHPGrowingBar.w = mBossHPRemainingBar.w;
-    }
-
-    if (mBossDamageTakenBar.w > mBossHPGrowingBar.w) {
-        mBossWaitToDecreaseTimer += deltaTime;
-        if (mBossWaitToDecreaseTimer >= mWaitToDecreaseDuration) {
-            mBossDamageTakenBar.w -= mSpeedHPDecrease * deltaTime;
+        else {
+            mBossLifeBars[i].bossHPGrowingBar.w = mBossLifeBars[i].bossHPRemainingBar.w;
         }
-    }
-    else {
-        mBossDamageTakenBar.w = mBossHPGrowingBar.w;
-        mBossWaitToDecreaseTimer = 0;
-    }
 
-    if (mBoss && mBoss->GetState() == ActorState::Destroy) {
-        EndBossFight();
+        if (mBossLifeBars[i].bossDamageTakenBar.w > mBossLifeBars[i].bossHPGrowingBar.w) {
+            mBossLifeBars[i].waitToDecreaseTimer += deltaTime;
+            if (mBossLifeBars[i].waitToDecreaseTimer >= mWaitToDecreaseDuration) {
+                mBossLifeBars[i].bossDamageTakenBar.w -= mSpeedHPDecrease * deltaTime;
+            }
+        }
+        else {
+            mBossLifeBars[i].bossDamageTakenBar.w = mBossLifeBars[i].bossHPGrowingBar.w;
+            mBossLifeBars[i].waitToDecreaseTimer = 0;
+        }
+
+        if (mBossLifeBars[i].boss && mBossLifeBars[i].boss->GetState() == ActorState::Destroy) {
+            EndBossFight(mBossLifeBars[i].boss);
+            i--;
+        }
     }
 }
 
 void HUD::StartBossFight(class Enemy *boss) {
-    mBoss = boss;
-    mBossFight = true;
+    for (auto it = mBossLifeBars.begin(); it != mBossLifeBars.end(); ) {
+        if (it->boss == boss) {
+            return;
+        }
+        else {
+            ++it;
+        }
+    }
+
+    BossLifeBar bossLifeBar;
+    bossLifeBar.bossHPBar = mBossHPBar;
+    bossLifeBar.bossDamageTakenBar = mBossDamageTakenBar;
+    bossLifeBar.bossHPRemainingBar = mBossHPRemainingBar;
+    bossLifeBar.bossHPGrowingBar = mBossHPGrowingBar;
+    bossLifeBar.boss = boss;
+    bossLifeBar.waitToDecreaseTimer = 0.0f;
+
+    mBossLifeBars.emplace_back(bossLifeBar);
 }
 
-void HUD::EndBossFight() {
-    mBossFight = false;
-    mBoss = nullptr;
-    mBossDamageTakenBar = mBossHPBar;
-    mBossHPRemainingBar = mBossHPBar;
-    mBossHPGrowingBar = mBossHPBar;
+void HUD::EndBossFight(class Enemy* boss) {
+    for (auto it = mBossLifeBars.begin(); it != mBossLifeBars.end(); ) {
+        if (it->boss == boss) {
+            it = mBossLifeBars.erase(it);
+            break;
+        } else {
+            // Só avança se não tiver apagado nada
+            ++it;
+        }
+    }
 }
 
 
@@ -212,7 +236,7 @@ void HUD::IncreaseManaBar() {
     mNumOfSubManaBars = mGame->GetPlayer()->GetMaxMana() / mGame->GetPlayer()->GetFireballManaCost();
 }
 
-void HUD::Draw(class Renderer *renderer) {
+void HUD::Draw(Renderer *renderer) {
     if (!mIsVisible) {
         return;
     }
@@ -230,12 +254,12 @@ void HUD::Draw(class Renderer *renderer) {
 
     DrawLifeBar(renderer);
     DrawManaBar(renderer);
-    if (mBossFight) {
+    if (!mBossLifeBars.empty()) {
         DrawBossLifeBar(renderer);
     }
 }
 
-void HUD::DrawLifeBar(class Renderer *renderer) {
+void HUD::DrawLifeBar(Renderer *renderer) {
     SDL_Rect HPBar;
     HPBar.x = static_cast<int>(mHPBar.x);
     HPBar.y = static_cast<int>(mHPBar.y);
@@ -260,31 +284,21 @@ void HUD::DrawLifeBar(class Renderer *renderer) {
     HPGrowingBar.w = static_cast<int>(mHPGrowingBar.w);
     HPGrowingBar.h = static_cast<int>(mHPGrowingBar.h);
 
-    // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
-    // SDL_RenderFillRect(renderer, &HPBar);
     renderer->DrawRect(Vector2(HPBar.x, HPBar.y) + Vector2(HPBar.w, HPBar.h) / 2, Vector2(HPBar.w, HPBar.h), 0.0f,
                          Vector3(40 / 255.0f, 40 / 255.0f, 40 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 150 / 255.0f);
 
-    // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
-    // SDL_RenderFillRect(renderer, &DamageTakenBar);
     renderer->DrawRect(Vector2(DamageTakenBar.x, DamageTakenBar.y) + Vector2(DamageTakenBar.w, DamageTakenBar.h) / 2, Vector2(DamageTakenBar.w, DamageTakenBar.h), 0.0f,
                      Vector3(240 / 255.0f, 234 / 255.0f, 95 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
 
-
-    // SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
-    // SDL_RenderFillRect(renderer, &HPRemainingBar);
     renderer->DrawRect(Vector2(HPRemainingBar.x, HPRemainingBar.y) + Vector2(HPRemainingBar.w, HPRemainingBar.h) / 2, Vector2(HPRemainingBar.w, HPRemainingBar.h), 0.0f,
                      Vector3(242 / 255.0f, 121 / 255.0f, 123 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 100 / 255.0f);
 
-
-    // SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
-    // SDL_RenderFillRect(renderer, &HPGrowingBar);
     renderer->DrawRect(Vector2(HPGrowingBar.x, HPGrowingBar.y) + Vector2(HPGrowingBar.w, HPGrowingBar.h) / 2, Vector2(HPGrowingBar.w, HPGrowingBar.h), 0.0f,
                      Vector3(242 / 255.0f, 90 / 255.0f, 70 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
 
 }
 
-void HUD::DrawManaBar(struct Renderer *renderer) {
+void HUD::DrawManaBar(Renderer *renderer) {
     SDL_Rect ManaBar;
     ManaBar.x = static_cast<int>(mManaBar.x);
     ManaBar.y = static_cast<int>(mManaBar.y);
@@ -303,30 +317,15 @@ void HUD::DrawManaBar(struct Renderer *renderer) {
     ManaRemainingBar.w = static_cast<int>(mManaRemainingBar.w);
     ManaRemainingBar.h = static_cast<int>(mManaRemainingBar.h);
 
-
-    // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
-    // SDL_RenderFillRect(renderer, &ManaBar);
     renderer->DrawRect(Vector2(ManaBar.x, ManaBar.y) + Vector2(ManaBar.w, ManaBar.h) / 2, Vector2(ManaBar.w, ManaBar.h), 0.0f,
                  Vector3(40 / 255.0f, 40 / 255.0f, 40 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 150 / 255.0f);
 
-    // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
-    // SDL_RenderFillRect(renderer, &ManaUsedBar);
     renderer->DrawRect(Vector2(ManaUsedBar.x, ManaUsedBar.y) + Vector2(ManaUsedBar.w, ManaUsedBar.h) / 2, Vector2(ManaUsedBar.w, ManaUsedBar.h), 0.0f,
              Vector3(240 / 255.0f, 234 / 255.0f, 95 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
 
-    // SDL_SetRenderDrawColor(renderer, 65, 188, 217, 255);
-    // SDL_RenderFillRect(renderer, &ManaRemainingBar);
     renderer->DrawRect(Vector2(ManaRemainingBar.x, ManaRemainingBar.y) + Vector2(ManaRemainingBar.w, ManaRemainingBar.h) / 2, Vector2(ManaRemainingBar.w, ManaRemainingBar.h), 0.0f,
              Vector3(65 / 255.0f, 188 / 255.0f, 217 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
 
-    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    // for (int i = 1; i < mNumOfSubManaBars; i++) {
-    //     SDL_RenderDrawLine(renderer,
-    //                 mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
-    //                 mManaBar.y,
-    //                 mManaBar.x + i * mManaBar.w / mNumOfSubManaBars,
-    //                 mManaBar.y + mManaBar.h);
-    // }
     for (int i = 1; i < mNumOfSubManaBars; i++) {
         renderer->DrawLine(Vector2(mManaBar.x + i * mManaBar.w / mNumOfSubManaBars, mManaBar.y),
                            Vector2(mManaBar.x + i * mManaBar.w / mNumOfSubManaBars, mManaBar.y + mManaBar.h),
@@ -334,52 +333,45 @@ void HUD::DrawManaBar(struct Renderer *renderer) {
     }
 }
 
-void HUD::DrawBossLifeBar(struct Renderer *renderer) {
-    SDL_Rect HPBar;
-    HPBar.x = static_cast<int>(mBossHPBar.x);
-    HPBar.y = static_cast<int>(mBossHPBar.y);
-    HPBar.w = static_cast<int>(mBossHPBar.w);
-    HPBar.h = static_cast<int>(mBossHPBar.h);
+void HUD::DrawBossLifeBar(Renderer *renderer) {
+    for (int i = 0; i < mBossLifeBars.size(); i++) {
+        SDL_Rect HPBar;
+        HPBar.x = static_cast<int>(mBossLifeBars[i].bossHPBar.x);
+        HPBar.y = static_cast<int>(mBossLifeBars[i].bossHPBar.y);
+        HPBar.w = static_cast<int>(mBossLifeBars[i].bossHPBar.w);
+        HPBar.h = static_cast<int>(mBossLifeBars[i].bossHPBar.h);
 
-    SDL_Rect DamageTakenBar;
-    DamageTakenBar.x = static_cast<int>(mBossDamageTakenBar.x);
-    DamageTakenBar.y = static_cast<int>(mBossDamageTakenBar.y);
-    DamageTakenBar.w = static_cast<int>(mBossDamageTakenBar.w);
-    DamageTakenBar.h = static_cast<int>(mBossDamageTakenBar.h);
+        SDL_Rect DamageTakenBar;
+        DamageTakenBar.x = static_cast<int>(mBossLifeBars[i].bossDamageTakenBar.x);
+        DamageTakenBar.y = static_cast<int>(mBossLifeBars[i].bossDamageTakenBar.y);
+        DamageTakenBar.w = static_cast<int>(mBossLifeBars[i].bossDamageTakenBar.w);
+        DamageTakenBar.h = static_cast<int>(mBossLifeBars[i].bossDamageTakenBar.h);
 
-    SDL_Rect HPRemainingBar;
-    HPRemainingBar.x = static_cast<int>(mBossHPRemainingBar.x);
-    HPRemainingBar.y = static_cast<int>(mBossHPRemainingBar.y);
-    HPRemainingBar.w = static_cast<int>(mBossHPRemainingBar.w);
-    HPRemainingBar.h = static_cast<int>(mBossHPRemainingBar.h);
+        SDL_Rect HPRemainingBar;
+        HPRemainingBar.x = static_cast<int>(mBossLifeBars[i].bossHPRemainingBar.x);
+        HPRemainingBar.y = static_cast<int>(mBossLifeBars[i].bossHPRemainingBar.y);
+        HPRemainingBar.w = static_cast<int>(mBossLifeBars[i].bossHPRemainingBar.w);
+        HPRemainingBar.h = static_cast<int>(mBossLifeBars[i].bossHPRemainingBar.h);
 
-    SDL_Rect HPGrowingBar;
-    HPGrowingBar.x = static_cast<int>(mBossHPGrowingBar.x);
-    HPGrowingBar.y = static_cast<int>(mBossHPGrowingBar.y);
-    HPGrowingBar.w = static_cast<int>(mBossHPGrowingBar.w);
-    HPGrowingBar.h = static_cast<int>(mBossHPGrowingBar.h);
+        SDL_Rect HPGrowingBar;
+        HPGrowingBar.x = static_cast<int>(mBossLifeBars[i].bossHPGrowingBar.x);
+        HPGrowingBar.y = static_cast<int>(mBossLifeBars[i].bossHPGrowingBar.y);
+        HPGrowingBar.w = static_cast<int>(mBossLifeBars[i].bossHPGrowingBar.w);
+        HPGrowingBar.h = static_cast<int>(mBossLifeBars[i].bossHPGrowingBar.h);
 
-    // SDL_SetRenderDrawColor(renderer, 40, 40, 40, 150);
-    // SDL_RenderFillRect(renderer, &HPBar);
-    renderer->DrawRect(Vector2(HPBar.x, HPBar.y) + Vector2(HPBar.w, HPBar.h) / 2, Vector2(HPBar.w, HPBar.h), 0.0f,
-                     Vector3(40 / 255.0f, 40 / 255.0f, 40 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 150 / 255.0f);
+        renderer->DrawRect(Vector2(HPBar.x, HPBar.y) + Vector2(HPBar.w, HPBar.h) / 2, Vector2(HPBar.w, HPBar.h), 0.0f,
+                         Vector3(40 / 255.0f, 40 / 255.0f, 40 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 150 / 255.0f);
 
-    // SDL_SetRenderDrawColor(renderer, 240, 234, 95, 255);
-    // SDL_RenderFillRect(renderer, &DamageTakenBar);
-    renderer->DrawRect(Vector2(DamageTakenBar.x, DamageTakenBar.y) + Vector2(DamageTakenBar.w, DamageTakenBar.h) / 2, Vector2(DamageTakenBar.w, DamageTakenBar.h), 0.0f,
-                 Vector3(240 / 255.0f, 234 / 255.0f, 95 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+        renderer->DrawRect(Vector2(DamageTakenBar.x, DamageTakenBar.y) + Vector2(DamageTakenBar.w, DamageTakenBar.h) / 2, Vector2(DamageTakenBar.w, DamageTakenBar.h), 0.0f,
+                     Vector3(240 / 255.0f, 234 / 255.0f, 95 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
 
-    // SDL_SetRenderDrawColor(renderer, 242, 121, 123, 100);
-    // SDL_RenderFillRect(renderer, &HPRemainingBar);
-    renderer->DrawRect(Vector2(HPRemainingBar.x, HPRemainingBar.y) + Vector2(HPRemainingBar.w, HPRemainingBar.h) / 2, Vector2(HPRemainingBar.w, HPRemainingBar.h), 0.0f,
-                 Vector3(242 / 255.0f, 121 / 255.0f, 123 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 100 / 255.0f);
+        renderer->DrawRect(Vector2(HPRemainingBar.x, HPRemainingBar.y) + Vector2(HPRemainingBar.w, HPRemainingBar.h) / 2, Vector2(HPRemainingBar.w, HPRemainingBar.h), 0.0f,
+                     Vector3(242 / 255.0f, 121 / 255.0f, 123 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 100 / 255.0f);
 
-    // SDL_SetRenderDrawColor(renderer, 242, 90, 70, 255);
-    // SDL_RenderFillRect(renderer, &HPGrowingBar);
-    renderer->DrawRect(Vector2(HPGrowingBar.x, HPGrowingBar.y) + Vector2(HPGrowingBar.w, HPGrowingBar.h) / 2, Vector2(HPGrowingBar.w, HPGrowingBar.h), 0.0f,
-             Vector3(242 / 255.0f, 90 / 255.0f, 70 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+        renderer->DrawRect(Vector2(HPGrowingBar.x, HPGrowingBar.y) + Vector2(HPGrowingBar.w, HPGrowingBar.h) / 2, Vector2(HPGrowingBar.w, HPGrowingBar.h), 0.0f,
+                 Vector3(242 / 255.0f, 90 / 255.0f, 70 / 255.0f), Vector2::Zero, RendererMode::TRIANGLES, 255 / 255.0f);
+    }
 }
-
 
 void HUD::ChangeResolution(float oldScale, float newScale) {
     mPos.x = mPos.x / oldScale * newScale;

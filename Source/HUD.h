@@ -26,7 +26,7 @@ public:
     void Update(float deltaTime) override;
 
     void StartBossFight(class Enemy* boss);
-    void EndBossFight();
+    void EndBossFight(class Enemy* boss);
 
     void IncreaseHPBar();
     void IncreaseManaBar();
@@ -36,6 +36,15 @@ public:
     void ChangeResolution(float oldScale, float newScale) override;
 
 private:
+    struct BossLifeBar {
+        RectF bossHPBar;
+        RectF bossDamageTakenBar;
+        RectF bossHPRemainingBar;
+        RectF bossHPGrowingBar;
+        Enemy* boss;
+        float waitToDecreaseTimer;
+    };
+
     // HUD elements
     UIText* mPlayerHealCount;
     UIText* mPlayerMoney;
@@ -59,23 +68,13 @@ private:
     RectF mBossHPRemainingBar;
     RectF mBossHPGrowingBar;
 
-    // SDL_Rect mHPBar;
-    // SDL_Rect mDamageTakenBar;
-    // SDL_Rect mHPRemainingBar;
-    // SDL_Rect mHPGrowingBar;
-    //
-    // SDL_Rect mManaBar;
-    // SDL_Rect mManaUsedBar;
-    // SDL_Rect mManaRemainingBar;
+    std::vector<BossLifeBar> mBossLifeBars;
 
     float mWaitToDecreaseDuration;
     float mWaitToDecreaseTimer;
-    float mBossWaitToDecreaseTimer;
     float mWaitToDecreaseManaDuration;
     float mWaitToDecreaseManaTimer;
     bool mPlayerDie;
-    bool mBossFight;
-    class Enemy* mBoss;
 
     void DrawLifeBar(class Renderer *renderer);
     void DrawManaBar(class Renderer * renderer);
