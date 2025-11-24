@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="210" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="66">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="210" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="68">
  <editorsettings>
   <export target="Room0.json" format="json"/>
  </editorsettings>
@@ -524,7 +524,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="3" name="Triggers" visible="0">
+ <objectgroup id="3" name="Triggers">
   <object id="29" x="6304" y="4416" width="320" height="192">
    <properties>
     <property name="Destroy" type="bool" value="true"/>
@@ -550,6 +550,28 @@
     <property name="PlayerStartPositionId" type="int" value="0"/>
     <property name="Scene" value="MirrorBoss"/>
     <property name="Target" value="Game"/>
+   </properties>
+  </object>
+  <object id="66" x="1664" y="4960" width="160" height="288">
+   <properties>
+    <property name="AmbientColorB" type="float" value="1"/>
+    <property name="AmbientColorG" type="float" value="1"/>
+    <property name="AmbientColorR" type="float" value="1"/>
+    <property name="AmbientIntensity" type="float" value="0.8"/>
+    <property name="Destroy" type="bool" value="false"/>
+    <property name="Event" value="ChangeAmbientLight"/>
+    <property name="Target" value="Renderer"/>
+   </properties>
+  </object>
+  <object id="67" x="2016" y="5152" width="128" height="256">
+   <properties>
+    <property name="AmbientColorB" type="float" value="1"/>
+    <property name="AmbientColorG" type="float" value="1"/>
+    <property name="AmbientColorR" type="float" value="1"/>
+    <property name="AmbientIntensity" type="float" value="0.05"/>
+    <property name="Destroy" type="bool" value="false"/>
+    <property name="Event" value="ChangeAmbientLight"/>
+    <property name="Target" value="Renderer"/>
    </properties>
   </object>
  </objectgroup>

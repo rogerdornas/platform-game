@@ -341,7 +341,7 @@ void Fox::Stop(float deltaTime) {
 
     // Controla probabilidade de combo de espada para não ficar spamando
     if (mFoxState == State::RunAndSword) {
-        mRunAndSwordProbability -= 0.1;
+        mRunAndSwordProbability -= 0.2;
     }
     else {
         mRunAndSwordProbability = 0.5;

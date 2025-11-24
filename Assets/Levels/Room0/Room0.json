@@ -1012,10 +1012,104 @@
                  "width":128,
                  "x":512,
                  "y":3264
+                }, 
+                {
+                 "height":288,
+                 "id":66,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"AmbientColorB",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorG",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorR",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientIntensity",
+                         "type":"float",
+                         "value":0.8
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"ChangeAmbientLight"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Renderer"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":160,
+                 "x":1664,
+                 "y":4960
+                }, 
+                {
+                 "height":256,
+                 "id":67,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"AmbientColorB",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorG",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorR",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientIntensity",
+                         "type":"float",
+                         "value":0.05
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"ChangeAmbientLight"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Renderer"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":2016,
+                 "y":5152
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -1571,7 +1665,7 @@
          "y":0
         }],
  "nextlayerid":16,
- "nextobjectid":66,
+ "nextobjectid":68,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

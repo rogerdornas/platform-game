@@ -16,6 +16,7 @@ public:
         DynamicGround,
         Ground,
         Game,
+        Renderer,
         Enemy,
         Dialogue,
         Cutscene,
@@ -48,6 +49,8 @@ public:
         ChangeWorldState,
         ChangeZoom,
 
+        ChangeAmbientLight,
+
         SpotPlayer,
         GolemVulnerable,
 
@@ -76,6 +79,8 @@ public:
     void SetWorldStateFlag(bool worldStateFlag) { mWorldStateFlag = worldStateFlag; }
     void SetTargetZoom(float targetZoom) { mTargetZoom = targetZoom; }
     void SetZoomSpeed(float zoomSpeed) { mZoomSpeed = zoomSpeed; }
+    void SetAmbientColor(Vector3 ambientColor) { mAmbientColor = ambientColor; }
+    void SetAmbientIntensity(float ambientIntensity) { mAmbientIntensity = ambientIntensity; }
     void SetDialoguePath(const std::string &dialoguePath) { mDialoguePath = dialoguePath; }
     void SetCutsceneId(const std::string &cutsceneId) { mCutsceneId = cutsceneId; }
 
@@ -87,6 +92,7 @@ protected:
     void DynamicGroundTrigger();
     void GroundTrigger();
     void GameTrigger();
+    void RendererTrigger();
     virtual void EnemyTrigger();
     void DialogueTrigger();
     void CutsceneTrigger();
@@ -110,6 +116,9 @@ protected:
     bool mWorldStateFlag;
     float mTargetZoom;
     float mZoomSpeed;
+
+    Vector3 mAmbientColor;
+    float mAmbientIntensity;
 
     std::string mDialoguePath;
     std::string mCutsceneId;

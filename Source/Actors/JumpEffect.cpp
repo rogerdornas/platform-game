@@ -49,7 +49,7 @@ void JumpEffect::OnUpdate(float deltaTime) {
 
 void JumpEffect::StartEffect(EffectType type) {
     mEffectTimer = 0;
-    // mDrawAnimatedComponent->ResetAnimationTimer();
+    mDrawComponent->ResetAnimationTimer();
     mDrawComponent->SetWidth(mWidth);
     mDrawComponent->SetHeight(mHeight);
     float fps;

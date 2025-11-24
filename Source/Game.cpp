@@ -1689,6 +1689,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 bool worldStateFlag = false;
                 float targetZoom = 1.0f;
                 float zoomSpeed = 1.0f;
+                Vector3 ambientColor(1, 1, 1);
+                float ambientIntensity = 1;
                 std::string dialoguePath;
                 std::string cutsceneId;
                 std::string condition;
@@ -1749,6 +1751,18 @@ void Game::LoadObjects(const std::string &fileName) {
                         else if (propName == "ZoomSpeed") {
                             zoomSpeed = prop["value"];
                         }
+                        else if (propName == "AmbientColorR") {
+                            ambientColor.x = prop["value"];
+                        }
+                        else if (propName == "AmbientColorG") {
+                            ambientColor.y = prop["value"];
+                        }
+                        else if (propName == "AmbientColorB") {
+                            ambientColor.z = prop["value"];
+                        }
+                        else if (propName == "AmbientIntensity") {
+                            ambientIntensity = prop["value"];
+                        }
                         else if (propName == "FilePath") {
                             dialoguePath = prop["value"];
                         }
@@ -1785,6 +1799,8 @@ void Game::LoadObjects(const std::string &fileName) {
                 trigger->SetWorldStateFlag(worldStateFlag);
                 trigger->SetTargetZoom(targetZoom);
                 trigger->SetZoomSpeed(zoomSpeed);
+                trigger->SetAmbientColor(ambientColor);
+                trigger->SetAmbientIntensity(ambientIntensity);
                 trigger->SetDialoguePath(dialoguePath);
                 trigger->SetCutsceneId(cutsceneId);
             }
@@ -3028,11 +3044,11 @@ void Game::UpdateGame()
 
     // Zoom
     if (mZoom != mTargetZoom) {
-        if (std::abs(mTargetZoom - mZoom) > 0.001f)
+        if (std::abs(mTargetZoom - mZoom) > 0.005f)
         {
             mZoom = mZoom + (mTargetZoom - mZoom) * mZoomSpeed * deltaTime;
 
-            if (std::abs(mTargetZoom - mZoom) < 0.001f) {
+            if (std::abs(mTargetZoom - mZoom) < 0.005f) {
                 mZoom = mTargetZoom;
             }
             if (mCamera) {

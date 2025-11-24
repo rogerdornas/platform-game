@@ -59,7 +59,6 @@ public:
 
     // Getters
     class Texture* GetTexture(const std::string& fileName);
-	class Font* GetFont(const std::string& fileName);
 	class Shader* GetBaseShader() const { return mBaseShader; }
 	class VertexArray* GetSpriteVerts() const { return mSpriteVerts; }
 	// Getters para a resolução virtual (útil para o Game)

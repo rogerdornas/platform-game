@@ -55,6 +55,10 @@ void Trigger::SetTarget(std::string target) {
         mTarget = Target::Game;
         return;
     }
+    if (target == "Renderer") {
+        mTarget = Target::Renderer;
+        return;
+    }
     if (target == "Enemy") {
         mTarget = Target::Enemy;
         return;
@@ -158,6 +162,11 @@ void Trigger::SetEvent(std::string event) {
         return;
     }
 
+    if (event == "ChangeAmbientLight") {
+        mEvent = Event::ChangeAmbientLight;
+        return;
+    }
+
     if (event == "SpotPlayer") {
         mEvent = Event::SpotPlayer;
         return;
@@ -258,6 +267,10 @@ void Trigger::OnUpdate(float deltaTime) {
 
             case Target::Game:
                 GameTrigger();
+                break;
+
+            case Target::Renderer:
+                RendererTrigger();
                 break;
 
             case Target::Enemy:
@@ -435,6 +448,17 @@ void Trigger::GameTrigger() {
         case Event::ChangeZoom:
             mGame->SetTargetZoom(mTargetZoom);
             mGame->SetZoomSpeed(mZoomSpeed);
+            break;
+
+        default:
+            break;
+    }
+}
+
+void Trigger::RendererTrigger() {
+    switch (mEvent) {
+        case Event::ChangeAmbientLight:
+            mGame->GetRenderer()->SetAmbientLight(mAmbientColor, mAmbientIntensity);
             break;
 
         default:
