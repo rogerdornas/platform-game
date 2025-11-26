@@ -32,7 +32,7 @@ Mantis::Mantis(Game *game)
     mWidth = 120 * mGame->GetScale();
     mHeight = 120 * mGame->GetScale();
     mMoveSpeed = 250 * mGame->GetScale();
-    mHealthPoints = 90;
+    mHealthPoints = 80;
     mMaxHealthPoints = mHealthPoints;
     mContactDamage = 15;
     mMoneyDrop = 10;

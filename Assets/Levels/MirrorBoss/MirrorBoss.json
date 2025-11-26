@@ -654,10 +654,57 @@
                  "width":352,
                  "x":1856,
                  "y":1728
+                }, 
+                {
+                 "height":512,
+                 "id":48,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"AmbientColorB",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorG",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorR",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientIntensity",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"ChangeAmbientLight"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Renderer"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1120,
+                 "x":128,
+                 "y":1760
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -809,7 +856,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":48,
+ "nextobjectid":49,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

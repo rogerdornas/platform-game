@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1080" height="280" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="261">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1080" height="280" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="263">
  <editorsettings>
   <export target="Musgo.json" format="json"/>
  </editorsettings>
@@ -1229,7 +1229,6 @@
   <object id="121" name="Flying Enemy" x="19488" y="2656" width="32" height="32"/>
   <object id="134" name="Flying Enemy" x="20288" y="2656" width="32" height="32"/>
   <object id="152" name="Mantis" x="10528" y="4320" width="32" height="32"/>
-  <object id="153" name="Mantis" x="11776" y="4320" width="32" height="32"/>
   <object id="173" name="BushMonster" x="26784" y="7072" width="32" height="32">
    <properties>
     <property name="Condition" value="!BushMonsterDefeated"/>

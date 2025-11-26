@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="490" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="241">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="490" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="244">
  <editorsettings>
   <export target="Run.json" format="json"/>
  </editorsettings>
@@ -736,9 +736,20 @@
    <properties>
     <property name="Destroy" type="bool" value="true"/>
     <property name="Event" value="ChangeScene"/>
-    <property name="PlayerStartPositionId" type="int" value="1"/>
-    <property name="Scene" value="Level1"/>
+    <property name="PlayerStartPositionId" type="int" value="3"/>
+    <property name="Scene" value="Room0"/>
     <property name="Target" value="Game"/>
+   </properties>
+  </object>
+  <object id="241" x="0" y="2752" width="1120" height="448">
+   <properties>
+    <property name="AmbientColorB" type="float" value="0.8"/>
+    <property name="AmbientColorG" type="float" value="0.8"/>
+    <property name="AmbientColorR" type="float" value="1"/>
+    <property name="AmbientIntensity" type="float" value="0.8"/>
+    <property name="Destroy" type="bool" value="false"/>
+    <property name="Event" value="ChangeAmbientLight"/>
+    <property name="Target" value="Renderer"/>
    </properties>
   </object>
  </objectgroup>
@@ -750,10 +761,9 @@
   <object id="62" name="Flying Enemy" x="1376" y="2048" width="32" height="32"/>
   <object id="58" name="Enemy Simple" x="1344" y="3008" width="32" height="32"/>
   <object id="80" name="Enemy Simple" x="1440" y="2592" width="32" height="32"/>
-  <object id="111" name="FlyingShooterEnemy" x="5312" y="640" width="32" height="32"/>
+  <object id="111" name="FlyingShooterEnemy" x="5312" y="544" width="32" height="32"/>
   <object id="112" name="Flying Enemy" x="6784" y="544" width="32" height="32"/>
   <object id="114" name="Flying Enemy" x="7776" y="1056" width="32" height="32"/>
-  <object id="123" name="Flying Enemy" x="4480" y="480" width="32" height="32"/>
   <object id="124" name="Enemy Simple" x="7776" y="1280" width="32" height="32"/>
   <object id="138" name="FlyingShooterEnemy" x="6304" y="1632" width="32" height="32"/>
   <object id="140" name="Mantis" x="6208" y="2336" width="32" height="32"/>
@@ -770,6 +780,7 @@
    </properties>
   </object>
   <object id="197" name="FlyingGolem" x="6208" y="3040" width="32" height="32"/>
+  <object id="243" name="Snake" x="5920" y="736" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="2" name="Grounds">
   <object id="6" name="Ground" x="128" y="3200" width="1504" height="960"/>

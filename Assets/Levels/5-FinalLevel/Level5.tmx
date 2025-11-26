@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="140" height="160" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="57">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="140" height="160" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="58">
  <editorsettings>
   <export target="Level5.json" format="json"/>
  </editorsettings>
@@ -465,6 +465,17 @@
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="20,32,33"/>
     <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="57" x="448" y="4256" width="1120" height="512">
+   <properties>
+    <property name="AmbientColorB" type="float" value="1"/>
+    <property name="AmbientColorG" type="float" value="1"/>
+    <property name="AmbientColorR" type="float" value="1"/>
+    <property name="AmbientIntensity" type="float" value="0.9"/>
+    <property name="Destroy" type="bool" value="false"/>
+    <property name="Event" value="ChangeAmbientLight"/>
+    <property name="Target" value="Renderer"/>
    </properties>
   </object>
  </objectgroup>

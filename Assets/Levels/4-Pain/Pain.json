@@ -1679,6 +1679,53 @@
                  "width":160,
                  "x":8320,
                  "y":3584
+                }, 
+                {
+                 "height":256,
+                 "id":474,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"AmbientColorB",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorG",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientColorR",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientIntensity",
+                         "type":"float",
+                         "value":0.6
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"ChangeAmbientLight"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Renderer"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":1280,
+                 "y":5984
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6918,7 +6965,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":474,
+ "nextobjectid":475,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

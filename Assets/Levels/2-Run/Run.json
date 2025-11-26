@@ -1820,12 +1820,12 @@
                         {
                          "name":"PlayerStartPositionId",
                          "type":"int",
-                         "value":1
+                         "value":3
                         }, 
                         {
                          "name":"Scene",
                          "type":"string",
-                         "value":"Level1"
+                         "value":"Room0"
                         }, 
                         {
                          "name":"Target",
@@ -1838,6 +1838,53 @@
                  "width":96,
                  "x":128,
                  "y":3008
+                }, 
+                {
+                 "height":448,
+                 "id":241,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"AmbientColorB",
+                         "type":"float",
+                         "value":0.8
+                        }, 
+                        {
+                         "name":"AmbientColorG",
+                         "type":"float",
+                         "value":0.8
+                        }, 
+                        {
+                         "name":"AmbientColorR",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"AmbientIntensity",
+                         "type":"float",
+                         "value":0.8
+                        }, 
+                        {
+                         "name":"Destroy",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"Event",
+                         "type":"string",
+                         "value":"ChangeAmbientLight"
+                        }, 
+                        {
+                         "name":"Target",
+                         "type":"string",
+                         "value":"Renderer"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1120,
+                 "x":0,
+                 "y":2752
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1936,7 +1983,7 @@
                  "visible":true,
                  "width":32,
                  "x":5312,
-                 "y":640
+                 "y":544
                 }, 
                 {
                  "height":32,
@@ -1959,17 +2006,6 @@
                  "width":32,
                  "x":7776,
                  "y":1056
-                }, 
-                {
-                 "height":32,
-                 "id":123,
-                 "name":"Flying Enemy",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":4480,
-                 "y":480
                 }, 
                 {
                  "height":32,
@@ -2084,6 +2120,17 @@
                  "width":32,
                  "x":6208,
                  "y":3040
+                }, 
+                {
+                 "height":32,
+                 "id":243,
+                 "name":"Snake",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":5920,
+                 "y":736
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3458,7 +3505,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":241,
+ "nextobjectid":244,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

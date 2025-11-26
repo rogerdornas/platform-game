@@ -14,46 +14,54 @@ Texture::~Texture()
 
 bool Texture::Load(const std::string &filePath)
 {
-    SDL_Surface* surface = IMG_Load(filePath.c_str());
-
-    if (!surface) {
+    // 1. Carrega a imagem original
+    SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
+    if (!loadedSurface) {
         SDL_Log("Failed to load image %s: %s", filePath.c_str(), IMG_GetError());
         return false;
     }
 
-    mWidth = surface->w;
-    mHeight = surface->h;
+    // 2. Define o formato de pixel ideal para OpenGL (R, G, B, A na memória)
+    // SDL_PIXELFORMAT_ABGR8888 em Little Endian (PCs) garante a ordem de bytes R-G-B-A.
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        const Uint32 targetFormat = SDL_PIXELFORMAT_RGBA8888;
+    #else
+        const Uint32 targetFormat = SDL_PIXELFORMAT_ABGR8888;
+    #endif
 
-    // Generate a GL texture
-    glGenTextures(1, &mTextureID);
-    glBindTexture(GL_TEXTURE_2D, mTextureID);
+    // 3. Converte para o formato padrão (RGBA 32-bit)
+    SDL_Surface* formattedSurface = SDL_ConvertSurfaceFormat(loadedSurface, targetFormat, 0);
 
-    GLenum format = GL_RGBA;
+    // Podemos liberar a superfície original carregada, pois já temos a convertida
+    SDL_FreeSurface(loadedSurface);
 
-    // Detecta formato do SDL_Surface
-    if (surface->format->BytesPerPixel == 3)
-    {
-        format = (surface->format->Rmask == 0x000000ff) ? GL_RGB : GL_BGR;
-    }
-    else if (surface->format->BytesPerPixel == 4)
-    {
-        format = (surface->format->Rmask == 0x000000ff) ? GL_RGBA : GL_BGRA;
-    }
-    else
-    {
-        SDL_Log("Formato de textura desconhecido!");
+    if (!formattedSurface) {
+        SDL_Log("Unable to convert surface format: %s", SDL_GetError());
         return false;
     }
 
+    mWidth = formattedSurface->w;
+    mHeight = formattedSurface->h;
+
+    // 4. Gera a textura OpenGL
+    glGenTextures(1, &mTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+    // 5. Envia para a GPU
+    // Como convertemos a surface, SABEMOS que é GL_RGBA e GL_UNSIGNED_BYTE
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight,
-                 0, format, GL_UNSIGNED_BYTE, surface->pixels);
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, formattedSurface->pixels);
 
-    // Delete the SDL surface
-    SDL_FreeSurface(surface);
-
-    // Use linear filtering
+    // Configura filtros (Pixel Art fica melhor com GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // Configura para a textura repetir ou clamar (opcional, mas bom para garantir)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // 6. Libera a superfície convertida (já está na memória da GPU)
+    SDL_FreeSurface(formattedSurface);
 
     return true;
 }

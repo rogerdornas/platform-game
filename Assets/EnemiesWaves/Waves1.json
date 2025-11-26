@@ -2,12 +2,6 @@
   "waves": [
     {
       "actions": [
-        { 
-          "actionType": "SpawnEnemy", 
-          "type": "FlyingSpawnerEnemy", 
-          "id": "RightMid", 
-          "delay": 3.0
-        },
         {
           "actionType": "SpawnEnemy", 
           "type": "FlyingSpawnerEnemy", 
@@ -104,6 +98,56 @@
           "actionType": "RemoveHookPoint",
           "id": "LeftMid",
           "delay": 1.0
+        }
+      ]
+    },
+    {
+      "actions": [
+        {
+          "actionType": "SpawnEnemy",
+          "type": "FlyingGolem",
+          "id": "LeftMid",
+          "delay": 3.0
+        },
+        {
+          "actionType": "SpawnEnemy",
+          "type": "Mantis",
+          "id": "LeftBot",
+          "delay": 3.0
+        },
+        {
+          "actionType": "SpawnEnemy",
+          "type": "Mushroom",
+          "id": "RightBot",
+          "delay": 3.0
+        },
+        {
+          "actionType": "SpawnEnemy",
+          "type": "FlyingSpawnerEnemy",
+          "id": "RightMid",
+          "delay": 2.0
+        },
+        {
+          "actionType": "SpawnEnemy",
+          "type": "DragonFly",
+          "id": "RightTop",
+          "delay": 3.0
+        },
+        {
+          "actionType": "SpawnEnemy",
+          "type": "Enemy Simple",
+          "id": "RightBot",
+          "delay": 6.0
+        },
+        {
+          "actionType": "RemoveHookPoint",
+          "id": "RightMid",
+          "delay": 0.5
+        },
+        {
+          "actionType": "SpawnHookPoint",
+          "id": "CenterMid",
+          "delay": 2.0
         }
       ]
     },

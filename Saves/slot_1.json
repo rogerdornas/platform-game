@@ -1,20 +1,20 @@
 {
     "game": {
         "last_checkpoint": {
-            "x": 1200.0,
-            "y": 5344.0
+            "x": 816.0,
+            "y": 3104.0
         },
-        "scene": "Room1",
-        "total_play_time": 55040.921875
+        "scene": "Level2",
+        "total_play_time": 64990.796875
     },
     "player": {
         "can_dash": true,
         "can_fireball": true,
         "can_hook": true,
         "can_wallslide": true,
-        "death_counter": 262,
+        "death_counter": 276,
         "max_jumps_in_air": 1,
-        "money": 7378
+        "money": 1050
     },
     "upgrades": {
         "fireball": true,
@@ -26,15 +26,15 @@
         "sword_speed": true
     },
     "world_state": {
-        "BushMonsterDefeated": true,
-        "FoxDefeated": true,
-        "FrogDefeated": true,
-        "GolemDefeated": true,
-        "HookEnemyDefeated": true,
-        "Level1ArenaDone": true,
-        "Level1Puzzle1Done": true,
-        "Level2Lever2Activated": true,
-        "Level4ArenaDone": true,
-        "MirrorBossDefeated": true
+        "BushMonsterDefeated": false,
+        "FoxDefeated": false,
+        "FrogDefeated": false,
+        "GolemDefeated": false,
+        "HookEnemyDefeated": false,
+        "Level1ArenaDone": false,
+        "Level1Puzzle1Done": false,
+        "Level2Lever2Activated": false,
+        "Level4ArenaDone": false,
+        "MirrorBossDefeated": false
     }
 }

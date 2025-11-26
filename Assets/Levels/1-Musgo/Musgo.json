@@ -3805,17 +3805,6 @@
                 }, 
                 {
                  "height":32,
-                 "id":153,
-                 "name":"Mantis",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":11776,
-                 "y":4320
-                }, 
-                {
-                 "height":32,
                  "id":173,
                  "name":"BushMonster",
                  "properties":[
@@ -3849,7 +3838,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":261,
+ "nextobjectid":263,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

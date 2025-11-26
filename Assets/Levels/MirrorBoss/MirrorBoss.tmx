@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="150" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="48">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="150" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="49">
  <editorsettings>
   <export target="MirrorBoss.json" format="json"/>
  </editorsettings>
@@ -300,7 +300,7 @@
  <objectgroup id="10" name="Checkpoint">
   <object id="45" name="Checkpoint" x="448" y="2080" width="416" height="192"/>
  </objectgroup>
- <objectgroup id="5" name="Triggers" visible="0">
+ <objectgroup id="5" name="Triggers">
   <object id="42" name="Spot Player" x="1824" y="640" width="1760" height="1664">
    <properties>
     <property name="Enemies" value="41"/>
@@ -314,6 +314,17 @@
     <property name="Event" value="SetIsGrowing"/>
     <property name="Grounds" value="44"/>
     <property name="Target" value="DynamicGround"/>
+   </properties>
+  </object>
+  <object id="48" x="128" y="1760" width="1120" height="512">
+   <properties>
+    <property name="AmbientColorB" type="float" value="1"/>
+    <property name="AmbientColorG" type="float" value="1"/>
+    <property name="AmbientColorR" type="float" value="1"/>
+    <property name="AmbientIntensity" type="float" value="0.5"/>
+    <property name="Destroy" type="bool" value="false"/>
+    <property name="Event" value="ChangeAmbientLight"/>
+    <property name="Target" value="Renderer"/>
    </properties>
   </object>
  </objectgroup>

@@ -446,8 +446,8 @@ private:
     SDL_Texture* mBackGroundTextureMainMenu;
     SDL_Texture* mBackGroundTextureLevel1;
     std::vector<Texture*> mBackgroundLayersLevel2;
-    std::vector<SDL_Texture*> mBackgroundLayersLevel3;
-    std::vector<SDL_Texture*> mBackgroundLayersLevel4;
+    std::vector<Texture*> mBackgroundLayersLevel3;
+    std::vector<Texture*> mBackgroundLayersLevel4;
     SDL_Texture* mBackGroundTextureLevel3;
     SDL_Texture* mBackGroundTextureLevel4;
     Texture* mBackGroundTexture;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="474">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="345" height="206" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="475">
  <editorsettings>
   <export target="Pain.json" format="json"/>
  </editorsettings>
@@ -876,6 +876,17 @@
     <property name="Target" value="Game"/>
     <property name="WorldState" value="Level4ArenaDone"/>
     <property name="WorldStateFlag" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="474" x="1280" y="5984" width="128" height="256">
+   <properties>
+    <property name="AmbientColorB" type="float" value="1"/>
+    <property name="AmbientColorG" type="float" value="1"/>
+    <property name="AmbientColorR" type="float" value="1"/>
+    <property name="AmbientIntensity" type="float" value="0.6"/>
+    <property name="Destroy" type="bool" value="false"/>
+    <property name="Event" value="ChangeAmbientLight"/>
+    <property name="Target" value="Renderer"/>
    </properties>
   </object>
  </objectgroup>
